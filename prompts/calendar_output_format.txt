@@ -1,0 +1,9 @@
+This problem is a calendar-scheduling task: find a single meeting time that fits every participant's availability.
+
+Print only a Python list of three strings — day, start time, end time.
+
+Rules: the day must be a full weekday name (e.g. "Monday"), each time must be in zero-padded 24-hour HH:MM format with no AM/PM suffix and no seconds, and the list should follow the exact form [day, start time, end time] with no extra strings.
+
+Here is an example:
+
+['Monday', '13:30', '14:00']

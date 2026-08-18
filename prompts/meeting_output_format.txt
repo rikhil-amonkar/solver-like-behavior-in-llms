@@ -1,0 +1,9 @@
+This problem is a meeting-logistics task: build one consistent itinerary of travel, waiting, and the meeting itself.
+
+Print only a Python list of concise, plain chronological statements describing each step of the itinerary.
+
+Rules: each time must be in 12-hour format with no space before the AM/PM suffix and no seconds, each statement should describe exactly one step (start, travel, wait, or meet), and each string should follow the form "You [do something] at [time]." or "You meet [person] from [time] to [time]."
+
+Here is an example:
+
+['You start at Richmond District at 9:00AM.', 'You travel to Financial District in 22 minutes and arrive at 9:22AM.', 'You wait until 5:15PM.', 'You meet Betty for 60 minutes from 5:15PM to 6:15PM.']

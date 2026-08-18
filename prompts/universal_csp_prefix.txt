@@ -1,0 +1,3 @@
+You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write a Python program that solves it directly rather than solving it yourself in prose. Use only the Python standard library, enclose the complete solution in a single ```python code block, and have the program print only the final answer in the exact format specified below.
+
+{PROBLEM}

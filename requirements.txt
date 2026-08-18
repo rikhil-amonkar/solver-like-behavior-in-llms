@@ -1,25 +1,26 @@
 # LLM APIs
-openai>=1.99.0
+openai>=3.2.0
 
 # Deep Learning (PyTorch + Hugging Face)
-torch>=2.8.0
-transformers>=4.55.0
-tiktoken>=0.10.0
+torch>=2.13.0
+transformers>=5.15.0
+accelerate>=1.2.1
+tiktoken>=0.14.0
 huggingface-hub>=0.34.0
 
 # Data Processing
-numpy>=2.3.0
-pandas>=2.3.0
+numpy>=2.5.2
+pandas>=3.0.5
 
 # Constraint Solving
-z3-solver
+z3-solver>=5.1.0
 
-# Vertex AI batch judge (optional; --execution-mode vertex_batch)
-google-genai>=1.0.0
-google-cloud-storage>=2.14.0
+# Vertex AI Batch Judge
+google-genai>=2.18.1
+google-cloud-storage>=3.13.1
 
 # Utilities
-tqdm>=4.67.0
+tqdm>=4.70.0
 pyyaml>=6.0.0
-requests>=2.32.0
-python-dotenv>=1.0.0
+requests>=2.34.2
+python-dotenv>=1.2.3

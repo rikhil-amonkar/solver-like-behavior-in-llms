@@ -46,3 +46,12 @@ temp/
 *.pem
 *.key
 secrets/
+
+# Claude Code
+.claude/
+.claude_code/
+claude_history/
+.ai/
+*.claude.md
+CLAUDE.md
+.claude_cache/
