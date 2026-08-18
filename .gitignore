@@ -55,3 +55,6 @@ claude_history/
 *.claude.md
 CLAUDE.md
 .claude_cache/
+
+# Old Code
+legacy/

@@ -1,26 +1,30 @@
+# Core Pipeline Dependencies
+
 # LLM APIs
-openai>=3.2.0
+openai>=3.2.0              # DeepSeek API + OpenAI client
+google-genai>=2.18.1       # Gemini judge for chunking (Vertex AI)
+python-dotenv>=1.2.3       # Environment variable loading
 
 # Deep Learning (PyTorch + Hugging Face)
-torch>=2.13.0
-transformers>=5.15.0
-accelerate>=1.2.1
-tiktoken>=0.14.0
-huggingface-hub>=0.34.0
+torch>=2.13.0              # Local model inference (Qwen, GPT-OSS)
+transformers>=5.15.0       # HuggingFace model loading
+accelerate>=1.2.1          # Multi-GPU support for local models
+tiktoken>=0.14.0           # Token counting for chunk enrichment
+huggingface-hub>=0.34.0    # Model downloading
 
-# Data Processing
+# Optional Dependencies
+
+# Data Processing (for analysis/notebooks, not core pipeline)
 numpy>=2.5.2
 pandas>=3.0.5
 
-# Constraint Solving
+# Constraint Solving (legacy, may not be used in new pipeline)
 z3-solver>=5.1.0
 
-# Vertex AI Batch Judge
-google-genai>=2.18.1
+# Vertex AI (optional: for batch judge mode)
 google-cloud-storage>=3.13.1
 
-# Utilities
-tqdm>=4.70.0
-pyyaml>=6.0.0
-requests>=2.34.2
-python-dotenv>=1.2.3
+# Utilities (nice-to-have)
+tqdm>=4.70.0               # Progress bars
+pyyaml>=6.0.0              # YAML config files (future)
+requests>=2.34.2           # HTTP requests

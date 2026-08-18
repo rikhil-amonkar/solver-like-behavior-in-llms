@@ -7,3 +7,5 @@ Rules: the day must be a full weekday name (e.g. "Monday"), each time must be in
 Here is an example:
 
 ['Monday', '13:30', '14:00']
+
+SOLUTION CODE:
