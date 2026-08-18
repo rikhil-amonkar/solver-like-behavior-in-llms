@@ -1,0 +1,41 @@
+# LLM APIs
+openai>=1.99.0
+boto3>=1.35.0
+
+# Deep Learning (PyTorch + Hugging Face)
+torch>=2.8.0
+transformers>=4.55.0
+accelerate>=1.0.0
+# MXFP4 models (e.g. openai/gpt-oss-*) use Triton kernels when installed; otherwise bf16 fallback.
+triton>=3.4.0; sys_platform == "linux"
+tiktoken>=0.10.0
+huggingface-hub>=0.34.0
+safetensors>=0.4.0
+kernels>=0.12.0
+
+# Quantization (4-bit/8-bit loading via HF_LOAD_IN_4BIT / HF_LOAD_IN_8BIT)
+bitsandbytes>=0.41.0
+
+# Data Processing
+numpy>=2.3.0
+pandas>=2.3.0
+
+# Probing / ML baselines (tests/probing_and_steering)
+scikit-learn>=1.5.0
+pyarrow>=15.0.0
+openpyxl>=3.1.0
+
+# Constraint Solving
+z3-solver
+
+# Vertex AI batch judge (optional; --execution-mode vertex_batch)
+google-genai>=1.0.0
+google-cloud-storage>=2.14.0
+
+# Utilities
+tqdm>=4.67.0
+pyyaml>=6.0.0
+requests>=2.32.0
+python-dotenv>=1.0.0
+
+# Other
