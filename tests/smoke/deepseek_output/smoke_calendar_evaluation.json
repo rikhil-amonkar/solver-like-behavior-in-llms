@@ -1,0 +1,82 @@
+{
+  "run_metadata": {
+    "task": "calendar",
+    "model": "deepseek",
+    "condition": "baseline",
+    "test_type": "smoke_test",
+    "inference_json": "/local-ssd/rma336/solver-like-behavior-in-llms/tests/smoke/output/smoke_calendar_inference.json",
+    "timestamp": "2026-08-19T01:42:41Z",
+    "num_examples": 3
+  },
+  "examples": [
+    {
+      "example_id": "calendar_scheduling_example_172",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "14:00",
+        "14:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "14:00",
+        "14:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_819",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_625",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Tuesday",
+        "14:30",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Tuesday",
+        "15:30",
+        "16:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Tuesday",
+          "start": 14.5,
+          "end": 15.5
+        }
+      }
+    }
+  ],
+  "summary": {
+    "constraint_based_accuracy": 0.6666666666666666,
+    "constraint_correct": 2,
+    "constraint_incorrect": 1,
+    "golden_solution_accuracy": 0.6666666666666666,
+    "golden_matches": 2,
+    "golden_available": 3,
+    "error_breakdown": {
+      "constraint_violation": 1
+    }
+  }
+}

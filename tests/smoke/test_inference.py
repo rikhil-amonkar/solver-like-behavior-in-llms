@@ -91,7 +91,6 @@ def run_smoke_test_inference(model="deepseek", num_per_task=3):
                         )
 
                         # Call model
-                        print(f"\nCalling model for {example_id}...")
                         model_result = call_model(model, full_prompt, max_tokens=None)
 
                         reasoning_trace = model_result["reasoning_trace"]
@@ -104,7 +103,6 @@ def run_smoke_test_inference(model="deepseek", num_per_task=3):
 
                         # Execute code
                         if extracted_code:
-                            print(f"Executing code...")
                             code_result = run_code(extracted_code, timeout_sec=30.0)
                         else:
                             code_result = {
@@ -133,14 +131,11 @@ def run_smoke_test_inference(model="deepseek", num_per_task=3):
 
                         if code_result.get("exit_code") == 0:
                             success_count += 1
-                            print(f"✓ Success")
                         else:
                             error_count += 1
-                            print(f"✗ Failed: {code_result.get('error')}")
 
                     except Exception as e:
                         error_count += 1
-                        print(f"✗ Error: {str(e)}")
 
                         error_result = {
                             "example_id": example_id,

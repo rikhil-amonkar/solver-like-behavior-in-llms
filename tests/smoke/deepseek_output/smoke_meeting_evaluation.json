@@ -1,0 +1,91 @@
+{
+  "run_metadata": {
+    "task": "meeting",
+    "model": "deepseek",
+    "condition": "baseline",
+    "test_type": "smoke_test",
+    "inference_json": "/local-ssd/rma336/solver-like-behavior-in-llms/tests/smoke/output/smoke_meeting_inference.json",
+    "timestamp": "2026-08-19T01:42:41Z",
+    "num_examples": 3
+  },
+  "examples": [
+    {
+      "example_id": "meeting_planning_example_870",
+      "correct": true,
+      "matches_expected": false,
+      "classification": "correct",
+      "solution": [
+        "You start at Pacific Heights at 9:00AM.",
+        "You travel to Financial District in 13 minutes and arrive at 9:13AM.",
+        "You wait until 10:15AM.",
+        "You meet Carol for 60 minutes from 10:15AM to 11:15AM.",
+        "You travel to Presidio in 22 minutes and arrive at 11:37AM.",
+        "You meet Brian for 75 minutes from 11:37AM to 12:52PM.",
+        "You travel to The Castro in 21 minutes and arrive at 1:13PM.",
+        "You wait until 2:45PM.",
+        "You meet Kenneth for 30 minutes from 2:45PM to 3:15PM.",
+        "You travel to Richmond District in 16 minutes and arrive at 3:31PM.",
+        "You meet Kimberly for 30 minutes from 3:31PM to 4:01PM.",
+        "You travel to Mission District in 20 minutes and arrive at 4:21PM.",
+        "You meet Laura for 30 minutes from 4:21PM to 4:51PM.",
+        "You travel to Nob Hill in 12 minutes and arrive at 5:03PM.",
+        "You meet Sandra for 60 minutes from 5:03PM to 6:03PM.",
+        "You travel to Russian Hill in 5 minutes and arrive at 6:08PM.",
+        "You wait until 6:30PM.",
+        "You meet Karen for 75 minutes from 6:30PM to 7:45PM.",
+        "You travel to Marina District in 7 minutes and arrive at 7:52PM.",
+        "You meet Linda for 30 minutes from 7:52PM to 8:22PM.",
+        "You travel to Alamo Square in 15 minutes and arrive at 8:37PM.",
+        "You wait until 9:00PM.",
+        "You meet Paul for 15 minutes from 9:00PM to 9:15PM."
+      ],
+      "expected_solution": null,
+      "validation": {}
+    },
+    {
+      "example_id": "meeting_planning_example_52",
+      "correct": true,
+      "matches_expected": false,
+      "classification": "correct",
+      "solution": [
+        "You start at Russian Hill at 9:00AM.",
+        "You travel to Richmond District in 14 minutes and arrive at 9:14AM.",
+        "You wait until 1:15PM.",
+        "You meet Barbara for 45 minutes from 1:15PM to 2:00PM."
+      ],
+      "expected_solution": null,
+      "validation": {}
+    },
+    {
+      "example_id": "meeting_planning_example_444",
+      "correct": true,
+      "matches_expected": false,
+      "classification": "correct",
+      "solution": [
+        "You start at Financial District at 9:00AM.",
+        "You travel to North Beach in 7 minutes and arrive at 9:07AM.",
+        "You wait until 12:30PM.",
+        "You meet Laura for 15 minutes from 12:30PM to 12:45PM.",
+        "You travel to Sunset District in 27 minutes and arrive at 1:12PM.",
+        "You meet Patricia for 60 minutes from 1:12PM to 2:12PM.",
+        "You travel to Golden Gate Park in 11 minutes and arrive at 2:23PM.",
+        "You wait until 3:00PM.",
+        "You meet Mary for 60 minutes from 3:00PM to 4:00PM.",
+        "You travel to The Castro in 13 minutes and arrive at 4:13PM.",
+        "You wait until 4:15PM.",
+        "You meet Emily for 60 minutes from 4:15PM to 5:15PM."
+      ],
+      "expected_solution": null,
+      "validation": {}
+    }
+  ],
+  "summary": {
+    "constraint_based_accuracy": 1.0,
+    "constraint_correct": 3,
+    "constraint_incorrect": 0,
+    "golden_solution_accuracy": null,
+    "golden_matches": 0,
+    "golden_available": 0,
+    "error_breakdown": {}
+  }
+}

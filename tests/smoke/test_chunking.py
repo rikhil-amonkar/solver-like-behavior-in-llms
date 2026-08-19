@@ -13,7 +13,7 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "src"))
 
-from general.io_utils import load_json_file, get_timestamp, IncrementalJSONWriter
+from general.io_utils import load_json_file, get_timestamp, IncrementalJSONWriter, make_path_relative
 from general.cli import ProgressTracker
 from chunking.judge_caller import call_judge
 from chunking.chunk_parser import (
@@ -70,7 +70,7 @@ def run_smoke_test_chunking():
             "model": inference_data["run_metadata"]["model"],
             "condition": "baseline",
             "test_type": "smoke_test",
-            "inference_json": str(inference_path),
+            "inference_json": make_path_relative(str(inference_path)),
             "judge_model": judge_model,
             "judge_prompt": judge_prompt_path,
             "timestamp": get_timestamp(),
@@ -113,7 +113,6 @@ def run_smoke_test_chunking():
                             continue
 
                         # Call judge
-                        print(f"\nCalling judge for {example_id}...")
                         judge_result = call_judge(
                             reasoning_text=reasoning_before_code,
                             judge_prompt_path=judge_prompt_path,
@@ -126,9 +125,7 @@ def run_smoke_test_chunking():
                         try:
                             parsed_response = parse_judge_response(raw_response)
                             chunks = parsed_response["chunk_analysis"]
-                            print(f"✓ Parsed {len(chunks)} chunks")
                         except ValueError as e:
-                            print(f"✗ Failed to parse judge response: {str(e)}")
                             chunks = []
 
                         # Enrich with tokens
@@ -158,7 +155,6 @@ def run_smoke_test_chunking():
                         total_chunks += len(chunks)
 
                     except Exception as e:
-                        print(f"\n✗ Error chunking {example.get('example_id')}: {str(e)}")
                         examples_sound_only += 1
 
                         result = {
