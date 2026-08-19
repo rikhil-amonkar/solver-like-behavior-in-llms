@@ -5,7 +5,12 @@ import tempfile
 import sys
 from pathlib import Path
 from typing import Optional
-from src.general.parsing_utils import parse_code_output
+
+# Add src to path for imports
+repo_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(repo_root / "src"))
+
+from general.parsing_utils import parse_code_output
 
 
 def run_code(code: str, timeout_sec: float = 30.0) -> dict:

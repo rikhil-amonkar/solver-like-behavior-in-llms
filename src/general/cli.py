@@ -20,7 +20,10 @@ class ProgressTracker:
             total=total,
             desc=desc,
             unit=unit,
-            bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
+            bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]',
+            dynamic_ncols=True,
+            leave=True,
+            position=0
         )
 
     def update(self, n: int = 1):
@@ -40,3 +43,4 @@ class ProgressTracker:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+        return False  # Don't suppress exceptions

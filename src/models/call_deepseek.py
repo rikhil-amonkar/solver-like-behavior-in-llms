@@ -35,7 +35,17 @@ def call_deepseek(prompt: str, max_tokens: int = None, reasoning_effort: str = "
         stream=False
     )
 
-    reasoning_trace = response.choices[0].message.content or ""
+    # DeepSeek returns reasoning in reasoning_content field, final answer in content
+    message = response.choices[0].message
+    reasoning_content = getattr(message, "reasoning_content", "") or ""
+    answer_content = message.content or ""
+
+    # Combine reasoning + answer for full trace
+    has_reasoning = bool(reasoning_content and reasoning_content.strip())
+    if has_reasoning:
+        reasoning_trace = f"{reasoning_content}\n\n{answer_content}"
+    else:
+        reasoning_trace = answer_content
 
     return {
         "reasoning_trace": reasoning_trace,
@@ -45,6 +55,8 @@ def call_deepseek(prompt: str, max_tokens: int = None, reasoning_effort: str = "
             "reasoning_effort": reasoning_effort,
             "completion_tokens": response.usage.completion_tokens if response.usage else None,
             "prompt_tokens": response.usage.prompt_tokens if response.usage else None,
+            "has_reasoning_content": has_reasoning,
+            "reasoning_tokens": len(reasoning_content.split()) if has_reasoning else 0,
         }
     }
 

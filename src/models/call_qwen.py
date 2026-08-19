@@ -56,10 +56,22 @@ def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True)
     ).to(model.device)
 
     output_ids = model.generate(**inputs, max_new_tokens=max_tokens)
-    reasoning_trace = tokenizer.decode(
+
+    # Decode WITHOUT skipping special tokens first to see if there are thinking tokens
+    full_output_with_special = tokenizer.decode(
+        output_ids[0][inputs["input_ids"].shape[-1]:],
+        skip_special_tokens=False
+    )
+
+    # Also decode with special tokens skipped (standard)
+    output_clean = tokenizer.decode(
         output_ids[0][inputs["input_ids"].shape[-1]:],
         skip_special_tokens=True
     )
+
+    # Qwen uses <|im_start|>think and <|im_end|> tags for thinking mode
+    # Extract both thinking and answer sections
+    reasoning_trace = full_output_with_special if "<|im_start|>think" in full_output_with_special else output_clean
 
     return {
         "reasoning_trace": reasoning_trace,
@@ -69,6 +81,7 @@ def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True)
             "enable_thinking": enable_thinking,
             "prompt_length": inputs["input_ids"].shape[-1],
             "generated_tokens": len(output_ids[0]) - inputs["input_ids"].shape[-1],
+            "has_thinking_tags": "<|im_start|>think" in full_output_with_special,
         }
     }
 

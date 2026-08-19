@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from general.io_utils import load_json_file, get_timestamp, IncrementalJSONWriter
+from general.io_utils import load_json_file, get_timestamp, IncrementalJSONWriter, make_path_relative
 from general.cli import ProgressTracker
 from chunking.judge_caller import call_judge
 from chunking.chunk_parser import (
@@ -65,7 +65,7 @@ def run_chunking_pipeline(
         "task": task,
         "model": model,
         "condition": condition,
-        "inference_json": str(inference_json_path),
+        "inference_json": make_path_relative(str(inference_json_path)),
         "judge_model": judge_model,
         "judge_prompt": judge_prompt_path,
         "timestamp": get_timestamp(),

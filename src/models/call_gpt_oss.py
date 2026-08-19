@@ -56,10 +56,26 @@ def call_gpt_oss(prompt: str, max_tokens: int = None, reasoning_effort: str = "m
     ).to(model.device)
 
     output_ids = model.generate(**inputs, max_new_tokens=max_tokens)
-    reasoning_trace = tokenizer.decode(
+
+    # Decode WITHOUT skipping special tokens first to capture any reasoning markers
+    full_output_with_special = tokenizer.decode(
+        output_ids[0][inputs["input_ids"].shape[-1]:],
+        skip_special_tokens=False
+    )
+
+    # Also decode with special tokens skipped (standard)
+    output_clean = tokenizer.decode(
         output_ids[0][inputs["input_ids"].shape[-1]:],
         skip_special_tokens=True
     )
+
+    # GPT-OSS may use special tokens for reasoning sections
+    # Check for common reasoning markers (<think>, <reasoning>, etc.)
+    has_reasoning_tokens = any(
+        marker in full_output_with_special
+        for marker in ["<think>", "<reasoning>", "<thought>", "|im_start|"]
+    )
+    reasoning_trace = full_output_with_special if has_reasoning_tokens else output_clean
 
     return {
         "reasoning_trace": reasoning_trace,
@@ -69,6 +85,7 @@ def call_gpt_oss(prompt: str, max_tokens: int = None, reasoning_effort: str = "m
             "reasoning_effort": reasoning_effort,
             "prompt_length": inputs["input_ids"].shape[-1],
             "generated_tokens": len(output_ids[0]) - inputs["input_ids"].shape[-1],
+            "has_reasoning_tokens": has_reasoning_tokens,
         }
     }
 

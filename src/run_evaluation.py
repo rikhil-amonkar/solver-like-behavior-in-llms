@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from general.io_utils import load_json_file, load_constraints_json, get_timestamp, IncrementalJSONWriter
+from general.io_utils import load_json_file, load_constraints_json, load_problems_with_solutions, get_timestamp, IncrementalJSONWriter, make_path_relative
 from general.cli import ProgressTracker
 from evaluation.calendar_eval import evaluate_calendar_solution
 from evaluation.meeting_eval import evaluate_meeting_solution
@@ -41,9 +41,11 @@ def run_evaluation_pipeline(inference_json_path: str):
     print(f"Condition: {condition}")
     print(f"Examples: {len(examples)}")
 
-    # Load constraints
+    # Load constraints and golden solutions
     print("Loading constraints...")
     all_constraints = load_constraints_json(task)
+    print("Loading golden solutions...")
+    golden_solutions = load_problems_with_solutions(task)
 
     # Determine output path (use same condition as inference)
     inference_path = Path(inference_json_path)
@@ -56,7 +58,7 @@ def run_evaluation_pipeline(inference_json_path: str):
         "task": task,
         "model": model,
         "condition": condition,
-        "inference_json": str(inference_json_path),
+        "inference_json": make_path_relative(str(inference_json_path)),
         "constraints_json": f"data/constraints/{task}_constraints.json",
         "timestamp": get_timestamp(),
         "num_examples": len(examples),
@@ -65,6 +67,8 @@ def run_evaluation_pipeline(inference_json_path: str):
     # Process examples
     correct_count = 0
     incorrect_count = 0
+    golden_match_count = 0
+    golden_available_count = 0
     error_breakdown = {}
 
     with IncrementalJSONWriter(str(output_path), metadata) as writer:
@@ -75,7 +79,16 @@ def run_evaluation_pipeline(inference_json_path: str):
                     parsed_output = example["code_execution"].get("parsed_output")
 
                     # Get example-specific constraints if available
-                    example_constraints = all_constraints.get(example_id, all_constraints)
+                    example_data = all_constraints.get(example_id, all_constraints)
+
+                    # Extract nested constraints if present
+                    if "constraints" in example_data:
+                        example_constraints = example_data["constraints"]
+                    else:
+                        example_constraints = example_data
+
+                    # Get golden solution from problems JSON
+                    golden_solution = golden_solutions.get(example_id)
 
                     # Classify result
                     if not example["code_execution"]["ran"]:
@@ -97,12 +110,19 @@ def run_evaluation_pipeline(inference_json_path: str):
                         classification = "correct" if is_correct else "constraint_violation"
                         validation = error_detail if not is_correct else {}
 
+                    # Check if solution matches golden solution
+                    matches_golden = False
+                    if golden_solution is not None and parsed_output is not None:
+                        matches_golden = parsed_output == golden_solution
+
                     # Build result
                     result = {
                         "example_id": example_id,
                         "correct": is_correct,
+                        "matches_expected": matches_golden,
                         "classification": classification,
                         "solution": parsed_output,
+                        "expected_solution": golden_solution,
                         "validation": validation,
                     }
 
@@ -114,6 +134,12 @@ def run_evaluation_pipeline(inference_json_path: str):
                     else:
                         incorrect_count += 1
                         error_breakdown[classification] = error_breakdown.get(classification, 0) + 1
+
+                    # Update golden match counts
+                    if golden_solution is not None:
+                        golden_available_count += 1
+                        if matches_golden:
+                            golden_match_count += 1
 
                 except Exception as e:
                     print(f"\nError evaluating {example.get('example_id', '?')}: {str(e)}")
@@ -133,12 +159,32 @@ def run_evaluation_pipeline(inference_json_path: str):
                 progress.update(1)
                 progress.set_postfix(correct=correct_count, incorrect=incorrect_count)
 
-    # Print summary
-    total = len(examples)
-    accuracy = correct_count / total if total > 0 else 0
+        # Calculate accuracies
+        total = len(examples)
+        constraint_accuracy = correct_count / total if total > 0 else 0
+        golden_accuracy = golden_match_count / golden_available_count if golden_available_count > 0 else None
 
+        # Build summary
+        summary = {
+            "constraint_based_accuracy": constraint_accuracy,
+            "constraint_correct": correct_count,
+            "constraint_incorrect": incorrect_count,
+            "golden_solution_accuracy": golden_accuracy,
+            "golden_matches": golden_match_count,
+            "golden_available": golden_available_count,
+            "error_breakdown": error_breakdown,
+        }
+
+        # Finalize with summary
+        writer.finalize_with_summary(summary)
+
+    # Print summary
     print(f"\n✓ Evaluation complete!")
-    print(f"  Accuracy: {correct_count}/{total} ({accuracy:.2%})")
+    print(f"  Constraint-based accuracy: {correct_count}/{total} ({constraint_accuracy:.2%})")
+    if golden_accuracy is not None:
+        print(f"  Golden solution accuracy: {golden_match_count}/{golden_available_count} ({golden_accuracy:.2%})")
+    else:
+        print(f"  Golden solution accuracy: N/A (no golden solutions)")
     print(f"  Errors: {incorrect_count}/{total}")
     if error_breakdown:
         print(f"  Breakdown:")

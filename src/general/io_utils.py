@@ -49,6 +49,60 @@ def load_problems_json(task: str) -> dict:
         return json.load(f)
 
 
+def load_problems_with_solutions(task: str) -> dict:
+    """
+    Load problems JSON and extract golden solutions.
+
+    Args:
+        task: Task name (calendar, meeting, etc.)
+
+    Returns:
+        Dict mapping example_id to golden solution (parsed into expected format)
+    """
+    problems = load_problems_json(task)
+    solutions = {}
+
+    for example_id, problem_data in problems.items():
+        raw_solution = problem_data.get("golden_solution")
+        if raw_solution:
+            # Parse the golden solution based on task type
+            parsed = parse_golden_solution(raw_solution, task)
+            if parsed:
+                solutions[example_id] = parsed
+
+    return solutions
+
+
+def parse_golden_solution(raw_solution: str, task: str):
+    """
+    Parse raw golden solution string into expected format.
+
+    Args:
+        raw_solution: Raw solution string from problems JSON
+        task: Task name to determine parsing logic
+
+    Returns:
+        Parsed solution in expected format, or None if parsing fails
+    """
+    import re
+
+    if task == "calendar":
+        # Format: "Here is the proposed time: Monday, 13:30 - 14:30"
+        # Extract: ["Monday", "13:30", "14:30"]
+        match = re.search(r'(\w+),\s*(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})', raw_solution)
+        if match:
+            day, start, end = match.groups()
+            return [day, start, end]
+
+    elif task == "meeting":
+        # Meeting solutions are lists of itinerary steps
+        # Format varies - may need more sophisticated parsing
+        # For now, return None (can be enhanced later)
+        return None
+
+    return None
+
+
 def load_constraints_json(task: str) -> dict:
     """
     Load constraints dataset for a given task.
@@ -158,12 +212,27 @@ class IncrementalJSONWriter:
         self.file_handle.flush()
         self.count += 1
 
+    def finalize_with_summary(self, summary: dict):
+        """
+        Close JSON with optional summary statistics.
+
+        Args:
+            summary: Summary statistics to append after examples
+        """
+        if self.file_handle:
+            self.file_handle.write("\n  ],\n")
+            self.file_handle.write(f'  "summary": {json.dumps(summary, indent=2).replace(chr(10), chr(10) + "  ")}\n')
+            self.file_handle.write("}\n")
+            self.file_handle.close()
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Close the JSON structure and file."""
         if self.file_handle:
-            self.file_handle.write("\n  ]\n")
-            self.file_handle.write("}\n")
-            self.file_handle.close()
+            # Check if we already closed with summary
+            if not self.file_handle.closed:
+                self.file_handle.write("\n  ]\n")
+                self.file_handle.write("}\n")
+                self.file_handle.close()
 
 
 def get_output_path(model: str, task: str, stage: str, condition: str = "baseline") -> Path:
@@ -186,3 +255,28 @@ def get_output_path(model: str, task: str, stage: str, condition: str = "baselin
 def get_timestamp() -> str:
     """Get current timestamp in ISO 8601 format."""
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def make_path_relative(path: str) -> str:
+    """
+    Convert absolute path to relative path from repo root.
+
+    Args:
+        path: Absolute or relative path
+
+    Returns:
+        Path relative to repository root
+    """
+    path_obj = Path(path)
+    repo_root = get_repo_root()
+
+    try:
+        # If path is absolute and within repo, make it relative
+        if path_obj.is_absolute():
+            return str(path_obj.relative_to(repo_root))
+        else:
+            # Already relative
+            return str(path_obj)
+    except ValueError:
+        # Path is not relative to repo root, return as-is
+        return str(path_obj)
