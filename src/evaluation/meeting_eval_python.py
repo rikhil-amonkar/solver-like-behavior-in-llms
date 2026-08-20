@@ -1,4 +1,8 @@
-"""Meeting planning constraint evaluation."""
+"""
+Meeting planning constraint evaluation (Python task).
+
+Validates Python itinerary output format against meeting planning constraints.
+"""
 
 from typing import Tuple
 

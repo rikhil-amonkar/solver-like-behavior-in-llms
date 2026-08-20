@@ -19,8 +19,12 @@ kernels>=0.16.0,<0.17.0    # MXFP4 quantization for GPT-OSS
 numpy>=2.5.2
 pandas>=3.0.5
 
-# Constraint Solving (legacy, may not be used in new pipeline)
-z3-solver>=5.1.0
+# Constraint Solving & Planning
+z3-solver>=4.13.0          # Z3 SMT solver for ZebraLogic tasks
+# PDDL planners for BlocksWorld tasks (choose one):
+# - Install Fast Downward separately: https://www.fast-downward.org/
+# - Or use pyperplan: pip install pyperplan
+# pyperplan>=2.1              # Pure Python PDDL planner (optional, slower)
 
 # Vertex AI (optional: for batch judge mode)
 google-cloud-storage>=3.13.1

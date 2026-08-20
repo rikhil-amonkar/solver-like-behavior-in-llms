@@ -69,7 +69,7 @@ def get_task_prompts(task: str) -> tuple[str, str]:
     Get prompt file paths for a task.
 
     Args:
-        task: Task name (calendar, meeting)
+        task: Task name (calendar, meeting, zebralogic, blocksworld)
 
     Returns:
         Tuple of (universal_prefix_path, output_format_path)
@@ -77,15 +77,18 @@ def get_task_prompts(task: str) -> tuple[str, str]:
     Raises:
         ValueError: If task is unknown
     """
-    task_to_output_format = {
-        "calendar": "prompts/calendar_output_format.txt",
-        "meeting": "prompts/meeting_output_format.txt",
+    # Map tasks to their language and output format
+    task_config = {
+        "calendar": ("python", "prompts/calendar_output_format.txt"),
+        "meeting": ("python", "prompts/meeting_output_format.txt"),
+        "zebralogic": ("z3", "prompts/zebralogic_output_format.txt"),
+        "blocksworld": ("pddl", "prompts/blocksworld_output_format.txt"),
     }
 
-    if task not in task_to_output_format:
-        raise ValueError(f"Unknown task: {task}. Choose from: {list(task_to_output_format.keys())}")
+    if task not in task_config:
+        raise ValueError(f"Unknown task: {task}. Choose from: {list(task_config.keys())}")
 
-    universal_prefix_path = "prompts/universal_csp_prefix.txt"
-    output_format_path = task_to_output_format[task]
+    language, output_format_path = task_config[task]
+    universal_prefix_path = f"prompts/universal_csp_prefix_{language}.txt"
 
     return universal_prefix_path, output_format_path

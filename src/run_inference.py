@@ -26,7 +26,7 @@ from general.prompt_utils import (
 from general.parsing_utils import split_reasoning_and_code, extract_code_block
 from general.cli import ProgressTracker
 from inference.model_caller import call_model
-from inference.code_executor import run_code
+from inference.code_executor import execute_code_by_language, get_language_from_task
 
 
 def run_inference_pipeline(
@@ -41,7 +41,7 @@ def run_inference_pipeline(
     Run inference pipeline for a task and model.
 
     Args:
-        task: Task name (calendar, meeting)
+        task: Task name (calendar, meeting, zebralogic, blocksworld)
         model: Model name (deepseek, qwen, gpt)
         num_examples: Number of examples to process (None = all)
         max_tokens: Max tokens for generation (None = use model default)
@@ -140,9 +140,14 @@ def run_inference_pipeline(
                         reasoning_trace
                     )
 
-                    # Execute code
+                    # Execute code (route by language)
                     if extracted_code:
-                        code_result = run_code(extracted_code, timeout_sec=code_timeout)
+                        language = get_language_from_task(task)
+                        code_result = execute_code_by_language(
+                            extracted_code,
+                            language=language,
+                            timeout_sec=code_timeout
+                        )
                     else:
                         code_result = {
                             "ran": False,
@@ -228,13 +233,15 @@ def main():
 Examples:
   python src/run_inference.py --task calendar --model deepseek --n 10
   python src/run_inference.py --task meeting --model qwen --max-tokens 100000
+  python src/run_inference.py --task zebralogic --model deepseek --n 10
+  python src/run_inference.py --task blocksworld --model gpt --n 5
         """
     )
 
     parser.add_argument(
         "--task",
         required=True,
-        choices=["calendar", "meeting"],
+        choices=["calendar", "meeting", "zebralogic", "blocksworld"],
         help="Task to run"
     )
     parser.add_argument(

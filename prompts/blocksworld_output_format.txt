@@ -1,0 +1,85 @@
+This problem is a Blocksworld planning task: rearrange blocks from an initial configuration to a goal configuration using valid actions.
+
+Write PDDL code that defines both the domain (actions and predicates) and the problem (objects, initial state, goal state). Your PDDL should incorporate any additional constraints mentioned in the problem.
+
+PDDL Structure:
+Your code must contain two sections:
+1. Domain definition: predicates, actions (pickup, putdown, stack, unstack)
+2. Problem definition: objects (blocks), initial state, goal state
+
+Requirements:
+- Use standard PDDL syntax (Lisp-like s-expressions)
+- Include `:requirements :strips` at minimum (add others if needed for constraints)
+- Define all four basic Blocksworld actions unless constraints require modifications
+- Encode additional constraints by modifying predicates, preconditions, or effects
+- Use comments (starting with `;`) to mark constraint-related modifications
+
+Output format:
+Your PDDL code should be structured as follows:
+
+```
+(define (domain blocksworld)
+  ;; CONSTRAINT: [description if applicable]
+  (:requirements :strips)
+  (:predicates
+    (on ?x ?y)
+    (on-table ?x)
+    (clear ?x)
+    (holding ?x)
+    (arm-empty)
+    ;; Add constraint-specific predicates here if needed
+  )
+
+  (:action pickup
+    :parameters (?b)
+    :precondition (and (on-table ?b) (clear ?b) (arm-empty))
+    :effect (and (holding ?b) (not (on-table ?b)) (not (clear ?b)) (not (arm-empty)))
+  )
+
+  (:action putdown
+    :parameters (?b)
+    :precondition (holding ?b)
+    :effect (and (on-table ?b) (clear ?b) (arm-empty) (not (holding ?b)))
+  )
+
+  (:action stack
+    :parameters (?b ?c)
+    :precondition (and (holding ?b) (clear ?c))
+    :effect (and (on ?b ?c) (clear ?b) (arm-empty) (not (holding ?b)) (not (clear ?c)))
+  )
+
+  (:action unstack
+    :parameters (?b ?c)
+    :precondition (and (on ?b ?c) (clear ?b) (arm-empty))
+    :effect (and (holding ?b) (clear ?c) (not (on ?b ?c)) (not (clear ?b)) (not (arm-empty)))
+  )
+)
+
+(define (problem blocksworld-problemX)
+  ;; CONSTRAINT: [description if applicable]
+  (:domain blocksworld)
+  (:objects block1 block2 ... blockN)
+  (:init
+    ;; Initial configuration
+    (on-table block1)
+    (on block2 block1)
+    (clear block2)
+    (arm-empty)
+    ;; Add constraint-specific initial predicates here
+  )
+  (:goal (and
+    ;; Goal configuration
+    (on-table block1)
+    (on block2 block1)
+  ))
+)
+```
+
+Rules:
+- Mark constraint modifications with comments (e.g., `;; BEGIN ADD` and `;; END ADD`)
+- Ensure all blocks mentioned in the problem are included in `:objects`
+- Represent the complete initial state accurately
+- Specify the complete goal state
+- If constraints require domain modifications, clearly comment what was changed
+
+SOLUTION CODE:

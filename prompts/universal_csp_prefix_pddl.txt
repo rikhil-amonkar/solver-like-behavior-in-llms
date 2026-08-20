@@ -1,0 +1,5 @@
+You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write PDDL code (Planning Domain Definition Language) that defines the planning domain and problem. PDDL is NOT Python - it is a specialized planning language with Lisp-like syntax. Enclose your complete PDDL solution in a single code block, with both the domain definition and problem definition clearly separated.
+
+CRITICAL: Your code block must contain valid PDDL syntax only (with comments allowed using semicolons `;`). All reasoning, explanations, or commentary must appear OUTSIDE the code block. The PDDL must be syntactically correct and compatible with standard PDDL planners.
+
+{PROBLEM}

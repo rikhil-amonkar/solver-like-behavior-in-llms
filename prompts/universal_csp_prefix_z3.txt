@@ -1,0 +1,5 @@
+You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write a Z3-Python program that solves it directly rather than solving it yourself in prose. You may use the z3-solver library (imported as `from z3 import *`), enclose the complete solution in a single ```python code block, and have the program print only the final answer in the exact format specified below.
+
+CRITICAL: Your Python code block must be a complete, executable script with no prose, explanations, or natural language mixed into the code. Any text inside the ```python block must be valid Python syntax (code or comments only). All reasoning, explanations, or commentary must appear OUTSIDE the code block. The code must run without syntax errors when executed directly.
+
+{PROBLEM}

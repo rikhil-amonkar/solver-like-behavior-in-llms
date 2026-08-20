@@ -10,9 +10,10 @@ from typing import List, Tuple
 
 
 # Conservative token limit per segment to avoid output overflow
-# Judge output is ~1.3-1.5x input size due to JSON formatting and text duplication
-# Max output: 65536, so we use ~40k per segment to leave safety margin
-MAX_REASONING_TOKENS_PER_SEGMENT = 40000
+# Judge output can be 2-3x input size for complex traces with many chunks
+# Max output: 65536 tokens. Empirically, 22k input → >65k output on detailed traces
+# Using 15k per segment to ensure judge output stays under 65k limit
+MAX_REASONING_TOKENS_PER_SEGMENT = 15000
 SAFETY_MARGIN = 0.8  # Use 80% of limit for safety
 
 
@@ -50,7 +51,7 @@ def split_reasoning_by_tokens(
 
     Args:
         reasoning_text: Full reasoning trace to split
-        max_tokens_per_segment: Max tokens per segment (default 40k)
+        max_tokens_per_segment: Max tokens per segment (default 15k)
         encoding: Tokenizer encoding to use
 
     Returns:

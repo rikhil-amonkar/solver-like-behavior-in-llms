@@ -13,8 +13,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from general.io_utils import load_json_file, load_constraints_json, load_problems_with_solutions, get_timestamp, IncrementalJSONWriter, make_path_relative
 from general.cli import ProgressTracker
-from evaluation.calendar_eval import evaluate_calendar_solution
-from evaluation.meeting_eval import evaluate_meeting_solution
+from evaluation.calendar_eval_python import evaluate_calendar_solution
+from evaluation.meeting_eval_python import evaluate_meeting_solution
+from evaluation.zebralogic_eval import evaluate_zebralogic_solution
+from evaluation.blocksworld_eval import evaluate_blocksworld_solution
 
 
 def is_no_solution_indicator(stdout: str) -> bool:
@@ -206,10 +208,16 @@ def run_evaluation_pipeline(inference_json_path: str):
                             }
                     else:
                         # Parsed successfully, run task-specific validator
+                        # For z3/pddl tasks, pass execution result instead of parsed output
+                        if task in ["zebralogic", "blocksworld"]:
+                            solution_data = example["code_execution"]  # Pass full execution result
+                        else:
+                            solution_data = parsed_output  # Pass parsed output
+
                         is_correct, error_detail = evaluate_solution(
                             task,
                             example_constraints,
-                            parsed_output
+                            solution_data
                         )
 
                         classification = "correct" if is_correct else "constraint_violation"
@@ -314,6 +322,13 @@ def evaluate_solution(task: str, constraints: dict, solution) -> tuple:
         return evaluate_calendar_solution(constraints, solution)
     elif task == "meeting":
         return evaluate_meeting_solution(constraints, solution)
+    elif task == "zebralogic":
+        # For zebralogic, extract stdout from solution (execution result)
+        stdout = solution.get("stdout", "") if isinstance(solution, dict) else str(solution)
+        return evaluate_zebralogic_solution(constraints, stdout)
+    elif task == "blocksworld":
+        # For blocksworld, pass full execution result
+        return evaluate_blocksworld_solution(constraints, solution)
     else:
         return False, {"error": f"unknown task: {task}"}
 

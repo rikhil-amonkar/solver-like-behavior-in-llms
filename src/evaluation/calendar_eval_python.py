@@ -1,4 +1,9 @@
-"""Calendar scheduling constraint evaluation."""
+"""
+Calendar scheduling constraint evaluation (Python task).
+
+Validates Python list output format: ['Monday', '13:30', '14:00']
+against calendar scheduling constraints.
+"""
 
 from datetime import datetime
 from typing import Tuple, Optional

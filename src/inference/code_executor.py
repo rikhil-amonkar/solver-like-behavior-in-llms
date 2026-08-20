@@ -1,95 +1,107 @@
-"""Execute extracted Python code in isolated subprocess."""
+"""
+Code execution router for multi-language support.
 
-import subprocess
-import tempfile
-import sys
-from pathlib import Path
+This module provides the main routing logic to dispatch code execution
+to language-specific executors based on task type.
+
+Language-Specific Executors:
+- Python standard library: code_executor_python.py
+- Z3-Python: code_executor_z3.py
+- PDDL: code_executor_pddl.py
+
+Usage:
+    from inference.code_executor import execute_code_by_language
+
+    result = execute_code_by_language(code, language="z3")
+"""
+
 from typing import Optional
 
-# Add src to path for imports
-repo_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(repo_root / "src"))
 
-from general.parsing_utils import parse_code_output
-
-
-def run_code(code: str, timeout_sec: float = 30.0) -> dict:
+def get_language_from_task(task: str) -> str:
     """
-    Execute code in isolated subprocess and return results.
+    Determine programming language/solver type from task name.
 
     Args:
-        code: Python code to execute
-        timeout_sec: Timeout in seconds
+        task: Task name (calendar, meeting, zebralogic, blocksworld)
 
     Returns:
-        Dict with keys:
-            - ran: bool (whether execution was attempted)
-            - exit_code: int or None
-            - stdout: str
-            - stderr: str
-            - timed_out: bool
-            - timeout_sec: float
-            - error: Optional[str]
-            - parsed_output: Any (parsed from stdout)
+        Language identifier ('python', 'z3', 'pddl')
     """
-    if not code or not code.strip():
+    task_to_language = {
+        "calendar": "python",
+        "meeting": "python",
+        "trip": "python",
+        "zebralogic": "z3",
+        "blocksworld": "pddl",
+    }
+
+    return task_to_language.get(task, "python")  # Default to python
+
+
+def execute_code_by_language(code: str, language: str, timeout_sec: float = 30.0, **kwargs) -> dict:
+    """
+    Route code execution to appropriate language-specific executor.
+
+    This is the main entry point for code execution in the pipeline.
+    It automatically routes to the correct executor based on language.
+
+    Args:
+        code: Code to execute
+        language: Language type ('python', 'z3', 'pddl')
+        timeout_sec: Execution timeout
+        **kwargs: Additional language-specific parameters
+                 For PDDL: planner_path
+
+    Returns:
+        Execution result dict (format varies by language)
+
+    Examples:
+        >>> # Python code
+        >>> result = execute_code_by_language("print('hello')", "python")
+
+        >>> # Z3 code
+        >>> z3_code = "from z3 import *\\nprint(Int('x'))"
+        >>> result = execute_code_by_language(z3_code, "z3")
+
+        >>> # PDDL code
+        >>> result = execute_code_by_language(pddl_code, "pddl")
+    """
+    if language == "python":
+        from .code_executor_python import run_code
+        return run_code(code, timeout_sec=timeout_sec)
+
+    elif language == "z3":
+        from .code_executor_z3 import run_z3_code
+        return run_z3_code(code, timeout_sec=timeout_sec)
+
+    elif language == "pddl":
+        from .code_executor_pddl import run_pddl_code
+        planner_path = kwargs.get("planner_path")
+        return run_pddl_code(code, timeout_sec=timeout_sec, planner_path=planner_path)
+
+    else:
         return {
             "ran": False,
-            "exit_code": None,
+            "error": f"unknown language: {language}",
             "stdout": "",
             "stderr": "",
+            "exit_code": None,
             "timed_out": False,
             "timeout_sec": timeout_sec,
-            "error": "no code to execute",
             "parsed_output": None,
         }
 
-    # Create temporary directory for code execution
-    with tempfile.TemporaryDirectory(prefix="code_exec_") as tmpdir:
-        script_path = Path(tmpdir) / "solution.py"
-        script_path.write_text(code, encoding="utf-8")
 
-        try:
-            # Run code in subprocess
-            result = subprocess.run(
-                [sys.executable, str(script_path)],
-                cwd=tmpdir,
-                capture_output=True,
-                text=True,
-                timeout=timeout_sec,
-                check=False,  # Don't raise on non-zero exit
-            )
+# Re-export for backward compatibility
+# This allows existing code to continue using: from inference.code_executor import run_code
+def run_code(code: str, timeout_sec: float = 30.0) -> dict:
+    """
+    Execute Python standard library code (backward compatibility wrapper).
 
-            stdout = result.stdout
-            stderr = result.stderr
-            exit_code = result.returncode
-            timed_out = False
-            error = None if exit_code == 0 else f"exit code {exit_code}"
+    Delegates to code_executor_python.run_code().
 
-        except subprocess.TimeoutExpired as e:
-            stdout = e.stdout or ""
-            stderr = e.stderr or ""
-            exit_code = None
-            timed_out = True
-            error = f"timeout after {timeout_sec}s"
-
-        except Exception as e:
-            stdout = ""
-            stderr = str(e)
-            exit_code = None
-            timed_out = False
-            error = f"execution error: {str(e)}"
-
-    # Parse output
-    parsed_output, parse_error = parse_code_output(stdout)
-
-    return {
-        "ran": True,
-        "exit_code": exit_code,
-        "stdout": stdout,
-        "stderr": stderr,
-        "timed_out": timed_out,
-        "timeout_sec": timeout_sec,
-        "error": error,
-        "parsed_output": parsed_output,
-    }
+    For new code, prefer using execute_code_by_language() instead.
+    """
+    from .code_executor_python import run_code as _run_code
+    return _run_code(code, timeout_sec=timeout_sec)
