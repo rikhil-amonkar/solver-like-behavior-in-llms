@@ -222,20 +222,78 @@ def run_chunking_pipeline(
                         raw_response = judge_result["raw_response"]
                         judge_metadata = judge_result["metadata"]
 
-                        # Parse judge response
-                        try:
-                            parsed_response = parse_judge_response(raw_response)
-                            chunks = parsed_response["chunk_analysis"]
-                        except ValueError as e:
-                            print(f"\n  ⚠ Failed to parse judge response for {example_id}: {str(e)}")
-                            # Use empty chunks
-                            chunks = []
+                        # Check if judge hit MAX_TOKENS - if so, retry with splitting
+                        finish_reason = judge_metadata.get("finish_reason")
+                        if finish_reason == "FinishReason.MAX_TOKENS":
+                            print(f"\n  ℹ {example_id}: Judge hit MAX_TOKENS, retrying with splitting...")
 
-                        # Enrich with tokens
-                        enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
+                            # Split and retry
+                            segments = split_reasoning_by_tokens(reasoning_before_code)
+                            examples_split += 1
 
-                        # Check for solver-like
-                        has_solver_like = has_solver_like_chunks(chunks)
+                            segment_responses = []
+                            segment_metadata = []
+
+                            for seg_idx, segment in enumerate(segments):
+                                # Rate limiting
+                                time_since_last_request = time.time() - last_request_time
+                                if last_request_time > 0 and time_since_last_request < min_request_interval:
+                                    sleep_time = min_request_interval - time_since_last_request
+                                    time.sleep(sleep_time)
+
+                                last_request_time = time.time()
+                                seg_result = call_judge(
+                                    reasoning_text=segment,
+                                    judge_prompt_path=judge_prompt_path,
+                                )
+
+                                segment_responses.append(seg_result["raw_response"])
+                                segment_metadata.append(seg_result["metadata"])
+
+                            # Parse and stitch segments
+                            try:
+                                enriched_chunks, token_stats, has_solver_like = parse_and_stitch_segments(
+                                    segment_responses
+                                )
+                                token_stats["original_reasoning_tokens"] = reasoning_tokens
+                                judge_metadata = {
+                                    "segments": segment_metadata,
+                                    "num_segments": len(segments),
+                                    "original_tokens": reasoning_tokens,
+                                    "retry_reason": "MAX_TOKENS",
+                                }
+                            except ValueError as e:
+                                print(f"\n  ⚠ Failed to parse segments after MAX_TOKENS retry for {example_id}: {str(e)}")
+                                enriched_chunks = []
+                                token_stats = {
+                                    "encoding": "cl100k_base",
+                                    "reasoning_total_tokens": 0,
+                                    "solver_like_total_tokens": 0,
+                                    "sound_total_tokens": 0,
+                                    "solver_like_fraction": 0.0,
+                                    "parse_error": str(e),
+                                }
+                                has_solver_like = False
+                                judge_metadata = {
+                                    "error": f"Segment parsing failed after MAX_TOKENS retry: {str(e)}",
+                                    "num_segments": len(segments),
+                                }
+                        else:
+                            # Normal path - no MAX_TOKENS issue
+                            # Parse judge response
+                            try:
+                                parsed_response = parse_judge_response(raw_response)
+                                chunks = parsed_response["chunk_analysis"]
+                            except ValueError as e:
+                                print(f"\n  ⚠ Failed to parse judge response for {example_id}: {str(e)}")
+                                # Use empty chunks
+                                chunks = []
+
+                            # Enrich with tokens
+                            enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
+
+                            # Check for solver-like
+                            has_solver_like = has_solver_like_chunks(chunks)
 
                     # Build result (use enriched chunks as the main chunk_analysis)
                     result = {

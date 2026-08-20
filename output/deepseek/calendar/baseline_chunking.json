@@ -6,7 +6,7 @@
     "inference_json": "output/deepseek/calendar/baseline_inference.json",
     "judge_model": "publishers/google/models/gemini-2.5-pro",
     "judge_prompt": "prompts/llm_as_judge_for_chunking.txt",
-    "timestamp": "2026-08-20T04:29:52Z",
+    "timestamp": "2026-08-20T05:46:33Z",
     "num_examples": 100,
     "max_judge_tokens": 65536
   },

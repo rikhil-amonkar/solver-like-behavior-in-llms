@@ -10,11 +10,15 @@ from datetime import datetime
 TASK_TO_PROBLEMS_FILE = {
     "calendar": "calendar_scheduling_100.json",
     "meeting": "meeting_planning_100.json",
+    "zebralogic": "zebralogic_grid_100.json",
+    "blocksworld": "blocksworld_100.json",
 }
 
 TASK_TO_CONSTRAINTS_FILE = {
     "calendar": "calendar_scheduling_constraints.json",
     "meeting": "meeting_planning_constraints.json",
+    # zebralogic and blocksworld constraints are embedded in problem statements
+    # No separate constraints files needed
 }
 
 
@@ -73,12 +77,12 @@ def load_problems_with_solutions(task: str) -> dict:
     return solutions
 
 
-def parse_golden_solution(raw_solution: str, task: str):
+def parse_golden_solution(raw_solution, task: str):
     """
-    Parse raw golden solution string into expected format.
+    Parse raw golden solution into expected format.
 
     Args:
-        raw_solution: Raw solution string from problems JSON
+        raw_solution: Raw solution from problems JSON (string or list depending on task)
         task: Task name to determine parsing logic
 
     Returns:
@@ -89,15 +93,35 @@ def parse_golden_solution(raw_solution: str, task: str):
     if task == "calendar":
         # Format: "Here is the proposed time: Monday, 13:30 - 14:30"
         # Extract: ["Monday", "13:30", "14:30"]
-        match = re.search(r'(\w+),\s*(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})', raw_solution)
-        if match:
-            day, start, end = match.groups()
-            return [day, start, end]
+        if isinstance(raw_solution, str):
+            match = re.search(r'(\w+),\s*(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})', raw_solution)
+            if match:
+                day, start, end = match.groups()
+                return [day, start, end]
+        return None
 
     elif task == "meeting":
-        # Meeting solutions are lists of itinerary steps
-        # Format varies - may need more sophisticated parsing
-        # For now, return None (can be enhanced later)
+        # Meeting golden solutions are already lists of itinerary steps
+        # Format: ["You start at X at Y", "You travel to...", ...]
+        if isinstance(raw_solution, list):
+            # Return as-is if it's already a list
+            return raw_solution
+        return None
+
+    elif task == "zebralogic":
+        # ZebraLogic golden solutions are dicts with header and rows
+        # Format: {"header": [...], "rows": [[...], [...]]}
+        if isinstance(raw_solution, dict):
+            # Return as-is, evaluator will parse the grid structure
+            return raw_solution
+        return None
+
+    elif task == "blocksworld":
+        # BlocksWorld golden solutions are dicts with PDDL domain and problem
+        # Format: {"domain_pddl": "...", "problem_pddl": "..."}
+        if isinstance(raw_solution, dict):
+            # Return as-is, evaluator will compare PDDL structures
+            return raw_solution
         return None
 
     return None
@@ -108,19 +132,29 @@ def load_constraints_json(task: str) -> dict:
     Load constraints dataset for a given task.
 
     Args:
-        task: Task name (calendar, meeting)
+        task: Task name (calendar, meeting, zebralogic, blocksworld)
 
     Returns:
-        Dict with constraints data
+        Dict with constraints data (empty dict for tasks with embedded constraints)
 
     Raises:
         ValueError: If task is unknown
         FileNotFoundError: If constraints file not found
     """
+    # Check if task has a separate constraints file
     if task not in TASK_TO_CONSTRAINTS_FILE:
-        raise ValueError(f"Unknown task: {task}. Choose from: {list(TASK_TO_CONSTRAINTS_FILE.keys())}")
+        # For tasks like zebralogic/blocksworld, constraints are in problem statements
+        if task in TASK_TO_PROBLEMS_FILE:
+            return {}  # Return empty dict, constraints are embedded
+        else:
+            raise ValueError(f"Unknown task: {task}. Choose from: {list(TASK_TO_PROBLEMS_FILE.keys())}")
 
-    constraints_path = get_repo_root() / "data" / "constraints" / TASK_TO_CONSTRAINTS_FILE[task]
+    constraints_file = TASK_TO_CONSTRAINTS_FILE.get(task)
+    if not constraints_file:
+        # Task exists but has no separate constraints file
+        return {}
+
+    constraints_path = get_repo_root() / "data" / "constraints" / constraints_file
 
     if not constraints_path.exists():
         raise FileNotFoundError(f"Constraints file not found: {constraints_path}")
