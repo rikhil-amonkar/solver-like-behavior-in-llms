@@ -17,6 +17,59 @@ from evaluation.calendar_eval import evaluate_calendar_solution
 from evaluation.meeting_eval import evaluate_meeting_solution
 
 
+def is_no_solution_indicator(stdout: str) -> bool:
+    """
+    Check if stdout indicates "no solution found" rather than parse error.
+
+    Args:
+        stdout: Output string from code execution
+
+    Returns:
+        True if this looks like "no solution found" message
+    """
+    if not stdout:
+        return False
+
+    stdout_lower = stdout.lower().strip()
+
+    # Common "no solution" patterns
+    no_solution_patterns = [
+        "no solution",
+        "no valid solution",
+        "no meeting",
+        "no plan",
+        "not possible",
+        "impossible",
+        "cannot find",
+        "none found",
+    ]
+
+    # Check for exact matches or substrings
+    if any(pattern in stdout_lower for pattern in no_solution_patterns):
+        return True
+
+    # Check if output is just empty list/none representations (literal or string form)
+    empty_value_patterns = [
+        "[]",           # empty list
+        "{}",           # empty dict
+        "none",         # None
+        "null",         # null
+        "'[]'",         # string literal of empty list
+        "\"[]\"",       # string literal of empty list
+        "'none'",       # string literal of None
+        "\"none\"",     # string literal of None
+        "'null'",       # string literal of null
+        "\"null\"",     # string literal of null
+        "'{}'",         # string literal of empty dict
+        "\"{}\"",       # string literal of empty dict
+    ]
+
+    if stdout_lower in empty_value_patterns:
+        return True
+
+    return False
+
+
 def run_evaluation_pipeline(inference_json_path: str):
     """
     Run evaluation pipeline on inference results.
@@ -64,14 +117,36 @@ def run_evaluation_pipeline(inference_json_path: str):
         "num_examples": len(examples),
     }
 
+    # Initialize summary with all possible error categories at 0
+    all_error_categories = [
+        "code_execution_failed",
+        "execution_error",
+        "no_output",
+        "no_solution",
+        "parse_error",
+        "constraint_violation",
+        "evaluation_error",
+    ]
+
+    # Build initial summary skeleton
+    initial_summary = {
+        "constraint_based_accuracy": 0.0,
+        "constraint_correct": 0,
+        "constraint_incorrect": 0,
+        "golden_solution_accuracy": None,
+        "golden_matches": 0,
+        "golden_available": 0,
+        "error_breakdown": {cat: 0 for cat in all_error_categories},
+    }
+
     # Process examples
     correct_count = 0
     incorrect_count = 0
     golden_match_count = 0
     golden_available_count = 0
-    error_breakdown = {}
+    error_breakdown = {cat: 0 for cat in all_error_categories}
 
-    with IncrementalJSONWriter(str(output_path), metadata) as writer:
+    with IncrementalJSONWriter(str(output_path), metadata, summary=initial_summary) as writer:
         with ProgressTracker(len(examples), f"Evaluating {task}") as progress:
             for example in examples:
                 try:
@@ -90,17 +165,47 @@ def run_evaluation_pipeline(inference_json_path: str):
                     # Get golden solution from problems JSON
                     golden_solution = golden_solutions.get(example_id)
 
-                    # Classify result
-                    if not example["code_execution"]["ran"]:
+                    # Classify result with fine-grained categories
+                    exec_result = example["code_execution"]
+
+                    if not exec_result["ran"]:
                         classification = "code_execution_failed"
                         is_correct = False
                         validation = {"error": "code not executed"}
-                    elif parsed_output is None:
-                        classification = "parse_error"
+                    elif exec_result["exit_code"] != 0:
+                        # Code ran but exited with error
+                        classification = "execution_error"
                         is_correct = False
-                        validation = {"error": "failed to parse output"}
+                        validation = {
+                            "error": "execution failed",
+                            "exit_code": exec_result["exit_code"],
+                            "stderr": exec_result.get("stderr", "")[:200]  # truncate
+                        }
+                    elif parsed_output is None:
+                        # Code ran successfully but no parseable output
+                        stdout = exec_result.get("stdout", "").strip()
+
+                        # Check if this is a "no solution" indicator
+                        if is_no_solution_indicator(stdout):
+                            classification = "no_solution"
+                            is_correct = False
+                            validation = {
+                                "error": "model reported no solution",
+                                "stdout": stdout[:200]
+                            }
+                        elif not stdout:
+                            classification = "no_output"
+                            is_correct = False
+                            validation = {"error": "empty stdout"}
+                        else:
+                            classification = "parse_error"
+                            is_correct = False
+                            validation = {
+                                "error": "failed to parse output",
+                                "stdout": stdout[:200]
+                            }
                     else:
-                        # Run task-specific validator
+                        # Parsed successfully, run task-specific validator
                         is_correct, error_detail = evaluate_solution(
                             task,
                             example_constraints,
@@ -164,19 +269,19 @@ def run_evaluation_pipeline(inference_json_path: str):
         constraint_accuracy = correct_count / total if total > 0 else 0
         golden_accuracy = golden_match_count / golden_available_count if golden_available_count > 0 else None
 
-        # Build summary
-        summary = {
+        # Build final summary (with actual counts)
+        final_summary = {
             "constraint_based_accuracy": constraint_accuracy,
             "constraint_correct": correct_count,
             "constraint_incorrect": incorrect_count,
             "golden_solution_accuracy": golden_accuracy,
             "golden_matches": golden_match_count,
             "golden_available": golden_available_count,
-            "error_breakdown": error_breakdown,
+            "error_breakdown": error_breakdown,  # Already has all categories
         }
 
-        # Finalize with summary
-        writer.finalize_with_summary(summary)
+        # Close examples array (summary already at top)
+        writer.finalize_with_summary(final_summary)
 
     # Print summary
     print(f"\n✓ Evaluation complete!")

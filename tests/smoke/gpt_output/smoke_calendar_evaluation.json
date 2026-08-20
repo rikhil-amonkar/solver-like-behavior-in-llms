@@ -1,0 +1,64 @@
+{
+  "run_metadata": {
+    "task": "calendar",
+    "model": "gpt",
+    "condition": "baseline",
+    "test_type": "smoke_test",
+    "inference_json": "tests/smoke/output/smoke_calendar_inference.json",
+    "timestamp": "2026-08-19T20:45:17Z",
+    "num_examples": 3
+  },
+  "examples": [
+    {
+      "example_id": "calendar_scheduling_example_172",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "14:00",
+        "14:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "14:00",
+        "14:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_819",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_625",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Tuesday",
+        "15:30",
+        "16:00"
+      ],
+      "expected_solution": [
+        "Tuesday",
+        "15:30",
+        "16:00"
+      ],
+      "validation": {}
+    }
+  ]
+}

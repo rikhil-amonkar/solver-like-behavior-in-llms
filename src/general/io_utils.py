@@ -172,17 +172,19 @@ class IncrementalJSONWriter:
     Writes results as they're generated rather than accumulating in memory.
     """
 
-    def __init__(self, output_path: str, metadata: dict):
+    def __init__(self, output_path: str, metadata: dict, summary: Optional[dict] = None):
         """
         Initialize incremental writer.
 
         Args:
             output_path: Path to output JSON file
             metadata: Run metadata to write at start
+            summary: Optional summary to write at start (if known upfront)
         """
         self.output_path = Path(output_path)
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.metadata = metadata
+        self.summary = summary
         self.count = 0
         self.file_handle = None
 
@@ -192,6 +194,11 @@ class IncrementalJSONWriter:
         # Write opening structure
         self.file_handle.write("{\n")
         self.file_handle.write(f'  "run_metadata": {json.dumps(self.metadata, indent=2).replace(chr(10), chr(10) + "  ")},\n')
+
+        # If summary is provided upfront, write it now
+        if self.summary is not None:
+            self.file_handle.write(f'  "summary": {json.dumps(self.summary, indent=2).replace(chr(10), chr(10) + "  ")},\n')
+
         self.file_handle.write('  "examples": [\n')
         self.file_handle.flush()
         return self
@@ -214,16 +221,41 @@ class IncrementalJSONWriter:
 
     def finalize_with_summary(self, summary: dict):
         """
-        Close JSON with optional summary statistics.
+        Close JSON with summary statistics.
+
+        If summary was written at start, updates the file to replace it.
+        Otherwise, appends summary at the end.
 
         Args:
-            summary: Summary statistics to append after examples
+            summary: Final summary statistics
         """
         if self.file_handle:
-            self.file_handle.write("\n  ],\n")
-            self.file_handle.write(f'  "summary": {json.dumps(summary, indent=2).replace(chr(10), chr(10) + "  ")}\n')
+            self.file_handle.write("\n  ]\n")
             self.file_handle.write("}\n")
             self.file_handle.close()
+
+            # If we wrote initial summary at start, now update the file
+            if self.summary is not None:
+                self._update_summary_in_file(summary)
+
+    def _update_summary_in_file(self, final_summary: dict):
+        """
+        Update the summary section in the already-written file.
+
+        Args:
+            final_summary: Final summary to replace initial summary
+        """
+        # Read the entire file and parse as JSON
+        with self.output_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Update the summary
+        data["summary"] = final_summary
+
+        # Write back with proper formatting
+        with self.output_path.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.write("\n")  # Add trailing newline
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Close the JSON structure and file."""

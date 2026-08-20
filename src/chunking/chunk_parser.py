@@ -2,7 +2,7 @@
 
 import json
 import tiktoken
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
 
 def parse_judge_response(response_text: str) -> dict:
@@ -134,3 +134,57 @@ def has_solver_like_chunks(chunks: list) -> bool:
         True if any chunk has "solver-like" key
     """
     return any("solver-like" in chunk for chunk in chunks)
+
+
+def parse_and_stitch_segments(
+    segment_responses: List[str],
+    encoding: str = "cl100k_base"
+) -> Tuple[list, dict, bool]:
+    """
+    Parse multiple judge responses from segments and stitch them together.
+
+    This handles cases where a long reasoning trace was split into segments,
+    each sent to the judge separately. We parse each response and combine
+    all chunks into a unified chunk_analysis.
+
+    Args:
+        segment_responses: List of raw JSON responses from judge for each segment
+        encoding: Tokenizer encoding for token counting
+
+    Returns:
+        (enriched_chunks, token_stats, has_solver_like)
+        - enriched_chunks: Combined and enriched chunks from all segments
+        - token_stats: Aggregated token statistics
+        - has_solver_like: Whether any chunks are solver-like
+    """
+    all_chunks = []
+    parse_failures = []
+
+    # Parse each segment response
+    for i, response_text in enumerate(segment_responses):
+        try:
+            parsed = parse_judge_response(response_text)
+            segment_chunks = parsed.get("chunk_analysis", [])
+            all_chunks.extend(segment_chunks)
+        except ValueError as e:
+            parse_failures.append(f"Segment {i+1}: {str(e)}")
+            # Continue with other segments even if one fails
+            continue
+
+    # If all segments failed to parse, raise error
+    if not all_chunks and parse_failures:
+        raise ValueError(f"Failed to parse all {len(segment_responses)} segments: {'; '.join(parse_failures)}")
+
+    # Enrich combined chunks with tokens
+    enriched_chunks, token_stats = enrich_chunks_with_tokens(all_chunks, encoding)
+
+    # Add segment metadata to token stats
+    token_stats["num_segments"] = len(segment_responses)
+    token_stats["was_split"] = len(segment_responses) > 1
+    if parse_failures:
+        token_stats["parse_failures"] = len(parse_failures)
+
+    # Check for solver-like
+    has_solver_like = has_solver_like_chunks(all_chunks)
+
+    return enriched_chunks, token_stats, has_solver_like

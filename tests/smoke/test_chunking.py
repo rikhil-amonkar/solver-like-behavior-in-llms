@@ -21,6 +21,7 @@ from chunking.chunk_parser import (
     enrich_chunks_with_tokens,
     has_solver_like_chunks,
 )
+import time
 
 
 def run_smoke_test_chunking():
@@ -83,6 +84,10 @@ def run_smoke_test_chunking():
         examples_sound_only = 0
         total_chunks = 0
 
+        # Rate limiting: ~2 seconds between requests
+        last_request_time = 0
+        min_request_interval = 2.0  # seconds
+
         with IncrementalJSONWriter(str(output_path), metadata) as writer:
             with ProgressTracker(len(examples), f"Chunking {task}") as progress:
                 for example in examples:
@@ -95,8 +100,7 @@ def run_smoke_test_chunking():
                             result = {
                                 "example_id": example_id,
                                 "reasoning_before_code": reasoning_before_code,
-                                "judge_response": {"chunk_analysis": []},
-                                "enriched_chunk_analysis": [],
+                                "chunk_analysis": [],
                                 "token_statistics": {
                                     "encoding": "cl100k_base",
                                     "reasoning_total_tokens": 0,
@@ -112,7 +116,14 @@ def run_smoke_test_chunking():
                             progress.update(1)
                             continue
 
+                        # Rate limiting: sleep if needed
+                        time_since_last_request = time.time() - last_request_time
+                        if last_request_time > 0 and time_since_last_request < min_request_interval:
+                            sleep_time = min_request_interval - time_since_last_request
+                            time.sleep(sleep_time)
+
                         # Call judge
+                        last_request_time = time.time()
                         judge_result = call_judge(
                             reasoning_text=reasoning_before_code,
                             judge_prompt_path=judge_prompt_path,
@@ -134,12 +145,11 @@ def run_smoke_test_chunking():
                         # Check for solver-like
                         has_solver_like = has_solver_like_chunks(chunks)
 
-                        # Build result
+                        # Build result (only enriched chunks)
                         result = {
                             "example_id": example_id,
                             "reasoning_before_code": reasoning_before_code,
-                            "judge_response": {"chunk_analysis": chunks},
-                            "enriched_chunk_analysis": enriched_chunks,
+                            "chunk_analysis": enriched_chunks,
                             "token_statistics": token_stats,
                             "has_solver_like": has_solver_like,
                             "judge_metadata": judge_metadata,
@@ -155,13 +165,18 @@ def run_smoke_test_chunking():
                         total_chunks += len(chunks)
 
                     except Exception as e:
+                        # Print detailed error to terminal
+                        import traceback
+                        print(f"\n❌ Error chunking {example.get('example_id', '?')}:")
+                        print(f"   {type(e).__name__}: {str(e)}")
+                        traceback.print_exc()
+
                         examples_sound_only += 1
 
                         result = {
                             "example_id": example.get("example_id", "unknown"),
                             "reasoning_before_code": example.get("reasoning_before_code", ""),
-                            "judge_response": {"chunk_analysis": []},
-                            "enriched_chunk_analysis": [],
+                            "chunk_analysis": [],
                             "token_statistics": {
                                 "encoding": "cl100k_base",
                                 "reasoning_total_tokens": 0,
@@ -170,7 +185,10 @@ def run_smoke_test_chunking():
                                 "solver_like_fraction": 0.0,
                             },
                             "has_solver_like": False,
-                            "judge_metadata": {"error": str(e)},
+                            "judge_metadata": {
+                                "error": str(e),
+                                "error_type": type(e).__name__
+                            },
                         }
                         writer.write_example(result)
 

@@ -16,11 +16,19 @@ def _load_gpt_model():
     if _gpt_model is None:
         model_id = "openai/gpt-oss-120b"
         print(f"Loading GPT-OSS model: {model_id}...", flush=True)
-        _gpt_tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+        # Get HF token from environment
+        hf_token = os.getenv("HF_TOKEN")
+
+        _gpt_tokenizer = AutoTokenizer.from_pretrained(
+            model_id,
+            token=hf_token
+        )
         _gpt_model = AutoModelForCausalLM.from_pretrained(
             model_id,
             torch_dtype="auto",
-            device_map="auto"
+            device_map="auto",
+            token=hf_token
         )
         _gpt_model.eval()
         print("GPT-OSS model loaded.", flush=True)

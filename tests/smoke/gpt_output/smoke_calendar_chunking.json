@@ -1,0 +1,165 @@
+{
+  "run_metadata": {
+    "task": "calendar",
+    "model": "gpt",
+    "condition": "baseline",
+    "test_type": "smoke_test",
+    "inference_json": "tests/smoke/output/smoke_calendar_inference.json",
+    "judge_model": "publishers/google/models/gemini-2.5-pro",
+    "judge_prompt": "/local-ssd/rma336/solver-like-behavior-in-llms/prompts/llm_as_judge_for_chunking.txt",
+    "timestamp": "2026-08-19T21:02:46Z",
+    "num_examples": 3,
+    "max_judge_tokens": 65536
+  },
+  "examples": [
+    {
+      "example_id": "calendar_scheduling_example_172",
+      "reasoning_before_code": "analysisWe need to parse the problem statement: It describes a task similar to examples, but we need to produce code that reads input? The problem description: \"You are given a constraint satisfaction problem (CSP) expressed in natural language... Formalize the variables and constraints, then write a Python program that solves it directly rather than solving it yourself in prose. ... Print only a Python list of three strings \u2014 day, start time, end time.\" The specific instance is the example given? Or we need to solve the given task in the prompt: schedule meeting for Patrick, Kayla, Carl, Christian on Monday between 9:00-17:00 half hour.\n\nThus our code should compute a meeting time satisfying constraints. Need to output a list like ['Monday', 'HH:MM', 'HH:MM'].\n\nWe must ensure the code is self-contained and prints only that list. No extra output.\n\nApproach: Represent busy intervals, compute free intervals for each, intersect, find slot >= 30 minutes.\n\nTimes in minutes from 0. Work hours 9:00 (540) to 17:00 (1020). Meeting duration 30 min.\n\nCollect busy intervals per person, union, invert within work hours, compute intersection of all free intervals, find earliest slot.\n\nImplement.\n\nWe need to parse time strings manually defined in code.\n\nLet's implement.\n\nEdge: intervals possibly overlapping. Use merge.\n\nProceed.\n\nWill output earliest possible. Let's compute manually maybe: Let's do quick mental: Busy intervals union for each:\n\nPatrick busy: 9-9:30, 10-10:30, 13:30-14:00, 16-16:30.\nSo free: 9:30-10, 10:30-13:30,14:00-16,16:30-17.\n\nKayla busy:12:30-13:30,15-15:30,16-16:30. Free:9-12:30,13:30-15,15:30-16,16:30-17.\n\nCarl busy:10:30-11,12-12:30,13-13:30,14:30-17. Free:9-10:30,11-12,12:30-13,13:30-14:30.\n\nChristian busy:9-12:30,13-14,14:30-17. Free:12:30-13,14-14:30.\n\nNow intersect all free sets.\n\nFind common intervals among all four.\n\nLet's list intervals:\n\nPatrick free intervals:\nA1 9:30-10\nA2 10:30-13:30\nA3 14:00-16\nA4 16:30-17\n\nKayla free:\nB1 9-12:30\nB2 13:30-15\nB3 15:30-16\nB4 16:30-17\n\nCarl free:\nC1 9-10:30\nC2 11-12\nC3 12:30-13\nC4 13:30-14:30\n\nChristian free:\nD1 12:30-13\nD2 14-14:30\n\nNow intersect.\n\nConsider D2 14-14:30: check other participants.\n\nPatrick free includes 14-16 (A3). Good.\n\nKayla free includes? Kayla has B2 13:30-15 which includes 14-14:30. Good.\n\nCarl free includes C4 13:30-14:30 includes 14-14:30. Good.\n\nThus 14:00-14:30 is common free, length 30 minutes. So meeting can be 14:00-14:30.\n\nThus answer list: ['Monday','14:00','14:30'].\n\nOur code will compute that.\n\nImplement merging intervals, invert.\n\nPrint list.\n\nMake sure prints exactly representation. Use print(result). Should output with quotes.\n\nLet's code.assistantfinal",
+      "judge_response": {
+        "chunk_analysis": [
+          {
+            "sound": "analysisWe need to parse the problem statement: It describes a task similar to examples, but we need to produce code that reads input? The problem description: \"You are given a constraint satisfaction problem (CSP) expressed in natural language... Formalize the variables and constraints, then write a Python program that solves it directly rather than solving it yourself in prose. ... Print only a Python list of three strings \u2014 day, start time, end time.\" The specific instance is the example given? Or we need to solve the given task in the prompt: schedule meeting for Patrick, Kayla, Carl, Christian on Monday between 9:00-17:00 half hour.\n\nThus our code should compute a meeting time satisfying constraints. Need to output a list like ['Monday', 'HH:MM', 'HH:MM'].\n\nWe must ensure the code is self-contained and prints only that list. No extra output.\n\nApproach: Represent busy intervals, compute free intervals for each, intersect, find slot >= 30 minutes."
+          },
+          {
+            "solver-like": "\n\nTimes in minutes from 0. Work hours 9:00 (540) to 17:00 (1020). Meeting duration 30 min."
+          },
+          {
+            "sound": "\n\nCollect busy intervals per person, union, invert within work hours, compute intersection of all free intervals, find earliest slot.\n\nImplement.\n\nWe need to parse time strings manually defined in code.\n\nLet's implement.\n\nEdge: intervals possibly overlapping. Use merge.\n\nProceed."
+          },
+          {
+            "solver-like": "\n\nWill output earliest possible. Let's compute manually maybe: Let's do quick mental: Busy intervals union for each:\n\nPatrick busy: 9-9:30, 10-10:30, 13:30-14:00, 16-16:30.\nSo free: 9:30-10, 10:30-13:30,14:00-16,16:30-17.\n\nKayla busy:12:30-13:30,15-15:30,16-16:30. Free:9-12:30,13:30-15,15:30-16,16:30-17.\n\nCarl busy:10:30-11,12-12:30,13-13:30,14:30-17. Free:9-10:30,11-12,12:30-13,13:30-14:30.\n\nChristian busy:9-12:30,13-14,14:30-17. Free:12:30-13,14-14:30.\n\nNow intersect all free sets.\n\nFind common intervals among all four.\n\nLet's list intervals:\n\nPatrick free intervals:\nA1 9:30-10\nA2 10:30-13:30\nA3 14:00-16\nA4 16:30-17\n\nKayla free:\nB1 9-12:30\nB2 13:30-15\nB3 15:30-16\nB4 16:30-17\n\nCarl free:\nC1 9-10:30\nC2 11-12\nC3 12:30-13\nC4 13:30-14:30\n\nChristian free:\nD1 12:30-13\nD2 14-14:30\n\nNow intersect.\n\nConsider D2 14-14:30: check other participants.\n\nPatrick free includes 14-16 (A3). Good.\n\nKayla free includes? Kayla has B2 13:30-15 which includes 14-14:30. Good.\n\nCarl free includes C4 13:30-14:30 includes 14-14:30. Good.\n\nThus 14:00-14:30 is common free, length 30 minutes. So meeting can be 14:00-14:30.\n\nThus answer list: ['Monday','14:00','14:30']."
+          },
+          {
+            "sound": "\n\nOur code will compute that.\n\nImplement merging intervals, invert.\n\nPrint list.\n\nMake sure prints exactly representation. Use print(result). Should output with quotes.\n\nLet's code."
+          }
+        ]
+      },
+      "enriched_chunk_analysis": [
+        {
+          "sound": "analysisWe need to parse the problem statement: It describes a task similar to examples, but we need to produce code that reads input? The problem description: \"You are given a constraint satisfaction problem (CSP) expressed in natural language... Formalize the variables and constraints, then write a Python program that solves it directly rather than solving it yourself in prose. ... Print only a Python list of three strings \u2014 day, start time, end time.\" The specific instance is the example given? Or we need to solve the given task in the prompt: schedule meeting for Patrick, Kayla, Carl, Christian on Monday between 9:00-17:00 half hour.\n\nThus our code should compute a meeting time satisfying constraints. Need to output a list like ['Monday', 'HH:MM', 'HH:MM'].\n\nWe must ensure the code is self-contained and prints only that list. No extra output.\n\nApproach: Represent busy intervals, compute free intervals for each, intersect, find slot >= 30 minutes.",
+          "tokens": 206
+        },
+        {
+          "solver-like": "\n\nTimes in minutes from 0. Work hours 9:00 (540) to 17:00 (1020). Meeting duration 30 min.",
+          "tokens": 32
+        },
+        {
+          "sound": "\n\nCollect busy intervals per person, union, invert within work hours, compute intersection of all free intervals, find earliest slot.\n\nImplement.\n\nWe need to parse time strings manually defined in code.\n\nLet's implement.\n\nEdge: intervals possibly overlapping. Use merge.\n\nProceed.",
+          "tokens": 53
+        },
+        {
+          "solver-like": "\n\nWill output earliest possible. Let's compute manually maybe: Let's do quick mental: Busy intervals union for each:\n\nPatrick busy: 9-9:30, 10-10:30, 13:30-14:00, 16-16:30.\nSo free: 9:30-10, 10:30-13:30,14:00-16,16:30-17.\n\nKayla busy:12:30-13:30,15-15:30,16-16:30. Free:9-12:30,13:30-15,15:30-16,16:30-17.\n\nCarl busy:10:30-11,12-12:30,13-13:30,14:30-17. Free:9-10:30,11-12,12:30-13,13:30-14:30.\n\nChristian busy:9-12:30,13-14,14:30-17. Free:12:30-13,14-14:30.\n\nNow intersect all free sets.\n\nFind common intervals among all four.\n\nLet's list intervals:\n\nPatrick free intervals:\nA1 9:30-10\nA2 10:30-13:30\nA3 14:00-16\nA4 16:30-17\n\nKayla free:\nB1 9-12:30\nB2 13:30-15\nB3 15:30-16\nB4 16:30-17\n\nCarl free:\nC1 9-10:30\nC2 11-12\nC3 12:30-13\nC4 13:30-14:30\n\nChristian free:\nD1 12:30-13\nD2 14-14:30\n\nNow intersect.\n\nConsider D2 14-14:30: check other participants.\n\nPatrick free includes 14-16 (A3). Good.\n\nKayla free includes? Kayla has B2 13:30-15 which includes 14-14:30. Good.\n\nCarl free includes C4 13:30-14:30 includes 14-14:30. Good.\n\nThus 14:00-14:30 is common free, length 30 minutes. So meeting can be 14:00-14:30.\n\nThus answer list: ['Monday','14:00','14:30'].",
+          "tokens": 510
+        },
+        {
+          "sound": "\n\nOur code will compute that.\n\nImplement merging intervals, invert.\n\nPrint list.\n\nMake sure prints exactly representation. Use print(result). Should output with quotes.\n\nLet's code.",
+          "tokens": 35
+        }
+      ],
+      "token_statistics": {
+        "encoding": "cl100k_base",
+        "reasoning_total_tokens": 836,
+        "solver_like_total_tokens": 542,
+        "sound_total_tokens": 294,
+        "solver_like_fraction": 0.6483253588516746
+      },
+      "has_solver_like": true,
+      "judge_metadata": {
+        "model": "publishers/google/models/gemini-2.5-pro",
+        "temperature": 0.0,
+        "max_output_tokens": 65536,
+        "finish_reason": "FinishReason.STOP"
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_819",
+      "reasoning_before_code": "analysisWe need to parse the problem description: It gave an example task. But the actual problem we need to solve is? The prompt describes format, then says \"SOLUTION CODE:\" and expects us to output code that solves the given natural language CSP. However, the specific task to solve seems to be the example? Actually they gave the example task and solution is to find a meeting time. But they didn't give a concrete schedule beyond example. We must output code that solves the given example? The problem statement: \"You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write a Python program that solves it directly rather than solving it yourself in prose.\"\n\nThus we need to read from input? Usually they expect to embed the data in code. The example: Julie has no meetings, Ruth busy certain times, meeting duration half hour, day options Mon-Thu, Julie prefers avoid Thursday before 11:30. Need to produce a list of day start end that satisfies.\n\nWe need to write code that computes a feasible meeting time. Since there is a solution, any valid will do. Need to output only final answer list.\n\nThus code should contain the data hardcoded, compute available slots, pick earliest perhaps respecting Julie preference.\n\nLet's implement.\n\nWork hours 9:00-17:00 each day Monday-Thursday.\n\nRuth busy: Monday 9-17 (full), Tuesday 9-17, Wednesday 9-17, Thursday 9-11, 11:30-14:30, 15-17.\n\nThus Ruth free: Thursday 11:00-11:30, 14:30-15:00. Also maybe after 17? No work hour ends at 17.\n\nJulie has no meetings. Preference: avoid Thursday before 11:30, i.e., avoid meeting on Thursday before 11:30. So acceptable slots: Thursday 14:30-15:00 is after 11:30 ok. Also Thursday 11:00-11:30 is exactly before 11:30? It's before 11:30, so avoid. So the only slot is Thursday 14:30-15:00 (30 min). So answer: ['Thursday','14:30','15:00'].\n\nImplement code that computes.\n\nOutput only that list via print.\n\nReturn only list.\n\nLet's code.assistantfinal",
+      "judge_response": {
+        "chunk_analysis": [
+          {
+            "sound": "analysisWe need to parse the problem description: It gave an example task. But the actual problem we need to solve is? The prompt describes format, then says \"SOLUTION CODE:\" and expects us to output code that solves the given natural language CSP. However, the specific task to solve seems to be the example? Actually they gave the example task and solution is to find a meeting time. But they didn't give a concrete schedule beyond example. We must output code that solves the given example? The problem statement: \"You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write a Python program that solves it directly rather than solving it yourself in prose.\"\n\nThus we need to read from input? Usually they expect to embed the data in code. The example: Julie has no meetings, Ruth busy certain times, meeting duration half hour, day options Mon-Thu, Julie prefers avoid Thursday before 11:30. Need to produce a list of day start end that satisfies.\n\nWe need to write code that computes a feasible meeting time. Since there is a solution, any valid will do. Need to output only final answer list.\n\nThus code should contain the data hardcoded, compute available slots, pick earliest perhaps respecting Julie preference.\n\nLet's implement.\n\nWork hours 9:00-17:00 each day Monday-Thursday.\n\nRuth busy: Monday 9-17 (full), Tuesday 9-17, Wednesday 9-17, Thursday 9-11, 11:30-14:30, 15-17."
+          },
+          {
+            "solver-like": "\n\nThus Ruth free: Thursday 11:00-11:30, 14:30-15:00. Also maybe after 17? No work hour ends at 17.\n\nJulie has no meetings. Preference: avoid Thursday before 11:30, i.e., avoid meeting on Thursday before 11:30. So acceptable slots: Thursday 14:30-15:00 is after 11:30 ok. Also Thursday 11:00-11:30 is exactly before 11:30? It's before 11:30, so avoid. So the only slot is Thursday 14:30-15:00 (30 min). So answer: ['Thursday','14:30','15:00']."
+          },
+          {
+            "sound": "\n\nImplement code that computes.\n\nOutput only that list via print.\n\nReturn only list.\n\nLet's code."
+          }
+        ]
+      },
+      "enriched_chunk_analysis": [
+        {
+          "sound": "analysisWe need to parse the problem description: It gave an example task. But the actual problem we need to solve is? The prompt describes format, then says \"SOLUTION CODE:\" and expects us to output code that solves the given natural language CSP. However, the specific task to solve seems to be the example? Actually they gave the example task and solution is to find a meeting time. But they didn't give a concrete schedule beyond example. We must output code that solves the given example? The problem statement: \"You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write a Python program that solves it directly rather than solving it yourself in prose.\"\n\nThus we need to read from input? Usually they expect to embed the data in code. The example: Julie has no meetings, Ruth busy certain times, meeting duration half hour, day options Mon-Thu, Julie prefers avoid Thursday before 11:30. Need to produce a list of day start end that satisfies.\n\nWe need to write code that computes a feasible meeting time. Since there is a solution, any valid will do. Need to output only final answer list.\n\nThus code should contain the data hardcoded, compute available slots, pick earliest perhaps respecting Julie preference.\n\nLet's implement.\n\nWork hours 9:00-17:00 each day Monday-Thursday.\n\nRuth busy: Monday 9-17 (full), Tuesday 9-17, Wednesday 9-17, Thursday 9-11, 11:30-14:30, 15-17.",
+          "tokens": 348
+        },
+        {
+          "solver-like": "\n\nThus Ruth free: Thursday 11:00-11:30, 14:30-15:00. Also maybe after 17? No work hour ends at 17.\n\nJulie has no meetings. Preference: avoid Thursday before 11:30, i.e., avoid meeting on Thursday before 11:30. So acceptable slots: Thursday 14:30-15:00 is after 11:30 ok. Also Thursday 11:00-11:30 is exactly before 11:30? It's before 11:30, so avoid. So the only slot is Thursday 14:30-15:00 (30 min). So answer: ['Thursday','14:30','15:00'].",
+          "tokens": 149
+        },
+        {
+          "sound": "\n\nImplement code that computes.\n\nOutput only that list via print.\n\nReturn only list.\n\nLet's code.",
+          "tokens": 21
+        }
+      ],
+      "token_statistics": {
+        "encoding": "cl100k_base",
+        "reasoning_total_tokens": 518,
+        "solver_like_total_tokens": 149,
+        "sound_total_tokens": 369,
+        "solver_like_fraction": 0.2876447876447876
+      },
+      "has_solver_like": true,
+      "judge_metadata": {
+        "model": "publishers/google/models/gemini-2.5-pro",
+        "temperature": 0.0,
+        "max_output_tokens": 65536,
+        "finish_reason": "FinishReason.STOP"
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_625",
+      "reasoning_before_code": "analysisWe need to parse the problem statement: It asks to formalize variables and constraints then write Python code that solves it. However we need to output only code block that prints final answer list.\n\nWe need to read the given scenario: schedule meeting for Jeffrey and Harold for half an hour between 9:00-17:00 on Monday or Tuesday. Existing schedules: Jeffrey is free entire week. Harold has blocked calendar: Monday 9:00-10:00, 10:30-17:00; Tuesday 9:00-9:30, 10:30-11:30, 12:30-13:30, 14:30-15:30, 16:00-17:00. Harold would like to avoid more meetings on Monday. Tuesday before 14:30.\n\nWe need to find a half-hour slot meeting that satisfies constraints.\n\nWe must output a Python list: [day, start time, end time] formatted.\n\nGoal: find any slot that works and respects preferences: Harold wants to avoid more meetings on Monday; also wants to avoid Tuesday before 14:30 (i.e., prefer after 14:30?). Actually \"Tuesday before 14:30\" is something he would like to avoid. So we should schedule on Tuesday at or after 14:30. Also avoid Monday because he wants fewer meetings Monday.\n\nCheck Harold's busy blocks:\n\nMonday: blocked 9:00-10:00, 10:30-17:00. So free Monday: 10:00-10:30 only (30 mins). That is a slot exactly 10:00-10:30. But schedule constraints: meeting duration half hour fits. Preference: avoid more meetings Monday, but could still be okay if no other? He wants to avoid more meetings Monday - likely we should prefer not Monday if possible. So we look at Tuesday.\n\nTuesday blocks: 9:00-9:30, 10:30-11:30, 12:30-13:30, 14:30-15:30, 16:00-17:00.\n\nWork hours 9:00-17:00.\n\nFree intervals Tuesday:\n\n- 9:30-10:30 (1 hour)\n- 11:30-12:30 (1 hour)\n- 13:30-14:30 (1 hour)\n- 15:30-16:00 (0.5 hour)\n- after 17? no.\n\nWe need half hour after 14:30 to satisfy preference (avoid before 14:30). Free after 14:30: we have 15:30-16:00 (30 mins) - fits exactly. Also 14:30-15:30 is blocked, so can't start at 14:30. So slot 15:30-16:00 works.\n\nThus answer: ['Tuesday', '15:30', '16:00'].\n\nNow write code that determines this automatically: define participants, busy intervals, preferences, generate possible slots of 30 min within work hours, filter by availability, then preferences (avoid Monday, avoid Tuesday before 14:30). Then pick first suitable (maybe earliest after preferences). Print result.\n\nImplement parsing times as minutes from midnight.\n\nLet's write code.\n\nWe need only standard library.\n\nImplement function to get free intervals for each participant given busy slots within work hours.\n\nCompute intersection of free intervals of all participants.\n\nThen filter by pref: define a scoring or simple filter: exclude Monday if any else? Preference is to avoid Monday, so we can prioritize non-Monday. In algorithm, we can first try to find any slot on Tuesday satisfying other constraints, else Monday.\n\nAlso avoid Tuesday before 14:30: so on Tuesday, start time >= 14:30.\n\nThus filter.\n\nSo code prints list.\n\nMake sure times zero-padded.\n\nNow craft final answer.assistantfinal",
+      "judge_response": {
+        "chunk_analysis": [
+          {
+            "sound": "analysisWe need to parse the problem statement: It asks to formalize variables and constraints then write Python code that solves it. However we need to output only code block that prints final answer list.\n\nWe need to read the given scenario: schedule meeting for Jeffrey and Harold for half an hour between 9:00-17:00 on Monday or Tuesday. Existing schedules: Jeffrey is free entire week. Harold has blocked calendar: Monday 9:00-10:00, 10:30-17:00; Tuesday 9:00-9:30, 10:30-11:30, 12:30-13:30, 14:30-15:30, 16:00-17:00. Harold would like to avoid more meetings on Monday. Tuesday before 14:30.\n\nWe need to find a half-hour slot meeting that satisfies constraints.\n\nWe must output a Python list: [day, start time, end time] formatted.\n\nGoal: find any slot that works and respects preferences: Harold wants to avoid more meetings on Monday; also wants to avoid Tuesday before 14:30 (i.e., prefer after 14:30?). Actually \"Tuesday before 14:30\" is something he would like to avoid. So we should schedule on Tuesday at or after 14:30. Also avoid Monday because he wants fewer meetings Monday."
+          },
+          {
+            "solver-like": "\n\nCheck Harold's busy blocks:\n\nMonday: blocked 9:00-10:00, 10:30-17:00. So free Monday: 10:00-10:30 only (30 mins). That is a slot exactly 10:00-10:30. But schedule constraints: meeting duration half hour fits. Preference: avoid more meetings Monday, but could still be okay if no other? He wants to avoid more meetings Monday - likely we should prefer not Monday if possible. So we look at Tuesday.\n\nTuesday blocks: 9:00-9:30, 10:30-11:30, 12:30-13:30, 14:30-15:30, 16:00-17:00.\n\nWork hours 9:00-17:00.\n\nFree intervals Tuesday:\n\n- 9:30-10:30 (1 hour)\n- 11:30-12:30 (1 hour)\n- 13:30-14:30 (1 hour)\n- 15:30-16:00 (0.5 hour)\n- after 17? no.\n\nWe need half hour after 14:30 to satisfy preference (avoid before 14:30). Free after 14:30: we have 15:30-16:00 (30 mins) - fits exactly. Also 14:30-15:30 is blocked, so can't start at 14:30. So slot 15:30-16:00 works.\n\nThus answer: ['Tuesday', '15:30', '16:00']."
+          },
+          {
+            "sound": "\n\nNow write code that determines this automatically: define participants, busy intervals, preferences, generate possible slots of 30 min within work hours, filter by availability, then preferences (avoid Monday, avoid Tuesday before 14:30). Then pick first suitable (maybe earliest after preferences). Print result.\n\nImplement parsing times as minutes from midnight.\n\nLet's write code.\n\nWe need only standard library.\n\nImplement function to get free intervals for each participant given busy slots within work hours.\n\nCompute intersection of free intervals of all participants.\n\nThen filter by pref: define a scoring or simple filter: exclude Monday if any else? Preference is to avoid Monday, so we can prioritize non-Monday. In algorithm, we can first try to find any slot on Tuesday satisfying other constraints, else Monday.\n\nAlso avoid Tuesday before 14:30: so on Tuesday, start time >= 14:30.\n\nThus filter.\n\nSo code prints list.\n\nMake sure times zero-padded.\n\nNow craft final answer."
+          }
+        ]
+      },
+      "enriched_chunk_analysis": [
+        {
+          "sound": "analysisWe need to parse the problem statement: It asks to formalize variables and constraints then write Python code that solves it. However we need to output only code block that prints final answer list.\n\nWe need to read the given scenario: schedule meeting for Jeffrey and Harold for half an hour between 9:00-17:00 on Monday or Tuesday. Existing schedules: Jeffrey is free entire week. Harold has blocked calendar: Monday 9:00-10:00, 10:30-17:00; Tuesday 9:00-9:30, 10:30-11:30, 12:30-13:30, 14:30-15:30, 16:00-17:00. Harold would like to avoid more meetings on Monday. Tuesday before 14:30.\n\nWe need to find a half-hour slot meeting that satisfies constraints.\n\nWe must output a Python list: [day, start time, end time] formatted.\n\nGoal: find any slot that works and respects preferences: Harold wants to avoid more meetings on Monday; also wants to avoid Tuesday before 14:30 (i.e., prefer after 14:30?). Actually \"Tuesday before 14:30\" is something he would like to avoid. So we should schedule on Tuesday at or after 14:30. Also avoid Monday because he wants fewer meetings Monday.",
+          "tokens": 280
+        },
+        {
+          "solver-like": "\n\nCheck Harold's busy blocks:\n\nMonday: blocked 9:00-10:00, 10:30-17:00. So free Monday: 10:00-10:30 only (30 mins). That is a slot exactly 10:00-10:30. But schedule constraints: meeting duration half hour fits. Preference: avoid more meetings Monday, but could still be okay if no other? He wants to avoid more meetings Monday - likely we should prefer not Monday if possible. So we look at Tuesday.\n\nTuesday blocks: 9:00-9:30, 10:30-11:30, 12:30-13:30, 14:30-15:30, 16:00-17:00.\n\nWork hours 9:00-17:00.\n\nFree intervals Tuesday:\n\n- 9:30-10:30 (1 hour)\n- 11:30-12:30 (1 hour)\n- 13:30-14:30 (1 hour)\n- 15:30-16:00 (0.5 hour)\n- after 17? no.\n\nWe need half hour after 14:30 to satisfy preference (avoid before 14:30). Free after 14:30: we have 15:30-16:00 (30 mins) - fits exactly. Also 14:30-15:30 is blocked, so can't start at 14:30. So slot 15:30-16:00 works.\n\nThus answer: ['Tuesday', '15:30', '16:00'].",
+          "tokens": 327
+        },
+        {
+          "sound": "\n\nNow write code that determines this automatically: define participants, busy intervals, preferences, generate possible slots of 30 min within work hours, filter by availability, then preferences (avoid Monday, avoid Tuesday before 14:30). Then pick first suitable (maybe earliest after preferences). Print result.\n\nImplement parsing times as minutes from midnight.\n\nLet's write code.\n\nWe need only standard library.\n\nImplement function to get free intervals for each participant given busy slots within work hours.\n\nCompute intersection of free intervals of all participants.\n\nThen filter by pref: define a scoring or simple filter: exclude Monday if any else? Preference is to avoid Monday, so we can prioritize non-Monday. In algorithm, we can first try to find any slot on Tuesday satisfying other constraints, else Monday.\n\nAlso avoid Tuesday before 14:30: so on Tuesday, start time >= 14:30.\n\nThus filter.\n\nSo code prints list.\n\nMake sure times zero-padded.\n\nNow craft final answer.",
+          "tokens": 197
+        }
+      ],
+      "token_statistics": {
+        "encoding": "cl100k_base",
+        "reasoning_total_tokens": 804,
+        "solver_like_total_tokens": 327,
+        "sound_total_tokens": 477,
+        "solver_like_fraction": 0.40671641791044777
+      },
+      "has_solver_like": true,
+      "judge_metadata": {
+        "model": "publishers/google/models/gemini-2.5-pro",
+        "temperature": 0.0,
+        "max_output_tokens": 65536,
+        "finish_reason": "FinishReason.STOP"
+      }
+    }
+  ]
+}

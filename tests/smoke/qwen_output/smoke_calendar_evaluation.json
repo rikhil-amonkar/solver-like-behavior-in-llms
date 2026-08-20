@@ -1,0 +1,89 @@
+{
+  "run_metadata": {
+    "task": "calendar",
+    "model": "qwen",
+    "condition": "baseline",
+    "test_type": "smoke_test",
+    "inference_json": "tests/smoke/output/smoke_calendar_inference.json",
+    "timestamp": "2026-08-19T15:59:47Z",
+    "num_examples": 3
+  },
+  "examples": [
+    {
+      "example_id": "calendar_scheduling_example_172",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "14:00",
+        "14:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "14:00",
+        "14:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_819",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Monday",
+        "14:30",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Monday",
+          "start": 0,
+          "end": 17
+        }
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_625",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Tuesday",
+        "09:30",
+        "10:00"
+      ],
+      "expected_solution": [
+        "Tuesday",
+        "15:30",
+        "16:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Tuesday",
+          "start": 0,
+          "end": 14.5
+        }
+      }
+    }
+  ],
+  "summary": {
+    "constraint_based_accuracy": 0.3333333333333333,
+    "constraint_correct": 1,
+    "constraint_incorrect": 2,
+    "golden_solution_accuracy": 0.3333333333333333,
+    "golden_matches": 1,
+    "golden_available": 3,
+    "error_breakdown": {
+      "constraint_violation": 2
+    }
+  }
+}

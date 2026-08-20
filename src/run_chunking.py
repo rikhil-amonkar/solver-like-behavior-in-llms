@@ -18,7 +18,14 @@ from chunking.chunk_parser import (
     parse_judge_response,
     enrich_chunks_with_tokens,
     has_solver_like_chunks,
+    parse_and_stitch_segments,
 )
+from chunking.reasoning_splitter import (
+    should_split_reasoning,
+    split_reasoning_by_tokens,
+    count_tokens,
+)
+import time
 
 
 def run_chunking_pipeline(
@@ -35,6 +42,23 @@ def run_chunking_pipeline(
     print(f"\n=== Chunking Pipeline ===")
     print(f"Input: {inference_json_path}")
     print(f"Judge prompt: {judge_prompt_path}\n")
+
+    # Validate environment variables for Vertex AI
+    import os
+    project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
+    if not project_id:
+        print("❌ ERROR: GOOGLE_CLOUD_PROJECT not set in environment")
+        print("   Add to your .env file:")
+        print("     GOOGLE_CLOUD_PROJECT=your-project-id")
+        print("   Or export it:")
+        print("     export GOOGLE_CLOUD_PROJECT=your-project-id")
+        sys.exit(1)
+
+    location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
+    print(f"Vertex AI Configuration:")
+    print(f"  Project: {project_id}")
+    print(f"  Location: {location}")
+    print()
 
     # Load inference results
     print("Loading inference results...")
@@ -77,6 +101,12 @@ def run_chunking_pipeline(
     examples_with_solver_like = 0
     examples_sound_only = 0
     total_chunks = 0
+    examples_split = 0
+
+    # Rate limiting: ~2.5 seconds between requests to avoid hitting Vertex AI rate limits
+    # More conservative to handle retry backoffs better
+    last_request_time = 0
+    min_request_interval = 2.5  # seconds
 
     with IncrementalJSONWriter(str(output_path), metadata) as writer:
         with ProgressTracker(len(examples), f"Chunking {task}") as progress:
@@ -90,8 +120,7 @@ def run_chunking_pipeline(
                         result = {
                             "example_id": example_id,
                             "reasoning_before_code": reasoning_before_code,
-                            "judge_response": {"chunk_analysis": []},
-                            "enriched_chunk_analysis": [],
+                            "chunk_analysis": [],
                             "token_statistics": {
                                 "encoding": "cl100k_base",
                                 "reasoning_total_tokens": 0,
@@ -107,36 +136,112 @@ def run_chunking_pipeline(
                         progress.update(1)
                         continue
 
-                    # Call judge
-                    judge_result = call_judge(
-                        reasoning_text=reasoning_before_code,
-                        judge_prompt_path=judge_prompt_path,
+                    # Check if reasoning needs to be split
+                    needs_split, reasoning_tokens = should_split_reasoning(
+                        reasoning_before_code,
+                        max_output_tokens=max_judge_tokens
                     )
 
-                    raw_response = judge_result["raw_response"]
-                    judge_metadata = judge_result["metadata"]
+                    if needs_split:
+                        # Split reasoning into segments
+                        segments = split_reasoning_by_tokens(reasoning_before_code)
+                        print(f"\n  ℹ {example_id}: Splitting {reasoning_tokens} tokens into {len(segments)} segments")
+                        examples_split += 1
 
-                    # Parse judge response
-                    try:
-                        parsed_response = parse_judge_response(raw_response)
-                        chunks = parsed_response["chunk_analysis"]
-                    except ValueError as e:
-                        print(f"\nWarning: Failed to parse judge response for {example_id}: {str(e)}")
-                        # Use empty chunks
-                        chunks = []
+                        # Call judge for each segment
+                        segment_responses = []
+                        segment_metadata = []
 
-                    # Enrich with tokens
-                    enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
+                        for seg_idx, segment in enumerate(segments):
+                            # Rate limiting between segment calls
+                            time_since_last_request = time.time() - last_request_time
+                            if last_request_time > 0 and time_since_last_request < min_request_interval:
+                                sleep_time = min_request_interval - time_since_last_request
+                                time.sleep(sleep_time)
 
-                    # Check for solver-like
-                    has_solver_like = has_solver_like_chunks(chunks)
+                            # Call judge for this segment
+                            last_request_time = time.time()
+                            judge_result = call_judge(
+                                reasoning_text=segment,
+                                judge_prompt_path=judge_prompt_path,
+                            )
 
-                    # Build result
+                            segment_responses.append(judge_result["raw_response"])
+                            segment_metadata.append(judge_result["metadata"])
+
+                        # Parse and stitch all segments together
+                        try:
+                            enriched_chunks, token_stats, has_solver_like = parse_and_stitch_segments(
+                                segment_responses
+                            )
+
+                            # Add original reasoning token count
+                            token_stats["original_reasoning_tokens"] = reasoning_tokens
+
+                            # Aggregate metadata from all segments
+                            judge_metadata = {
+                                "segments": segment_metadata,
+                                "num_segments": len(segments),
+                                "original_tokens": reasoning_tokens,
+                            }
+
+                        except ValueError as e:
+                            print(f"\n  ⚠ Failed to parse segments for {example_id}: {str(e)}")
+                            # Fallback: empty chunks
+                            enriched_chunks = []
+                            token_stats = {
+                                "encoding": "cl100k_base",
+                                "reasoning_total_tokens": 0,
+                                "solver_like_total_tokens": 0,
+                                "sound_total_tokens": 0,
+                                "solver_like_fraction": 0.0,
+                                "num_segments": len(segments),
+                                "parse_error": str(e),
+                            }
+                            has_solver_like = False
+                            judge_metadata = {
+                                "error": f"Segment parsing failed: {str(e)}",
+                                "num_segments": len(segments),
+                            }
+
+                    else:
+                        # Normal single-call path (no splitting needed)
+                        # Rate limiting
+                        time_since_last_request = time.time() - last_request_time
+                        if last_request_time > 0 and time_since_last_request < min_request_interval:
+                            sleep_time = min_request_interval - time_since_last_request
+                            time.sleep(sleep_time)
+
+                        # Call judge
+                        last_request_time = time.time()
+                        judge_result = call_judge(
+                            reasoning_text=reasoning_before_code,
+                            judge_prompt_path=judge_prompt_path,
+                        )
+
+                        raw_response = judge_result["raw_response"]
+                        judge_metadata = judge_result["metadata"]
+
+                        # Parse judge response
+                        try:
+                            parsed_response = parse_judge_response(raw_response)
+                            chunks = parsed_response["chunk_analysis"]
+                        except ValueError as e:
+                            print(f"\n  ⚠ Failed to parse judge response for {example_id}: {str(e)}")
+                            # Use empty chunks
+                            chunks = []
+
+                        # Enrich with tokens
+                        enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
+
+                        # Check for solver-like
+                        has_solver_like = has_solver_like_chunks(chunks)
+
+                    # Build result (use enriched chunks as the main chunk_analysis)
                     result = {
                         "example_id": example_id,
                         "reasoning_before_code": reasoning_before_code,
-                        "judge_response": {"chunk_analysis": chunks},
-                        "enriched_chunk_analysis": enriched_chunks,
+                        "chunk_analysis": enriched_chunks,  # Only enriched version
                         "token_statistics": token_stats,
                         "has_solver_like": has_solver_like,
                         "judge_metadata": judge_metadata,
@@ -150,17 +255,21 @@ def run_chunking_pipeline(
                     else:
                         examples_sound_only += 1
 
-                    total_chunks += len(chunks)
+                    total_chunks += len(enriched_chunks)
 
                 except Exception as e:
-                    print(f"\nError chunking {example.get('example_id', '?')}: {str(e)}")
+                    # Print detailed error to terminal
+                    import traceback
+                    print(f"\n❌ Error chunking {example.get('example_id', '?')}:")
+                    print(f"   {type(e).__name__}: {str(e)}")
+                    if "--verbose" in sys.argv:
+                        traceback.print_exc()
 
                     # Write error result
                     result = {
                         "example_id": example.get("example_id", "unknown"),
                         "reasoning_before_code": example.get("reasoning_before_code", ""),
-                        "judge_response": {"chunk_analysis": []},
-                        "enriched_chunk_analysis": [],
+                        "chunk_analysis": [],
                         "token_statistics": {
                             "encoding": "cl100k_base",
                             "reasoning_total_tokens": 0,
@@ -169,7 +278,10 @@ def run_chunking_pipeline(
                             "solver_like_fraction": 0.0,
                         },
                         "has_solver_like": False,
-                        "judge_metadata": {"error": str(e)},
+                        "judge_metadata": {
+                            "error": str(e),
+                            "error_type": type(e).__name__
+                        },
                     }
                     writer.write_example(result)
                     examples_sound_only += 1
@@ -181,6 +293,7 @@ def run_chunking_pipeline(
     print(f"\n✓ Chunking complete!")
     print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
     print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
+    print(f"  Examples split into segments: {examples_split}/{len(examples)}")
     print(f"  Total chunks: {total_chunks}")
     print(f"  Output: {output_path}")
 
