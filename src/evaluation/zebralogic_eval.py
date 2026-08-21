@@ -19,22 +19,29 @@ def evaluate_zebralogic_solution(
     showing attribute assignments for each house.
 
     Args:
-        problem: Problem dict from zebralogic_grid_100.json
+        problem: Problem dict from zebralogic_grid_100.json (contains headers and golden_solution)
         solution_output: stdout from Z3 code execution
 
     Returns:
-        (is_valid, error_detail)
+        (is_valid, error_detail_or_parsed_solution)
+        If valid, error_detail contains {"parsed_solution": {...}} for comparison
+        If invalid, error_detail contains error info
     """
     # Extract headers and expected structure
-    headers = problem.get("headers", [])
+    headers = problem.get("headers", problem.get("header", []))
     golden_solution = problem.get("golden_solution", {})
+    if not headers and golden_solution:
+        headers = golden_solution.get("header", golden_solution.get("headers", []))
     clues = problem.get("problem", "")
 
     # Parse solution from output
     parsed_grid = parse_zebralogic_output(solution_output, headers)
 
     if parsed_grid is None:
-        return False, {"error": "failed to parse solution grid from output"}
+        return False, {
+            "error": "failed to parse solution grid from output",
+            "stdout": solution_output[:200] if solution_output else ""
+        }
 
     # Validate grid structure
     num_houses = len(golden_solution.get("rows", []))
@@ -80,7 +87,16 @@ def evaluate_zebralogic_solution(
                         "got": parsed_value
                     }
 
-    return True, {}
+    # Convert parsed grid to golden solution format for comparison
+    parsed_solution_formatted = {
+        "header": headers,
+        "rows": [
+            [row.get("House", str(idx+1))] + [row.get(attr, "") for attr in headers[1:]]
+            for idx, row in enumerate(parsed_grid)
+        ]
+    }
+
+    return True, {"parsed_solution": parsed_solution_formatted}
 
 
 def parse_zebralogic_output(output: str, headers: List[str]) -> List[Dict[str, str]]:
@@ -90,6 +106,7 @@ def parse_zebralogic_output(output: str, headers: List[str]) -> List[Dict[str, s
     Expected formats:
     - "House 1: Peter, desert, white"
     - "House 1: Name=Peter, Smoothie=desert, Color=white"
+    - "House 1:, Peter, desert, white" (with optional leading comma)
 
     Args:
         output: stdout from Z3 code
@@ -118,6 +135,10 @@ def parse_zebralogic_output(output: str, headers: List[str]) -> List[Dict[str, s
         house_str = parts[0].strip()
         attrs_str = parts[1].strip()
 
+        # Handle leading comma or whitespace
+        if attrs_str.startswith(','):
+            attrs_str = attrs_str[1:].strip()
+
         # Extract house number
         try:
             house_num = int(house_str.replace("House", "").strip())
@@ -128,7 +149,7 @@ def parse_zebralogic_output(output: str, headers: List[str]) -> List[Dict[str, s
         # Format 1: "Peter, desert, white"
         # Format 2: "Name=Peter, Smoothie=desert, Color=white"
 
-        attr_values = [v.strip() for v in attrs_str.split(',')]
+        attr_values = [v.strip() for v in attrs_str.split(',') if v.strip()]
 
         row = {"House": str(house_num)}
 
@@ -143,7 +164,7 @@ def parse_zebralogic_output(output: str, headers: List[str]) -> List[Dict[str, s
             # Format 1: positional values (match to headers order)
             for idx, val in enumerate(attr_values):
                 if idx + 1 < len(headers):  # headers[0] is "House"
-                    row[headers[idx + 1]] = val
+                    row[headers[idx + 1]] = val.strip()
 
         grid.append(row)
 

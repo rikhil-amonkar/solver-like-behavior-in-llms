@@ -86,9 +86,14 @@ def run_evaluation_pipeline(inference_json_path: str):
     print("Loading inference results...")
     inference_data = load_json_file(inference_json_path)
 
-    task = inference_data["run_metadata"]["task"]
-    model = inference_data["run_metadata"]["model"]
-    condition = inference_data["run_metadata"].get("condition", "baseline")
+    # Support both 'metadata' and 'run_metadata' keys
+    meta = inference_data.get("metadata") or inference_data.get("run_metadata")
+    if not meta:
+        raise ValueError("Inference JSON missing 'metadata' or 'run_metadata' key")
+
+    task = meta["task"]
+    model = meta["model"]
+    condition = meta.get("condition", "baseline")
     examples = inference_data["examples"]
 
     print(f"Task: {task}")
@@ -183,8 +188,9 @@ def run_evaluation_pipeline(inference_json_path: str):
                             "exit_code": exec_result["exit_code"],
                             "stderr": exec_result.get("stderr", "")[:200]  # truncate
                         }
-                    elif parsed_output is None:
+                    elif parsed_output is None and task not in ["zebralogic", "blocksworld"]:
                         # Code ran successfully but no parseable output
+                        # (but for z3/pddl tasks, we parse during evaluation, not here)
                         stdout = exec_result.get("stdout", "").strip()
 
                         # Check if this is a "no solution" indicator
@@ -207,26 +213,51 @@ def run_evaluation_pipeline(inference_json_path: str):
                                 "stdout": stdout[:200]
                             }
                     else:
-                        # Parsed successfully, run task-specific validator
-                        # For z3/pddl tasks, pass execution result instead of parsed output
-                        if task in ["zebralogic", "blocksworld"]:
-                            solution_data = example["code_execution"]  # Pass full execution result
+                        # Parsed successfully OR z3/pddl task (parse during evaluation)
+
+                        # For zebralogic, skip constraint evaluation - only use golden solution
+                        if task == "zebralogic":
+                            # No constraint-based validation for zebralogic
+                            is_correct = None  # Will be determined by golden match only
+                            classification = "parsed"  # Temporary classification
+                            validation = {}
+                            parsed_output_for_comparison = parsed_output
                         else:
-                            solution_data = parsed_output  # Pass parsed output
+                            # For other tasks, do constraint-based evaluation
+                            if task == "blocksworld":
+                                solution_data = example["code_execution"]  # Pass full execution result
+                            else:
+                                solution_data = parsed_output  # Pass parsed output
 
-                        is_correct, error_detail = evaluate_solution(
-                            task,
-                            example_constraints,
-                            solution_data
-                        )
+                            is_correct, error_detail = evaluate_solution(
+                                task,
+                                example_constraints,
+                                solution_data
+                            )
 
-                        classification = "correct" if is_correct else "constraint_violation"
-                        validation = error_detail if not is_correct else {}
+                            classification = "correct" if is_correct else "constraint_violation"
+                            validation = error_detail if not is_correct else {}
+
+                            # For blocksworld, extract parsed solution if present
+                            if task == "blocksworld":
+                                if parsed_output is not None:
+                                    parsed_output_for_comparison = parsed_output
+                                elif is_correct and "parsed_solution" in error_detail:
+                                    parsed_output_for_comparison = error_detail.get("parsed_solution")
+                                else:
+                                    parsed_output_for_comparison = None
+                            else:
+                                parsed_output_for_comparison = parsed_output
 
                     # Check if solution matches golden solution
                     matches_golden = False
-                    if golden_solution is not None and parsed_output is not None:
-                        matches_golden = parsed_output == golden_solution
+                    if golden_solution is not None and parsed_output_for_comparison is not None:
+                        matches_golden = parsed_output_for_comparison == golden_solution
+
+                    # For zebralogic, correctness is based solely on golden match
+                    if task == "zebralogic":
+                        is_correct = matches_golden
+                        classification = "correct" if matches_golden else "incorrect_solution"
 
                     # Build result
                     result = {
@@ -234,7 +265,7 @@ def run_evaluation_pipeline(inference_json_path: str):
                         "correct": is_correct,
                         "matches_expected": matches_golden,
                         "classification": classification,
-                        "solution": parsed_output,
+                        "solution": parsed_output_for_comparison if task in ["zebralogic", "blocksworld"] else parsed_output,
                         "expected_solution": golden_solution,
                         "validation": validation,
                     }
@@ -242,11 +273,22 @@ def run_evaluation_pipeline(inference_json_path: str):
                     writer.write_example(result)
 
                     # Update counts
-                    if is_correct:
-                        correct_count += 1
+                    if task == "zebralogic":
+                        # For zebralogic, only track errors (not constraint violations)
+                        # Don't update correct/incorrect counts (those are based on golden match)
+                        if classification in ["code_execution_failed", "execution_error", "no_output",
+                                             "no_solution", "parse_error", "evaluation_error"]:
+                            error_breakdown[classification] = error_breakdown.get(classification, 0) + 1
+                        elif classification == "incorrect_solution":
+                            # Wrong answer but code ran - count as incorrect_solution
+                            error_breakdown["incorrect_solution"] = error_breakdown.get("incorrect_solution", 0) + 1
                     else:
-                        incorrect_count += 1
-                        error_breakdown[classification] = error_breakdown.get(classification, 0) + 1
+                        # For other tasks, track constraint-based correctness
+                        if is_correct:
+                            correct_count += 1
+                        else:
+                            incorrect_count += 1
+                            error_breakdown[classification] = error_breakdown.get(classification, 0) + 1
 
                     # Update golden match counts
                     if golden_solution is not None:
@@ -274,14 +316,20 @@ def run_evaluation_pipeline(inference_json_path: str):
 
         # Calculate accuracies
         total = len(examples)
-        constraint_accuracy = correct_count / total if total > 0 else 0
+
+        # For zebralogic, constraint-based accuracy is null (only golden matters)
+        if task == "zebralogic":
+            constraint_accuracy = None
+        else:
+            constraint_accuracy = correct_count / total if total > 0 else 0
+
         golden_accuracy = golden_match_count / golden_available_count if golden_available_count > 0 else None
 
         # Build final summary (with actual counts)
         final_summary = {
             "constraint_based_accuracy": constraint_accuracy,
-            "constraint_correct": correct_count,
-            "constraint_incorrect": incorrect_count,
+            "constraint_correct": correct_count if task != "zebralogic" else None,
+            "constraint_incorrect": incorrect_count if task != "zebralogic" else None,
             "golden_solution_accuracy": golden_accuracy,
             "golden_matches": golden_match_count,
             "golden_available": golden_available_count,
@@ -293,7 +341,11 @@ def run_evaluation_pipeline(inference_json_path: str):
 
     # Print summary
     print(f"\n✓ Evaluation complete!")
-    print(f"  Constraint-based accuracy: {correct_count}/{total} ({constraint_accuracy:.2%})")
+    if task == "zebralogic":
+        print(f"  Constraint-based accuracy: N/A (zebralogic uses golden solution only)")
+    else:
+        print(f"  Constraint-based accuracy: {correct_count}/{total} ({constraint_accuracy:.2%})")
+
     if golden_accuracy is not None:
         print(f"  Golden solution accuracy: {golden_match_count}/{golden_available_count} ({golden_accuracy:.2%})")
     else:

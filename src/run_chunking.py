@@ -31,6 +31,7 @@ import time
 def run_chunking_pipeline(
     inference_json_path: str,
     judge_prompt_path: str,
+    fix_mode: bool = False,
 ):
     """
     Run chunking pipeline on inference results.
@@ -38,8 +39,9 @@ def run_chunking_pipeline(
     Args:
         inference_json_path: Path to inference JSON output
         judge_prompt_path: Path to judge prompt file
+        fix_mode: If True, only re-process examples with empty chunk_analysis from existing chunking file
     """
-    print(f"\n=== Chunking Pipeline ===")
+    print(f"\n=== Chunking Pipeline {'(Fix Mode)' if fix_mode else ''} ===")
     print(f"Input: {inference_json_path}")
     print(f"Judge prompt: {judge_prompt_path}\n")
 
@@ -60,42 +62,100 @@ def run_chunking_pipeline(
     print(f"  Location: {location}")
     print()
 
-    # Load inference results
-    print("Loading inference results...")
-    inference_data = load_json_file(inference_json_path)
+    # Determine if we're working with inference or chunking file
+    if fix_mode:
+        # If user provided inference file, derive chunking file path
+        input_path = Path(inference_json_path)
 
-    task = inference_data["run_metadata"]["task"]
-    model = inference_data["run_metadata"]["model"]
-    condition = inference_data["run_metadata"].get("condition", "baseline")
-    examples = inference_data["examples"]
+        # Check if input is inference or chunking file
+        if "_inference.json" in input_path.name:
+            # Derive chunking file path
+            condition = input_path.name.replace("_inference.json", "").replace("inference.json", "baseline")
+            chunking_path = input_path.parent / f"{condition}_chunking.json"
 
-    print(f"Task: {task}")
-    print(f"Model: {model}")
-    print(f"Condition: {condition}")
-    print(f"Examples: {len(examples)}")
+            if not chunking_path.exists():
+                print(f"❌ ERROR: Chunking file not found: {chunking_path}")
+                print(f"   Run chunking first without --fix flag, or check file path.")
+                sys.exit(1)
 
-    # Determine output path (use same condition as inference)
-    inference_path = Path(inference_json_path)
-    output_filename = f"{condition}_chunking.json"
-    output_path = inference_path.parent / output_filename
-    print(f"Output: {output_path}\n")
+            print(f"Detected inference file, loading chunking file: {chunking_path}")
+            chunking_data = load_json_file(str(chunking_path))
+            actual_chunking_path = chunking_path
+        else:
+            # Assume it's already a chunking file
+            print("Loading existing chunking results...")
+            chunking_data = load_json_file(inference_json_path)
+            actual_chunking_path = input_path
+
+        task = chunking_data["run_metadata"]["task"]
+        model = chunking_data["run_metadata"]["model"]
+        condition = chunking_data["run_metadata"].get("condition", "baseline")
+
+        # Filter examples with empty chunk_analysis
+        all_examples = chunking_data["examples"]
+        examples_to_fix = [ex for ex in all_examples if not ex.get("chunk_analysis")]
+
+        print(f"Task: {task}")
+        print(f"Model: {model}")
+        print(f"Condition: {condition}")
+        print(f"Total examples: {len(all_examples)}")
+        print(f"Examples to fix (empty chunk_analysis): {len(examples_to_fix)}")
+
+        if not examples_to_fix:
+            print("\n✓ No examples to fix - all have chunk_analysis!")
+            return
+
+        examples = examples_to_fix
+        all_examples_for_output = all_examples
+
+        # Output path is the chunking file (we'll overwrite)
+        output_path = actual_chunking_path
+        print(f"Output: {output_path} (will update in place)\n")
+    else:
+        # Load inference results
+        print("Loading inference results...")
+        inference_data = load_json_file(inference_json_path)
+
+        task = inference_data["run_metadata"]["task"]
+        model = inference_data["run_metadata"]["model"]
+        condition = inference_data["run_metadata"].get("condition", "baseline")
+        examples = inference_data["examples"]
+
+        print(f"Task: {task}")
+        print(f"Model: {model}")
+        print(f"Condition: {condition}")
+        print(f"Examples: {len(examples)}")
+
+        # Determine output path (use same condition as inference)
+        inference_path = Path(inference_json_path)
+        output_filename = f"{condition}_chunking.json"
+        output_path = inference_path.parent / output_filename
+        print(f"Output: {output_path}\n")
+
+        all_examples_for_output = None
 
     # Build metadata
     import os
     judge_model = os.getenv("VERTEX_JUDGE_BATCH_MODEL", "publishers/google/models/gemini-2.5-pro")
     max_judge_tokens = int(os.getenv("MAX_JUDGE_TOKENS", 65536))
 
-    metadata = {
-        "task": task,
-        "model": model,
-        "condition": condition,
-        "inference_json": make_path_relative(str(inference_json_path)),
-        "judge_model": judge_model,
-        "judge_prompt": judge_prompt_path,
-        "timestamp": get_timestamp(),
-        "num_examples": len(examples),
-        "max_judge_tokens": max_judge_tokens,
-    }
+    if fix_mode:
+        # Preserve existing metadata, update timestamp
+        metadata = chunking_data["run_metadata"].copy()
+        metadata["last_fix_timestamp"] = get_timestamp()
+        metadata["num_examples_fixed"] = len(examples)
+    else:
+        metadata = {
+            "task": task,
+            "model": model,
+            "condition": condition,
+            "inference_json": make_path_relative(str(inference_json_path)),
+            "judge_model": judge_model,
+            "judge_prompt": judge_prompt_path,
+            "timestamp": get_timestamp(),
+            "num_examples": len(examples),
+            "max_judge_tokens": max_judge_tokens,
+        }
 
     # Process examples
     examples_with_solver_like = 0
@@ -109,7 +169,13 @@ def run_chunking_pipeline(
     min_request_interval = 2.5  # seconds
 
     with IncrementalJSONWriter(str(output_path), metadata) as writer:
-        with ProgressTracker(len(examples), f"Chunking {task}") as progress:
+        # In fix mode, first write all non-fixed examples as-is
+        if fix_mode:
+            for ex in all_examples_for_output:
+                if ex.get("chunk_analysis"):  # Already has chunks, keep as-is
+                    writer.write_example(ex)
+
+        with ProgressTracker(len(examples), f"{'Fixing' if fix_mode else 'Chunking'} {task}") as progress:
             for example in examples:
                 try:
                     example_id = example["example_id"]
@@ -175,14 +241,13 @@ def run_chunking_pipeline(
                                 segment_responses
                             )
 
-                            # Add original reasoning token count
-                            token_stats["original_reasoning_tokens"] = reasoning_tokens
-
                             # Aggregate metadata from all segments
                             judge_metadata = {
-                                "segments": segment_metadata,
-                                "num_segments": len(segments),
-                                "original_tokens": reasoning_tokens,
+                                "model": segment_metadata[0].get("model"),
+                                "temperature": segment_metadata[0].get("temperature"),
+                                "max_output_tokens": segment_metadata[0].get("max_output_tokens"),
+                                "finish_reason": segment_metadata[-1].get("finish_reason"),
+                                "attempts": sum(m.get("attempts", 1) for m in segment_metadata),
                             }
 
                         except ValueError as e:
@@ -195,13 +260,10 @@ def run_chunking_pipeline(
                                 "solver_like_total_tokens": 0,
                                 "sound_total_tokens": 0,
                                 "solver_like_fraction": 0.0,
-                                "num_segments": len(segments),
-                                "parse_error": str(e),
                             }
                             has_solver_like = False
                             judge_metadata = {
                                 "error": f"Segment parsing failed: {str(e)}",
-                                "num_segments": len(segments),
                             }
 
                     else:
@@ -255,12 +317,12 @@ def run_chunking_pipeline(
                                 enriched_chunks, token_stats, has_solver_like = parse_and_stitch_segments(
                                     segment_responses
                                 )
-                                token_stats["original_reasoning_tokens"] = reasoning_tokens
                                 judge_metadata = {
-                                    "segments": segment_metadata,
-                                    "num_segments": len(segments),
-                                    "original_tokens": reasoning_tokens,
-                                    "retry_reason": "MAX_TOKENS",
+                                    "model": segment_metadata[0].get("model"),
+                                    "temperature": segment_metadata[0].get("temperature"),
+                                    "max_output_tokens": segment_metadata[0].get("max_output_tokens"),
+                                    "finish_reason": segment_metadata[-1].get("finish_reason"),
+                                    "attempts": sum(m.get("attempts", 1) for m in segment_metadata),
                                 }
                             except ValueError as e:
                                 print(f"\n  ⚠ Failed to parse segments after MAX_TOKENS retry for {example_id}: {str(e)}")
@@ -271,12 +333,10 @@ def run_chunking_pipeline(
                                     "solver_like_total_tokens": 0,
                                     "sound_total_tokens": 0,
                                     "solver_like_fraction": 0.0,
-                                    "parse_error": str(e),
                                 }
                                 has_solver_like = False
                                 judge_metadata = {
                                     "error": f"Segment parsing failed after MAX_TOKENS retry: {str(e)}",
-                                    "num_segments": len(segments),
                                 }
                         else:
                             # Normal path - no MAX_TOKENS issue
@@ -348,12 +408,21 @@ def run_chunking_pipeline(
                 progress.set_postfix(solver_like=examples_with_solver_like, sound=examples_sound_only)
 
     # Print summary
-    print(f"\n✓ Chunking complete!")
-    print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
-    print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
-    print(f"  Examples split into segments: {examples_split}/{len(examples)}")
-    print(f"  Total chunks: {total_chunks}")
-    print(f"  Output: {output_path}")
+    if fix_mode:
+        print(f"\n✓ Fix complete!")
+        print(f"  Fixed examples: {len(examples)}")
+        print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
+        print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
+        print(f"  Examples split into segments: {examples_split}/{len(examples)}")
+        print(f"  Total chunks: {total_chunks}")
+        print(f"  Output: {output_path}")
+    else:
+        print(f"\n✓ Chunking complete!")
+        print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
+        print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
+        print(f"  Examples split into segments: {examples_split}/{len(examples)}")
+        print(f"  Total chunks: {total_chunks}")
+        print(f"  Output: {output_path}")
 
 
 def main():
@@ -379,6 +448,11 @@ Examples:
         required=True,
         help="Path to judge prompt file"
     )
+    parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Fix mode: re-process only examples with empty chunk_analysis from existing chunking file"
+    )
 
     args = parser.parse_args()
 
@@ -386,6 +460,7 @@ Examples:
         run_chunking_pipeline(
             args.inference_json,
             args.judge_prompt,
+            fix_mode=args.fix,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

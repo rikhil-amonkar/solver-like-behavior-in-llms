@@ -2,7 +2,7 @@
 
 import ast
 import re
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 
 # Regex patterns for code extraction
@@ -52,6 +52,7 @@ def looks_like_code(code: str) -> bool:
     # Count lines with code-like patterns
     code_indicators = 0
     prose_indicators = 0
+    has_print_statement = False
 
     for line in lines:
         line_stripped = line.strip()
@@ -65,7 +66,10 @@ def looks_like_code(code: str) -> bool:
             code_indicators += 2
         if '=' in line_stripped and not line_stripped.startswith('='):  # Assignment
             code_indicators += 2
-        if '(' in line_stripped and ')' in line_stripped:  # Function call/def
+        if line_stripped.startswith('print(') or ' print(' in line_stripped:  # Print statement (strong indicator of solution)
+            code_indicators += 3
+            has_print_statement = True
+        elif '(' in line_stripped and ')' in line_stripped:  # Function call/def
             code_indicators += 1
         if line_stripped.endswith(':'):  # Block start
             code_indicators += 1
@@ -76,14 +80,19 @@ def looks_like_code(code: str) -> bool:
 
         # Prose indicators
         if line_stripped.endswith('.') and len(line_stripped.split()) > 5:  # Sentence
-            prose_indicators += 2
+            # Don't count as prose if it looks like travel/location data (e.g., "A to B: 15.")
+            # or other structured data patterns common in CSP problems
+            if not re.match(r'.+ to .+: \d+\.?$', line_stripped):
+                prose_indicators += 2
         if line_stripped.startswith(('Need ', 'Let', 'We ', 'This ', 'Could ', 'Should ', 'The ', 'But ', 'If ')):
             prose_indicators += 2
         if ' maybe ' in line_stripped or ' perhaps ' in line_stripped:
             prose_indicators += 1
 
-    # Require strong code indicators and code >> prose
-    return code_indicators >= 10 and code_indicators > prose_indicators * 2
+    # Lowered threshold from 10 to 4-6 to catch simple solutions
+    # If has print statement (common in CSP solutions), use lower threshold
+    threshold = 4 if has_print_statement else 6
+    return code_indicators >= threshold and code_indicators > prose_indicators * 2
 
 
 def extract_code_block(reasoning_trace: str) -> str:
@@ -195,3 +204,71 @@ def parse_code_output(stdout: str) -> Tuple[Optional[any], Optional[str]]:
         return parsed, None
     except (ValueError, SyntaxError) as e:
         return None, f"parse failed: {str(e)}"
+
+
+def parse_zebralogic_grid_output(stdout: str, headers: List[str]) -> Tuple[Optional[dict], Optional[str]]:
+    """
+    Parse zebralogic grid output from Z3 code.
+
+    Expected format:
+        House 1: Peter, desert, white
+        House 2: Alice, cherry, green
+        ...
+
+    Args:
+        stdout: Standard output from Z3 code execution
+        headers: Expected headers like ["House", "Name", "Smoothie", "Color"]
+
+    Returns:
+        Tuple of (parsed_solution, error_message)
+        parsed_solution is dict with {"header": [...], "rows": [[...]]} or None if parsing failed
+    """
+    if not stdout or not stdout.strip():
+        return None, "empty stdout"
+
+    lines = [line.strip() for line in stdout.strip().split('\n') if line.strip()]
+
+    rows = []
+    for line in lines:
+        # Skip non-house lines
+        if not line.startswith("House"):
+            continue
+
+        # Extract house number and attributes
+        if ':' not in line:
+            continue
+
+        parts = line.split(':', 1)
+        house_str = parts[0].strip()
+        attrs_str = parts[1].strip()
+
+        # Handle leading comma or whitespace
+        if attrs_str.startswith(','):
+            attrs_str = attrs_str[1:].strip()
+
+        # Extract house number
+        try:
+            house_num = house_str.replace("House", "").strip()
+        except ValueError:
+            continue
+
+        # Parse attributes (comma-separated values)
+        attr_values = [v.strip() for v in attrs_str.split(',') if v.strip()]
+
+        # Build row: [house_num, value1, value2, ...]
+        row = [house_num] + attr_values
+        rows.append(row)
+
+    if not rows:
+        return None, "no house rows found in output"
+
+    # Sort by house number
+    rows.sort(key=lambda r: int(r[0]) if r[0].isdigit() else 0)
+
+    # Return in golden solution format
+    solution = {
+        "header": headers,
+        "rows": rows
+    }
+
+    return solution, None

@@ -73,7 +73,8 @@ def execute_code_by_language(code: str, language: str, timeout_sec: float = 30.0
 
     elif language == "z3":
         from .code_executor_z3 import run_z3_code
-        return run_z3_code(code, timeout_sec=timeout_sec)
+        problem_data = kwargs.get("problem_data")
+        return run_z3_code(code, timeout_sec=timeout_sec, problem_data=problem_data)
 
     elif language == "pddl":
         from .code_executor_pddl import run_pddl_code

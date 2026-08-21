@@ -5,18 +5,18 @@
     "condition": "baseline",
     "inference_json": "output/gpt/calendar/baseline_inference.json",
     "constraints_json": "data/constraints/calendar_constraints.json",
-    "timestamp": "2026-08-20T02:37:26Z",
+    "timestamp": "2026-08-21T19:44:53Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.98,
-    "constraint_correct": 98,
-    "constraint_incorrect": 2,
-    "golden_solution_accuracy": 0.67,
-    "golden_matches": 67,
+    "constraint_based_accuracy": 1.0,
+    "constraint_correct": 100,
+    "constraint_incorrect": 0,
+    "golden_solution_accuracy": 0.69,
+    "golden_matches": 69,
     "golden_available": 100,
     "error_breakdown": {
-      "code_execution_failed": 2,
+      "code_execution_failed": 0,
       "execution_error": 0,
       "no_output": 0,
       "no_solution": 0,
@@ -28,33 +28,37 @@
   "examples": [
     {
       "example_id": "calendar_scheduling_example_543",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "code_execution_failed",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "13:30",
+        "14:30"
+      ],
       "expected_solution": [
         "Monday",
         "13:30",
         "14:30"
       ],
-      "validation": {
-        "error": "code not executed"
-      }
+      "validation": {}
     },
     {
       "example_id": "calendar_scheduling_example_544",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "code_execution_failed",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "10:00",
+        "10:30"
+      ],
       "expected_solution": [
         "Monday",
         "10:00",
         "10:30"
       ],
-      "validation": {
-        "error": "code not executed"
-      }
+      "validation": {}
     },
     {
       "example_id": "calendar_scheduling_example_398",

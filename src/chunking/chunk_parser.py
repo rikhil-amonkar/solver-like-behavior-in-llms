@@ -147,6 +147,9 @@ def parse_and_stitch_segments(
     each sent to the judge separately. We parse each response and combine
     all chunks into a unified chunk_analysis.
 
+    The output is seamless - as if the reasoning was never split, with no
+    metadata about segments in the final chunk_analysis or token_statistics.
+
     Args:
         segment_responses: List of raw JSON responses from judge for each segment
         encoding: Tokenizer encoding for token counting
@@ -154,7 +157,7 @@ def parse_and_stitch_segments(
     Returns:
         (enriched_chunks, token_stats, has_solver_like)
         - enriched_chunks: Combined and enriched chunks from all segments
-        - token_stats: Aggregated token statistics
+        - token_stats: Aggregated token statistics (no segment metadata)
         - has_solver_like: Whether any chunks are solver-like
     """
     all_chunks = []
@@ -178,11 +181,7 @@ def parse_and_stitch_segments(
     # Enrich combined chunks with tokens
     enriched_chunks, token_stats = enrich_chunks_with_tokens(all_chunks, encoding)
 
-    # Add segment metadata to token stats
-    token_stats["num_segments"] = len(segment_responses)
-    token_stats["was_split"] = len(segment_responses) > 1
-    if parse_failures:
-        token_stats["parse_failures"] = len(parse_failures)
+    # NO segment metadata in token_stats - output should be seamless
 
     # Check for solver-like
     has_solver_like = has_solver_like_chunks(all_chunks)

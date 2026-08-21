@@ -143,10 +143,15 @@ def run_inference_pipeline(
                     # Execute code (route by language)
                     if extracted_code:
                         language = get_language_from_task(task)
+                        # For zebralogic, pass problem data for header extraction
+                        extra_kwargs = {}
+                        if task == "zebralogic":
+                            extra_kwargs["problem_data"] = problem_data
                         code_result = execute_code_by_language(
                             extracted_code,
                             language=language,
-                            timeout_sec=code_timeout
+                            timeout_sec=code_timeout,
+                            **extra_kwargs
                         )
                     else:
                         code_result = {

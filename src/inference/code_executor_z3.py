@@ -10,10 +10,10 @@ from typing import Optional
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "src"))
 
-from general.parsing_utils import parse_code_output
+from general.parsing_utils import parse_code_output, parse_zebralogic_grid_output
 
 
-def run_z3_code(code: str, timeout_sec: float = 30.0) -> dict:
+def run_z3_code(code: str, timeout_sec: float = 30.0, problem_data: dict = None) -> dict:
     """
     Execute Z3-Python code in isolated subprocess.
 
@@ -98,7 +98,12 @@ def run_z3_code(code: str, timeout_sec: float = 30.0) -> dict:
             error = f"execution error: {str(e)}"
 
     # Parse output (Z3 solutions are usually printed as text/tables)
-    parsed_output, parse_error = parse_code_output(stdout)
+    # For zebralogic, use specialized parser
+    if problem_data and "headers" in problem_data:
+        headers = problem_data.get("headers", [])
+        parsed_output, parse_error = parse_zebralogic_grid_output(stdout, headers)
+    else:
+        parsed_output, parse_error = parse_code_output(stdout)
 
     return {
         "ran": True,
