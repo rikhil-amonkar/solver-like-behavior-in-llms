@@ -1,0 +1,342 @@
+"""Code extraction utilities for execution stage."""
+
+import re
+from typing import Optional, Tuple, List
+
+
+def split_reasoning_and_code(reasoning_trace: str) -> Tuple[str, Optional[str]]:
+    """
+    Split reasoning trace into reasoning before code and extracted code.
+
+    Robustly handles:
+    - Multiple code blocks (extracts the largest/most complete one)
+    - Language tags (python, z3, pddl, or no tag)
+    - Malformed backticks (missing closing, extra backticks)
+    - Code blocks with inline backticks
+    - Nested or escaped backticks
+    - Whitespace variations
+
+    Args:
+        reasoning_trace: Full reasoning trace from model
+
+    Returns:
+        Tuple of (reasoning_before_code, extracted_code)
+        - reasoning_before_code: Text before first valid code block
+        - extracted_code: Code within triple backticks, or None if no code found
+    """
+    if not reasoning_trace:
+        return "", None
+
+    # Find all potential code blocks
+    code_blocks = extract_all_code_blocks(reasoning_trace)
+
+    if not code_blocks:
+        return reasoning_trace.strip(), None
+
+    # Select the best code block (first, longest, or most complete)
+    selected_block = select_best_code_block(code_blocks, reasoning_trace)
+
+    if not selected_block:
+        return reasoning_trace.strip(), None
+
+    # Split at the position of the selected block
+    code_start = selected_block["start"]
+    reasoning_before_code = reasoning_trace[:code_start].strip()
+    extracted_code = selected_block["code"]
+
+    return reasoning_before_code, extracted_code
+
+
+def extract_all_code_blocks(text: str) -> List[dict]:
+    """
+    Extract all code blocks from text with their positions and metadata.
+
+    Handles:
+    - Standard format: ```python\ncode\n```
+    - No language: ```\ncode\n```
+    - Missing final newline: ```python\ncode```
+    - Extra whitespace: ```  python  \n  code  \n  ```
+    - Multiple language tags: python, py, z3, pddl, smt, etc.
+
+    Args:
+        text: Text potentially containing code blocks
+
+    Returns:
+        List of dicts with keys: code, start, end, language, raw_match
+    """
+    if not text:
+        return []
+
+    blocks = []
+
+    # Pattern 1: Standard code block with optional language tag
+    # Matches: ```python\ncode\n``` or ```\ncode\n```
+    pattern1 = r'```\s*([a-zA-Z0-9_+-]*)\s*\n(.*?)(?:\n```|```)'
+    for match in re.finditer(pattern1, text, re.DOTALL):
+        language = match.group(1).strip() if match.group(1) else None
+        code = match.group(2)
+        blocks.append({
+            "code": code.strip(),
+            "start": match.start(),
+            "end": match.end(),
+            "language": language,
+            "raw_match": match.group(0),
+            "pattern": "standard"
+        })
+
+    # Pattern 2: Code block without final closing newline
+    # Matches: ```python\ncode``` (missing \n before closing)
+    pattern2 = r'```\s*([a-zA-Z0-9_+-]*)\s*\n(.*?)```'
+    for match in re.finditer(pattern2, text, re.DOTALL):
+        # Skip if already captured by pattern1
+        if any(b["start"] == match.start() and b["end"] == match.end() for b in blocks):
+            continue
+
+        language = match.group(1).strip() if match.group(1) else None
+        code = match.group(2)
+        blocks.append({
+            "code": code.strip(),
+            "start": match.start(),
+            "end": match.end(),
+            "language": language,
+            "raw_match": match.group(0),
+            "pattern": "no_final_newline"
+        })
+
+    # Pattern 3: Malformed - opening backticks but no proper closing
+    # Try to salvage code that starts with ``` but doesn't close properly
+    if not blocks:
+        pattern3 = r'```\s*([a-zA-Z0-9_+-]*)\s*\n(.*?)(?=\n\n|\n#|\Z)'
+        for match in re.finditer(pattern3, text, re.DOTALL):
+            language = match.group(1).strip() if match.group(1) else None
+            code = match.group(2)
+
+            # Only use this as fallback if code looks substantial
+            if len(code.strip()) > 10:
+                blocks.append({
+                    "code": code.strip(),
+                    "start": match.start(),
+                    "end": match.end(),
+                    "language": language,
+                    "raw_match": match.group(0),
+                    "pattern": "malformed_closing"
+                })
+
+    # Pattern 4: Code block with language on same line (rare but possible)
+    # Matches: ```python code here``` (all on one line)
+    pattern4 = r'```\s*([a-zA-Z0-9_+-]+)\s+(.*?)```'
+    for match in re.finditer(pattern4, text):
+        # Skip if already captured
+        if any(b["start"] == match.start() for b in blocks):
+            continue
+
+        language = match.group(1).strip()
+        code = match.group(2).strip()
+
+        # Only for short snippets
+        if len(code.split('\n')) <= 3:
+            blocks.append({
+                "code": code,
+                "start": match.start(),
+                "end": match.end(),
+                "language": language,
+                "raw_match": match.group(0),
+                "pattern": "single_line"
+            })
+
+    return blocks
+
+
+def select_best_code_block(blocks: List[dict], full_text: str = "") -> Optional[dict]:
+    """
+    Select the most appropriate code block from multiple candidates.
+
+    Selection criteria (in order of priority):
+    1. First code block with explicit language tag matching expected languages
+    2. Longest code block (by character count)
+    3. First code block encountered
+    4. Code block with most lines
+
+    Args:
+        blocks: List of code block dicts from extract_all_code_blocks
+        full_text: Original text for context
+
+    Returns:
+        Selected code block dict or None
+    """
+    if not blocks:
+        return None
+
+    if len(blocks) == 1:
+        return blocks[0]
+
+    # Priority languages for different tasks
+    priority_languages = {
+        'python', 'py', 'python3',
+        'z3', 'z3-smt', 'smt', 'smt2',
+        'pddl', 'lisp'
+    }
+
+    # 1. Prefer blocks with priority language tags
+    tagged_blocks = [b for b in blocks if b.get("language") and b["language"].lower() in priority_languages]
+    if tagged_blocks:
+        # Among tagged blocks, prefer the first one
+        return tagged_blocks[0]
+
+    # 2. Prefer blocks with ANY language tag over no tag
+    any_tagged = [b for b in blocks if b.get("language")]
+    if any_tagged:
+        return any_tagged[0]
+
+    # 3. Prefer longer code blocks (more substantial)
+    longest = max(blocks, key=lambda b: len(b["code"]))
+    if len(longest["code"]) > len(blocks[0]["code"]) * 1.5:
+        # Only use longest if significantly longer
+        return longest
+
+    # 4. Default: return first block
+    return blocks[0]
+
+
+def extract_code_block(text: str, language: Optional[str] = None) -> Optional[str]:
+    """
+    Extract code from markdown code block with specific language.
+
+    More flexible wrapper around extract_all_code_blocks for language-specific extraction.
+
+    Args:
+        text: Text containing code block
+        language: Optional language identifier to match (e.g., 'python', 'z3')
+
+    Returns:
+        Extracted code or None if no code block found
+    """
+    if not text:
+        return None
+
+    blocks = extract_all_code_blocks(text)
+
+    if not blocks:
+        return None
+
+    if language:
+        # Find first block matching the language
+        language_lower = language.lower()
+        for block in blocks:
+            if block.get("language") and block["language"].lower() == language_lower:
+                return block["code"]
+
+        # Fallback: check if language is a variant (e.g., 'py' for 'python')
+        language_variants = {
+            'python': ['py', 'python3', 'python2'],
+            'z3': ['z3-smt', 'smt', 'smt2'],
+            'pddl': ['lisp'],
+        }
+
+        for variant in language_variants.get(language_lower, []):
+            for block in blocks:
+                if block.get("language") and block["language"].lower() == variant:
+                    return block["code"]
+
+        # No matching language found
+        return None
+
+    # No language specified, return first/best block
+    best = select_best_code_block(blocks, text)
+    return best["code"] if best else None
+
+
+def clean_extracted_code(code: str) -> str:
+    """
+    Clean extracted code by removing common artifacts.
+
+    Handles:
+    - Leading/trailing whitespace
+    - Extra blank lines at start/end
+    - Common markdown artifacts that slip through
+    - Inline backticks that aren't code delimiters
+
+    Args:
+        code: Extracted code string
+
+    Returns:
+        Cleaned code string
+    """
+    if not code:
+        return code
+
+    # Remove leading/trailing whitespace
+    code = code.strip()
+
+    # Remove leading/trailing blank lines
+    lines = code.split('\n')
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    while lines and not lines[-1].strip():
+        lines.pop()
+
+    code = '\n'.join(lines)
+
+    # Remove any stray backticks at start/end (shouldn't happen but just in case)
+    code = re.sub(r'^`+', '', code)
+    code = re.sub(r'`+$', '', code)
+
+    return code
+
+
+def validate_code_extraction(code: str, language: Optional[str] = None) -> bool:
+    """
+    Validate that extracted code looks reasonable.
+
+    Basic sanity checks (not syntax validation):
+    - Not empty
+    - Has actual content (not just whitespace/comments)
+    - For Python: has some recognizable Python constructs
+    - For Z3: has some recognizable Z3/SMT constructs
+
+    Args:
+        code: Extracted code
+        language: Optional language hint
+
+    Returns:
+        True if code looks valid, False otherwise
+    """
+    if not code or not code.strip():
+        return False
+
+    # Must have some non-whitespace content
+    if len(code.strip()) < 3:
+        return False
+
+    # Language-specific basic checks
+    if language:
+        lang_lower = language.lower()
+
+        if lang_lower in ['python', 'py', 'python3']:
+            # Python should have some keywords, operators, or constructs
+            python_indicators = [
+                r'\bdef\b', r'\bclass\b', r'\bif\b', r'\bfor\b', r'\bwhile\b',
+                r'\bimport\b', r'\bfrom\b', r'\breturn\b', r'\bprint\b',
+                r'=', r'\(', r'\)', r'\[', r'\]'
+            ]
+            return any(re.search(pattern, code) for pattern in python_indicators)
+
+        elif lang_lower in ['z3', 'smt', 'smt2']:
+            # Z3/SMT should have parentheses and some SMT constructs
+            smt_indicators = [
+                r'\(', r'\)', r'\bdeclare\b', r'\bassert\b', r'\bcheck-sat\b',
+                r'\bget-model\b', r'\bInt\b', r'\bBool\b', r'\bReal\b'
+            ]
+            return any(re.search(pattern, code, re.IGNORECASE) for pattern in smt_indicators)
+
+        elif lang_lower in ['pddl', 'lisp']:
+            # PDDL should have parentheses and some PDDL constructs
+            pddl_indicators = [
+                r'\(define', r'\(domain', r'\(problem', r'\(:action', r'\(:predicates'
+            ]
+            return any(re.search(pattern, code, re.IGNORECASE) for pattern in pddl_indicators)
+
+    # Generic check: has at least one line with substantial content
+    lines = [line.strip() for line in code.split('\n')]
+    substantial_lines = [line for line in lines if len(line) > 5 and not line.startswith('#')]
+    return len(substantial_lines) > 0

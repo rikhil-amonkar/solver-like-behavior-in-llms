@@ -369,12 +369,12 @@ print(f"Domain extracted: {bool(result['domain_pddl'])}")
 
 ### Adding a New Python Task
 
-1. **Create output format**: `prompts/newtask_output_format.txt`
+1. **Create output format**: `prompts/formats/newtask_output_format.txt`
 2. **Update task config** in `src/general/prompt_utils.py`:
    ```python
    task_config = {
        ...
-       "newtask": ("python", "prompts/newtask_output_format.txt"),
+       "newtask": ("python", "prompts/formats/newtask_output_format.txt"),
    }
    ```
 3. **Create evaluator**: `src/evaluation/newtask_eval.py`

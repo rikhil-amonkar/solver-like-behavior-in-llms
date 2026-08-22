@@ -29,20 +29,20 @@ import time
 
 
 def run_chunking_pipeline(
-    inference_json_path: str,
+    execution_json_path: str,
     judge_prompt_path: str,
     fix_mode: bool = False,
 ):
     """
-    Run chunking pipeline on inference results.
+    Run chunking pipeline on execution results.
 
     Args:
-        inference_json_path: Path to inference JSON output
+        execution_json_path: Path to execution JSON output
         judge_prompt_path: Path to judge prompt file
         fix_mode: If True, only re-process examples with empty chunk_analysis from existing chunking file
     """
     print(f"\n=== Chunking Pipeline {'(Fix Mode)' if fix_mode else ''} ===")
-    print(f"Input: {inference_json_path}")
+    print(f"Input: {execution_json_path}")
     print(f"Judge prompt: {judge_prompt_path}\n")
 
     # Validate environment variables for Vertex AI
@@ -62,15 +62,15 @@ def run_chunking_pipeline(
     print(f"  Location: {location}")
     print()
 
-    # Determine if we're working with inference or chunking file
+    # Determine if we're working with execution or chunking file
     if fix_mode:
-        # If user provided inference file, derive chunking file path
-        input_path = Path(inference_json_path)
+        # If user provided execution file, derive chunking file path
+        input_path = Path(execution_json_path)
 
-        # Check if input is inference or chunking file
-        if "_inference.json" in input_path.name:
+        # Check if input is execution or chunking file
+        if "_execution.json" in input_path.name:
             # Derive chunking file path
-            condition = input_path.name.replace("_inference.json", "").replace("inference.json", "baseline")
+            condition = input_path.name.replace("_execution.json", "").replace("execution.json", "baseline")
             chunking_path = input_path.parent / f"{condition}_chunking.json"
 
             if not chunking_path.exists():
@@ -78,13 +78,13 @@ def run_chunking_pipeline(
                 print(f"   Run chunking first without --fix flag, or check file path.")
                 sys.exit(1)
 
-            print(f"Detected inference file, loading chunking file: {chunking_path}")
+            print(f"Detected execution file, loading chunking file: {chunking_path}")
             chunking_data = load_json_file(str(chunking_path))
             actual_chunking_path = chunking_path
         else:
             # Assume it's already a chunking file
             print("Loading existing chunking results...")
-            chunking_data = load_json_file(inference_json_path)
+            chunking_data = load_json_file(execution_json_path)
             actual_chunking_path = input_path
 
         task = chunking_data["run_metadata"]["task"]
@@ -112,24 +112,24 @@ def run_chunking_pipeline(
         output_path = actual_chunking_path
         print(f"Output: {output_path} (will update in place)\n")
     else:
-        # Load inference results
-        print("Loading inference results...")
-        inference_data = load_json_file(inference_json_path)
+        # Load execution results
+        print("Loading execution results...")
+        execution_data = load_json_file(execution_json_path)
 
-        task = inference_data["run_metadata"]["task"]
-        model = inference_data["run_metadata"]["model"]
-        condition = inference_data["run_metadata"].get("condition", "baseline")
-        examples = inference_data["examples"]
+        task = execution_data["run_metadata"]["task"]
+        model = execution_data["run_metadata"]["model"]
+        condition = execution_data["run_metadata"].get("condition", "baseline")
+        examples = execution_data["examples"]
 
         print(f"Task: {task}")
         print(f"Model: {model}")
         print(f"Condition: {condition}")
         print(f"Examples: {len(examples)}")
 
-        # Determine output path (use same condition as inference)
-        inference_path = Path(inference_json_path)
+        # Determine output path (use same condition as execution)
+        execution_path = Path(execution_json_path)
         output_filename = f"{condition}_chunking.json"
-        output_path = inference_path.parent / output_filename
+        output_path = execution_path.parent / output_filename
         print(f"Output: {output_path}\n")
 
         all_examples_for_output = None
@@ -149,7 +149,7 @@ def run_chunking_pipeline(
             "task": task,
             "model": model,
             "condition": condition,
-            "inference_json": make_path_relative(str(inference_json_path)),
+            "execution_json": make_path_relative(str(execution_json_path)),
             "judge_model": judge_model,
             "judge_prompt": judge_prompt_path,
             "timestamp": get_timestamp(),
@@ -431,17 +431,17 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python src/run_chunking.py --input output/deepseek/calendar/inference.json \\
-                              --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  python src/run_chunking.py --input output/deepseek/calendar/execution.json \\
+                              --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
         """
     )
 
     parser.add_argument(
         "--input",
-        "--inference-json",
+        "--execution-json",
         required=True,
-        dest="inference_json",
-        help="Path to inference JSON output"
+        dest="execution_json",
+        help="Path to execution JSON output"
     )
     parser.add_argument(
         "--judge-prompt",
@@ -458,7 +458,7 @@ Examples:
 
     try:
         run_chunking_pipeline(
-            args.inference_json,
+            args.execution_json,
             args.judge_prompt,
             fix_mode=args.fix,
         )

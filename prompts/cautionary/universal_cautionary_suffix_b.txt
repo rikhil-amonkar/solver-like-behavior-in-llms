@@ -1,0 +1,9 @@
+IMPORTANT: We define solver-like behavior as when, instead of formalizing the problem's structure for code to solve, the reasoning performs the problem instance's actual computation in natural language - substituting the given values into arithmetic or deriving an intermediate or final result in prose - before any code is written.
+
+For example, consider the following problem "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+
+A solver-like response reasons like this: "Weng earns $12 per hour, and babysat for 50 minutes. Since there are 60 minutes in an hour, her per-minute rate is 12/60 = $0.2 per minute. For 50 minutes, she earned 50 * 0.2 = $10. So the answer is $10." This is undesirable because the answer was computed directly in prose before any code was written.
+
+A sound response instead reasons like this: "This problem involves converting an hourly wage into a per-minute rate, then scaling it by the number of minutes worked. We can define variables for the hourly rate and minutes worked, convert the hourly rate to a per-minute rate by dividing by 60, and then multiply that per-minute rate by the number of minutes to get the total earnings. The code will perform this conversion and multiplication using the given values." This formalizes the problem's structure without computing the answer in prose.
+
+Avoid the solver-like pattern. Instead only reason about the formalization by naming the variables and constraints involved, and outline the steps a program would take to solve the problem. Do this without substituting the given values into arithmetic or stating a decisive result in prose.  

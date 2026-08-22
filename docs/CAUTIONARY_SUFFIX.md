@@ -5,7 +5,8 @@
 The cautionary suffix feature allows you to run the entire pipeline with an additional prompt component appended to the standard prompt. This enables comparative studies between:
 
 - **Baseline condition**: Standard CSP prompts
-- **Caution condition**: Standard prompts + cautionary suffix
+- **Caution A condition**: Standard prompts + cautionary suffix variant A
+- **Caution B condition**: Standard prompts + cautionary suffix variant B
 
 ## How It Works
 
@@ -18,12 +19,20 @@ The cautionary suffix feature allows you to run the entire pipeline with an addi
 [Task Output Format]
 ```
 
-**Caution (with `--caution` flag):**
+**Caution A (with `--caution-a` flag):**
 ```
 [Universal CSP Prefix]
 {PROBLEM}
 [Task Output Format]
-[Universal Cautionary Suffix]  ← Added
+[Universal Cautionary Suffix A]  ← Added
+```
+
+**Caution B (with `--caution-b` flag):**
+```
+[Universal CSP Prefix]
+{PROBLEM}
+[Task Output Format]
+[Universal Cautionary Suffix B]  ← Added
 ```
 
 ### 2. Output File Naming
@@ -38,12 +47,20 @@ output/deepseek/calendar/
 └── baseline_chunking.json
 ```
 
-**Caution:**
+**Caution A:**
 ```
 output/deepseek/calendar/
-├── caution_inference.json
-├── caution_evaluation.json
-└── caution_chunking.json
+├── caution_a_inference.json
+├── caution_a_evaluation.json
+└── caution_a_chunking.json
+```
+
+**Caution B:**
+```
+output/deepseek/calendar/
+├── caution_b_inference.json
+├── caution_b_evaluation.json
+└── caution_b_chunking.json
 ```
 
 ### 3. Metadata Tracking
@@ -55,8 +72,9 @@ All output JSONs include condition information:
   "run_metadata": {
     "task": "calendar",
     "model": "deepseek",
-    "condition": "baseline",  // or "caution"
+    "condition": "baseline",  // or "caution_a" or "caution_b"
     "cautionary_suffix_enabled": false,  // or true (inference only)
+    "cautionary_suffix_variant": null,  // or "a" or "b" (inference only)
     ...
   }
 }
@@ -78,7 +96,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference
 # Chunking
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
 **Output files:**
@@ -88,25 +106,47 @@ python src/run_chunking.py \
 
 ---
 
-### Running Caution Condition
+### Running Caution A Condition
 
 ```bash
-# Inference (add --caution flag)
-python src/run_inference.py --task calendar --model deepseek --n 10 --caution
+# Inference (add --caution-a flag)
+python src/run_inference.py --task calendar --model deepseek --n 10 --caution-a
 
 # Evaluation (same command, detects condition from input)
-python src/run_evaluation.py --input output/deepseek/calendar/caution_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_a_inference.json
 
 # Chunking (same command, detects condition from input)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/caution_inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --input output/deepseek/calendar/caution_a_inference.json \
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
 **Output files:**
-- `caution_inference.json`
-- `caution_evaluation.json`
-- `caution_chunking.json`
+- `caution_a_inference.json`
+- `caution_a_evaluation.json`
+- `caution_a_chunking.json`
+
+---
+
+### Running Caution B Condition
+
+```bash
+# Inference (add --caution-b flag)
+python src/run_inference.py --task calendar --model deepseek --n 10 --caution-b
+
+# Evaluation (same command, detects condition from input)
+python src/run_evaluation.py --input output/deepseek/calendar/caution_b_inference.json
+
+# Chunking (same command, detects condition from input)
+python src/run_chunking.py \
+  --input output/deepseek/calendar/caution_b_inference.json \
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+```
+
+**Output files:**
+- `caution_b_inference.json`
+- `caution_b_evaluation.json`
+- `caution_b_chunking.json`
 
 ---
 
@@ -120,14 +160,14 @@ python src/run_inference.py --task calendar --model deepseek --n 10
 python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 
 # === CAUTION CONDITION ===
 python src/run_inference.py --task calendar --model deepseek --n 10 --caution
 python src/run_evaluation.py --input output/deepseek/calendar/caution_inference.json
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 
 # Now you have both sets of outputs for comparison
 ls output/deepseek/calendar/
@@ -140,14 +180,16 @@ ls output/deepseek/calendar/
 
 ## Cautionary Suffix Content
 
-The cautionary suffix is loaded from:
+The cautionary suffixes are loaded from:
 ```
-prompts/universal_cautionary_suffix.txt
+prompts/cautionary/universal_cautionary_suffix_a.txt
+prompts/cautionary/universal_cautionary_suffix_b.txt
 ```
 
 **Current Status:**
-- File exists but is currently empty (placeholder)
-- When populated in the future, the `--caution` flag will automatically include it
+- Variant A (`_a.txt`): Populated and ready to use
+- Variant B (`_b.txt`): Empty placeholder, ready for your content
+- Use `--caution-a` or `--caution-b` flags to enable the respective variant
 - If file is missing or empty, a warning is shown but pipeline continues
 
 **Example Cautionary Suffix** (future):
@@ -251,7 +293,7 @@ python src/run_evaluation.py \
 ```bash
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
 **No flag needed** - condition is auto-detected from input JSON.
@@ -334,8 +376,10 @@ output_path = f"{condition}_chunking.json"
 
 When you're ready to use the cautionary suffix:
 
-1. **Write suffix content** to `prompts/universal_cautionary_suffix.txt`
-2. **Run with `--caution` flag**
-3. **Compare results** against baseline
+1. **Populate suffix files** in `prompts/cautionary/`:
+   - `universal_cautionary_suffix_a.txt` (already populated)
+   - `universal_cautionary_suffix_b.txt` (ready for your content)
+2. **Run with `--caution-a` or `--caution-b` flag**
+3. **Compare results** against baseline and between variants
 
 The infrastructure is ready - just populate the suffix file when needed!

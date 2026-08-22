@@ -195,7 +195,7 @@ This document defines the expected JSON structure for each pipeline stage.
     "model": "deepseek",
     "inference_json": "output/deepseek/calendar/inference.json",
     "judge_model": "publishers/google/models/gemini-2.5-pro",
-    "judge_prompt": "prompts/llm_as_judge_for_chunking.txt",
+    "judge_prompt": "prompts/formats/llm_as_judge_for_chunking.txt",
     "timestamp": "2026-08-18T19:00:00Z",
     "num_examples": 100,
     "max_judge_tokens": 65536

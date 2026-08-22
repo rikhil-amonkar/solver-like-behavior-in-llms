@@ -236,20 +236,20 @@ universal_csp_prefix_pddl.txt  (PDDL-specific CSP framing)
 
 ### To add a new Python standard library task:
 1. Create problem dataset: `data/problems/newtask_100.json`
-2. Create output format: `prompts/newtask_output_format.txt`
-3. Use existing: `prompts/universal_csp_prefix_python.txt`
+2. Create output format: `prompts/formats/newtask_output_format.txt`
+3. Use existing: `prompts/prefix/universal_csp_prefix_python.txt`
 4. Implement evaluator: `src/evaluation/newtask_eval.py`
 
 ### To add a new Z3 task:
 1. Create problem dataset with logic clues
 2. Create output format specifying Z3 variable structure
-3. Use existing: `prompts/universal_csp_prefix_z3.txt`
+3. Use existing: `prompts/prefix/universal_csp_prefix_z3.txt`
 4. Implement evaluator that checks constraint satisfaction
 
 ### To add a new PDDL task:
 1. Create problem dataset with initial/goal states
 2. Create output format specifying PDDL structure
-3. Use existing: `prompts/universal_csp_prefix_pddl.txt`
+3. Use existing: `prompts/prefix/universal_csp_prefix_pddl.txt`
 4. Implement evaluator with PDDL planner integration
 
 ---

@@ -138,7 +138,7 @@ The splitting logic is **automatic and transparent**:
 # Same command as before
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
 **What happens automatically**:

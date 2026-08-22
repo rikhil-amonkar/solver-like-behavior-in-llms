@@ -72,29 +72,29 @@ def is_no_solution_indicator(stdout: str) -> bool:
     return False
 
 
-def run_evaluation_pipeline(inference_json_path: str):
+def run_evaluation_pipeline(execution_json_path: str):
     """
-    Run evaluation pipeline on inference results.
+    Run evaluation pipeline on execution results.
 
     Args:
-        inference_json_path: Path to inference JSON output
+        execution_json_path: Path to execution JSON output
     """
     print(f"\n=== Evaluation Pipeline ===")
-    print(f"Input: {inference_json_path}\n")
+    print(f"Input: {execution_json_path}\n")
 
-    # Load inference results
-    print("Loading inference results...")
-    inference_data = load_json_file(inference_json_path)
+    # Load execution results
+    print("Loading execution results...")
+    execution_data = load_json_file(execution_json_path)
 
     # Support both 'metadata' and 'run_metadata' keys
-    meta = inference_data.get("metadata") or inference_data.get("run_metadata")
+    meta = execution_data.get("metadata") or execution_data.get("run_metadata")
     if not meta:
-        raise ValueError("Inference JSON missing 'metadata' or 'run_metadata' key")
+        raise ValueError("Execution JSON missing 'metadata' or 'run_metadata' key")
 
     task = meta["task"]
     model = meta["model"]
     condition = meta.get("condition", "baseline")
-    examples = inference_data["examples"]
+    examples = execution_data["examples"]
 
     print(f"Task: {task}")
     print(f"Model: {model}")
@@ -107,10 +107,10 @@ def run_evaluation_pipeline(inference_json_path: str):
     print("Loading golden solutions...")
     golden_solutions = load_problems_with_solutions(task)
 
-    # Determine output path (use same condition as inference)
-    inference_path = Path(inference_json_path)
+    # Determine output path (use same condition as execution)
+    execution_path = Path(execution_json_path)
     output_filename = f"{condition}_evaluation.json"
-    output_path = inference_path.parent / output_filename
+    output_path = execution_path.parent / output_filename
     print(f"Output: {output_path}\n")
 
     # Build metadata
@@ -118,7 +118,7 @@ def run_evaluation_pipeline(inference_json_path: str):
         "task": task,
         "model": model,
         "condition": condition,
-        "inference_json": make_path_relative(str(inference_json_path)),
+        "execution_json": make_path_relative(str(execution_json_path)),
         "constraints_json": f"data/constraints/{task}_constraints.json",
         "timestamp": get_timestamp(),
         "num_examples": len(examples),
@@ -391,22 +391,22 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python src/run_evaluation.py --input output/deepseek/calendar/inference.json
+  python src/run_evaluation.py --input output/deepseek/calendar/execution.json
         """
     )
 
     parser.add_argument(
         "--input",
-        "--inference-json",
+        "--execution-json",
         required=True,
-        dest="inference_json",
-        help="Path to inference JSON output"
+        dest="execution_json",
+        help="Path to execution JSON output"
     )
 
     args = parser.parse_args()
 
     try:
-        run_evaluation_pipeline(args.inference_json)
+        run_evaluation_pipeline(args.execution_json)
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
         sys.exit(1)

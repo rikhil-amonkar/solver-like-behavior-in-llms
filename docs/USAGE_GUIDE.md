@@ -114,7 +114,7 @@ Classify reasoning traces into sound vs solver-like chunks using Gemini judge.
 ```bash
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
 **Output:** `output/{model}/{task}/chunking.json`
@@ -153,7 +153,7 @@ python src/run_evaluation.py \
 # Step 3: Chunking (classify reasoning)
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
 **Final Output Structure:**
@@ -327,7 +327,7 @@ Format:
 
 1. **Add problem dataset**: `data/problems/{task}_100.json`
 2. **Add constraints**: `data/constraints/{task}_constraints.json`
-3. **Add output format prompt**: `prompts/{task}_output_format.txt`
+3. **Add output format prompt**: `prompts/formats/{task}_output_format.txt`
 4. **Implement evaluator**: `src/evaluation/{task}_eval.py`
 5. **Update mappings**:
    - `src/general/io_utils.py`: `TASK_TO_PROBLEMS_FILE`, `TASK_TO_CONSTRAINTS_FILE`

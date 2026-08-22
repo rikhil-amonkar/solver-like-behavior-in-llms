@@ -23,10 +23,8 @@ from general.prompt_utils import (
     get_task_prompts,
     build_full_prompt,
 )
-from general.parsing_utils import split_reasoning_and_code, extract_code_block
 from general.cli import ProgressTracker
 from inference.model_caller import call_model
-from inference.code_executor import execute_code_by_language, get_language_from_task
 
 
 def run_inference_pipeline(
@@ -34,8 +32,7 @@ def run_inference_pipeline(
     model: str,
     num_examples: int = None,
     max_tokens: int = None,
-    code_timeout: float = 30.0,
-    use_caution: bool = False,
+    caution_variant: str = None,
 ):
     """
     Run inference pipeline for a task and model.
@@ -45,10 +42,9 @@ def run_inference_pipeline(
         model: Model name (deepseek, qwen, gpt)
         num_examples: Number of examples to process (None = all)
         max_tokens: Max tokens for generation (None = use model default)
-        code_timeout: Timeout for code execution in seconds
-        use_caution: Whether to include cautionary suffix in prompts
+        caution_variant: Cautionary suffix variant ('a' or 'b'), or None for baseline
     """
-    condition = "caution" if use_caution else "baseline"
+    condition = f"caution_{caution_variant}" if caution_variant else "baseline"
 
     print(f"\n=== Inference Pipeline ===")
     print(f"Task: {task}")
@@ -77,13 +73,13 @@ def run_inference_pipeline(
 
     # Load cautionary suffix if enabled
     cautionary_suffix = ""
-    if use_caution:
-        cautionary_suffix_path = "prompts/universal_cautionary_suffix.txt"
+    if caution_variant:
+        cautionary_suffix_path = f"prompts/cautionary/universal_cautionary_suffix_{caution_variant}.txt"
         try:
             cautionary_suffix = load_prompt_template(cautionary_suffix_path)
-            print("Cautionary suffix loaded")
+            print(f"Cautionary suffix variant '{caution_variant}' loaded")
         except FileNotFoundError:
-            print("Warning: Cautionary suffix file not found, proceeding without it")
+            print(f"Warning: Cautionary suffix file not found at {cautionary_suffix_path}, proceeding without it")
             cautionary_suffix = ""
 
     print("Prompts loaded")
@@ -98,16 +94,15 @@ def run_inference_pipeline(
         "model": model,
         "model_full_name": get_model_full_name(model),
         "condition": condition,
-        "cautionary_suffix_enabled": use_caution,
+        "cautionary_suffix_enabled": bool(caution_variant),
+        "cautionary_suffix_variant": caution_variant,
         "timestamp": get_timestamp(),
         "num_examples": len(example_ids),
         "max_tokens": max_tokens,
-        "code_timeout_sec": code_timeout,
     }
 
     # Process examples with incremental JSON writing
     success_count = 0
-    error_count = 0
 
     with IncrementalJSONWriter(str(output_path), metadata) as writer:
         with ProgressTracker(len(example_ids), f"Processing {task}") as progress:
@@ -135,58 +130,20 @@ def run_inference_pipeline(
                     reasoning_trace = model_result["reasoning_trace"]
                     model_metadata = model_result["metadata"]
 
-                    # Split reasoning and code
-                    reasoning_before_code, extracted_code = split_reasoning_and_code(
-                        reasoning_trace
-                    )
-
-                    # Execute code (route by language)
-                    if extracted_code:
-                        language = get_language_from_task(task)
-                        # For zebralogic, pass problem data for header extraction
-                        extra_kwargs = {}
-                        if task == "zebralogic":
-                            extra_kwargs["problem_data"] = problem_data
-                        code_result = execute_code_by_language(
-                            extracted_code,
-                            language=language,
-                            timeout_sec=code_timeout,
-                            **extra_kwargs
-                        )
-                    else:
-                        code_result = {
-                            "ran": False,
-                            "exit_code": None,
-                            "stdout": "",
-                            "stderr": "",
-                            "timed_out": False,
-                            "timeout_sec": code_timeout,
-                            "error": "no code extracted",
-                            "parsed_output": None,
-                        }
-
-                    # Build example result
+                    # Build example result (only reasoning trace, no execution)
                     example_result = {
                         "example_id": example_id,
                         "problem_text": problem_text,
                         "reasoning_trace": reasoning_trace,
-                        "reasoning_before_code": reasoning_before_code,
-                        "extracted_code": extracted_code,
-                        "code_execution": code_result,
                         "model_metadata": model_metadata,
                     }
 
                     # Write immediately
                     writer.write_example(example_result)
-
-                    if code_result.get("exit_code") == 0:
-                        success_count += 1
-                    else:
-                        error_count += 1
+                    success_count += 1
 
                 except Exception as e:
                     # Log error but continue
-                    error_count += 1
                     print(f"\nError on {example_id}: {str(e)}")
 
                     # Write error example
@@ -194,29 +151,18 @@ def run_inference_pipeline(
                         "example_id": example_id,
                         "problem_text": problem_data.get("problem", ""),
                         "reasoning_trace": "",
-                        "reasoning_before_code": "",
-                        "extracted_code": "",
-                        "code_execution": {
-                            "ran": False,
-                            "exit_code": None,
-                            "stdout": "",
-                            "stderr": "",
-                            "timed_out": False,
-                            "timeout_sec": code_timeout,
-                            "error": f"pipeline error: {str(e)}",
-                            "parsed_output": None,
+                        "model_metadata": {
+                            "error": str(e),
                         },
-                        "model_metadata": {},
                     }
                     writer.write_example(error_result)
 
                 # Update progress
                 progress.update(1)
-                progress.set_postfix(success=success_count, errors=error_count)
+                progress.set_postfix(success=success_count)
 
     print(f"\n✓ Inference complete!")
-    print(f"  Success: {success_count}/{len(example_ids)}")
-    print(f"  Errors: {error_count}/{len(example_ids)}")
+    print(f"  Processed: {success_count}/{len(example_ids)}")
     print(f"  Output: {output_path}")
 
 
@@ -236,7 +182,15 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+  # Baseline (no cautionary suffix)
   python src/run_inference.py --task calendar --model deepseek --n 10
+
+  # With cautionary suffix variant A
+  python src/run_inference.py --task calendar --model deepseek --n 10 --caution-a
+
+  # With cautionary suffix variant B
+  python src/run_inference.py --task calendar --model deepseek --n 10 --caution-b
+
   python src/run_inference.py --task meeting --model qwen --max-tokens 100000
   python src/run_inference.py --task zebralogic --model deepseek --n 10
   python src/run_inference.py --task blocksworld --model gpt --n 5
@@ -269,18 +223,21 @@ Examples:
         default=None,
         help="Max tokens for generation (default: model-specific from .env)"
     )
-    parser.add_argument(
-        "--timeout",
-        type=float,
-        default=30.0,
-        help="Timeout for code execution in seconds (default: 30)"
+    # Cautionary suffix variants (mutually exclusive)
+    caution_group = parser.add_mutually_exclusive_group()
+    caution_group.add_argument(
+        "--caution-a",
+        action="store_const",
+        const="a",
+        dest="caution_variant",
+        help="Include cautionary suffix variant A in prompts"
     )
-    parser.add_argument(
-        "--caution",
-        "--use-caution",
-        action="store_true",
-        dest="use_caution",
-        help="Include cautionary suffix in prompts (default: False, baseline condition)"
+    caution_group.add_argument(
+        "--caution-b",
+        action="store_const",
+        const="b",
+        dest="caution_variant",
+        help="Include cautionary suffix variant B in prompts"
     )
 
     args = parser.parse_args()
@@ -291,8 +248,7 @@ Examples:
             model=args.model,
             num_examples=args.num_examples,
             max_tokens=args.max_tokens,
-            code_timeout=args.timeout,
-            use_caution=args.use_caution,
+            caution_variant=args.caution_variant,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

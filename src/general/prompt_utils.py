@@ -79,16 +79,16 @@ def get_task_prompts(task: str) -> tuple[str, str]:
     """
     # Map tasks to their language and output format
     task_config = {
-        "calendar": ("python", "prompts/calendar_output_format.txt"),
-        "meeting": ("python", "prompts/meeting_output_format.txt"),
-        "zebralogic": ("z3", "prompts/zebralogic_output_format.txt"),
-        "blocksworld": ("pddl", "prompts/blocksworld_output_format.txt"),
+        "calendar": ("python", "prompts/formats/calendar_output_format.txt"),
+        "meeting": ("python", "prompts/formats/meeting_output_format.txt"),
+        "zebralogic": ("z3", "prompts/formats/zebralogic_output_format.txt"),
+        "blocksworld": ("pddl", "prompts/formats/blocksworld_output_format.txt"),
     }
 
     if task not in task_config:
         raise ValueError(f"Unknown task: {task}. Choose from: {list(task_config.keys())}")
 
     language, output_format_path = task_config[task]
-    universal_prefix_path = f"prompts/universal_csp_prefix_{language}.txt"
+    universal_prefix_path = f"prompts/prefix/universal_csp_prefix_{language}.txt"
 
     return universal_prefix_path, output_format_path
