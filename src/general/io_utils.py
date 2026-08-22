@@ -269,6 +269,8 @@ class IncrementalJSONWriter:
         Args:
             final_summary: Final summary to include
         """
+        from collections import OrderedDict
+
         # Read all lines from JSONL
         examples = []
         metadata = None
@@ -289,19 +291,19 @@ class IncrementalJSONWriter:
                     # Regular example
                     examples.append(obj)
 
-        # Build final JSON structure
-        final_data = {
-            "run_metadata": metadata or self.metadata,
-        }
+        # Build final JSON structure with explicit key ordering
+        # IMPORTANT: Metadata and summary MUST be at the top
+        final_data = OrderedDict()
+        final_data["run_metadata"] = metadata or self.metadata
 
-        # Add summary if we have it
+        # Add summary if we have it (goes after metadata, before examples)
         if final_summary is not None:
             final_data["summary"] = final_summary
 
-        # Add examples
+        # Add examples last
         final_data["examples"] = examples
 
-        # Write final JSON
+        # Write final JSON (OrderedDict preserves insertion order)
         with self.output_path.open("w", encoding="utf-8") as f:
             json.dump(final_data, f, indent=2, ensure_ascii=False)
             f.write("\n")

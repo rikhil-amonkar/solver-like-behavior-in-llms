@@ -27,6 +27,34 @@ from execution.code_extractor import (
 from execution.output_formatter import parse_output_by_task
 from inference.code_executor import execute_code_by_language, get_language_from_task
 
+try:
+    import tiktoken
+    TIKTOKEN_AVAILABLE = True
+except ImportError:
+    TIKTOKEN_AVAILABLE = False
+
+
+def count_tokens(text: str, encoding: str = "cl100k_base") -> int:
+    """
+    Count tokens in text using tiktoken.
+
+    Args:
+        text: Text to count tokens for
+        encoding: Tiktoken encoding name (default: cl100k_base for GPT-4)
+
+    Returns:
+        Token count, or -1 if tiktoken not available
+    """
+    if not TIKTOKEN_AVAILABLE or not text:
+        return -1
+
+    try:
+        tokenizer = tiktoken.get_encoding(encoding)
+        return len(tokenizer.encode(text))
+    except Exception:
+        # Fallback: return -1 to indicate unavailable
+        return -1
+
 
 def run_execution_pipeline(
     inference_json_path: str,
@@ -141,11 +169,17 @@ def run_execution_pipeline(
                             "parsed_output": None,
                         }
 
+                    # Count tokens for reasoning and code
+                    reasoning_tokens = count_tokens(reasoning_before_code or "")
+                    code_tokens = count_tokens(extracted_code or "")
+
                     # Build execution result
                     execution_result = {
                         "example_id": example_id,
                         "reasoning_before_code": reasoning_before_code,
+                        "reasoning_before_code_tokens": reasoning_tokens,
                         "extracted_code": extracted_code,
+                        "extracted_code_tokens": code_tokens,
                         "code_execution": code_result,
                     }
 
@@ -165,7 +199,9 @@ def run_execution_pipeline(
                     error_result = {
                         "example_id": example.get("example_id", "unknown"),
                         "reasoning_before_code": "",
+                        "reasoning_before_code_tokens": 0,
                         "extracted_code": "",
+                        "extracted_code_tokens": 0,
                         "code_execution": {
                             "ran": False,
                             "exit_code": None,
@@ -182,6 +218,14 @@ def run_execution_pipeline(
                 # Update progress
                 progress.update(1)
                 progress.set_postfix(success=success_count, errors=error_count)
+
+        # Finalize with summary
+        summary = {
+            "total_examples": len(examples),
+            "successful_executions": success_count,
+            "failed_executions": error_count,
+        }
+        writer.finalize_with_summary(summary)
 
     print(f"\n✓ Execution complete!")
     print(f"  Success: {success_count}/{len(examples)}")

@@ -103,6 +103,7 @@ def run_inference_pipeline(
 
     # Process examples with incremental JSON writing
     success_count = 0
+    error_count = 0
 
     with IncrementalJSONWriter(str(output_path), metadata) as writer:
         with ProgressTracker(len(example_ids), f"Processing {task}") as progress:
@@ -144,6 +145,7 @@ def run_inference_pipeline(
 
                 except Exception as e:
                     # Log error but continue
+                    error_count += 1
                     print(f"\nError on {example_id}: {str(e)}")
 
                     # Write error example
@@ -159,10 +161,19 @@ def run_inference_pipeline(
 
                 # Update progress
                 progress.update(1)
-                progress.set_postfix(success=success_count)
+                progress.set_postfix(success=success_count, errors=error_count)
+
+        # Finalize with summary
+        summary = {
+            "total_examples": len(example_ids),
+            "successful": success_count,
+            "errors": error_count,
+        }
+        writer.finalize_with_summary(summary)
 
     print(f"\n✓ Inference complete!")
     print(f"  Processed: {success_count}/{len(example_ids)}")
+    print(f"  Errors: {error_count}/{len(example_ids)}")
     print(f"  Output: {output_path}")
 
 

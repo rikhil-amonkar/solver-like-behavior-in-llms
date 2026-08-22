@@ -407,6 +407,16 @@ def run_chunking_pipeline(
                 progress.update(1)
                 progress.set_postfix(solver_like=examples_with_solver_like, sound=examples_sound_only)
 
+        # Finalize with summary
+        summary = {
+            "total_examples": len(examples),
+            "examples_with_solver_like": examples_with_solver_like,
+            "examples_sound_only": examples_sound_only,
+            "examples_split_into_segments": examples_split,
+            "total_chunks": total_chunks,
+        }
+        writer.finalize_with_summary(summary)
+
     # Print summary
     if fix_mode:
         print(f"\n✓ Fix complete!")

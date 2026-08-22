@@ -126,7 +126,7 @@ def run_evaluation_pipeline(execution_json_path: str):
 
     # Initialize summary with all possible error categories at 0
     all_error_categories = [
-        "code_execution_failed",
+        "no_code_extracted",
         "execution_error",
         "no_output",
         "no_solution",
@@ -176,9 +176,9 @@ def run_evaluation_pipeline(execution_json_path: str):
                     exec_result = example["code_execution"]
 
                     if not exec_result["ran"]:
-                        classification = "code_execution_failed"
+                        classification = "no_code_extracted"
                         is_correct = False
-                        validation = {"error": "code not executed"}
+                        validation = {"error": "code not extracted or invalid"}
                     elif exec_result["exit_code"] != 0:
                         # Code ran but exited with error
                         classification = "execution_error"
@@ -276,7 +276,7 @@ def run_evaluation_pipeline(execution_json_path: str):
                     if task == "zebralogic":
                         # For zebralogic, only track errors (not constraint violations)
                         # Don't update correct/incorrect counts (those are based on golden match)
-                        if classification in ["code_execution_failed", "execution_error", "no_output",
+                        if classification in ["no_code_extracted", "execution_error", "no_output",
                                              "no_solution", "parse_error", "evaluation_error"]:
                             error_breakdown[classification] = error_breakdown.get(classification, 0) + 1
                         elif classification == "incorrect_solution":

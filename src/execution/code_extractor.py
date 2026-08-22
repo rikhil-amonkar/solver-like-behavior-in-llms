@@ -152,10 +152,10 @@ def select_best_code_block(blocks: List[dict], full_text: str = "") -> Optional[
     Select the most appropriate code block from multiple candidates.
 
     Selection criteria (in order of priority):
-    1. First code block with explicit language tag matching expected languages
-    2. Longest code block (by character count)
-    3. First code block encountered
-    4. Code block with most lines
+    1. Filter out placeholder/trivial blocks (e.g., "...")
+    2. First substantial code block with explicit language tag matching expected languages
+    3. Longest substantial code block (by character count)
+    4. First substantial code block encountered
 
     Args:
         blocks: List of code block dicts from extract_all_code_blocks
@@ -167,8 +167,50 @@ def select_best_code_block(blocks: List[dict], full_text: str = "") -> Optional[
     if not blocks:
         return None
 
-    if len(blocks) == 1:
-        return blocks[0]
+    # Filter out placeholder/trivial code blocks
+    substantial_blocks = []
+    for b in blocks:
+        code = b["code"].strip()
+
+        # Skip if too short
+        if len(code) < 10:
+            continue
+
+        # Skip if it's just ellipsis or placeholder
+        if code in ["...", "…", "# ...", "pass", "# TODO", "# Code here"]:
+            continue
+
+        # Skip if it's only ellipsis/dots with minimal whitespace
+        if re.match(r'^[\.\s…]+$', code):
+            continue
+
+        # Skip if contains natural language prose markers (likely incomplete extraction)
+        # Check for question marks followed by reasoning/commentary
+        prose_markers = [
+            r'\?\s*(Actually|Wait|Maybe|But|However|Since|Note|Because)',  # "? Actually" or "? Wait"
+            r'\{\.\.\.}',  # {...} placeholder
+            r'\[\.\.\.}',  # [...] placeholder with typo
+            r'\.{3,}\s*[,\)]',  # "..., " or "...)" - ellipsis as placeholder in data structures
+        ]
+        if any(re.search(pattern, code, re.IGNORECASE) for pattern in prose_markers):
+            continue
+
+        # Skip if contains natural language reasoning words in suspicious contexts
+        reasoning_patterns = [
+            r'^\s*maybe\b', r'^\s*actually\b', r'^\s*wait\b',  # Line starts with reasoning
+            r'#.*\blet\'s\b', r'#.*\bneed\s+to\b',  # Comments with reasoning
+        ]
+        if any(re.search(pattern, code, re.IGNORECASE | re.MULTILINE) for pattern in reasoning_patterns):
+            continue
+
+        substantial_blocks.append(b)
+
+    if not substantial_blocks:
+        # If all blocks filtered out, return None (better than returning placeholder)
+        return None
+
+    if len(substantial_blocks) == 1:
+        return substantial_blocks[0]
 
     # Priority languages for different tasks
     priority_languages = {
@@ -177,25 +219,19 @@ def select_best_code_block(blocks: List[dict], full_text: str = "") -> Optional[
         'pddl', 'lisp'
     }
 
-    # 1. Prefer blocks with priority language tags
-    tagged_blocks = [b for b in blocks if b.get("language") and b["language"].lower() in priority_languages]
+    # 1. Prefer blocks with priority language tags (and substantial)
+    tagged_blocks = [b for b in substantial_blocks if b.get("language") and b["language"].lower() in priority_languages]
     if tagged_blocks:
-        # Among tagged blocks, prefer the first one
-        return tagged_blocks[0]
+        # Among tagged blocks, prefer the longest (not first, to avoid placeholders)
+        return max(tagged_blocks, key=lambda b: len(b["code"]))
 
     # 2. Prefer blocks with ANY language tag over no tag
-    any_tagged = [b for b in blocks if b.get("language")]
+    any_tagged = [b for b in substantial_blocks if b.get("language")]
     if any_tagged:
-        return any_tagged[0]
+        return max(any_tagged, key=lambda b: len(b["code"]))
 
-    # 3. Prefer longer code blocks (more substantial)
-    longest = max(blocks, key=lambda b: len(b["code"]))
-    if len(longest["code"]) > len(blocks[0]["code"]) * 1.5:
-        # Only use longest if significantly longer
-        return longest
-
-    # 4. Default: return first block
-    return blocks[0]
+    # 3. Return longest substantial block
+    return max(substantial_blocks, key=lambda b: len(b["code"]))
 
 
 def extract_code_block(text: str, language: Optional[str] = None) -> Optional[str]:

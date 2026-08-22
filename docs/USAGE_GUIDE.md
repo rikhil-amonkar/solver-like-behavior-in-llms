@@ -44,7 +44,7 @@ HF_CACHE=/path/to/hf/cache
 
 ### 1. Inference
 
-Call models with CSP problems, extract code, execute it.
+Call models with CSP problems and get full reasoning traces.
 
 **Basic Usage:**
 ```bash
@@ -58,8 +58,19 @@ python src/run_inference.py \
   --model deepseek \          # Model: deepseek, qwen, or gpt
   --n 10 \                    # Number of examples (default: all)
   --max-tokens 50000 \        # Max generation tokens (default: from .env)
-  --timeout 60                # Code execution timeout in seconds (default: 30)
+  --caution-a                 # Include cautionary suffix variant A (optional)
+  # OR
+  --caution-b                 # Include cautionary suffix variant B (optional)
 ```
+
+**Cautionary Prompts:**
+
+Cautionary suffixes are experimental prompt additions designed to encourage proper formalization:
+- `--caution-a`: Adds `prompts/cautionary/universal_cautionary_suffix_a.txt` to prompts
+- `--caution-b`: Adds `prompts/cautionary/universal_cautionary_suffix_b.txt` to prompts
+- Omit both flags for baseline (no cautionary suffix)
+- Flags are mutually exclusive (cannot use both)
+- Output files are automatically named with condition prefix (`baseline_`, `caution_a_`, `caution_b_`)
 
 **Output:** `output/{model}/{task}/inference.json`
 
@@ -72,17 +83,43 @@ Processing calendar | 45/100 [00:12<00:15, success=42, errors=3]
 - ✅ Incremental JSON writing (no memory buildup)
 - ✅ Progress bar with success/error counts
 - ✅ Error handling (continues on failure)
-- ✅ Code execution in isolated subprocess
+- ✅ Full reasoning traces with model metadata
 
 ---
 
-### 2. Evaluation
+### 2. Execution
+
+Extract code from reasoning traces, execute it, and format output.
+
+**Basic Usage:**
+```bash
+python src/run_execution.py --input output/deepseek/calendar/inference.json
+```
+
+**All Options:**
+```bash
+python src/run_execution.py \
+  --input output/deepseek/calendar/inference.json \
+  --timeout 60                # Code execution timeout in seconds (default: 30)
+```
+
+**Output:** `output/{model}/{task}/execution.json`
+
+**Features:**
+- ✅ Code extraction from reasoning traces
+- ✅ Isolated subprocess execution
+- ✅ Task-specific output parsing
+- ✅ Reasoning before code / extracted code separation
+
+---
+
+### 3. Evaluation
 
 Validate code outputs against task constraints.
 
 **Usage:**
 ```bash
-python src/run_evaluation.py --input output/deepseek/calendar/inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/execution.json
 ```
 
 **Output:** `output/{model}/{task}/evaluation.json`
@@ -106,14 +143,14 @@ python src/run_evaluation.py --input output/deepseek/calendar/inference.json
 
 ---
 
-### 3. Chunking
+### 4. Chunking
 
 Classify reasoning traces into sound vs solver-like chunks using Gemini judge.
 
 **Usage:**
 ```bash
 python src/run_chunking.py \
-  --input output/deepseek/calendar/inference.json \
+  --input output/deepseek/calendar/execution.json \
   --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
@@ -135,33 +172,105 @@ python src/run_chunking.py \
 
 ---
 
-## Complete Workflow Example
+## Complete Workflow Examples
+
+### Baseline Run (No Cautionary Suffix)
 
 Run full pipeline for DeepSeek on calendar scheduling:
 
 ```bash
-# Step 1: Inference (run model, execute code)
+# Step 1: Inference (get reasoning traces)
 python src/run_inference.py \
   --task calendar \
   --model deepseek \
   --n 10
 
-# Step 2: Evaluation (check constraints)
-python src/run_evaluation.py \
-  --input output/deepseek/calendar/inference.json
+# Step 2: Execution (extract & run code)
+python src/run_execution.py \
+  --input output/deepseek/calendar/baseline_inference.json
 
-# Step 3: Chunking (classify reasoning)
+# Step 3: Evaluation (check constraints)
+python src/run_evaluation.py \
+  --input output/deepseek/calendar/baseline_execution.json
+
+# Step 4: Chunking (classify reasoning)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
 ```
 
+### Cautionary Suffix Run
+
+Run with cautionary suffix variant A:
+
+```bash
+# Step 1: Inference with caution-a
+python src/run_inference.py \
+  --task calendar \
+  --model deepseek \
+  --n 10 \
+  --caution-a
+
+# Step 2: Execution
+python src/run_execution.py \
+  --input output/deepseek/calendar/caution_a_inference.json
+
+# Step 3: Evaluation
+python src/run_evaluation.py \
+  --input output/deepseek/calendar/caution_a_execution.json
+
+# Step 4: Chunking
+python src/run_chunking.py \
+  --input output/deepseek/calendar/caution_a_execution.json \
+  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+```
+
+### Comparing All Conditions
+
+Run all three conditions (baseline, caution-a, caution-b) for comparison:
+
+```bash
+# Run baseline
+python src/run_inference.py --task calendar --model deepseek --n 100
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
+
+# Run caution-a
+python src/run_inference.py --task calendar --model deepseek --n 100 --caution-a
+python src/run_execution.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_a_execution.json
+
+# Run caution-b
+python src/run_inference.py --task calendar --model deepseek --n 100 --caution-b
+python src/run_execution.py --input output/deepseek/calendar/caution_b_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_b_execution.json
+
+# Compare results
+diff output/deepseek/calendar/baseline_evaluation.json output/deepseek/calendar/caution_a_evaluation.json
+```
+
 **Final Output Structure:**
+
+Baseline run:
 ```
 output/deepseek/calendar/
-├── inference.json    # Model reasoning + code execution
-├── evaluation.json   # Constraint validation results
-└── chunking.json     # Sound vs solver-like analysis
+├── baseline_inference.json    # Model reasoning traces
+├── baseline_execution.json    # Code extraction + execution results
+├── baseline_evaluation.json   # Constraint validation results
+└── baseline_chunking.json     # Sound vs solver-like analysis
+```
+
+Cautionary runs:
+```
+output/deepseek/calendar/
+├── caution_a_inference.json    # With cautionary suffix A
+├── caution_a_execution.json
+├── caution_a_evaluation.json
+├── caution_a_chunking.json
+├── caution_b_inference.json    # With cautionary suffix B
+├── caution_b_execution.json
+├── caution_b_evaluation.json
+└── caution_b_chunking.json
 ```
 
 ---
@@ -176,19 +285,27 @@ output/deepseek/calendar/
 | `--model` | choice | Yes | - | deepseek, qwen, or gpt |
 | `--n` / `--num-examples` | int | No | all | Number of examples to process |
 | `--max-tokens` | int | No | from .env | Max tokens for generation |
+| `--caution-a` | flag | No | - | Include cautionary suffix variant A |
+| `--caution-b` | flag | No | - | Include cautionary suffix variant B |
+
+### Execution (`run_execution.py`)
+
+| Flag | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `--input` / `--inference-json` | path | Yes | - | Path to inference JSON |
 | `--timeout` | float | No | 30.0 | Code execution timeout (seconds) |
 
 ### Evaluation (`run_evaluation.py`)
 
 | Flag | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `--input` / `--inference-json` | path | Yes | - | Path to inference JSON |
+| `--input` / `--execution-json` | path | Yes | - | Path to execution JSON |
 
 ### Chunking (`run_chunking.py`)
 
 | Flag | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `--input` / `--inference-json` | path | Yes | - | Path to inference JSON |
+| `--input` / `--execution-json` | path | Yes | - | Path to execution JSON |
 | `--judge-prompt` | path | Yes | - | Path to judge prompt file |
 
 ---
