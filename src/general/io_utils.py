@@ -203,7 +203,7 @@ class IncrementalJSONWriter:
     """
     Write JSON array incrementally to avoid memory issues.
 
-    Writes results as they're generated rather than accumulating in memory.
+    Writes results as JSONL during execution, converts to JSON when complete.
     """
 
     def __init__(self, output_path: str, metadata: dict, summary: Optional[dict] = None):
@@ -216,6 +216,7 @@ class IncrementalJSONWriter:
             summary: Optional summary to write at start (if known upfront)
         """
         self.output_path = Path(output_path)
+        self.jsonl_path = self.output_path.with_suffix('.jsonl')
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.metadata = metadata
         self.summary = summary
@@ -223,82 +224,99 @@ class IncrementalJSONWriter:
         self.file_handle = None
 
     def __enter__(self):
-        """Open file and write initial structure."""
-        self.file_handle = self.output_path.open("w", encoding="utf-8")
-        # Write opening structure
-        self.file_handle.write("{\n")
-        self.file_handle.write(f'  "run_metadata": {json.dumps(self.metadata, indent=2).replace(chr(10), chr(10) + "  ")},\n')
+        """Open JSONL file for writing."""
+        self.file_handle = self.jsonl_path.open("w", encoding="utf-8")
 
-        # If summary is provided upfront, write it now
+        # Write metadata as first line
+        self.file_handle.write(json.dumps({"_metadata": self.metadata}) + "\n")
+
+        # Write summary placeholder if provided
         if self.summary is not None:
-            self.file_handle.write(f'  "summary": {json.dumps(self.summary, indent=2).replace(chr(10), chr(10) + "  ")},\n')
+            self.file_handle.write(json.dumps({"_summary": self.summary}) + "\n")
 
-        self.file_handle.write('  "examples": [\n')
         self.file_handle.flush()
         return self
 
     def write_example(self, example: dict):
         """
-        Write a single example to the array.
+        Write a single example as a JSONL line.
 
         Args:
             example: Example data to write
         """
-        if self.count > 0:
-            self.file_handle.write(",\n")
-
-        # Write example with proper indentation
-        example_json = json.dumps(example, indent=2).replace("\n", "\n    ")
-        self.file_handle.write(f"    {example_json}")
+        # Write example as single line
+        self.file_handle.write(json.dumps(example) + "\n")
         self.file_handle.flush()
         self.count += 1
 
     def finalize_with_summary(self, summary: dict):
         """
-        Close JSON with summary statistics.
-
-        If summary was written at start, updates the file to replace it.
-        Otherwise, appends summary at the end.
+        Close JSONL and convert to JSON.
 
         Args:
             summary: Final summary statistics
         """
-        if self.file_handle:
-            self.file_handle.write("\n  ]\n")
-            self.file_handle.write("}\n")
+        if self.file_handle and not self.file_handle.closed:
             self.file_handle.close()
 
-            # If we wrote initial summary at start, now update the file
-            if self.summary is not None:
-                self._update_summary_in_file(summary)
+        # Convert JSONL to JSON
+        self._convert_jsonl_to_json(summary)
 
-    def _update_summary_in_file(self, final_summary: dict):
+    def _convert_jsonl_to_json(self, final_summary: dict):
         """
-        Update the summary section in the already-written file.
+        Convert JSONL file to final JSON format.
 
         Args:
-            final_summary: Final summary to replace initial summary
+            final_summary: Final summary to include
         """
-        # Read the entire file and parse as JSON
-        with self.output_path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
+        # Read all lines from JSONL
+        examples = []
+        metadata = None
 
-        # Update the summary
-        data["summary"] = final_summary
+        with self.jsonl_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                obj = json.loads(line)
 
-        # Write back with proper formatting
+                # Check for special keys
+                if "_metadata" in obj:
+                    metadata = obj["_metadata"]
+                elif "_summary" in obj:
+                    # Skip placeholder summary
+                    continue
+                else:
+                    # Regular example
+                    examples.append(obj)
+
+        # Build final JSON structure
+        final_data = {
+            "run_metadata": metadata or self.metadata,
+        }
+
+        # Add summary if we have it
+        if final_summary is not None:
+            final_data["summary"] = final_summary
+
+        # Add examples
+        final_data["examples"] = examples
+
+        # Write final JSON
         with self.output_path.open("w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-            f.write("\n")  # Add trailing newline
+            json.dump(final_data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+
+        # Remove JSONL file
+        self.jsonl_path.unlink()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Close the JSON structure and file."""
-        if self.file_handle:
-            # Check if we already closed with summary
-            if not self.file_handle.closed:
-                self.file_handle.write("\n  ]\n")
-                self.file_handle.write("}\n")
-                self.file_handle.close()
+        """Close the JSONL file and convert to JSON."""
+        if self.file_handle and not self.file_handle.closed:
+            self.file_handle.close()
+
+            # Convert to JSON (without summary update)
+            if exc_type is None:  # Only convert if no exception
+                self._convert_jsonl_to_json(self.summary)
 
 
 def get_output_path(model: str, task: str, stage: str, condition: str = "baseline") -> Path:
