@@ -56,5 +56,6 @@ claude_history/
 CLAUDE.md
 .claude_cache/
 
-# Old Code
+# Old / Helper Code
 legacy/
+repos/

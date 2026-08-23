@@ -146,15 +146,29 @@ def run_execution_pipeline(
                         )
 
                         # Parse output if execution succeeded
-                        if code_result["exit_code"] == 0 and code_result["stdout"]:
-                            parsed_output = parse_output_by_task(
-                                code_result["stdout"],
-                                task,
-                                problem_data
-                            )
-                            code_result["parsed_output"] = parsed_output
+                        # For PDDL, check 'ran' instead of 'exit_code'
+                        if language == "pddl":
+                            # PDDL returns different structure: ran, syntax_valid, plan_found, val_valid
+                            if code_result.get("ran") and code_result.get("stdout"):
+                                parsed_output = parse_output_by_task(
+                                    code_result["stdout"],
+                                    task,
+                                    problem_data
+                                )
+                                code_result["parsed_output"] = parsed_output
+                            else:
+                                code_result["parsed_output"] = None
                         else:
-                            code_result["parsed_output"] = None
+                            # Python/Z3 standard execution
+                            if code_result.get("exit_code") == 0 and code_result.get("stdout"):
+                                parsed_output = parse_output_by_task(
+                                    code_result["stdout"],
+                                    task,
+                                    problem_data
+                                )
+                                code_result["parsed_output"] = parsed_output
+                            else:
+                                code_result["parsed_output"] = None
 
                     else:
                         # No code extracted
@@ -185,10 +199,17 @@ def run_execution_pipeline(
 
                     writer.write_example(execution_result)
 
-                    if code_result.get("exit_code") == 0:
-                        success_count += 1
+                    # Count success based on language type
+                    if language == "pddl":
+                        if code_result.get("ran") and code_result.get("syntax_valid"):
+                            success_count += 1
+                        else:
+                            error_count += 1
                     else:
-                        error_count += 1
+                        if code_result.get("exit_code") == 0:
+                            success_count += 1
+                        else:
+                            error_count += 1
 
                 except Exception as e:
                     # Log error but continue

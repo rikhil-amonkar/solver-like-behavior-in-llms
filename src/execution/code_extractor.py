@@ -190,17 +190,46 @@ def select_best_code_block(blocks: List[dict], full_text: str = "") -> Optional[
             r'\?\s*(Actually|Wait|Maybe|But|However|Since|Note|Because)',  # "? Actually" or "? Wait"
             r'\{\.\.\.}',  # {...} placeholder
             r'\[\.\.\.}',  # [...] placeholder with typo
-            r'\.{3,}\s*[,\)]',  # "..., " or "...)" - ellipsis as placeholder in data structures
         ]
         if any(re.search(pattern, code, re.IGNORECASE) for pattern in prose_markers):
             continue
 
+        # Check for ellipsis as placeholder in actual code (not comments)
+        # Pattern: "..., " or "...)" outside of comments
+        # Split by lines and check non-comment parts
+        has_ellipsis_placeholder = False
+        for line in code.split('\n'):
+            # Remove comments
+            code_part = line.split('#')[0] if '#' in line else line
+            # Check if ellipsis appears in actual code (not just docstrings)
+            if re.search(r'\.{3,}\s*[,\)]', code_part):
+                has_ellipsis_placeholder = True
+                break
+
+        if has_ellipsis_placeholder:
+            continue
+
         # Skip if contains natural language reasoning words in suspicious contexts
+        # These patterns indicate prose/reasoning leaked into the code block
         reasoning_patterns = [
             r'^\s*maybe\b', r'^\s*actually\b', r'^\s*wait\b',  # Line starts with reasoning
-            r'#.*\blet\'s\b', r'#.*\bneed\s+to\b',  # Comments with reasoning
         ]
+
+        # Check for lines starting with reasoning words (non-comment)
         if any(re.search(pattern, code, re.IGNORECASE | re.MULTILINE) for pattern in reasoning_patterns):
+            continue
+
+        # Check for excessive reasoning-style comments (multiple instances)
+        # A single comment with "let's" or "need to" is fine (normal code comments)
+        # But multiple such comments suggest leaked reasoning
+        reasoning_comment_patterns = [r'#.*\blet\'s\b', r'#.*\bneed\s+to\b']
+        reasoning_comment_count = sum(
+            len(re.findall(pattern, code, re.IGNORECASE | re.MULTILINE))
+            for pattern in reasoning_comment_patterns
+        )
+
+        # Only filter if there are 3+ reasoning-style comments (likely prose)
+        if reasoning_comment_count >= 3:
             continue
 
         substantial_blocks.append(b)

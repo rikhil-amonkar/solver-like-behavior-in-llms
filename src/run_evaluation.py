@@ -136,15 +136,25 @@ def run_evaluation_pipeline(execution_json_path: str):
     ]
 
     # Build initial summary skeleton
-    initial_summary = {
-        "constraint_based_accuracy": 0.0,
-        "constraint_correct": 0,
-        "constraint_incorrect": 0,
-        "golden_solution_accuracy": None,
-        "golden_matches": 0,
-        "golden_available": 0,
-        "error_breakdown": {cat: 0 for cat in all_error_categories},
-    }
+    if task == "blocksworld":
+        # For PDDL tasks, no golden solution comparison
+        initial_summary = {
+            "constraint_based_accuracy": 0.0,
+            "constraint_correct": 0,
+            "constraint_incorrect": 0,
+            "error_breakdown": {cat: 0 for cat in all_error_categories},
+        }
+    else:
+        # For Python/Z3 tasks, include golden solution tracking
+        initial_summary = {
+            "constraint_based_accuracy": 0.0,
+            "constraint_correct": 0,
+            "constraint_incorrect": 0,
+            "golden_solution_accuracy": None,
+            "golden_matches": 0,
+            "golden_available": 0,
+            "error_breakdown": {cat: 0 for cat in all_error_categories},
+        }
 
     # Process examples
     correct_count = 0
@@ -174,13 +184,22 @@ def run_evaluation_pipeline(execution_json_path: str):
 
                     # Classify result with fine-grained categories
                     exec_result = example["code_execution"]
+                    parsed_output_for_comparison = None  # Initialize to avoid UnboundLocalError
 
                     if not exec_result["ran"]:
                         classification = "no_code_extracted"
                         is_correct = False
                         validation = {"error": "code not extracted or invalid"}
-                    elif exec_result["exit_code"] != 0:
-                        # Code ran but exited with error
+                    elif task == "blocksworld" and not exec_result.get("syntax_valid"):
+                        # PDDL task with syntax errors
+                        classification = "execution_error"
+                        is_correct = False
+                        validation = {
+                            "error": "PDDL syntax validation failed",
+                            "details": exec_result.get("error", "")
+                        }
+                    elif task != "blocksworld" and "exit_code" in exec_result and exec_result["exit_code"] != 0:
+                        # Code ran but exited with error (Python/Z3 tasks)
                         classification = "execution_error"
                         is_correct = False
                         validation = {
@@ -260,15 +279,26 @@ def run_evaluation_pipeline(execution_json_path: str):
                         classification = "correct" if matches_golden else "incorrect_solution"
 
                     # Build result
-                    result = {
-                        "example_id": example_id,
-                        "correct": is_correct,
-                        "matches_expected": matches_golden,
-                        "classification": classification,
-                        "solution": parsed_output_for_comparison if task in ["zebralogic", "blocksworld"] else parsed_output,
-                        "expected_solution": golden_solution,
-                        "validation": validation,
-                    }
+                    if task == "blocksworld":
+                        # For PDDL tasks, don't include solution/expected_solution comparison fields
+                        # The actual PDDL is in the execution JSON, and correctness is based on VAL validation
+                        result = {
+                            "example_id": example_id,
+                            "correct": is_correct,
+                            "classification": classification,
+                            "validation": validation,
+                        }
+                    else:
+                        # For Python/Z3 tasks, include solution comparison
+                        result = {
+                            "example_id": example_id,
+                            "correct": is_correct,
+                            "matches_expected": matches_golden,
+                            "classification": classification,
+                            "solution": parsed_output_for_comparison if task == "zebralogic" else parsed_output,
+                            "expected_solution": golden_solution,
+                            "validation": validation,
+                        }
 
                     writer.write_example(result)
 
@@ -290,8 +320,8 @@ def run_evaluation_pipeline(execution_json_path: str):
                             incorrect_count += 1
                             error_breakdown[classification] = error_breakdown.get(classification, 0) + 1
 
-                    # Update golden match counts
-                    if golden_solution is not None:
+                    # Update golden match counts (not applicable for blocksworld)
+                    if task != "blocksworld" and golden_solution is not None:
                         golden_available_count += 1
                         if matches_golden:
                             golden_match_count += 1
@@ -300,13 +330,21 @@ def run_evaluation_pipeline(execution_json_path: str):
                     print(f"\nError evaluating {example.get('example_id', '?')}: {str(e)}")
 
                     # Write error result
-                    result = {
-                        "example_id": example.get("example_id", "unknown"),
-                        "correct": False,
-                        "classification": "evaluation_error",
-                        "solution": None,
-                        "validation": {"error": f"evaluation failed: {str(e)}"},
-                    }
+                    if task == "blocksworld":
+                        result = {
+                            "example_id": example.get("example_id", "unknown"),
+                            "correct": False,
+                            "classification": "evaluation_error",
+                            "validation": {"error": f"evaluation failed: {str(e)}"},
+                        }
+                    else:
+                        result = {
+                            "example_id": example.get("example_id", "unknown"),
+                            "correct": False,
+                            "classification": "evaluation_error",
+                            "solution": None,
+                            "validation": {"error": f"evaluation failed: {str(e)}"},
+                        }
                     writer.write_example(result)
                     incorrect_count += 1
                     error_breakdown["evaluation_error"] = error_breakdown.get("evaluation_error", 0) + 1
@@ -326,15 +364,25 @@ def run_evaluation_pipeline(execution_json_path: str):
         golden_accuracy = golden_match_count / golden_available_count if golden_available_count > 0 else None
 
         # Build final summary (with actual counts)
-        final_summary = {
-            "constraint_based_accuracy": constraint_accuracy,
-            "constraint_correct": correct_count if task != "zebralogic" else None,
-            "constraint_incorrect": incorrect_count if task != "zebralogic" else None,
-            "golden_solution_accuracy": golden_accuracy,
-            "golden_matches": golden_match_count,
-            "golden_available": golden_available_count,
-            "error_breakdown": error_breakdown,  # Already has all categories
-        }
+        if task == "blocksworld":
+            # For PDDL tasks, no golden solution tracking
+            final_summary = {
+                "constraint_based_accuracy": constraint_accuracy,
+                "constraint_correct": correct_count,
+                "constraint_incorrect": incorrect_count,
+                "error_breakdown": error_breakdown,
+            }
+        else:
+            # For Python/Z3 tasks, include golden solution tracking
+            final_summary = {
+                "constraint_based_accuracy": constraint_accuracy,
+                "constraint_correct": correct_count if task != "zebralogic" else None,
+                "constraint_incorrect": incorrect_count if task != "zebralogic" else None,
+                "golden_solution_accuracy": golden_accuracy,
+                "golden_matches": golden_match_count,
+                "golden_available": golden_available_count,
+                "error_breakdown": error_breakdown,  # Already has all categories
+            }
 
         # Close examples array (summary already at top)
         writer.finalize_with_summary(final_summary)

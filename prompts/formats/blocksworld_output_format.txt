@@ -14,72 +14,38 @@ Requirements:
 - Encode additional constraints by modifying predicates, preconditions, or effects
 - Use comments (starting with `;`) to mark constraint-related modifications
 
-Output format:
-Your PDDL code should be structured as follows:
+CRITICAL OUTPUT FORMAT REQUIREMENT:
+You MUST output your PDDL code as a JSON object with exactly two keys: "domain_pddl" and "problem_pddl".
+Each key should contain the complete PDDL definition as a string.
 
+Example output structure:
+```json
+{
+  "domain_pddl": "(define (domain blocksworld)\n  (:requirements :strips)\n  (:predicates (on ?x ?y) (on-table ?x) (clear ?x) (holding ?x) (arm-empty))\n  (:action pickup\n    :parameters (?b)\n    :precondition (and (on-table ?b) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (not (on-table ?b)) (not (clear ?b)) (not (arm-empty))))\n  (:action putdown\n    :parameters (?b)\n    :precondition (holding ?b)\n    :effect (and (on-table ?b) (clear ?b) (arm-empty) (not (holding ?b))))\n  (:action stack\n    :parameters (?b ?c)\n    :precondition (and (holding ?b) (clear ?c))\n    :effect (and (on ?b ?c) (clear ?b) (arm-empty) (not (holding ?b)) (not (clear ?c))))\n  (:action unstack\n    :parameters (?b ?c)\n    :precondition (and (on ?b ?c) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (clear ?c) (not (on ?b ?c)) (not (clear ?b)) (not (arm-empty)))))\n",
+  "problem_pddl": "(define (problem blocksworld-problemX)\n  (:domain blocksworld)\n  (:objects block1 block2)\n  (:init (on-table block1) (on block2 block1) (clear block2) (arm-empty))\n  (:goal (and (on-table block1) (on-table block2))))\n"
+}
 ```
-(define (domain blocksworld)
-  ;; CONSTRAINT: [description if applicable]
-  (:requirements :strips)
-  (:predicates
-    (on ?x ?y)
-    (on-table ?x)
-    (clear ?x)
-    (holding ?x)
-    (arm-empty)
-    ;; Add constraint-specific predicates here if needed
-  )
 
-  (:action pickup
-    :parameters (?b)
-    :precondition (and (on-table ?b) (clear ?b) (arm-empty))
-    :effect (and (holding ?b) (not (on-table ?b)) (not (clear ?b)) (not (arm-empty)))
-  )
+PDDL Content Guidelines:
+- Domain should include:
+  - `:requirements :strips` (add others like `:typing` if needed)
+  - `:predicates` section with at minimum: (on ?x ?y), (on-table ?x), (clear ?x), (holding ?x), (arm-empty)
+  - All four actions: pickup, putdown, stack, unstack (unless constraints require omission)
+  - Constraint-specific predicates/modifications marked with `;; CONSTRAINT` comments
 
-  (:action putdown
-    :parameters (?b)
-    :precondition (holding ?b)
-    :effect (and (on-table ?b) (clear ?b) (arm-empty) (not (holding ?b)))
-  )
-
-  (:action stack
-    :parameters (?b ?c)
-    :precondition (and (holding ?b) (clear ?c))
-    :effect (and (on ?b ?c) (clear ?b) (arm-empty) (not (holding ?b)) (not (clear ?c)))
-  )
-
-  (:action unstack
-    :parameters (?b ?c)
-    :precondition (and (on ?b ?c) (clear ?b) (arm-empty))
-    :effect (and (holding ?b) (clear ?c) (not (on ?b ?c)) (not (clear ?b)) (not (arm-empty)))
-  )
-)
-
-(define (problem blocksworld-problemX)
-  ;; CONSTRAINT: [description if applicable]
-  (:domain blocksworld)
-  (:objects block1 block2 ... blockN)
-  (:init
-    ;; Initial configuration
-    (on-table block1)
-    (on block2 block1)
-    (clear block2)
-    (arm-empty)
-    ;; Add constraint-specific initial predicates here
-  )
-  (:goal (and
-    ;; Goal configuration
-    (on-table block1)
-    (on block2 block1)
-  ))
-)
-```
+- Problem should include:
+  - Reference to domain: `(:domain blocksworld)`
+  - All blocks as objects: `(:objects block1 block2 ... blockN)`
+  - Complete initial state in `:init` section
+  - Complete goal state in `:goal` section
+  - Constraint-specific initial predicates if applicable
 
 Rules:
 - Mark constraint modifications with comments (e.g., `;; BEGIN ADD` and `;; END ADD`)
 - Ensure all blocks mentioned in the problem are included in `:objects`
-- Represent the complete initial state accurately
+- Represent the complete initial state accurately (including arm-empty if applicable)
 - Specify the complete goal state
-- If constraints require domain modifications, clearly comment what was changed
+- DO NOT include markdown code fences in the JSON output
+- Output ONLY the JSON object, nothing else
 
 SOLUTION CODE:

@@ -5,7 +5,7 @@
     "condition": "baseline",
     "execution_json": "output/qwen/calendar/baseline_execution.json",
     "constraints_json": "data/constraints/calendar_constraints.json",
-    "timestamp": "2026-08-22T14:53:04Z",
+    "timestamp": "2026-08-23T13:53:08Z",
     "num_examples": 100
   },
   "summary": {
@@ -74,7 +74,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_2_18cb16/solution.py\", line 14\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
+        "stderr": "  File \"/tmp/code_exec_wv46qo9c/solution.py\", line 14\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
       }
     },
     {
@@ -370,7 +370,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ng3zr1hk/solution.py\", line 5, in <module>\n    for day in days:\n               ^^^^\nNameError: name 'days' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ma4866qz/solution.py\", line 5, in <module>\n    for day in days:\n               ^^^^\nNameError: name 'days' is not defined\n"
       }
     },
     {
@@ -1390,7 +1390,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_ar_i002v/solution.py\", line 1\n    from datetime import ...? standard library okay. But we can avoid imports.\n                         ^^^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/code_exec_d5zt3twk/solution.py\", line 1\n    from datetime import ...? standard library okay. But we can avoid imports.\n                         ^^^\nSyntaxError: invalid syntax\n"
       }
     },
     {

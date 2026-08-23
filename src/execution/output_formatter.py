@@ -48,8 +48,20 @@ def parse_calendar_output(stdout: str) -> Optional[list]:
     Returns:
         List [day, start_time, end_time] or None
     """
+    import ast
+
+    stdout = stdout.strip()
+
     try:
-        # Try to parse as JSON array first
+        # Try to parse as Python literal (handles single quotes from print())
+        parsed = ast.literal_eval(stdout)
+        if isinstance(parsed, list) and len(parsed) == 3:
+            return parsed
+    except (ValueError, SyntaxError):
+        pass
+
+    try:
+        # Try to parse as JSON array (handles double quotes)
         parsed = json.loads(stdout)
         if isinstance(parsed, list) and len(parsed) == 3:
             return parsed
@@ -83,8 +95,20 @@ def parse_meeting_output(stdout: str) -> Optional[list]:
     Returns:
         List of itinerary steps or None
     """
+    import ast
+
+    stdout = stdout.strip()
+
     try:
-        # Try to parse as JSON array
+        # Try to parse as Python literal (handles single quotes from print())
+        parsed = ast.literal_eval(stdout)
+        if isinstance(parsed, list):
+            return parsed
+    except (ValueError, SyntaxError):
+        pass
+
+    try:
+        # Try to parse as JSON array (handles double quotes)
         parsed = json.loads(stdout)
         if isinstance(parsed, list):
             return parsed
@@ -113,8 +137,20 @@ def parse_zebralogic_output(stdout: str, problem_data: Optional[dict] = None) ->
     Returns:
         Dict with header and rows, or None
     """
+    import ast
+
+    stdout = stdout.strip()
+
     try:
-        # Try to parse as JSON
+        # Try to parse as Python literal (handles single quotes from print())
+        parsed = ast.literal_eval(stdout)
+        if isinstance(parsed, dict) and "header" in parsed and "rows" in parsed:
+            return parsed
+    except (ValueError, SyntaxError):
+        pass
+
+    try:
+        # Try to parse as JSON (handles double quotes)
         parsed = json.loads(stdout)
         if isinstance(parsed, dict) and "header" in parsed and "rows" in parsed:
             return parsed
@@ -130,18 +166,30 @@ def parse_zebralogic_output(stdout: str, problem_data: Optional[dict] = None) ->
         rows = []
 
         for line in lines:
-            # Try to parse as list
+            # Try to parse as Python literal first
+            try:
+                row = ast.literal_eval(line)
+                if isinstance(row, list) and len(row) == len(header):
+                    rows.append(row)
+                    continue
+            except (ValueError, SyntaxError):
+                pass
+
+            # Try to parse as JSON
             try:
                 row = json.loads(line)
                 if isinstance(row, list) and len(row) == len(header):
                     rows.append(row)
+                    continue
             except (json.JSONDecodeError, ValueError):
-                # Try to split by common delimiters
-                for delimiter in [',', '|', '\t']:
-                    parts = [p.strip() for p in line.split(delimiter)]
-                    if len(parts) == len(header):
-                        rows.append(parts)
-                        break
+                pass
+
+            # Try to split by common delimiters
+            for delimiter in [',', '|', '\t']:
+                parts = [p.strip() for p in line.split(delimiter)]
+                if len(parts) == len(header):
+                    rows.append(parts)
+                    break
 
         if rows:
             return {"header": header, "rows": rows}
@@ -153,31 +201,40 @@ def parse_blocksworld_output(stdout: str) -> Optional[dict]:
     """
     Parse blocksworld PDDL output.
 
-    Expected format: Dict with domain_pddl and problem_pddl
-    Example: {"domain_pddl": "...", "problem_pddl": "..."}
+    For PDDL tasks, the parsed output comes from execution_result, not stdout.
+    This function is kept for compatibility but returns a structured summary.
+
+    Expected format: Dict with plan summary
+    Example: {"plan_found": True, "plan_length": 10, "val_valid": True}
 
     Args:
-        stdout: Output string
+        stdout: Output string (planner output)
 
     Returns:
-        Dict with PDDL strings, or None
+        Dict with plan summary, or None if no plan info found
     """
-    try:
-        # Try to parse as JSON
-        parsed = json.loads(stdout)
-        if isinstance(parsed, dict):
-            return parsed
-    except (json.JSONDecodeError, ValueError):
-        pass
+    # For PDDL, stdout contains planner output which is not the "parsed output"
+    # The actual PDDL is extracted in code_executor_pddl.py
+    # We just return a summary indicating if a plan was mentioned
 
-    # Try to extract PDDL sections
-    domain_match = re.search(r"\(define\s+\(domain.*?\)\s*\)", stdout, re.DOTALL | re.IGNORECASE)
-    problem_match = re.search(r"\(define\s+\(problem.*?\)\s*\)", stdout, re.DOTALL | re.IGNORECASE)
+    if not stdout or not stdout.strip():
+        return None
 
-    if domain_match or problem_match:
+    # Check if stdout mentions a plan
+    stdout_lower = stdout.lower()
+
+    if "plan" in stdout_lower or "solution" in stdout_lower:
+        # Count lines that look like actions (simplified heuristic)
+        action_lines = [line for line in stdout.split('\n')
+                       if line.strip() and not line.strip().startswith(';')]
+
         return {
-            "domain_pddl": domain_match.group(0) if domain_match else None,
-            "problem_pddl": problem_match.group(0) if problem_match else None,
+            "plan_found": True,
+            "plan_length": len(action_lines),
+            "planner_output": stdout[:500]  # First 500 chars of planner output
         }
 
-    return None
+    return {
+        "plan_found": False,
+        "planner_output": stdout[:500] if stdout else ""
+    }
