@@ -158,7 +158,7 @@ def run_val_validator(
     domain_pddl: str,
     problem_pddl: str,
     plan_text: str,
-    val_path: str = "/local-ssd/rma336/solver-like-behavior-in-llms/repos/VAL/build/bin/Validate",
+    val_path: Optional[str] = None,
     timeout_sec: float = 10.0
 ) -> Tuple[bool, str, str]:
     """
@@ -168,12 +168,18 @@ def run_val_validator(
         domain_pddl: Domain PDDL definition
         problem_pddl: Problem PDDL definition
         plan_text: Plan as text (one action per line or Fast Downward format)
-        val_path: Path to VAL Validate binary
+        val_path: Path to VAL Validate binary (defaults to repos/VAL/build/bin/Validate relative to project root)
         timeout_sec: Timeout for validation
 
     Returns:
         (is_valid, stdout, stderr)
     """
+    # Default to project-relative path if not specified
+    if val_path is None:
+        # Get project root (4 levels up from this file: src/inference/code_executor_pddl.py)
+        project_root = Path(__file__).parent.parent.parent
+        val_path = str(project_root / "repos" / "VAL" / "build" / "bin" / "Validate")
+
     with tempfile.TemporaryDirectory(prefix="val_validation_") as tmpdir:
         domain_file = Path(tmpdir) / "domain.pddl"
         problem_file = Path(tmpdir) / "problem.pddl"
@@ -281,7 +287,7 @@ def run_pddl_code(
     code: str,
     timeout_sec: float = 60.0,
     planner_path: Optional[str] = None,
-    val_path: str = "/local-ssd/rma336/solver-like-behavior-in-llms/repos/VAL/build/bin/Validate",
+    val_path: Optional[str] = None,
     run_planner: bool = True,
     run_validator: bool = True
 ) -> dict:
@@ -298,7 +304,7 @@ def run_pddl_code(
         code: Model output containing PDDL code
         timeout_sec: Timeout for planner execution
         planner_path: Optional path to PDDL planner (not used, pyperplan is default)
-        val_path: Path to VAL Validate binary
+        val_path: Path to VAL Validate binary (defaults to repos/VAL/build/bin/Validate relative to project root)
         run_planner: Whether to run planner (default True)
         run_validator: Whether to run VAL validator on plan (default True)
 

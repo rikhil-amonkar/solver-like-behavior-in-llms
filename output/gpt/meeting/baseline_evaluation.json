@@ -5,7 +5,7 @@
     "condition": "baseline",
     "execution_json": "output/gpt/meeting/baseline_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-23T13:44:42Z",
+    "timestamp": "2026-08-24T15:12:00Z",
     "num_examples": 100
   },
   "summary": {

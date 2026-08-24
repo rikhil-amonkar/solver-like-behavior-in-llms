@@ -207,9 +207,10 @@ def run_evaluation_pipeline(execution_json_path: str):
                             "exit_code": exec_result["exit_code"],
                             "stderr": exec_result.get("stderr", "")[:200]  # truncate
                         }
-                    elif parsed_output is None and task not in ["zebralogic", "blocksworld"]:
+                    elif parsed_output is None and task not in ["blocksworld"]:
                         # Code ran successfully but no parseable output
-                        # (but for z3/pddl tasks, we parse during evaluation, not here)
+                        # (but for pddl tasks, we parse during evaluation, not here)
+                        # For zebralogic, we also need to check parse errors here
                         stdout = exec_result.get("stdout", "").strip()
 
                         # Check if this is a "no solution" indicator
@@ -232,7 +233,7 @@ def run_evaluation_pipeline(execution_json_path: str):
                                 "stdout": stdout[:200]
                             }
                     else:
-                        # Parsed successfully OR z3/pddl task (parse during evaluation)
+                        # Parsed successfully OR pddl task (parse during evaluation)
 
                         # For zebralogic, skip constraint evaluation - only use golden solution
                         if task == "zebralogic":

@@ -135,12 +135,16 @@ def parse_zebralogic_output(stdout: str, problem_data: Optional[dict] = None) ->
     Alternative format (structured):
         {"header": ["House", "Name", "Smoothie", "Color"], "rows": [["1", "Peter", "desert", "white"], ...]}
 
+    This parser is lenient and will accept partial solutions (e.g., missing columns).
+    Missing attributes are filled with empty strings. The evaluation stage will catch
+    these as incorrect solutions rather than parse errors.
+
     Args:
         stdout: Output string from Z3 execution
         problem_data: Problem data containing header info (golden_solution.header)
 
     Returns:
-        Dict with header and rows, or None if parsing fails
+        Dict with header and rows (padded with empty strings if needed), or None if parsing fails entirely
     """
     import ast
 
@@ -218,10 +222,20 @@ def parse_zebralogic_output(stdout: str, problem_data: Optional[dict] = None) ->
                     row.append("")  # Missing attribute
         else:
             # Format: "House 1: Peter, desert, white" (positional)
+            # Build row with house number + provided attributes
             row = [str(house_num)] + attr_values
 
-        # Ensure row has correct length
-        if len(row) == len(headers):
+            # Pad with empty strings if we have fewer attributes than expected
+            # This allows partial solutions to be parsed (they'll be marked incorrect during evaluation)
+            while len(row) < len(headers):
+                row.append("")
+
+        # Accept row even if it has fewer attributes than expected (will be caught during evaluation)
+        # Only reject if it has MORE attributes than expected (truly malformed)
+        if len(row) <= len(headers):
+            # Pad to correct length if needed
+            while len(row) < len(headers):
+                row.append("")
             rows.append(row)
 
     # Sort by house number
