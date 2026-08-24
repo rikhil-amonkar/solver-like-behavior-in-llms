@@ -1,0 +1,1 @@
+{"_metadata": {"task": "zebralogic", "model": "gpt", "model_full_name": "openai/gpt-oss-120b", "condition": "caution_a", "cautionary_suffix_enabled": true, "cautionary_suffix_variant": "a", "timestamp": "2026-08-24T03:33:25Z", "num_examples": 100, "max_tokens": null}}

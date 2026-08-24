@@ -125,24 +125,29 @@ def parse_meeting_output(stdout: str) -> Optional[list]:
 
 def parse_zebralogic_output(stdout: str, problem_data: Optional[dict] = None) -> Optional[dict]:
     """
-    Parse zebralogic grid output.
+    Parse zebralogic grid output from Z3 code.
 
-    Expected format: Grid with header and rows
-    Example: {"header": ["Name", "Age", "City"], "rows": [["Alice", "25", "NYC"], ...]}
+    Expected format (from Z3):
+        House 1: Peter, desert, white
+        House 2: Alice, cherry, green
+        ...
+
+    Alternative format (structured):
+        {"header": ["House", "Name", "Smoothie", "Color"], "rows": [["1", "Peter", "desert", "white"], ...]}
 
     Args:
-        stdout: Output string
-        problem_data: Problem data containing grid structure info
+        stdout: Output string from Z3 execution
+        problem_data: Problem data containing header info (golden_solution.header)
 
     Returns:
-        Dict with header and rows, or None
+        Dict with header and rows, or None if parsing fails
     """
     import ast
 
     stdout = stdout.strip()
 
+    # Try structured format first (dict with header and rows)
     try:
-        # Try to parse as Python literal (handles single quotes from print())
         parsed = ast.literal_eval(stdout)
         if isinstance(parsed, dict) and "header" in parsed and "rows" in parsed:
             return parsed
@@ -150,49 +155,80 @@ def parse_zebralogic_output(stdout: str, problem_data: Optional[dict] = None) ->
         pass
 
     try:
-        # Try to parse as JSON (handles double quotes)
         parsed = json.loads(stdout)
         if isinstance(parsed, dict) and "header" in parsed and "rows" in parsed:
             return parsed
     except (json.JSONDecodeError, ValueError):
         pass
 
-    # Try to extract header from problem_data if available
-    if problem_data and "header" in problem_data:
-        header = problem_data["header"]
+    # Extract header from problem_data
+    headers = None
+    if problem_data:
+        golden = problem_data.get("golden_solution", {})
+        headers = problem_data.get("headers") or problem_data.get("header") or golden.get("header") or golden.get("headers")
 
-        # Try to parse rows from output
-        lines = [line.strip() for line in stdout.split('\n') if line.strip()]
-        rows = []
+    if not headers:
+        # Cannot parse without headers
+        return None
 
-        for line in lines:
-            # Try to parse as Python literal first
-            try:
-                row = ast.literal_eval(line)
-                if isinstance(row, list) and len(row) == len(header):
-                    rows.append(row)
-                    continue
-            except (ValueError, SyntaxError):
-                pass
+    # Parse "House X: attr1, attr2, ..." format (most common Z3 output)
+    lines = [line.strip() for line in stdout.split('\n') if line.strip()]
+    rows = []
 
-            # Try to parse as JSON
-            try:
-                row = json.loads(line)
-                if isinstance(row, list) and len(row) == len(header):
-                    rows.append(row)
-                    continue
-            except (json.JSONDecodeError, ValueError):
-                pass
+    for line in lines:
+        # Skip non-house lines
+        if not line.startswith("House"):
+            continue
 
-            # Try to split by common delimiters
-            for delimiter in [',', '|', '\t']:
-                parts = [p.strip() for p in line.split(delimiter)]
-                if len(parts) == len(header):
-                    rows.append(parts)
-                    break
+        # Extract house number and attributes
+        if ':' not in line:
+            continue
 
-        if rows:
-            return {"header": header, "rows": rows}
+        parts = line.split(':', 1)
+        house_str = parts[0].strip()
+        attrs_str = parts[1].strip()
+
+        # Handle leading comma or whitespace
+        if attrs_str.startswith(','):
+            attrs_str = attrs_str[1:].strip()
+
+        # Extract house number
+        try:
+            house_num = int(house_str.replace("House", "").strip())
+        except ValueError:
+            continue
+
+        # Parse attributes (comma-separated)
+        attr_values = [v.strip() for v in attrs_str.split(',') if v.strip()]
+
+        # Check if format uses key=value pairs or positional values
+        if '=' in attrs_str:
+            # Format: "House 1: Name=Peter, Smoothie=desert, Color=white"
+            row = [str(house_num)]
+            for attr_name in headers[1:]:  # Skip "House" column
+                found = False
+                for attr_val in attr_values:
+                    if '=' in attr_val:
+                        key, val = attr_val.split('=', 1)
+                        if key.strip().lower() == attr_name.lower():
+                            row.append(val.strip())
+                            found = True
+                            break
+                if not found:
+                    row.append("")  # Missing attribute
+        else:
+            # Format: "House 1: Peter, desert, white" (positional)
+            row = [str(house_num)] + attr_values
+
+        # Ensure row has correct length
+        if len(row) == len(headers):
+            rows.append(row)
+
+    # Sort by house number
+    rows.sort(key=lambda r: int(r[0]) if r[0].isdigit() else 0)
+
+    if rows:
+        return {"header": headers, "rows": rows}
 
     return None
 

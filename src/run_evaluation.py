@@ -274,9 +274,15 @@ def run_evaluation_pipeline(execution_json_path: str):
                         matches_golden = parsed_output_for_comparison == golden_solution
 
                     # For zebralogic, correctness is based solely on golden match
+                    # BUT preserve execution errors and other error classifications
                     if task == "zebralogic":
-                        is_correct = matches_golden
-                        classification = "correct" if matches_golden else "incorrect_solution"
+                        # Only update classification if we haven't already classified it as an error
+                        if classification not in ["execution_error", "no_code_extracted", "no_output", "no_solution", "parse_error"]:
+                            is_correct = matches_golden
+                            classification = "correct" if matches_golden else "incorrect_solution"
+                        else:
+                            # Keep the error classification and mark as incorrect
+                            is_correct = False
 
                     # Build result
                     if task == "blocksworld":
