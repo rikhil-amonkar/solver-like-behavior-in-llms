@@ -51,7 +51,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/inference.json
 # Step 3: Chunk reasoning
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 ### Option 2: Full Run (All 100 Examples)
@@ -66,7 +66,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/inference.json
 # Step 3: Chunk
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 ---
@@ -213,7 +213,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/inference.json
 # 5. Chunk
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 
 # 6. View all results
 ls output/deepseek/calendar/

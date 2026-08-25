@@ -1,6 +1,7 @@
 """Code extraction utilities for execution stage."""
 
 import re
+import json
 from typing import Optional, Tuple, List
 
 
@@ -15,6 +16,7 @@ def split_reasoning_and_code(reasoning_trace: str) -> Tuple[str, Optional[str]]:
     - Code blocks with inline backticks
     - Nested or escaped backticks
     - Whitespace variations
+    - Direct JSON output (for blocksworld/PDDL with assistantfinal marker)
 
     Args:
         reasoning_trace: Full reasoning trace from model
@@ -26,6 +28,19 @@ def split_reasoning_and_code(reasoning_trace: str) -> Tuple[str, Optional[str]]:
     """
     if not reasoning_trace:
         return "", None
+
+    # Special case: Check for direct JSON output (blocksworld/PDDL format)
+    # Pattern: assistantfinal{...} or similar markers
+    json_code = extract_direct_json(reasoning_trace)
+    if json_code:
+        # Find where JSON starts to split reasoning
+        json_start_marker = find_json_start_marker(reasoning_trace)
+        if json_start_marker >= 0:
+            reasoning_before_code = reasoning_trace[:json_start_marker].strip()
+            return reasoning_before_code, json_code
+        else:
+            # Fallback: use the whole trace as reasoning
+            return reasoning_trace.strip(), json_code
 
     # Find all potential code blocks
     code_blocks = extract_all_code_blocks(reasoning_trace)
@@ -405,3 +420,103 @@ def validate_code_extraction(code: str, language: Optional[str] = None) -> bool:
     lines = [line.strip() for line in code.split('\n')]
     substantial_lines = [line for line in lines if len(line) > 5 and not line.startswith('#')]
     return len(substantial_lines) > 0
+
+
+def extract_direct_json(text: str) -> Optional[str]:
+    """
+    Extract JSON output directly from text (for blocksworld/PDDL format).
+
+    Some models output JSON directly with markers like 'assistantfinal{...}'
+    instead of using code blocks. This function extracts such JSON.
+
+    Args:
+        text: Text potentially containing direct JSON output
+
+    Returns:
+        Extracted JSON string, or None if not found
+    """
+    if not text:
+        return None
+
+    # Pattern 1: assistantfinal{...} marker (common in blocksworld)
+    # Look for this marker followed by JSON
+    match = re.search(r'assistantfinal\s*(\{.*\})\s*$', text, re.DOTALL)
+    if match:
+        json_str = match.group(1).strip()
+        # Validate it's actual JSON
+        try:
+            json.loads(json_str)
+            return json_str
+        except json.JSONDecodeError:
+            pass
+
+    # Pattern 2: Final JSON object in text (no marker)
+    # Find the last {...} that looks like JSON
+    # Look for balanced braces at the end of text
+    json_match = extract_final_json_object(text)
+    if json_match:
+        return json_match
+
+    return None
+
+
+def find_json_start_marker(text: str) -> int:
+    """
+    Find the position where direct JSON output starts.
+
+    Args:
+        text: Text containing JSON
+
+    Returns:
+        Position of JSON start, or -1 if not found
+    """
+    # Look for assistantfinal marker
+    match = re.search(r'assistantfinal\s*\{', text)
+    if match:
+        return match.start()
+
+    # Look for final JSON object
+    # Find the last opening brace that starts a valid JSON object
+    # This is a heuristic - find last { that has matching }
+    last_brace = text.rfind('{')
+    if last_brace >= 0:
+        # Check if there's a matching closing brace
+        if text[last_brace:].count('}') >= text[last_brace:].count('{'):
+            return last_brace
+
+    return -1
+
+
+def extract_final_json_object(text: str) -> Optional[str]:
+    """
+    Extract the final JSON object from text using brace matching.
+
+    Args:
+        text: Text potentially ending with JSON object
+
+    Returns:
+        JSON string if found and valid, None otherwise
+    """
+    if not text:
+        return None
+
+    # Find all opening braces
+    positions = []
+    for i, char in enumerate(text):
+        if char == '{':
+            positions.append(i)
+
+    # Try from last opening brace backwards
+    for start_pos in reversed(positions):
+        # Extract from this position to end
+        candidate = text[start_pos:].strip()
+
+        # Try to parse as JSON
+        try:
+            json.loads(candidate)
+            # Valid JSON found
+            return candidate
+        except json.JSONDecodeError:
+            continue
+
+    return None

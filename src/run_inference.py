@@ -33,6 +33,7 @@ def run_inference_pipeline(
     num_examples: int = None,
     max_tokens: int = None,
     caution_variant: str = None,
+    continue_run: bool = False,
 ):
     """
     Run inference pipeline for a task and model.
@@ -43,6 +44,7 @@ def run_inference_pipeline(
         num_examples: Number of examples to process (None = all)
         max_tokens: Max tokens for generation (None = use model default)
         caution_variant: Cautionary suffix variant ('a' or 'b'), or None for baseline
+        continue_run: Resume from last completed example in existing JSONL
     """
     condition = f"caution_{caution_variant}" if caution_variant else "baseline"
 
@@ -52,6 +54,7 @@ def run_inference_pipeline(
     print(f"Condition: {condition}")
     print(f"Examples: {num_examples or 'all'}")
     print(f"Max tokens: {max_tokens or 'default'}")
+    print(f"Continue mode: {continue_run}")
     print()
 
     # Load problems
@@ -88,24 +91,47 @@ def run_inference_pipeline(
     output_path = get_output_path(model, task, "inference", condition)
     print(f"Output: {output_path}\n")
 
-    # Build run metadata
-    metadata = {
-        "task": task,
-        "model": model,
-        "model_full_name": get_model_full_name(model),
-        "condition": condition,
-        "cautionary_suffix_enabled": bool(caution_variant),
-        "cautionary_suffix_variant": caution_variant,
-        "timestamp": get_timestamp(),
-        "num_examples": len(example_ids),
-        "max_tokens": max_tokens,
-    }
+    # Handle continuation mode
+    completed_ids = set()
+    existing_metadata = None
+    if continue_run:
+        jsonl_path = output_path.with_suffix('.jsonl')
+        if jsonl_path.exists():
+            print(f"Found existing JSONL at {jsonl_path}")
+            completed_ids, existing_metadata = _load_completed_examples(jsonl_path)
+
+            if completed_ids:
+                print(f"Resuming from {len(completed_ids)} completed examples")
+                # Filter out completed IDs from example_ids
+                example_ids = [eid for eid in example_ids if eid not in completed_ids]
+                print(f"Remaining examples to process: {len(example_ids)}")
+            else:
+                print("No completed examples found in JSONL, starting fresh")
+        else:
+            print(f"No existing JSONL found at {jsonl_path}, starting fresh")
+
+    # Build run metadata (use existing if continuing, otherwise create new)
+    if existing_metadata:
+        metadata = existing_metadata
+        metadata["resumed_at"] = get_timestamp()
+    else:
+        metadata = {
+            "task": task,
+            "model": model,
+            "model_full_name": get_model_full_name(model),
+            "condition": condition,
+            "cautionary_suffix_enabled": bool(caution_variant),
+            "cautionary_suffix_variant": caution_variant,
+            "timestamp": get_timestamp(),
+            "num_examples": len(example_ids) + len(completed_ids),
+            "max_tokens": max_tokens,
+        }
 
     # Process examples with incremental JSON writing
-    success_count = 0
+    success_count = len(completed_ids)
     error_count = 0
 
-    with IncrementalJSONWriter(str(output_path), metadata) as writer:
+    with IncrementalJSONWriter(str(output_path), metadata, continue_mode=continue_run) as writer:
         with ProgressTracker(len(example_ids), f"Processing {task}") as progress:
             for example_id in example_ids:
                 try:
@@ -164,17 +190,52 @@ def run_inference_pipeline(
                 progress.set_postfix(success=success_count, errors=error_count)
 
         # Finalize with summary
+        total_examples = len(example_ids) + len(completed_ids)
         summary = {
-            "total_examples": len(example_ids),
+            "total_examples": total_examples,
             "successful": success_count,
             "errors": error_count,
         }
         writer.finalize_with_summary(summary)
 
     print(f"\n✓ Inference complete!")
-    print(f"  Processed: {success_count}/{len(example_ids)}")
-    print(f"  Errors: {error_count}/{len(example_ids)}")
+    print(f"  Processed: {success_count}/{total_examples}")
+    print(f"  Errors: {error_count}/{total_examples}")
     print(f"  Output: {output_path}")
+
+
+def _load_completed_examples(jsonl_path: Path) -> tuple[set, dict]:
+    """
+    Load completed example IDs from existing JSONL.
+
+    Args:
+        jsonl_path: Path to existing JSONL file
+
+    Returns:
+        Tuple of (set of completed example IDs, metadata dict)
+    """
+    import json
+
+    completed_ids = set()
+    metadata = None
+
+    with jsonl_path.open("r", encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            obj = json.loads(line)
+
+            # Extract metadata if present
+            if "_metadata" in obj:
+                metadata = obj["_metadata"]
+            # Skip summary placeholders
+            elif "_summary" in obj:
+                continue
+            # Regular example
+            elif "example_id" in obj:
+                completed_ids.add(obj["example_id"])
+
+    return completed_ids, metadata
 
 
 def get_model_full_name(model: str) -> str:
@@ -250,6 +311,12 @@ Examples:
         dest="caution_variant",
         help="Include cautionary suffix variant B in prompts"
     )
+    parser.add_argument(
+        "--continue",
+        action="store_true",
+        dest="continue_run",
+        help="Resume from last completed example in existing JSONL (skips completed examples)"
+    )
 
     args = parser.parse_args()
 
@@ -260,6 +327,7 @@ Examples:
             num_examples=args.num_examples,
             max_tokens=args.max_tokens,
             caution_variant=args.caution_variant,
+            continue_run=args.continue_run,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

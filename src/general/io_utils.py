@@ -206,7 +206,7 @@ class IncrementalJSONWriter:
     Writes results as JSONL during execution, converts to JSON when complete.
     """
 
-    def __init__(self, output_path: str, metadata: dict, summary: Optional[dict] = None):
+    def __init__(self, output_path: str, metadata: dict, summary: Optional[dict] = None, continue_mode: bool = False):
         """
         Initialize incremental writer.
 
@@ -214,25 +214,32 @@ class IncrementalJSONWriter:
             output_path: Path to output JSON file
             metadata: Run metadata to write at start
             summary: Optional summary to write at start (if known upfront)
+            continue_mode: If True, append to existing JSONL instead of overwriting
         """
         self.output_path = Path(output_path)
         self.jsonl_path = self.output_path.with_suffix('.jsonl')
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         self.metadata = metadata
         self.summary = summary
+        self.continue_mode = continue_mode
         self.count = 0
         self.file_handle = None
 
     def __enter__(self):
         """Open JSONL file for writing."""
-        self.file_handle = self.jsonl_path.open("w", encoding="utf-8")
+        if self.continue_mode and self.jsonl_path.exists():
+            # Append mode: open existing file in append mode
+            self.file_handle = self.jsonl_path.open("a", encoding="utf-8")
+        else:
+            # Fresh mode: create new file
+            self.file_handle = self.jsonl_path.open("w", encoding="utf-8")
 
-        # Write metadata as first line
-        self.file_handle.write(json.dumps({"_metadata": self.metadata}) + "\n")
+            # Write metadata as first line
+            self.file_handle.write(json.dumps({"_metadata": self.metadata}) + "\n")
 
-        # Write summary placeholder if provided
-        if self.summary is not None:
-            self.file_handle.write(json.dumps({"_summary": self.summary}) + "\n")
+            # Write summary placeholder if provided
+            if self.summary is not None:
+                self.file_handle.write(json.dumps({"_summary": self.summary}) + "\n")
 
         self.file_handle.flush()
         return self

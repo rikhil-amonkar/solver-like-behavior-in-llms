@@ -132,6 +132,9 @@ def run_evaluation_pipeline(execution_json_path: str):
         "no_solution",
         "parse_error",
         "constraint_violation",
+        "pddl_error",  # PDDL semantic/syntax errors
+        "planning_failure",  # Planner couldn't find solution (when it should exist)
+        "incorrect_plan_exists",  # Found plan when none should exist
         "evaluation_error",
     ]
 
@@ -255,7 +258,12 @@ def run_evaluation_pipeline(execution_json_path: str):
                                 solution_data
                             )
 
-                            classification = "correct" if is_correct else "constraint_violation"
+                            # For blocksworld, use more specific error types from evaluator
+                            if task == "blocksworld" and not is_correct and "error_type" in error_detail:
+                                classification = error_detail["error_type"]
+                            else:
+                                classification = "correct" if is_correct else "constraint_violation"
+
                             validation = error_detail if not is_correct else {}
 
                             # For blocksworld, extract parsed solution if present

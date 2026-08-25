@@ -41,7 +41,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/inference.json
 # Stage 3: Chunking (classify reasoning)
 python src/run_chunking.py \
   --input output/deepseek/calendar/inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 ### 3. View Results

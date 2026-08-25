@@ -96,7 +96,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference
 # Chunking
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Output files:**
@@ -118,7 +118,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/caution_a_inferenc
 # Chunking (same command, detects condition from input)
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_a_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Output files:**
@@ -140,7 +140,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/caution_b_inferenc
 # Chunking (same command, detects condition from input)
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_b_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Output files:**
@@ -160,14 +160,14 @@ python src/run_inference.py --task calendar --model deepseek --n 10
 python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 
 # === CAUTION CONDITION ===
 python src/run_inference.py --task calendar --model deepseek --n 10 --caution
 python src/run_evaluation.py --input output/deepseek/calendar/caution_inference.json
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 
 # Now you have both sets of outputs for comparison
 ls output/deepseek/calendar/
@@ -293,7 +293,7 @@ python src/run_evaluation.py \
 ```bash
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **No flag needed** - condition is auto-detected from input JSON.

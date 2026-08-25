@@ -442,7 +442,7 @@ def main():
         epilog="""
 Examples:
   python src/run_chunking.py --input output/deepseek/calendar/execution.json \\
-                              --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+                              --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
         """
     )
 

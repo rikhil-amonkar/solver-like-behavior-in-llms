@@ -4,6 +4,8 @@ import subprocess
 import tempfile
 import re
 import json
+import time
+import requests
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -18,6 +20,8 @@ def extract_pddl_from_json(code: str) -> Tuple[Optional[str], Optional[str], Opt
       "problem_pddl": "(define (problem ...) ...)"
     }
 
+    Also handles assistantfinal marker: assistantfinal{...}
+
     Args:
         code: Model output containing JSON with PDDL code
 
@@ -28,7 +32,18 @@ def extract_pddl_from_json(code: str) -> Tuple[Optional[str], Optional[str], Opt
     json_block_pattern = r'```(?:json)?\s*\n(.*?)```'
     json_blocks = re.findall(json_block_pattern, code, re.DOTALL | re.IGNORECASE)
 
-    json_text = json_blocks[0] if json_blocks else code
+    if json_blocks:
+        json_text = json_blocks[0]
+    else:
+        # Check for assistantfinal marker
+        if 'assistantfinal' in code:
+            match = re.search(r'assistantfinal\s*(\{.*\})\s*$', code, re.DOTALL)
+            if match:
+                json_text = match.group(1)
+            else:
+                json_text = code
+        else:
+            json_text = code
 
     # Try parsing as JSON
     try:
@@ -283,13 +298,106 @@ def run_fast_downward_planner(
             return None, "", f"Planner execution error: {str(e)}", False
 
 
+def run_online_planner(
+    domain_pddl: str,
+    problem_pddl: str,
+    solver: str = "dual-bfws-ffparser",
+    timeout_sec: float = 60.0,
+    max_retries: int = 3
+) -> Tuple[Optional[str], str, str, bool]:
+    """
+    Run online PDDL solver using solver.planning.domains API.
+
+    This uses the same online solver as the reference repo, which supports
+    advanced PDDL features like :numeric-fluents, :typing, :adl, etc.
+
+    Args:
+        domain_pddl: Domain PDDL string
+        problem_pddl: Problem PDDL string
+        solver: Solver name (default: dual-bfws-ffparser)
+        timeout_sec: Timeout for solver (not strictly enforced by API)
+        max_retries: Max retry attempts for API calls
+
+    Returns:
+        (plan, stdout, stderr, plan_found)
+    """
+    try:
+        req_body = {"domain": domain_pddl, "problem": problem_pddl}
+
+        # Send job request to solve endpoint
+        for attempt in range(max_retries):
+            try:
+                solve_response = requests.post(
+                    f"https://solver.planning.domains:5001/package/{solver}/solve",
+                    json=req_body,
+                    timeout=30
+                )
+                solve_response.raise_for_status()
+                solve_request = solve_response.json()
+                break
+            except (requests.RequestException, json.JSONDecodeError) as e:
+                if attempt < max_retries - 1:
+                    time.sleep(1)
+                    continue
+                else:
+                    return None, "", f"Failed to submit solver request: {str(e)}", False
+
+        # Poll for result
+        result_url = 'https://solver.planning.domains:5001' + solve_request['result']
+        start_time = time.time()
+
+        while time.time() - start_time < timeout_sec:
+            try:
+                result_response = requests.post(result_url, timeout=10)
+                result_response.raise_for_status()
+                result_data = result_response.json()
+
+                status = result_data.get("status", "")
+                if status == "PENDING":
+                    time.sleep(0.5)
+                    continue
+
+                # Job completed
+                if status == "SUCCESS" or "result" in result_data:
+                    result = result_data.get("result", {})
+                    output = result.get("output", {})
+                    plan = output.get("plan", "")
+                    stdout = output.get("stdout", result.get("stdout", ""))
+                    stderr = result.get("stderr", "")
+
+                    # Check if plan was found
+                    if plan and plan.strip():
+                        return plan, stdout, stderr, True
+                    elif "No plan" in stdout or "NOTFOUND" in stdout or "no solution" in stdout.lower():
+                        return None, stdout, stderr, False
+                    else:
+                        # No plan but also no clear "not found" message
+                        return None, stdout, stderr, False
+                else:
+                    # Job failed
+                    stderr = result_data.get("stderr", "") or result_data.get("error", "Unknown error")
+                    return None, "", stderr, False
+
+            except (requests.RequestException, json.JSONDecodeError) as e:
+                time.sleep(0.5)
+                continue
+
+        # Timeout
+        return None, "", f"Solver timeout after {timeout_sec}s", False
+
+    except Exception as e:
+        return None, "", f"Online solver error: {str(e)}", False
+
+
 def run_pddl_code(
     code: str,
     timeout_sec: float = 60.0,
     planner_path: Optional[str] = None,
     val_path: Optional[str] = None,
     run_planner: bool = True,
-    run_validator: bool = True
+    run_validator: bool = True,
+    use_online_solver: bool = True,
+    online_solver_name: str = "dual-bfws-ffparser"
 ) -> dict:
     """
     Extract, validate, plan, and validate PDDL code.
@@ -303,10 +411,12 @@ def run_pddl_code(
     Args:
         code: Model output containing PDDL code
         timeout_sec: Timeout for planner execution
-        planner_path: Optional path to PDDL planner (not used, pyperplan is default)
+        planner_path: Optional path to PDDL planner (not used if use_online_solver=True)
         val_path: Path to VAL Validate binary (defaults to repos/VAL/build/bin/Validate relative to project root)
         run_planner: Whether to run planner (default True)
         run_validator: Whether to run VAL validator on plan (default True)
+        use_online_solver: Whether to use online solver API (default True for better PDDL support)
+        online_solver_name: Name of online solver to use (default: dual-bfws-ffparser)
 
     Returns:
         Dict with keys:
@@ -322,6 +432,7 @@ def run_pddl_code(
             - stderr: str (planner stderr)
             - error: Optional[str]
             - timeout_sec: float
+            - used_online_solver: bool
     """
     if not code or not code.strip():
         return {
@@ -337,6 +448,7 @@ def run_pddl_code(
             "stderr": "",
             "error": "no code to execute",
             "timeout_sec": timeout_sec,
+            "used_online_solver": False,
         }
 
     # Extract PDDL sections (JSON format preferred)
@@ -356,6 +468,7 @@ def run_pddl_code(
             "stderr": "",
             "error": f"PDDL extraction failed: {extract_error}",
             "timeout_sec": timeout_sec,
+            "used_online_solver": False,
         }
 
     # Validate syntax
@@ -367,6 +480,7 @@ def run_pddl_code(
             "domain_pddl": domain_pddl,
             "problem_pddl": problem_pddl,
             "syntax_valid": False,
+            "used_online_solver": False,
             "plan": None,
             "plan_found": None,
             "val_valid": None,
@@ -392,12 +506,18 @@ def run_pddl_code(
             "stderr": "",
             "error": None,
             "timeout_sec": timeout_sec,
+            "used_online_solver": False,
         }
 
-    # Run planner
-    plan_text, planner_stdout, planner_stderr, plan_found = run_fast_downward_planner(
-        domain_pddl, problem_pddl, timeout_sec
-    )
+    # Run planner (online or local)
+    if use_online_solver:
+        plan_text, planner_stdout, planner_stderr, plan_found = run_online_planner(
+            domain_pddl, problem_pddl, online_solver_name, timeout_sec
+        )
+    else:
+        plan_text, planner_stdout, planner_stderr, plan_found = run_fast_downward_planner(
+            domain_pddl, problem_pddl, timeout_sec
+        )
 
     # If no plan found, return planner results
     if not plan_found or not plan_text:
@@ -414,6 +534,7 @@ def run_pddl_code(
             "stderr": planner_stderr,
             "error": "planner did not find a plan",
             "timeout_sec": timeout_sec,
+            "used_online_solver": use_online_solver,
         }
 
     # Run VAL validator if enabled
@@ -436,6 +557,7 @@ def run_pddl_code(
         "val_output": val_output,
         "stdout": planner_stdout,
         "stderr": planner_stderr,
+        "used_online_solver": use_online_solver,
         "error": None if val_valid or not run_validator else "plan found but VAL validation failed",
         "timeout_sec": timeout_sec,
     }

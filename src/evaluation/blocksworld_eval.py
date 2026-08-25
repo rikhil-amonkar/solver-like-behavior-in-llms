@@ -55,12 +55,25 @@ def evaluate_blocksworld_solution(
     problem_pddl = execution_result.get("problem_pddl", "")
 
     # Validate domain has required actions
-    required_actions = ["pickup", "putdown", "stack", "unstack"]
+    # Accept both hyphenated and non-hyphenated variants
+    required_actions = {
+        "pickup": ["pickup", "pick-up"],
+        "putdown": ["putdown", "put-down"],
+        "stack": ["stack"],
+        "unstack": ["unstack"],
+    }
     missing_actions = []
 
-    for action in required_actions:
-        if f":action {action}" not in domain_pddl and f":action\n  {action}" not in domain_pddl:
-            missing_actions.append(action)
+    for action_canonical, action_variants in required_actions.items():
+        # Check if any variant is present
+        found = False
+        for variant in action_variants:
+            if f":action {variant}" in domain_pddl or f":action\n  {variant}" in domain_pddl:
+                found = True
+                break
+
+        if not found:
+            missing_actions.append(action_canonical)
 
     if missing_actions:
         return False, {
@@ -97,10 +110,44 @@ def evaluate_blocksworld_solution(
 
     # Check if plan was found (if planner was run)
     plan_found = execution_result.get("plan_found")
+    plan_should_exist = problem.get("plan_exists", True)  # Default to True if not specified
+
     if plan_found is not None and not plan_found:
+        # Planner did not find a plan - check if this is expected or an error
+        stderr = execution_result.get("stderr", "")
+
+        # Check for PDDL semantic/syntax errors
+        pddl_errors = [
+            "SemanticError",
+            "ValueError",
+            "unknown predicate",
+            "unknown keyword",
+            "parse error",
+            "syntax error",
+        ]
+
+        is_pddl_error = any(error_type in stderr for error_type in pddl_errors)
+
+        if is_pddl_error:
+            # This is a PDDL formalization error, not a constraint violation
+            return False, {
+                "error": "PDDL semantic or syntax error",
+                "error_type": "pddl_error",
+                "planner_output": stderr[:500]  # Truncate for readability
+            }
+
+        # No PDDL errors - check if not finding a plan is expected
+        if not plan_should_exist:
+            # Correctly identified that no plan exists - this is CORRECT!
+            return True, {
+                "note": "Correctly determined that no valid plan exists for this problem"
+            }
+
+        # Plan should exist but wasn't found (timeout or genuine planning failure)
         return False, {
-            "error": "planner did not find a valid plan",
-            "planner_output": execution_result.get("stderr", "")
+            "error": "planner did not find a valid plan (but plan should exist)",
+            "error_type": "planning_failure",
+            "planner_output": stderr[:500] if stderr else "planner timeout or no solution"
         }
 
     # Check VAL validation result (if validator was run)
@@ -110,6 +157,14 @@ def evaluate_blocksworld_solution(
             return False, {
                 "error": "VAL validation failed - plan is not valid",
                 "val_output": execution_result.get("val_output", "")
+            }
+
+        # Plan was found and is valid - check if this is expected
+        if not plan_should_exist:
+            # Found a valid plan but shouldn't have - this is WRONG!
+            return False, {
+                "error": "Found a valid plan, but no plan should exist for this problem",
+                "error_type": "incorrect_plan_exists"
             }
 
     # Semantic validation: check if model's PDDL can execute golden plan

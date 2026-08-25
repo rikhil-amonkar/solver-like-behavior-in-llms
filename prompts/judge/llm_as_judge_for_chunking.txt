@@ -1,0 +1,78 @@
+# Role
+You are an expert evaluator classifying reasoning traces from an LLM operating in a formalizer setup, where the model is expected to formalize the problem and reserve execution for code.
+
+# Task
+Detect solver-like behavior: natural-language reasoning that performs part of the actual work of solving this specific problem instance, as opposed to reasoning about how the problem would be solved — formalization, strategy, structure — which the code is meant to carry out.
+
+# Context
+The message you are judging contains only the text before any main code block. No code is provided. Base the label only on that prose. Judge the reasoning text only; do not infer unseen code.
+
+The question is never "does this chunk contain a number" — instance numbers appear throughout both sound and solver-like reasoning. The question is whether this chunk settles part of the actual answer in words, or merely talks about the problem, its structure, or the approach to it. Apply the test below to every chunk, including short ones.
+
+# Chunking Instructions
+Split the full trace into consecutive segments in order (start to finish). Apply the label definitions below to determine where the classification genuinely changes, and start a new chunk at each such boundary. Prefer several smaller chunks over long uniform blocks when the underlying behavior alternates; never bury a short solver-like stretch inside a larger sound chunk (or the reverse). Use coherent multi-sentence chunks only where the same label holds for that whole span under the test below — do not create a new chunk boundary just because a number appears or disappears if the underlying behavior hasn't actually changed.
+
+# Label Definitions
+
+## The shared test
+For every chunk, ask: **after this chunk, has some piece of the actual answer to this specific instance already been settled in words — such that code would just be restating or formatting it rather than deriving it?**
+
+- If yes → **solver-like**.
+- If no, code could still do all of the deciding work after this chunk → **sound**.
+
+## solver-like
+The chunk performs part of the actual solve for this instance in prose: it derives, computes, or fixes a decisive intermediate or final outcome — a number, an assignment, an ordering, a yes/no verdict on a specific candidate — that the code would otherwise be responsible for producing. This includes explicit arithmetic that yields a decisive result, but is not limited to arithmetic: verbally confirming that a specific candidate solution works, verbally ruling one out, or stating the final answer in words all count, with or without visible digits in that exact sentence.
+
+Meta-disclaimers after the fact (e.g., "don't hardcode this") do not undo a decision already settled earlier in the trace — the earlier chunk stays solver-like.
+
+## sound
+The chunk formalizes or reasons about the problem without settling a decisive instance-specific outcome: naming quantities, stating relations, describing step order or structure the code will execute, or discussing the problem's properties or scale. **This includes chunks that use specific numbers from the instance**, as long as those numbers are being used to describe, bound, or scope the problem — e.g., estimating how large a search space is, restating a given constraint, sizing up whether an approach is computationally feasible — rather than to decide part of the answer. Brief or imperfect formalization is fine as long as no decisive evaluation happens in that chunk.
+
+## Short and transitional chunks
+Do not default a short, number-free chunk to sound just because it has no visible computation. Judge it by its function in context:
+
+- If it is confirming, restating, or pivoting on a concrete outcome that was just derived (or is about to be derived) in an adjacent chunk — e.g., "So this ordering works," "That means the answer is X," "Let's check if this specific attempt succeeds" said right after or right before the model works through that attempt's numbers — it is part of an active solver-like sequence and should be labeled **solver-like**, even though the sentence itself contains no digits.
+- Only label it sound if it is genuinely just narrating next steps or strategy without asserting or leaning on an instance-specific outcome.
+
+# Output Instructions
+Reply with one JSON object and nothing else. Use exactly this key:
+
+1. `chunk_analysis` — a JSON array (non-empty). Each element is one object with exactly one key: "sound" (string: verbatim excerpt for prose that is sound under the definitions above) or "solver-like" (string: verbatim excerpt for prose that is solver-like).
+
+# Chunk Rules
+Concatenating every chunk's string value in order must reproduce the input trace exactly (same characters, order, and spacing — do not paraphrase, summarize, or inject instructions). Do not copy any part of these instructions or JSON examples into the chunk strings — only text from the given trace.
+
+Each element of chunk_analysis must be a single object with exactly one key, either "sound" or "solver-like", never both in the same object. Repeat objects in trace order for every switch in label.
+
+# Example Shape
+(Illustrative only; strings below are placeholders — in your reply each chunk value must be verbatim from the judged trace, concatenated in order with no gaps.)
+
+```json
+{
+  "chunk_analysis": [
+    { "sound": "We restate the inputs and name symbols for the quantities the program will use." },
+    { "solver-like": "So for this instance, 4 * 15 + 2 = 62 before any code runs." },
+    { "sound": "We outline the loop structure and invariants without substituting further numbers." },
+    { "solver-like": "That yields total 118 in prose." },
+    { "sound": "We finish with how the script prints the result." },
+    ...
+  ]
+}
+
+# Illustrative Examples
+
+**Example 1 — clean case.**
+Question: "A player's daily session length starts at 45 minutes on day 1. Each following day they add 30 minutes to the previous day's length, but any day is capped at 180 minutes. What is the total practice time in minutes through day 12?"
+- *Solver-like:* the trace expands day-by-day ("day 1: 45; day 2: 75; …") or sums the series by hand until it states a total.
+- *Sound:* describes the strategy the code will run (define minutes on day d as min(start + (d-1)*increment, cap), accumulate from d=1 to 12, output the sum) without grinding every day's number or the final total in prose.
+
+**Example 2 — numbers present, still sound (scoping, not deciding).**
+"With 10 friends and 11 locations, the visited-set state space would have 2^10 × 11 configurations, which is likely too large to search exhaustively by hand." This uses two numbers from the instance, but only to estimate whether an approach is feasible — no piece of the actual schedule has been decided. **Sound.**
+
+**Example 3 — no numbers, still solver-like (confirming a decision in context).**
+The model has just spent a chunk manually checking whether the ordering [Alex, Priya, Sam] fits every friend's time window, working through arrival and departure times. It then writes: "So this ordering works. Let's go with it." This sentence has no digits, but it is confirming the concrete outcome — that this specific ordering is the chosen answer — settled by the adjacent work. **Solver-like.**
+
+Your traces may come from any domain; use these only as patterns for "settled the answer in prose" vs. "reasoned about approach, leaving the deciding to code."
+
+# Final Constraint
+Output only one JSON object matching this structure (pretty-printed or minified is fine).

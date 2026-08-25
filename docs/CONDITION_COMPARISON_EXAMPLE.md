@@ -20,7 +20,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference
 # Chunking
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Files Created:**
@@ -45,7 +45,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/caution_a_inferenc
 # Chunking (same command, auto-detects condition)
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_a_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Files Created:**
@@ -70,7 +70,7 @@ python src/run_evaluation.py --input output/deepseek/calendar/caution_b_inferenc
 # Chunking (same command, auto-detects condition)
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_b_inference.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Files Created:**
@@ -361,14 +361,14 @@ If you have resources, run both simultaneously:
 ```bash
 python src/run_inference.py --task calendar --model deepseek
 python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
-python src/run_chunking.py --input output/deepseek/calendar/baseline_inference.json --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+python src/run_chunking.py --input output/deepseek/calendar/baseline_inference.json --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Terminal 2** (caution):
 ```bash
 python src/run_inference.py --task calendar --model deepseek --caution
 python src/run_evaluation.py --input output/deepseek/calendar/caution_inference.json
-python src/run_chunking.py --input output/deepseek/calendar/caution_inference.json --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+python src/run_chunking.py --input output/deepseek/calendar/caution_inference.json --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **No conflicts** - they write to different files!

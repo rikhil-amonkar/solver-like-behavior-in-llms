@@ -151,7 +151,7 @@ Classify reasoning traces into sound vs solver-like chunks using Gemini judge.
 ```bash
 python src/run_chunking.py \
   --input output/deepseek/calendar/execution.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 **Output:** `output/{model}/{task}/chunking.json`
@@ -196,7 +196,7 @@ python src/run_evaluation.py \
 # Step 4: Chunking (classify reasoning)
 python src/run_chunking.py \
   --input output/deepseek/calendar/baseline_execution.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 ### Cautionary Suffix Run
@@ -222,7 +222,7 @@ python src/run_evaluation.py \
 # Step 4: Chunking
 python src/run_chunking.py \
   --input output/deepseek/calendar/caution_a_execution.json \
-  --judge-prompt prompts/formats/llm_as_judge_for_chunking.txt
+  --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
 ### Comparing All Conditions
