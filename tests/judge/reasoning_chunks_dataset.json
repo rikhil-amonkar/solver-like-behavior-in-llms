@@ -1,0 +1,204 @@
+{
+  "chunks": [
+    {
+      "chunk_id": 1,
+      "dataset": "meeting",
+      "model": "deepseek-reasoner",
+      "example_id": "meeting_planning_example_974",
+      "chunk_index": 10,
+      "token_count": 67,
+      "reasoning_chunk": "\n\nThus we have variables: t0 (leave Richmond), s1 (start Carol), s2 (start Jessica). Constraints:\nt0 >= 0.\ns1 >= max(150, t0+9)\ns1 <= 300\ns2 >= max(390, s1+67)\ns2 <= 420",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 2,
+      "dataset": "calendar",
+      "model": "deepseek-reasoner",
+      "example_id": "calendar_scheduling_example_707",
+      "chunk_index": 5,
+      "token_count": 3306,
+      "reasoning_chunk": "\n\nLet's list all intervals sorted by start:\n\n0-60 (Megan, Judith? Actually Judith 0-120, Megan 0-60)\n0-120 (Judith)\n30-60 (Joan? No, Joan not; Betty, Terry, Kathryn)\n90-120 (Kathryn)\n150-180 (Joan, Betty)\n150-210 (Terry)\n150-240 (Kathryn)\n180-240 (Judith)\n240-300 (Terry)\n270-300 (Betty)\n300-330 (Megan)\n300-360 (Judith)\n300-420 (Kathryn)\n330-360 (Joan)\n360-390 (Terry)\n420-450 (Megan, Betty)\n420-480 (Terry)\n450-480 (Kathryn)\n\nWe need to merge. Let's sort by start:\n\n1. [0,120) from Judith (0-120) covers also [0,60) from Megan, [30,60) etc. So merged first interval: [0,120) since it's the largest. Check if any others start before 120? [90,120) is inside, [30,60) inside. So first merged: [0,120).\n\nNext: [150,180) but there are multiple starting at 150: [150,180), [150,210), [150,240). The earliest start is 150, and the latest end among them is 240 (from Kathryn). Also [180,240) from Judith starts at 180, which is inside [150,240). So the next merged interval: [150,240). Note: [150,240) covers [150,180), [150,210), [150,240), [180,240). So second: [150,240).\n\nNext: [240,300) from Terry? Actually [240,300) from Terry, and [270,300) from Betty. Also [300,330) etc. But note there is also [240,300) and [300,...). So after 240, we have [240,300) end at 300. But also [270,300) inside. Then next: [300,420) from Kathryn? But also [300,330) from Megan, [300,360) from Judith, [330,360) from Joan, [360,390) from Terry, and [300,420) from Kathryn. So we have a big interval from 300 to 420? Actually [300,420) covers all those because the max end is 420 from Kathryn. Also [300,360) etc. So third merged: [300,420). But note there is [360,390) inside.\n\nNext: [420,480) from Terry (420-480) and [420,450) from Megan and Betty, [450,480) from Kathryn. So merged: [420,480).\n\nThus the busy intervals (merged) are:\n[0,120)\n[150,240)\n[300,420)\n[420,480)\n\nNow what about gaps? The working day is from 0 to 480. So the free intervals are:\nFrom 120 to 150: that's 30 minutes exactly? 120 to 150 is 30 minutes (since 150-120=30). So [120,150) is a 30-minute free slot. That corresponds to 9:00+120 = 11:00 to 11:30? Actually 120 minutes from 9:00 is 11:00 (since 9:00 + 2h = 11:00). So 11:00 to 11:30. Check if any participant has conflict? We have busy intervals from 0-120 and 150-240, so 120-150 is free. Is that available? Let's verify: 11:00 to 11:30. Joan: busy 11:30-12:00, so 11:00-11:30 is free. Megan: busy 9-10, so free. Austin free. Betty: busy 11:30-12:00, so free at 11:00-11:30. Judith: busy 12-13, but 11:00-11:30 is before that? She also has 9-11, so until 11:00, so at 11:00 she is free? Actually her meeting ends at 11:00. So 11:00 is the start of free time? The interval [0,120) is busy, so at 120 (11:00) it ends. So 11:00 to 11:30 is free. Terry: busy 11:30-12:30, so free. Kathryn: busy 10:30-11:00? She has 10:30-11:00, so that ends at 11:00. Then she also has 11:30-13:00, so free at 11:00-11:30. So it seems 11:00-11:30 works for all. But wait, check Kathryn's schedule: \"10:30 to 11:00\" and \"11:30 to 13:00\". So yes, free from 11:00 to 11:30. So that is a valid slot.\n\nNext gap: after 240 to 300: [240,300) is a 60-minute gap? Actually from 240 to 300 is 60 minutes. So 240 minutes from 9:00 is 13:00 (since 9:00+4h=13:00). So 13:00-14:00 is free? But we have [300,420) starting at 300 (14:00), so [240,300) is free. That is 13:00-14:00. But check participants: Betty has a meeting 13:30-14:00, so that would conflict if we take the whole hour. But we need a half-hour slot. Within [240,300), we have two half-hour slots: 13:00-13:30 and 13:30-14:00. The latter is 13:30-14:00, but Betty is busy from 13:30-14:00 (270-300). So 13:30-14:00 is not free. However, 13:00-13:30 is free? Let's see: [240,270) is from 13:00 to 13:30. Betty busy from 270 to 300, so she is free 13:00-13:30. Others? Terry has 13:00-14:00? Actually Terry has 13:00-14:00 (240-300) so he is busy the entire 13:00-14:00! Yes, Terry's meeting is 13:00-14:00. So [240,300) is actually Terry's busy time. Wait, we have [240,300) from Terry? Actually we merged [240,300) from Terry, and also [270,300) from Betty, so [240,300) is a busy interval. So it's not free. So the gap we identified [240,300) is not a gap; it's a busy interval. In our merged list, we have [150,240) and then [300,420). So between 240 and 300 is not a gap; it's covered by [240,300) from Terry? Let's re-evaluate the merging.\n\nWe had intervals:\n- [0,120)\n- [150,240)\n- [300,420)\n- [420,480)\n\nBut we missed [240,300) from Terry? Actually we had [240,300) as a separate interval? Let's list all intervals again more carefully. I think I missed including Terry's [240,300) in the merging. In my earlier list, I had [240,300) from Terry, but then I said next merged is [300,420) but I didn't include [240,300) because I thought it was part of the previous? Let's redo merging with all intervals sorted.\n\nList all intervals with start and end:\n\n1. [0,120) - Judith\n2. [0,60) - Megan\n3. [30,60) - Betty, Terry, Kathryn\n4. [90,120) - Kathryn\n5. [150,180) - Joan, Betty\n6. [150,210) - Terry\n7. [150,240) - Kathryn\n8. [180,240) - Judith\n9. [240,300) - Terry\n10. [270,300) - Betty\n11. [300,330) - Megan\n12. [300,360) - Judith\n13. [300,420) - Kathryn\n14. [330,360) - Joan\n15. [360,390) - Terry\n16. [420,450) - Megan, Betty\n17. [420,480) - Terry\n18. [450,480) - Kathryn\n\nNow sort by start:\n\n[0,60), [0,120), [30,60), [90,120), [150,180), [150,210), [150,240), [180,240), [240,300), [270,300), [300,330), [300,360), [300,420), [330,360), [360,390), [420,450), [420,480), [450,480)\n\nNow merge:\n\nStart with [0,60) and [0,120): merge into [0,120) because [0,60) is inside. Next [30,60) inside. [90,120) inside. So first merged: [0,120).\n\nNext interval: [150,180). The next in list is [150,210). So merge: start=150, end= max(180,210)=210. Then [150,240): end becomes 240. Then [180,240): end still 240. So we have [150,240) so far. Next after [180,240) is [240,300). This interval starts at 240, which is equal to the current end (240). Since intervals are half-open, [150,240) ends at 240, and [240,300) starts at 240. They are adjacent but not overlapping. Should we merge adjacent intervals? Typically, if one ends exactly when another starts, the gap is zero, so it's still busy? Actually, if a meeting ends at 12:00 and another starts at 12:00, there is no free time in between. So they are contiguous busy times. So we can merge them into a single busy interval from 150 to 300. So we should merge [150,240) and [240,300) into [150,300). Then include [270,300) inside. So the merged interval becomes [150,300). Next, after [240,300) we have [270,300) inside. So after processing all up to [270,300), we have [150,300). Then next interval is [300,330). This starts at 300, which is equal to the current end. So we merge: [150,300) and [300,330) give [150,330). Then continue: [300,360), [300,420), [330,360), [360,390) all merge because they start at or before current end. Let's do systematically:\n\nWe have current merged: [150,300) after including up to [270,300). Next interval: [300,330) start=300 = current end, so merge into [150,330). Then [300,360) start=300 < 330, so end becomes max(330,360)=360 => [150,360). Then [300,420) start=300 < 360, end becomes 420 => [150,420). Then [330,360) inside. Then [360,390) inside (since 360<420). So after processing all these, we have [150,420). Next interval: [420,450) start=420, which equals current end 420, so merge into [150,450). Then [420,480) start=420, end becomes 480 => [150,480). Then [450,480) inside. So final merged intervals: [0,120) and [150,480). So the busy times are from 9:00 to 11:00 (0-120) and then from 11:30? Actually 150 is 11:30, so from 11:30 to 17:00 (480) is all busy? Wait, [150,480) covers from 150 to 480, which is 11:30 to 17:00. That means there is no free slot after 11:00? But we earlier thought there might be a gap at 13:00-13:30? Let's check if there is any free time between 11:00 and 17:00. According to the merge, from 150 onward all is busy. But we have to verify: Is it really all busy? For example, at 12:00-13:00? Let's look at individual schedules: Judith has 12:00-13:00, Terry has 13:00-14:00, Kathryn has 14:00-16:00, etc. But there might be a gap between 11:30 and 12:00? Actually 11:30 to 12:00 is busy for Joan, Betty, Terry, Kathryn. So yes. Then 12:00 to 12:30? Judith busy 12-13, Terry busy 11:30-12:30, so busy. 12:30 to 13:00? Judith busy, Kathryn busy 11:30-13:00, so busy. 13:00-13:30? Terry busy 13-14, Betty busy 13:30-14, Kathryn busy 14-16, so 13:00-13:30 is only Terry busy? Actually Terry busy from 13:00 to 14:00, so 13:00-13:30 is busy. 13:30-14:00 busy (Betty and Terry). 14:00-14:30 busy (Megan, Judith, Kathryn). 14:30-15:00 busy (Joan, Judith, Kathryn). 15:00-15:30 busy (Terry, Kathryn). 15:30-16:00 busy (Kathryn). 16:00-16:30 busy (Megan, Betty, Terry). 16:30-17:00 busy (Terry, Kathryn). So indeed from 11:30 onward, it's all busy. So the only free time is from 11:00 to 11:30? That's 30 minutes. But we have a gap from 120 to 150? That's 120 to 150, which is 11:00 to 11:30. Yes, that's the only gap. So the only possible half-hour slot is 11:00-11:30. But we need to check if any participant has a meeting exactly at 11:00? Kathryn has 10:30-11:00, so free after 11:00. Joan has 11:30-12:00, so free before. So it's good. So the answer should be ['Monday', '11:00', '11:30'].",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 3,
+      "dataset": "meeting",
+      "model": "qwen3-32b",
+      "example_id": "meeting_planning_example_813",
+      "chunk_index": 4,
+      "token_count": 23,
+      "reasoning_chunk": "\n\nSo this permutation allows meeting all 5 friends. But is this possible? Let me check the times again.",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 4,
+      "dataset": "calendar",
+      "model": "deepseek-reasoner",
+      "example_id": "calendar_scheduling_example_583",
+      "chunk_index": 2,
+      "token_count": 241,
+      "reasoning_chunk": " But careful: busy intervals are given in string format like \"9:00 to 9:30\". We'll parse them. Then compute free intervals: start from work start, then after each busy interval, and finally work end. But we need intersection of free times for all participants. Since Gabriel is free all day, we ignore. For others, combine their busy intervals, then find gaps that are free for all. Since there are many participants, we can compute union of all busy intervals? Actually we need times when none are busy. So we take union of all busy intervals (merge overlapping) and then find gaps in that union that are at least 30 min within work hours. But careful: The work hours are 9-17, but participants may have busy intervals outside? They are only given within Mon, but we consider only within work hours. So we can restrict to [9:00,17:00]. Also note: Some participants might be free entire day, like Gabriel, so no effect.\n\nThus algorithm:\n1. Convert all busy intervals to minutes from midnight (or relative to 9:00). Better to use absolute minutes from 0:00 for simplicity.",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 5,
+      "dataset": "calendar",
+      "model": "qwen2.5-32b-instruct",
+      "example_id": "calendar_scheduling_example_473",
+      "chunk_index": 0,
+      "token_count": 128,
+      "reasoning_chunk": "To solve this problem, we can follow these steps:\n\n1. **Define the Work Hours**: The work hours are from 9:00 to 17:00.\n2. **Create Time Slots**: Break down the work hours into one-hour slots.\n3. **Input Existing Schedules**: Input the existing schedules for each participant.\n4. **Apply Preferences and Constraints**: Apply any additional constraints such as preferred times or times to avoid.\n5. **Find Available Slots**: Identify the slots where all participants are free.\n6. **Output the Result**: Return the first available slot that meets all criteria.\n\nLet's implement this in Python:",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 6,
+      "dataset": "calendar",
+      "model": "deepseek-reasoner",
+      "example_id": "calendar_scheduling_example_544",
+      "chunk_index": 0,
+      "token_count": 160,
+      "reasoning_chunk": "We need to solve a meeting scheduling problem. The task: schedule a 30-minute meeting for 7 people between 9:00 and 17:00 on Monday, given their busy intervals. Find a time slot that works for all. The output should be a list: ['Monday', start_time, end_time] in 24-hour format like '13:30', '14:00'.\n\nWe need to write a Python script that computes the free intervals common to all participants, then picks one (presumably the earliest? But example output is '13:30' to '14:00', so we need to find any valid slot). The problem states \"there exists a solution\", so we just need to find one.\n\nApproach: Convert all times to minutes from start of day",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 7,
+      "dataset": "meeting",
+      "model": "qwen3-32b",
+      "example_id": "meeting_planning_example_385",
+      "chunk_index": 8,
+      "token_count": 30,
+      "reasoning_chunk": "\n\nBut maybe there's a scenario where meeting all four is not possible. For example, if the travel times are longer. Let me check again.",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 8,
+      "dataset": "calendar",
+      "model": "qwen3-32b",
+      "example_id": "calendar_scheduling_example_356",
+      "chunk_index": 4,
+      "token_count": 172,
+      "reasoning_chunk": "\n\nOnce all busy intervals are in minutes, for a candidate slot (s, s+30), check for each person that this slot does not overlap with any of their busy intervals.\n\nHow to check for overlap? Well, the slot [a, b) and a busy interval [c, d) overlap if a < d and c < b. Because if the slot starts before the busy ends and the busy starts before the slot ends, there's overlap.\n\nSo for each person, for their busy intervals, check if the candidate slot overlaps with any. If for any person there's no overlap, then the slot is invalid. Otherwise, if all pass, it's a valid slot.\n\nNow, how to generate all possible candidate slots. The workday starts at 540 (9:00) and ends at 1020 (17:00).",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 9,
+      "dataset": "meeting",
+      "model": "gpt-oss-120b",
+      "example_id": "meeting_planning_example_911",
+      "chunk_index": 1,
+      "token_count": 92,
+      "reasoning_chunk": "\n\nWe need to see if it's possible to meet all. Let's compute required meeting times sum:\n\nSteven 15\nSarah 75\nBrian 105\nStephanie 75\nMelissa 30\nNancy 90\nDavid 120\nJames 120\nElizabeth 60\nRobert 45\n\nSum = 15+75+105+75+30+90+120+120+60+45 = 735 minutes.",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 10,
+      "dataset": "meeting",
+      "model": "gpt-oss-120b",
+      "example_id": "meeting_planning_example_409",
+      "chunk_index": 3,
+      "token_count": 256,
+      "reasoning_chunk": "\n\nWe can consider after Thomas at Bayview (maybe end at 5:30? Actually need 2 hours, could be 3:30-5:30, leaving after 5:30). That would allow meeting Patricia starting 5:30 at Embarcadero (travel from Bayview to Embarcadero is 19 minutes). If we finish Thomas at 5:30, travel 19 min, arrive Embarcadero 5:49, but Patricia window starts 5:30, we can meet from 5:49 to 6:34 (45 min). That's okay.\n\nThen after Patricia, we need to meet Stephanie (Golden Gate Park) and Betty (Marina). Their windows start 6:30 and 6:45 respectively. After finishing Patricia at 6:34, we could travel to Golden Gate Park (Embarcadero to Golden Gate Park is 25 min) arriving 6:59, meet Stephanie 30 min until 7:29. Then travel to Marina District (Golden Gate Park to Marina is 16 min) arriving 7:45, meet Betty 45 min until 8:30. All within windows (Betty until 9:45). That works.",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 11,
+      "dataset": "meeting",
+      "model": "gpt-oss-120b",
+      "example_id": "meeting_planning_example_715",
+      "chunk_index": 2,
+      "token_count": 90,
+      "reasoning_chunk": "\n\nWe need to consider start location Presidio at 9:00. After meeting last friend, day ends? Not specified; we can end anytime. Travel times are minutes.\n\nWe need to consider waiting times: can wait at location until friend available.\n\nWe need to ensure meeting duration fits within friend's window after arrival.\n\nWe need to consider travel times asymmetrical.\n\nApproach: For each permutation of a subset of friends, simulate schedule:",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 12,
+      "dataset": "meeting",
+      "model": "qwen3-32b",
+      "example_id": "meeting_planning_example_934",
+      "chunk_index": 5,
+      "token_count": 139,
+      "reasoning_chunk": "\n\nBut given the problem's constraints, perhaps a dynamic programming approach where we track the earliest arrival time at each location and the set of friends already visited. However, with the state being the current location and the set of visited friends, the state space would be too large (since there are 10 friends, the set of visited friends would be 2^10=1024 possibilities, multiplied by the number of locations, which is 11 (Nob Hill, Embarcadero, The Castro, etc.)). For each state, we track the earliest arrival time. Then, for each state, we can try to visit any unvisited friend whose location can be reached in time.",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 13,
+      "dataset": "calendar",
+      "model": "gpt-oss-120b",
+      "example_id": "calendar_scheduling_example_865",
+      "chunk_index": 2,
+      "token_count": 305,
+      "reasoning_chunk": "\n\nNow produce script that can handle generic input: maybe define data structures: participants dict of day->list of busy intervals. Then function to compute earliest slot.\n\nWe'll implement parsing of time strings to minutes, compute free intervals within work hours, intersect across participants, then find earliest slot of required duration.\n\nWe'll embed the example data and print result.\n\nLet's craft code.\n\nassistantfinal**Reasoning**\n\nTo schedule a meeting we have to:\n\n1. **Represent time** \u2013 Convert `HH:MM` strings to minutes from midnight so arithmetic is easy.\n2. **Build free intervals** \u2013 For each participant and each allowed day, start from the work\u2011hour window (e.g. 09:00\u201117:00) and subtract the busy intervals. The result is a list of *free* intervals for that person on that day, sorted and non\u2011overlapping.\n3. **Intersect free intervals of all participants** \u2013 For a given day, walk through the free\u2011interval lists of every participant and keep only the time spans that are free for *all* of them.\n4. **Find the earliest slot** \u2013 Scan the intersected intervals in chronological order; the first interval whose length is \u2265 the required meeting duration is the answer. \n If the interval is longer than needed we can start at its beginning.\n\nThe algorithm works for any number of participants, any set of allowed days, any work\u2011hour window and any meeting length, provided a solution exists.\n\n**Python implementation**",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 14,
+      "dataset": "meeting",
+      "model": "qwen3-32b",
+      "example_id": "meeting_planning_example_813",
+      "chunk_index": 3,
+      "token_count": 640,
+      "reasoning_chunk": "\n\nLet me think about how to model the simulation for a given permutation. For example, suppose the permutation is [Laura, Thomas, Patricia, Betty, Stephanie]. The steps would be:\n\n- Start at Fisherman's Wharf at 9:00AM.\n\n- Travel to Laura's location (Nob Hill). The travel time is 11 minutes. Arrive at 9:11AM. Now, check if Laura's time window allows meeting her. Her window is 8:45AM to 4:15PM. Since 9:11AM is within that window, we can start the meeting. The meeting takes 30 minutes, so we leave at 9:41AM.\n\n- Next, go to Thomas's location (Bayview). The travel time from Nob Hill to Bayview is 19 minutes. So arrival time is 9:41AM + 19 mins = 9:60AM (which is 10:00AM). Now, Thomas is available from 3:30PM to 6:30PM. So we need to wait until 3:30PM. The time between 10:00AM and 3:30PM is 5 hours 30 mins = 330 minutes. So arrival at Thomas's location is 3:30PM. Now, we need to check if we can meet him for 120 mins. His window ends at 6:30PM. So 6:30PM - 3:30PM is 180 mins. 120 mins is possible. So we meet him from 3:30PM to 5:30PM. Then leave at 5:30PM.\n\n- Next, go to Patricia's location (Embarcadero). The travel time from Bayview to Embarcadero is 19 mins. So arrival time is 5:30PM + 19 mins = 5:49PM. Patricia is available from 5:30PM to 10:00PM. So we arrive at 5:49PM, which is within her window. We need to meet her for 45 mins. So we can start at 5:49PM and end at 6:34PM. Then leave.\n\n- Next, go to Betty's location (Marina District). Travel time from Embarcadero to Marina District is 12 mins. Arrival at 6:34PM + 12 mins = 6:46PM. Betty is available from 6:45PM to 9:45PM. So arrival is at 6:46PM, which is within her window. Need to meet for 45 mins. So start at 6:46PM, end at 7:31PM. Then leave.\n\n- Next, go to Stephanie's location (Golden Gate Park). Travel time from Marina District to Golden Gate Park is 18 mins. Arrival at 7:31PM + 18 mins = 7:49PM. Stephanie is available until 9:45PM. Need 30 mins. So start at 7:49PM, end at 8:19PM. All good.",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 15,
+      "dataset": "meeting",
+      "model": "deepseek-reasoner",
+      "example_id": "meeting_planning_example_577",
+      "chunk_index": 0,
+      "token_count": 454,
+      "reasoning_chunk": "We need to solve a scheduling problem. We have four friends at different locations with time windows. We start at Sunset District at 9:00AM. We need to meet each friend for a minimum duration within their available windows. We can travel between locations, travel times given. We need to find a schedule that allows us to meet all (or as many as possible? The problem says \"meet as many friends as possible\", but it lists constraints for each? Actually it says \"You'd like to meet ... for a minimum of ...\" It might be that we want to maximize number of friends we can meet subject to time constraints, and we need to find a feasible schedule that meets all? But given the constraints, it might be possible to meet all? Let's check.\n\nWe have four friends:\n- Charles at Alamo Square: 6PM to 8:45PM, need 90 min.\n- Margaret at Russian Hill: 9AM to 4PM, need 30 min.\n- Daniel at Golden Gate Park: 8AM to 1:30PM, need 15 min.\n- Stephanie at Mission District: 8:30PM to 10PM, need 90 min.\n\nWe start at Sunset District at 9AM. So we are at Sunset at 9AM. We can travel to any location. Note: Daniel's window starts at 8AM, so at 9AM he is already available until 1:30PM. Margaret from 9AM to 4PM. So we have morning/afternoon slots for Margaret and Daniel. Charles and Stephanie are evening/night. So we need to schedule visits to these locations with travel times.\n\nWe need to decide order. There are four locations: Sunset (starting point), Alamo, Russian Hill, Golden Gate Park, Mission. Travel times are symmetric? Not exactly: e.g., Sunset to Alamo 17, Alamo to Sunset 16 (slight difference). So asymmetric. So we need to consider directed travel times.\n\nWe need to find if we can meet all four. Let's attempt to find a feasible schedule.\n\nWe start at 9AM at Sunset. We can first go to someone. Let's consider time windows:",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 16,
+      "dataset": "meeting",
+      "model": "gpt-oss-120b",
+      "example_id": "meeting_planning_example_700",
+      "chunk_index": 6,
+      "token_count": 17,
+      "reasoning_chunk": "We need to find maximal subset.\n\nLet's treat as interval scheduling with travel times.",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 17,
+      "dataset": "calendar",
+      "model": "qwen2.5-32b-instruct",
+      "example_id": "calendar_scheduling_example_304",
+      "chunk_index": 0,
+      "token_count": 114,
+      "reasoning_chunk": "To solve this problem, we can follow these steps:\n\n1. **Define the Work Hours**: The work hours are from 9:00 to 17:00.\n2. **List Blocked Times**: For each participant, list the times they have blocked off.\n3. **Check Availability**: Iterate through each possible start time within the work hours and check if all participants are free during the meeting duration.\n4. **Return the First Valid Time Slot**: Once a valid time slot is found, return it as the meeting time.\n\nLet's implement this logic in Python:",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 18,
+      "dataset": "calendar",
+      "model": "deepseek-reasoner",
+      "example_id": "calendar_scheduling_example_544",
+      "chunk_index": 4,
+      "token_count": 182,
+      "reasoning_chunk": "\n\nGiven:\nGregory: 9-9:30, 11:30-12:00\nJonathan: 9-9:30, 12-12:30, 13-13:30, 15-16, 16:30-17\nBarbara: 10-10:30, 13:30-14\nJesse: 10-11, 12:30-14:30\nAlan: 9:30-11, 11:30-12:30, 13-15:30, 16-17\nNicole: 9-10:30, 11:30-12, 12:30-13:30, 14-17\nCatherine: 9-10:30, 12-13:30, 15-15:30, 16-16:30",
+      "ground_truth": "sound"
+    },
+    {
+      "chunk_id": 19,
+      "dataset": "calendar",
+      "model": "qwen3-32b",
+      "example_id": "calendar_scheduling_example_493",
+      "chunk_index": 1,
+      "token_count": 459,
+      "reasoning_chunk": "\n\nFor Doris, on Monday she has meetings from 9-11:30, 12-12:30, 13:30-16:00, and 16:30-17:00. So her free time on Monday would be between 11:30-12:00 (since her first meeting ends at 11:30, next starts at 12:00?), and then between 12:30-13:30, and between 16:00-16:30? Wait no. Let me parse her Monday schedule:\n\nMonday's Doris meetings:\n\n- 9:00 to 11:30 (so ends at 11:30)\n- 12:00 to 12:30 (starts at 12:00, ends 12:30)\n- 13:30 to 16:00 (starts 1:30pm, ends 4:00pm)\n- 16:30 to 17:00 (starts 4:30pm, ends 5pm)\n\nSo between these meetings, her free times on Monday are:\n\nFrom 11:30 to 12:00 (between first and second meeting)\nFrom 12:30 to 13:30 (after second meeting until third starts)\nFrom 16:00 to 16:30 (after third meeting before fourth starts? No, third ends at 16:00, then next meeting starts at 16:30. So between 16:00 and 16:30 is free. Then after 17:00, but work hours are until 17:00. So on Monday, Doris's free times are those three slots.\n\nOn Tuesday, Doris is busy from 9-17:00. Wait, that's all day! So she has no free time on Tuesday? But the problem says there exists a solution. Oh, but maybe Jean is available on Tuesday. Wait, Jean is busy on Tuesday during 11:30-12:00 and 16:00-16:30. So Jean's available on Tuesday except those two slots. But Doris is busy all day Tuesday. So that would mean that the meeting can't be on Tuesday. Therefore, the meeting must be on Monday.",
+      "ground_truth": "solver-like"
+    },
+    {
+      "chunk_id": 20,
+      "dataset": "meeting",
+      "model": "qwen3-32b",
+      "example_id": "meeting_planning_example_203",
+      "chunk_index": 24,
+      "token_count": 967,
+      "reasoning_chunk": "\n\nBut if that arrival time is before the friend's start_time, then we have to wait until the start_time. So the arrival time is adjusted to the start_time.\n\nSo for the output, the 'travel' step is the time taken to get there, but if we had to wait, then the arrival time is the start_time of the friend.\n\nBut the output example shows that if you arrive early, you wait until the start. For example, in the example output, the second step is 'You wait until 5:15PM.' But perhaps in our case, if the arrival time is before the friend's start, we need to mention waiting. However, the example output may not have that. Let me check the example:\n\nThe example output is:\n\n['You start at Richmond District at 9:00AM.', 'You travel to Financial District in 22 minutes and arrive at 9:22AM.', 'You wait until 5:15PM.', 'You meet Betty for 60 minutes from 5:15PM to 6:15PM.'] \n\nSo in this example, after arriving at Financial District at 9:22 AM, they wait until 5:15 PM. So perhaps, if the arrival time is before the friend's start time, we need to add a 'wait' step.\n\nBut how to model that in the output steps.\n\nSo for each friend in the permutation:\n\n- The travel step: from current location to their location, taking X minutes. The arrival time is computed as current_time + travel_time. If this arrival time is before the friend's start time, then we have to wait (start_time - arrival_time) minutes. So the output would include a 'You wait ...' step.\n\nBut how to track this in the code.\n\nSo during the simulation, when generating the output steps, we need to track:\n\nFor each friend in the permutation:\n\n- The travel time from previous location.\n\n- The arrival time after travel.\n\n- If arrival time is before the friend's start time, then add a wait step.\n\n- Then, the meeting step.\n\nBut the output example shows that after arriving, if there's waiting, it's mentioned. For example, in the example, after arriving at Financial District at 9:22 AM, they wait until 5:15 PM. So the output includes a 'You wait until 5:15PM.' step.\n\nSo for our code, when generating the output steps, for each friend in the permutation:\n\n- Add a travel step (from previous location to their location, with the travel time and arrival time after travel).\n\n- If the arrival time after travel is before the friend's start time, add a wait step until the start time.\n\n- Then, add the meeting step.\n\nBut how to track the arrival time after travel and the adjusted arrival time (after waiting if needed).\n\nSo during the simulation, for each friend, we can track:\n\noriginal_arrival_time = current_time + travel_time\n\nadjusted_arrival_time = max(original_arrival_time, friend.start_time)\n\nif original_arrival_time < friend.start_time:\n\n add a wait step from original_arrival_time to friend.start_time.\n\nSo during the simulation, we can collect the steps.\n\nBut during the feasibility check, we already adjust the arrival time to friend.start_time if needed. However, for generating the output steps, we need to know whether there was a wait.\n\nSo perhaps during the simulation, we can collect the steps as we go.\n\nBut for the code, perhaps during the feasibility check, we can also generate the steps if the permutation is feasible.\n\nBut since we need to find the best permutation first, perhaps during the feasibility check, we can generate the steps and store them if the permutation is feasible.\n\nBut this may complicate the code. Alternatively, once a feasible permutation is found, we can re-simulate it to generate the steps.\n\nSo the code can proceed as follows:\n\nOnce a feasible permutation is found (say, the best one with maximum friends), re-simulate the steps to generate the output.\n\nSo during the feasibility check, we just check if it's possible. Once a feasible permutation is found, we can generate the steps.\n\nSo the code outline:\n\nfor k in range(5, 0, -1):\n\n for each permutation in itertools.permutations(friends, k):\n\n if is_feasible(permutation):\n\n best_perm = permutation\n\n break out of loops\n\n if best_perm found:\n\n break\n\nOnce best_perm is found, generate the steps.\n\nNow, the function is_feasible(permutation) would check if the permutation is feasible, as discussed.\n\nOnce that is done, generate the steps.\n\nNow, generating the steps:\n\nInitialize steps = []",
+      "ground_truth": "sound"
+    }
+  ]
+}

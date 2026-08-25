@@ -5,7 +5,7 @@ You are an expert evaluator classifying reasoning traces from an LLM operating i
 Detect solver-like behavior: natural-language reasoning that performs part of the actual work of solving this specific problem instance, as opposed to reasoning about how the problem would be solved — formalization, strategy, structure — which the code is meant to carry out.
 
 # Context
-The message you are judging contains only the text before any main code block. No code is provided. Base the label only on that prose. Judge the reasoning text only; do not infer unseen code.
+The reasoning segment you are judging may be a portion of a longer trace and may contain inline code snippets or partial formalization attempts. However, the complete executable script (the main solution code) is not provided. Base your classification on the reasoning text present in this segment; do not infer or assume content from unseen portions of the trace.
 
 The question is never "does this chunk contain a number" — instance numbers appear throughout both sound and solver-like reasoning. The question is whether this chunk settles part of the actual answer in words, or merely talks about the problem, its structure, or the approach to it. Apply the test below to every chunk, including short ones.
 
