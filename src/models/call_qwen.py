@@ -48,24 +48,39 @@ def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True)
     Returns:
         dict with keys: reasoning_trace, metadata (tokens, model, etc.)
     """
+    # Single prompt: call batch version and return first result
+    results = call_qwen_batch([prompt], max_tokens=max_tokens, enable_thinking=enable_thinking)
+    return results[0]
+
+
+def call_qwen_batch(prompts: list[str], max_tokens: int = None, enable_thinking: bool = True) -> list[dict]:
+    """
+    Call Qwen3.8-27B with vLLM in batch mode (optimized for multiple prompts).
+
+    Args:
+        prompts: List of user prompt texts
+        max_tokens: Max new tokens to generate (defaults to MAX_QWEN_TOKENS from .env)
+        enable_thinking: Whether to enable thinking mode (adds system prompt for reasoning)
+
+    Returns:
+        List of dicts with keys: reasoning_trace, metadata (tokens, model, etc.)
+    """
     if max_tokens is None:
         max_tokens = int(os.getenv("MAX_QWEN_TOKENS", 131072))
 
     llm = _load_qwen_model()
-
-    # Build chat messages with thinking mode if requested
-    messages = [{"role": "user", "content": prompt}]
-
-    # Note: vLLM doesn't directly support enable_thinking in apply_chat_template
-    # We'll format the prompt manually to preserve thinking tags
     tokenizer = llm.get_tokenizer()
 
-    # Apply chat template with thinking mode
-    formatted_prompt = tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
-    )
+    # Format all prompts
+    formatted_prompts = []
+    for prompt in prompts:
+        messages = [{"role": "user", "content": prompt}]
+        formatted_prompt = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        formatted_prompts.append(formatted_prompt)
 
     # Sampling parameters
     sampling_params = SamplingParams(
@@ -75,28 +90,29 @@ def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True)
         skip_special_tokens=False,  # Keep thinking tags
     )
 
-    # Generate
-    outputs = llm.generate([formatted_prompt], sampling_params)
-    output = outputs[0]
+    # Generate (batch mode)
+    outputs = llm.generate(formatted_prompts, sampling_params)
 
-    # Extract generated text (with special tokens)
-    reasoning_trace = output.outputs[0].text
+    # Process all outputs
+    results = []
+    for output in outputs:
+        reasoning_trace = output.outputs[0].text
+        has_thinking_tags = "<|im_start|>think" in reasoning_trace or "<think>" in reasoning_trace
 
-    # Check for thinking tags
-    has_thinking_tags = "<|im_start|>think" in reasoning_trace or "<think>" in reasoning_trace
+        results.append({
+            "reasoning_trace": reasoning_trace,
+            "metadata": {
+                "model": "Qwen/Qwen3.8-27B",
+                "max_tokens": max_tokens,
+                "enable_thinking": enable_thinking,
+                "prompt_length": len(output.prompt_token_ids),
+                "generated_tokens": len(output.outputs[0].token_ids),
+                "has_thinking_tags": has_thinking_tags,
+                "inference_engine": "vllm",
+            }
+        })
 
-    return {
-        "reasoning_trace": reasoning_trace,
-        "metadata": {
-            "model": "Qwen/Qwen3.8-27B",
-            "max_tokens": max_tokens,
-            "enable_thinking": enable_thinking,
-            "prompt_length": len(output.prompt_token_ids),
-            "generated_tokens": len(output.outputs[0].token_ids),
-            "has_thinking_tags": has_thinking_tags,
-            "inference_engine": "vllm",
-        }
-    }
+    return results
 
 
 if __name__ == "__main__":

@@ -1,5 +1,25 @@
-You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write PDDL code (Planning Domain Definition Language) that defines the planning domain and problem. PDDL is NOT Python - it is a specialized planning language with Lisp-like syntax. Enclose your complete PDDL solution in a single code block, with both the domain definition and problem definition clearly separated.
+You are given a constraint satisfaction problem (CSP) expressed in natural language: a set of entities, constraints between them, and a goal state that must be reached without violating any constraint. Formalize the variables and constraints from the text, then write PDDL code (Planning Domain Definition Language) that defines the planning domain and problem. PDDL is NOT Python - it is a specialized planning language with Lisp-like syntax.
 
-CRITICAL: Your code block must contain valid PDDL syntax only (with comments allowed using semicolons `;`). All reasoning, explanations, or commentary must appear OUTSIDE the code block. The PDDL must be syntactically correct and compatible with standard PDDL planners.
+CRITICAL: Your code block must contain valid PDDL 1.0 syntax only (with comments allowed using semicolons `;`). All reasoning, explanations, or commentary must appear OUTSIDE the code block. The PDDL must be syntactically correct and compatible with standard PDDL planners (VAL validator).
 
+IMPORTANT CONTEXT:
+The groundtruth problem PDDL for this specific instance (with the correct initial and goal states) is provided below. You should use this as a reference for:
+- Understanding the exact initial configuration
+- Understanding the exact goal configuration
+- The correct object names and structure
+
+However, you MUST create your own domain PDDL that properly encodes the constraints mentioned in the problem description.
+
+GROUNDTRUTH PROBLEM PDDL (for reference):
+```
+{GROUNDTRUTH_PROBLEM_PDDL}
+```
+
+DOMAIN DESCRIPTION:
+{DOMAIN_DESCRIPTION}
+
+PROBLEM-SPECIFIC DESCRIPTION:
+{PROBLEM_DESCRIPTION}
+
+FULL PROBLEM WITH CONSTRAINTS:
 {PROBLEM}

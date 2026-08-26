@@ -14,7 +14,13 @@ def extract_pddl_from_json(code: str) -> Tuple[Optional[str], Optional[str], Opt
     """
     Extract domain and problem PDDL from JSON output.
 
-    Expected format:
+    Expected format (preferred):
+    {
+      "domain_file": "(define (domain blocksworld) ...)",
+      "problem_file": "(define (problem ...) ...)"
+    }
+
+    Also supports legacy format:
     {
       "domain_pddl": "(define (domain blocksworld) ...)",
       "problem_pddl": "(define (problem ...) ...)"
@@ -52,13 +58,14 @@ def extract_pddl_from_json(code: str) -> Tuple[Optional[str], Optional[str], Opt
         if not isinstance(parsed, dict):
             return None, None, "JSON output is not an object/dict"
 
-        domain_pddl = parsed.get("domain_pddl")
-        problem_pddl = parsed.get("problem_pddl")
+        # Support both new format (domain_file/problem_file) and legacy format (domain_pddl/problem_pddl)
+        domain_pddl = parsed.get("domain_file") or parsed.get("domain_pddl")
+        problem_pddl = parsed.get("problem_file") or parsed.get("problem_pddl")
 
         if not domain_pddl:
-            return None, None, "JSON missing 'domain_pddl' key"
+            return None, None, "JSON missing 'domain_file' or 'domain_pddl' key"
         if not problem_pddl:
-            return None, None, "JSON missing 'problem_pddl' key"
+            return None, None, "JSON missing 'problem_file' or 'problem_pddl' key"
 
         return domain_pddl, problem_pddl, None
 
@@ -397,7 +404,8 @@ def run_pddl_code(
     run_planner: bool = True,
     run_validator: bool = True,
     use_online_solver: bool = True,
-    online_solver_name: str = "dual-bfws-ffparser"
+    online_solver_name: str = "dual-bfws-ffparser",
+    groundtruth_problem_pddl: Optional[str] = None
 ) -> dict:
     """
     Extract, validate, plan, and validate PDDL code.
@@ -406,6 +414,8 @@ def run_pddl_code(
     1. Extracts domain and problem PDDL from model output (JSON or raw format)
     2. Validates basic PDDL syntax
     3. Runs a PDDL planner to generate a plan (if run_planner=True)
+       - Uses groundtruth_problem_pddl if provided (for BlocksWorld evaluation)
+       - Otherwise uses the model's problem PDDL
     4. Validates the plan with VAL (if run_validator=True and plan exists)
 
     Args:
@@ -417,16 +427,17 @@ def run_pddl_code(
         run_validator: Whether to run VAL validator on plan (default True)
         use_online_solver: Whether to use online solver API (default True for better PDDL support)
         online_solver_name: Name of online solver to use (default: dual-bfws-ffparser)
+        groundtruth_problem_pddl: Optional groundtruth problem PDDL (for testing domain against correct initial/goal)
 
     Returns:
         Dict with keys:
             - ran: bool
-            - domain_pddl: str or None
-            - problem_pddl: str or None
+            - domain_pddl: str or None (model's domain)
+            - problem_pddl: str or None (model's problem)
             - syntax_valid: bool
-            - plan: str or None
+            - plan: str or None (generated using model's domain + groundtruth problem if provided)
             - plan_found: bool or None
-            - val_valid: bool or None (if validator was run)
+            - val_valid: bool or None (if validator was run, validated against groundtruth if provided)
             - val_output: str (validator stdout)
             - stdout: str (planner stdout)
             - stderr: str (planner stderr)
@@ -510,13 +521,17 @@ def run_pddl_code(
         }
 
     # Run planner (online or local)
+    # IMPORTANT: Use groundtruth problem PDDL if provided (for BlocksWorld evaluation)
+    # This ensures we're testing the model's domain against the correct initial/goal states
+    problem_for_planning = groundtruth_problem_pddl if groundtruth_problem_pddl else problem_pddl
+
     if use_online_solver:
         plan_text, planner_stdout, planner_stderr, plan_found = run_online_planner(
-            domain_pddl, problem_pddl, online_solver_name, timeout_sec
+            domain_pddl, problem_for_planning, online_solver_name, timeout_sec
         )
     else:
         plan_text, planner_stdout, planner_stderr, plan_found = run_fast_downward_planner(
-            domain_pddl, problem_pddl, timeout_sec
+            domain_pddl, problem_for_planning, timeout_sec
         )
 
     # If no plan found, return planner results
@@ -538,11 +553,12 @@ def run_pddl_code(
         }
 
     # Run VAL validator if enabled
+    # Use groundtruth problem PDDL if provided (consistent with planning)
     val_valid = None
     val_output = ""
     if run_validator:
         val_valid, val_stdout, val_stderr = run_val_validator(
-            domain_pddl, problem_pddl, plan_text, val_path
+            domain_pddl, problem_for_planning, plan_text, val_path
         )
         val_output = val_stdout if val_stdout else val_stderr
 

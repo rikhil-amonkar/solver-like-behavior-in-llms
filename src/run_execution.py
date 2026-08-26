@@ -134,9 +134,12 @@ def run_execution_pipeline(
                     # Execute code if present
                     if extracted_code and extracted_code.strip():
                         # For zebralogic, pass problem data for header extraction
+                        # For blocksworld (PDDL), pass groundtruth problem PDDL
                         extra_kwargs = {}
                         if task == "zebralogic":
                             extra_kwargs["problem_data"] = problem_data
+                        elif task == "blocksworld":
+                            extra_kwargs["groundtruth_problem_pddl"] = problem_data.get("groundtruth_problem_pddl")
 
                         code_result = execute_code_by_language(
                             extracted_code,

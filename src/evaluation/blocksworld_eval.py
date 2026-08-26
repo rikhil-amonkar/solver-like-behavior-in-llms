@@ -24,19 +24,25 @@ def evaluate_blocksworld_solution(
     """
     Validate BlocksWorld PDDL solution.
 
+    Evaluation pipeline for PDDL (on BlocksWorld):
+    1. Solver receives problem file and domain file
+    2. Solver output (predicted PDDL domain + groundtruth problem) → produces a calculated plan
+    3. Calculated plan + groundtruth problem PDDL are fed into VAL
+    4. VAL runs the plan's actions against the groundtruth PDDL to check whether they actually work
+
     Evaluation criteria:
     1. PDDL syntax is valid (domain and problem extracted)
     2. Domain includes required actions (pickup, putdown, stack, unstack)
     3. Problem defines correct objects, init, and goal states
-    4. Plan was found by planner
-    5. Plan is valid according to VAL validator
-    6. (Optional) Model's domain/problem can execute the golden plan (semantic check)
+    4. Plan was found by planner (using model's domain + groundtruth problem)
+    5. Plan is valid according to VAL validator (validated against groundtruth problem)
+    6. Constraint encoding is correct (comments present, semantic checks)
 
     Args:
-        problem: Problem dict from blocksworld_100.json
+        problem: Problem dict from blocksworld_100.json (contains groundtruth_problem_pddl)
         execution_result: Result from run_pddl_code()
         val_path: Path to VAL Validate binary
-        validate_with_golden_plan: Whether to check model PDDL against golden plan
+        validate_with_golden_plan: Whether to perform semantic validation
 
     Returns:
         (is_valid, error_detail)
@@ -151,13 +157,37 @@ def evaluate_blocksworld_solution(
         }
 
     # Check VAL validation result (if validator was run)
+    # NOTE: The plan from execution_result was validated against the model's problem PDDL
+    # But we need to RE-VALIDATE against the groundtruth problem PDDL
     val_valid = execution_result.get("val_valid")
-    if val_valid is not None:
-        if not val_valid:
-            return False, {
-                "error": "VAL validation failed - plan is not valid",
-                "val_output": execution_result.get("val_output", "")
-            }
+    plan = execution_result.get("plan")
+
+    if val_valid is not None and plan:
+        # Re-validate plan against groundtruth problem PDDL
+        groundtruth_problem_pddl = problem.get("groundtruth_problem_pddl")
+
+        if groundtruth_problem_pddl:
+            # Validate model's domain + groundtruth problem + plan using VAL
+            groundtruth_val_valid, groundtruth_val_stdout, groundtruth_val_stderr = run_val_validator(
+                domain_pddl,
+                groundtruth_problem_pddl,
+                plan,
+                val_path
+            )
+
+            if not groundtruth_val_valid:
+                return False, {
+                    "error": "VAL validation failed against groundtruth problem - plan is not valid",
+                    "val_output": groundtruth_val_stdout if groundtruth_val_stdout else groundtruth_val_stderr,
+                    "note": "Plan was generated but does not work with the groundtruth problem PDDL"
+                }
+        else:
+            # Fall back to model's problem validation
+            if not val_valid:
+                return False, {
+                    "error": "VAL validation failed - plan is not valid",
+                    "val_output": execution_result.get("val_output", "")
+                }
 
         # Plan was found and is valid - check if this is expected
         if not plan_should_exist:

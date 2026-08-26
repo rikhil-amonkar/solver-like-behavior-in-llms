@@ -24,7 +24,7 @@ from general.prompt_utils import (
     build_full_prompt,
 )
 from general.cli import ProgressTracker
-from inference.model_caller import call_model
+from inference.model_caller import call_model, call_model_batch
 
 
 def run_inference_pipeline(
@@ -34,6 +34,7 @@ def run_inference_pipeline(
     max_tokens: int = None,
     caution_variant: str = None,
     continue_run: bool = False,
+    batch_size: int = None,
 ):
     """
     Run inference pipeline for a task and model.
@@ -45,8 +46,14 @@ def run_inference_pipeline(
         max_tokens: Max tokens for generation (None = use model default)
         caution_variant: Cautionary suffix variant ('a' or 'b'), or None for baseline
         continue_run: Resume from last completed example in existing JSONL
+        batch_size: Batch size for vLLM models (None = auto: 16 for qwen/gpt, 1 for deepseek)
     """
     condition = f"caution_{caution_variant}" if caution_variant else "baseline"
+
+    # Auto-select batch size if not specified
+    if batch_size is None:
+        # vLLM models benefit from batching, DeepSeek is API-based (sequential)
+        batch_size = 16 if model in ["qwen", "gpt"] else 1
 
     print(f"\n=== Inference Pipeline ===")
     print(f"Task: {task}")
@@ -54,6 +61,7 @@ def run_inference_pipeline(
     print(f"Condition: {condition}")
     print(f"Examples: {num_examples or 'all'}")
     print(f"Max tokens: {max_tokens or 'default'}")
+    print(f"Batch size: {batch_size}")
     print(f"Continue mode: {continue_run}")
     print()
 
@@ -127,67 +135,101 @@ def run_inference_pipeline(
             "max_tokens": max_tokens,
         }
 
-    # Process examples with incremental JSON writing
+    # Process examples with incremental JSON writing (batch mode)
     success_count = len(completed_ids)
     error_count = 0
 
     with IncrementalJSONWriter(str(output_path), metadata, continue_mode=continue_run) as writer:
         with ProgressTracker(len(example_ids), f"Processing {task}") as progress:
-            for example_id in example_ids:
+            # Process in batches
+            for batch_start in range(0, len(example_ids), batch_size):
+                batch_end = min(batch_start + batch_size, len(example_ids))
+                batch_ids = example_ids[batch_start:batch_end]
+
                 try:
-                    # Get problem
-                    problem_data = problems[example_id]
-                    problem_text = problem_data.get("problem", "")
+                    # Build prompts for entire batch
+                    batch_prompts = []
+                    batch_problem_texts = []
+                    for example_id in batch_ids:
+                        problem_data = problems[example_id]
+                        problem_text = problem_data.get("problem", "")
+                        batch_problem_texts.append(problem_text)
 
-                    # Build prompt
-                    full_prompt = build_full_prompt(
-                        universal_prefix,
-                        problem_text,
-                        output_format,
-                        cautionary_suffix
-                    )
+                        # Build prompt (pass problem_data for PDDL tasks with groundtruth info)
+                        full_prompt = build_full_prompt(
+                            universal_prefix,
+                            problem_text,
+                            output_format,
+                            cautionary_suffix,
+                            problem_data=problem_data if task == "blocksworld" else None
+                        )
+                        batch_prompts.append(full_prompt)
 
-                    # Call model
-                    model_result = call_model(
-                        model,
-                        full_prompt,
-                        max_tokens=max_tokens
-                    )
+                    # Call model in batch mode
+                    if batch_size == 1:
+                        # Single prompt: use non-batch interface
+                        batch_results = [call_model(model, batch_prompts[0], max_tokens=max_tokens)]
+                    else:
+                        # Batch inference
+                        batch_results = call_model_batch(model, batch_prompts, max_tokens=max_tokens)
 
-                    reasoning_trace = model_result["reasoning_trace"]
-                    model_metadata = model_result["metadata"]
+                    # Process batch results
+                    for idx, (example_id, model_result) in enumerate(zip(batch_ids, batch_results)):
+                        try:
+                            reasoning_trace = model_result["reasoning_trace"]
+                            model_metadata = model_result["metadata"]
 
-                    # Build example result (only reasoning trace, no execution)
-                    example_result = {
-                        "example_id": example_id,
-                        "problem_text": problem_text,
-                        "reasoning_trace": reasoning_trace,
-                        "model_metadata": model_metadata,
-                    }
+                            # Build example result (only reasoning trace, no execution)
+                            example_result = {
+                                "example_id": example_id,
+                                "problem_text": batch_problem_texts[idx],
+                                "reasoning_trace": reasoning_trace,
+                                "model_metadata": model_metadata,
+                            }
 
-                    # Write immediately
-                    writer.write_example(example_result)
-                    success_count += 1
+                            # Write immediately
+                            writer.write_example(example_result)
+                            success_count += 1
+
+                        except Exception as e:
+                            # Log error but continue
+                            error_count += 1
+                            print(f"\nError processing result for {example_id}: {str(e)}")
+
+                            # Write error example
+                            error_result = {
+                                "example_id": example_id,
+                                "problem_text": batch_problem_texts[idx],
+                                "reasoning_trace": "",
+                                "model_metadata": {
+                                    "error": str(e),
+                                },
+                            }
+                            writer.write_example(error_result)
+
+                        # Update progress
+                        progress.update(1)
+                        progress.set_postfix(success=success_count, errors=error_count)
 
                 except Exception as e:
-                    # Log error but continue
-                    error_count += 1
-                    print(f"\nError on {example_id}: {str(e)}")
+                    # Batch-level error: mark all examples in batch as failed
+                    error_count += len(batch_ids)
+                    print(f"\nBatch error for {batch_ids}: {str(e)}")
 
-                    # Write error example
-                    error_result = {
-                        "example_id": example_id,
-                        "problem_text": problem_data.get("problem", ""),
-                        "reasoning_trace": "",
-                        "model_metadata": {
-                            "error": str(e),
-                        },
-                    }
-                    writer.write_example(error_result)
+                    for idx, example_id in enumerate(batch_ids):
+                        error_result = {
+                            "example_id": example_id,
+                            "problem_text": problems[example_id].get("problem", ""),
+                            "reasoning_trace": "",
+                            "model_metadata": {
+                                "error": f"Batch processing error: {str(e)}",
+                            },
+                        }
+                        writer.write_example(error_result)
 
-                # Update progress
-                progress.update(1)
-                progress.set_postfix(success=success_count, errors=error_count)
+                        # Update progress
+                        progress.update(1)
+                        progress.set_postfix(success=success_count, errors=error_count)
 
         # Finalize with summary
         total_examples = len(example_ids) + len(completed_ids)
@@ -317,6 +359,12 @@ Examples:
         dest="continue_run",
         help="Resume from last completed example in existing JSONL (skips completed examples)"
     )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=None,
+        help="Batch size for vLLM models (default: auto-detect - 16 for qwen/gpt, 1 for deepseek)"
+    )
 
     args = parser.parse_args()
 
@@ -328,6 +376,7 @@ Examples:
             max_tokens=args.max_tokens,
             caution_variant=args.caution_variant,
             continue_run=args.continue_run,
+            batch_size=args.batch_size,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

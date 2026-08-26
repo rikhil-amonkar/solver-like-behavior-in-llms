@@ -8,21 +8,21 @@ Your code must contain two sections:
 2. Problem definition: objects (blocks), initial state, goal state
 
 Requirements:
-- Use standard PDDL syntax (Lisp-like s-expressions)
+- Use standard PDDL 1.0 syntax (Lisp-like s-expressions) - this is what VAL supports
 - Include `:requirements :strips` at minimum (add others if needed for constraints)
 - Define all four basic Blocksworld actions unless constraints require modifications
 - Encode additional constraints by modifying predicates, preconditions, or effects
 - Use comments (starting with `;`) to mark constraint-related modifications
 
 CRITICAL OUTPUT FORMAT REQUIREMENT:
-You MUST output your PDDL code as a JSON object with exactly two keys: "domain_pddl" and "problem_pddl".
+You MUST output your PDDL code as a JSON object with exactly two keys: "domain_file" and "problem_file".
 Each key should contain the complete PDDL definition as a string.
 
 Example output structure:
 ```json
 {
-  "domain_pddl": "(define (domain blocksworld)\n  (:requirements :strips)\n  (:predicates (on ?x ?y) (on-table ?x) (clear ?x) (holding ?x) (arm-empty))\n  (:action pickup\n    :parameters (?b)\n    :precondition (and (on-table ?b) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (not (on-table ?b)) (not (clear ?b)) (not (arm-empty))))\n  (:action putdown\n    :parameters (?b)\n    :precondition (holding ?b)\n    :effect (and (on-table ?b) (clear ?b) (arm-empty) (not (holding ?b))))\n  (:action stack\n    :parameters (?b ?c)\n    :precondition (and (holding ?b) (clear ?c))\n    :effect (and (on ?b ?c) (clear ?b) (arm-empty) (not (holding ?b)) (not (clear ?c))))\n  (:action unstack\n    :parameters (?b ?c)\n    :precondition (and (on ?b ?c) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (clear ?c) (not (on ?b ?c)) (not (clear ?b)) (not (arm-empty)))))\n",
-  "problem_pddl": "(define (problem blocksworld-problemX)\n  (:domain blocksworld)\n  (:objects block1 block2)\n  (:init (on-table block1) (on block2 block1) (clear block2) (arm-empty))\n  (:goal (and (on-table block1) (on-table block2))))\n"
+  "domain_file": "(define (domain blocksworld)\n  (:requirements :strips)\n  (:predicates (on ?x ?y) (on-table ?x) (clear ?x) (holding ?x) (arm-empty))\n  (:action pickup\n    :parameters (?b)\n    :precondition (and (on-table ?b) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (not (on-table ?b)) (not (clear ?b)) (not (arm-empty))))\n  (:action putdown\n    :parameters (?b)\n    :precondition (holding ?b)\n    :effect (and (on-table ?b) (clear ?b) (arm-empty) (not (holding ?b))))\n  (:action stack\n    :parameters (?b ?c)\n    :precondition (and (holding ?b) (clear ?c))\n    :effect (and (on ?b ?c) (clear ?b) (arm-empty) (not (holding ?b)) (not (clear ?c))))\n  (:action unstack\n    :parameters (?b ?c)\n    :precondition (and (on ?b ?c) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (clear ?c) (not (on ?b ?c)) (not (clear ?b)) (not (arm-empty)))))\n",
+  "problem_file": "(define (problem blocksworld-problemX)\n  (:domain blocksworld)\n  (:objects block1 block2)\n  (:init (on-table block1) (on block2 block1) (clear block2) (arm-empty))\n  (:goal (and (on-table block1) (on-table block2))))\n"
 }
 ```
 

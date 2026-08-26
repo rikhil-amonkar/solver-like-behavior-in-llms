@@ -48,20 +48,39 @@ def call_gpt_oss(prompt: str, max_tokens: int = None, reasoning_effort: str = "m
     Returns:
         dict with keys: reasoning_trace, metadata (tokens, model, etc.)
     """
+    # Single prompt: call batch version and return first result
+    results = call_gpt_oss_batch([prompt], max_tokens=max_tokens, reasoning_effort=reasoning_effort)
+    return results[0]
+
+
+def call_gpt_oss_batch(prompts: list[str], max_tokens: int = None, reasoning_effort: str = "medium") -> list[dict]:
+    """
+    Call GPT-OSS-120B with vLLM in batch mode (optimized for multiple prompts).
+
+    Args:
+        prompts: List of user prompt texts
+        max_tokens: Max new tokens to generate (defaults to MAX_OPENAI_TOKENS from .env)
+        reasoning_effort: Reasoning effort level ("low", "medium", "high")
+
+    Returns:
+        List of dicts with keys: reasoning_trace, metadata (tokens, model, etc.)
+    """
     if max_tokens is None:
         max_tokens = int(os.getenv("MAX_OPENAI_TOKENS", 32768))
 
     llm = _load_gpt_model()
-
-    messages = [{"role": "user", "content": prompt}]
-
-    # Format prompt with chat template
     tokenizer = llm.get_tokenizer()
-    formatted_prompt = tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
-    )
+
+    # Format all prompts
+    formatted_prompts = []
+    for prompt in prompts:
+        messages = [{"role": "user", "content": prompt}]
+        formatted_prompt = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        formatted_prompts.append(formatted_prompt)
 
     # Sampling parameters (reasoning_effort controls temperature/top_p)
     effort_params = {
@@ -78,31 +97,34 @@ def call_gpt_oss(prompt: str, max_tokens: int = None, reasoning_effort: str = "m
         skip_special_tokens=False,  # Keep reasoning tags
     )
 
-    # Generate
-    outputs = llm.generate([formatted_prompt], sampling_params)
-    output = outputs[0]
+    # Generate (batch mode)
+    outputs = llm.generate(formatted_prompts, sampling_params)
 
-    # Extract generated text (with special tokens)
-    reasoning_trace = output.outputs[0].text
+    # Process all outputs
+    results = []
+    for output in outputs:
+        reasoning_trace = output.outputs[0].text
 
-    # Check for reasoning markers
-    has_reasoning_tokens = any(
-        marker in reasoning_trace
-        for marker in ["<think>", "<reasoning>", "<thought>", "|im_start|"]
-    )
+        # Check for reasoning markers
+        has_reasoning_tokens = any(
+            marker in reasoning_trace
+            for marker in ["<think>", "<reasoning>", "<thought>", "|im_start|"]
+        )
 
-    return {
-        "reasoning_trace": reasoning_trace,
-        "metadata": {
-            "model": "openai/gpt-oss-120b",
-            "max_tokens": max_tokens,
-            "reasoning_effort": reasoning_effort,
-            "prompt_length": len(output.prompt_token_ids),
-            "generated_tokens": len(output.outputs[0].token_ids),
-            "has_reasoning_tokens": has_reasoning_tokens,
-            "inference_engine": "vllm",
-        }
-    }
+        results.append({
+            "reasoning_trace": reasoning_trace,
+            "metadata": {
+                "model": "openai/gpt-oss-120b",
+                "max_tokens": max_tokens,
+                "reasoning_effort": reasoning_effort,
+                "prompt_length": len(output.prompt_token_ids),
+                "generated_tokens": len(output.outputs[0].token_ids),
+                "has_reasoning_tokens": has_reasoning_tokens,
+                "inference_engine": "vllm",
+            }
+        })
+
+    return results
 
 
 if __name__ == "__main__":

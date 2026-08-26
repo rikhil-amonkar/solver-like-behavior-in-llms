@@ -37,7 +37,8 @@ def build_full_prompt(
     universal_prefix: str,
     problem_text: str,
     output_format: str,
-    cautionary_suffix: str = ""
+    cautionary_suffix: str = "",
+    problem_data: dict = None
 ) -> str:
     """
     Build complete prompt by combining components.
@@ -47,12 +48,23 @@ def build_full_prompt(
         problem_text: Specific problem instance
         output_format: Task-specific output format instructions
         cautionary_suffix: Optional cautionary suffix to append
+        problem_data: Optional problem data dict (for PDDL tasks with groundtruth info)
 
     Returns:
-        Complete prompt with {PROBLEM} placeholder replaced and optional suffix
+        Complete prompt with placeholders replaced and optional suffix
     """
     # Replace {PROBLEM} placeholder in prefix
     prompt_with_problem = universal_prefix.replace("{PROBLEM}", problem_text)
+
+    # For PDDL tasks, replace additional placeholders if problem_data is provided
+    if problem_data and "{GROUNDTRUTH_PROBLEM_PDDL}" in universal_prefix:
+        groundtruth_pddl = problem_data.get("groundtruth_problem_pddl", "")
+        domain_description = problem_data.get("domain_description", "")
+        problem_description = problem_data.get("problem_description", "")
+
+        prompt_with_problem = prompt_with_problem.replace("{GROUNDTRUTH_PROBLEM_PDDL}", groundtruth_pddl)
+        prompt_with_problem = prompt_with_problem.replace("{DOMAIN_DESCRIPTION}", domain_description)
+        prompt_with_problem = prompt_with_problem.replace("{PROBLEM_DESCRIPTION}", problem_description)
 
     # Append output format instructions
     full_prompt = f"{prompt_with_problem}\n\n{output_format}"
