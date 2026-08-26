@@ -1,0 +1,1 @@
+{"_metadata": {"task": "zebralogic", "model": "deepseek", "model_full_name": "deepseek-v4-flash", "condition": "caution_b", "cautionary_suffix_enabled": true, "cautionary_suffix_variant": "b", "timestamp": "2026-08-26T14:54:20Z", "num_examples": 100, "max_tokens": null}}

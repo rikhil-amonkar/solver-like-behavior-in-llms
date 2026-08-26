@@ -10,10 +10,11 @@ from typing import List, Tuple
 
 
 # Conservative token limit per segment to avoid output overflow
-# Judge output can be 2-3x input size for complex traces with many chunks
-# Max output: 65536 tokens. Empirically, 22k input → >65k output on detailed traces
-# Using 15k per segment to ensure judge output stays under 65k limit
-MAX_REASONING_TOKENS_PER_SEGMENT = 15000
+# Always split into smaller chunks (2-3k tokens) to:
+# 1. Prevent MAX_TOKENS errors (judge can expand input 2-3x)
+# 2. Make chunking more granular and reliable
+# 3. Avoid overwhelming judge with massive traces
+MAX_REASONING_TOKENS_PER_SEGMENT = 2500  # 2.5k tokens per segment
 SAFETY_MARGIN = 0.8  # Use 80% of limit for safety
 
 
@@ -215,11 +216,13 @@ def should_split_reasoning(
     encoding: str = "cl100k_base"
 ) -> Tuple[bool, int]:
     """
-    Determine if reasoning trace should be split based on estimated output size.
+    Determine if reasoning trace should be split.
+
+    New behavior: ALWAYS split into 2-3k token chunks for reliability.
 
     Args:
         reasoning_text: Reasoning trace to check
-        max_output_tokens: Maximum output tokens allowed by judge model
+        max_output_tokens: Maximum output tokens allowed by judge model (unused now)
         encoding: Tokenizer encoding
 
     Returns:
@@ -227,15 +230,8 @@ def should_split_reasoning(
     """
     reasoning_tokens = count_tokens(reasoning_text, encoding)
 
-    # Estimate judge output size:
-    # - Judge repeats text in chunks (~1.0x input)
-    # - JSON formatting overhead (~0.2x input)
-    # - Total: ~1.2-1.5x input tokens
-    estimated_output = int(reasoning_tokens * 1.3)
-
-    # Use safety margin (80% of max)
-    safe_max = int(max_output_tokens * SAFETY_MARGIN)
-
-    should_split = estimated_output > safe_max
+    # Always split if reasoning exceeds our segment size (2.5k tokens)
+    # This ensures we never have huge chunks that can cause MAX_TOKENS errors
+    should_split = reasoning_tokens > MAX_REASONING_TOKENS_PER_SEGMENT
 
     return should_split, reasoning_tokens

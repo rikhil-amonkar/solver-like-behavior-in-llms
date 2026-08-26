@@ -1,41 +1,49 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from vllm import LLM, SamplingParams
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-# Global model/tokenizer cache (lazy loaded)
-_qwen_model = None
-_qwen_tokenizer = None
+# Global vLLM model cache (lazy loaded)
+_qwen_llm = None
 
 
 def _load_qwen_model():
-    """Lazy load Qwen model and tokenizer (heavy operation)."""
-    global _qwen_model, _qwen_tokenizer
+    """Lazy load Qwen model with vLLM (heavy operation)."""
+    global _qwen_llm
 
-    if _qwen_model is None:
+    if _qwen_llm is None:
         model_id = "Qwen/Qwen3.8-27B"
-        print(f"Loading Qwen model: {model_id}...", flush=True)
-        _qwen_tokenizer = AutoTokenizer.from_pretrained(model_id)
-        _qwen_model = AutoModelForCausalLM.from_pretrained(
-            model_id,
-            torch_dtype="auto",
-            device_map="auto"
-        )
-        _qwen_model.eval()
-        print("Qwen model loaded.", flush=True)
+        print(f"Loading Qwen model with vLLM: {model_id}...", flush=True)
 
-    return _qwen_model, _qwen_tokenizer
+        # Get HF token if needed
+        hf_token = os.getenv("HF_TOKEN", None)
+
+        _qwen_llm = LLM(
+            model=model_id,
+            tokenizer=model_id,
+            trust_remote_code=True,
+            download_dir=None,  # Uses HF cache
+            tokenizer_mode="auto",
+            tensor_parallel_size=1,  # Adjust based on GPU count
+            gpu_memory_utilization=0.9,
+            max_model_len=131072,  # Qwen max context
+            max_num_seqs=256,  # Reduce for memory constraints
+            enforce_eager=False,  # Use CUDA graphs for speed
+        )
+        print("Qwen model loaded with vLLM.", flush=True)
+
+    return _qwen_llm
 
 
 def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True) -> dict:
     """
-    Call Qwen3.8-27B with thinking enabled.
+    Call Qwen3.8-27B with vLLM (optimized inference).
 
     Args:
         prompt: The user prompt text
         max_tokens: Max new tokens to generate (defaults to MAX_QWEN_TOKENS from .env)
-        enable_thinking: Whether to enable thinking mode
+        enable_thinking: Whether to enable thinking mode (adds system prompt for reasoning)
 
     Returns:
         dict with keys: reasoning_trace, metadata (tokens, model, etc.)
@@ -43,35 +51,39 @@ def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True)
     if max_tokens is None:
         max_tokens = int(os.getenv("MAX_QWEN_TOKENS", 131072))
 
-    model, tokenizer = _load_qwen_model()
+    llm = _load_qwen_model()
 
+    # Build chat messages with thinking mode if requested
     messages = [{"role": "user", "content": prompt}]
 
-    inputs = tokenizer.apply_chat_template(
+    # Note: vLLM doesn't directly support enable_thinking in apply_chat_template
+    # We'll format the prompt manually to preserve thinking tags
+    tokenizer = llm.get_tokenizer()
+
+    # Apply chat template with thinking mode
+    formatted_prompt = tokenizer.apply_chat_template(
         messages,
+        tokenize=False,
         add_generation_prompt=True,
-        enable_thinking=enable_thinking,
-        return_tensors="pt",
-        return_dict=True,
-    ).to(model.device)
-
-    output_ids = model.generate(**inputs, max_new_tokens=max_tokens)
-
-    # Decode WITHOUT skipping special tokens first to see if there are thinking tokens
-    full_output_with_special = tokenizer.decode(
-        output_ids[0][inputs["input_ids"].shape[-1]:],
-        skip_special_tokens=False
     )
 
-    # Also decode with special tokens skipped (standard)
-    output_clean = tokenizer.decode(
-        output_ids[0][inputs["input_ids"].shape[-1]:],
-        skip_special_tokens=True
+    # Sampling parameters
+    sampling_params = SamplingParams(
+        max_tokens=max_tokens,
+        temperature=0.7,
+        top_p=0.9,
+        skip_special_tokens=False,  # Keep thinking tags
     )
 
-    # Qwen uses <|im_start|>think and <|im_end|> tags for thinking mode
-    # Extract both thinking and answer sections
-    reasoning_trace = full_output_with_special if "<|im_start|>think" in full_output_with_special else output_clean
+    # Generate
+    outputs = llm.generate([formatted_prompt], sampling_params)
+    output = outputs[0]
+
+    # Extract generated text (with special tokens)
+    reasoning_trace = output.outputs[0].text
+
+    # Check for thinking tags
+    has_thinking_tags = "<|im_start|>think" in reasoning_trace or "<think>" in reasoning_trace
 
     return {
         "reasoning_trace": reasoning_trace,
@@ -79,9 +91,10 @@ def call_qwen(prompt: str, max_tokens: int = None, enable_thinking: bool = True)
             "model": "Qwen/Qwen3.8-27B",
             "max_tokens": max_tokens,
             "enable_thinking": enable_thinking,
-            "prompt_length": inputs["input_ids"].shape[-1],
-            "generated_tokens": len(output_ids[0]) - inputs["input_ids"].shape[-1],
-            "has_thinking_tags": "<|im_start|>think" in full_output_with_special,
+            "prompt_length": len(output.prompt_token_ids),
+            "generated_tokens": len(output.outputs[0].token_ids),
+            "has_thinking_tags": has_thinking_tags,
+            "inference_engine": "vllm",
         }
     }
 

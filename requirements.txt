@@ -9,6 +9,7 @@ python-dotenv>=1.2.3       # Environment variable loading
 torch>=2.13.0              # Local model inference (Qwen, GPT-OSS)
 transformers>=5.15.0       # HuggingFace model loading
 accelerate>=1.2.1          # Multi-GPU support for local models
+vllm>=0.8.0                # Optimized inference for Qwen, GPT-OSS (2-10x faster)
 tiktoken>=0.14.0           # Token counting for chunk enrichment
 huggingface-hub>=0.34.0    # Model downloading
 kernels>=0.16.0,<0.17.0    # MXFP4 quantization for GPT-OSS
