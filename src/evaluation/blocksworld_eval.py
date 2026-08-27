@@ -122,6 +122,16 @@ def evaluate_blocksworld_solution(
         # Planner did not find a plan - check if this is expected or an error
         stderr = execution_result.get("stderr", "")
 
+        # Check for timeout errors first
+        is_timeout_error = "SOLVER_TIMEOUT" in stderr or "Read timed out" in stderr or "timeout" in stderr.lower()
+
+        if is_timeout_error:
+            return False, {
+                "error": "Online solver timeout",
+                "error_type": "solver_timeout",
+                "planner_output": stderr[:500]  # Truncate for readability
+            }
+
         # Check for PDDL semantic/syntax errors
         pddl_errors = [
             "SemanticError",

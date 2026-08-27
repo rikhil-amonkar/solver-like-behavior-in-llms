@@ -199,98 +199,193 @@ def call_vertex_judge(
     raise last_error if last_error else RuntimeError("Unknown error in call_vertex_judge")
 
 
-def prepare_batch_request(
+def prepare_batch_requests(
     examples: list[dict],
     judge_prompt: str,
-    output_gcs_path: str = None,
-    model_id: str = None
-) -> dict:
+    max_output_tokens: int = None,
+    temperature: float = 0.0
+) -> list[dict]:
     """
-    Prepare a batch prediction request for Vertex AI.
+    Prepare batch prediction requests for Vertex AI JSONL format.
 
     Args:
         examples: List of dicts with 'example_id' and 'reasoning_text'
         judge_prompt: The judge prompt to use
-        output_gcs_path: GCS path for results (defaults to JUDGE_VERTEX_GCS_BUCKET/JUDGE_VERTEX_GCS_PREFIX from .env)
-        model_id: Gemini model ID (defaults to VERTEX_JUDGE_BATCH_MODEL from .env)
+        max_output_tokens: Max tokens per response (defaults to MAX_JUDGE_TOKENS from .env)
+        temperature: Sampling temperature
 
     Returns:
-        Batch request dict ready for submission
+        List of request dicts in JSONL format for batch API
     """
-    # Use settings from env if not specified
-    if model_id is None:
-        model_id = os.getenv("VERTEX_JUDGE_BATCH_MODEL", "publishers/google/models/gemini-2.5-pro")
+    if max_output_tokens is None:
+        max_output_tokens = int(os.getenv("MAX_JUDGE_TOKENS", 65536))
 
-    if output_gcs_path is None:
-        bucket = os.getenv("JUDGE_VERTEX_GCS_BUCKET")
-        prefix = os.getenv("JUDGE_VERTEX_GCS_PREFIX", "judge-batch")
-        if not bucket:
-            raise ValueError("JUDGE_VERTEX_GCS_BUCKET not set in .env")
-        output_gcs_path = f"gs://{bucket}/{prefix}"
-
-    # Format examples for batch API
     requests = []
     for example in examples:
         full_prompt = f"{judge_prompt}\n\n{example['reasoning_text']}"
-        requests.append({
-            "contents": full_prompt,
-            "id": example["example_id"],
-        })
 
-    return {
-        "model": model_id,
-        "requests": requests,
-        "output_uri": output_gcs_path,
-        "config": {
-            "temperature": 0.0,
-            "max_output_tokens": int(os.getenv("MAX_JUDGE_TOKENS", 65536)),
-            "response_mime_type": "application/json",
+        # Vertex AI batch JSONL format
+        request = {
+            "request": {
+                "contents": [{"role": "user", "parts": [{"text": full_prompt}]}],
+                "generationConfig": {
+                    "temperature": temperature,
+                    "maxOutputTokens": max_output_tokens,
+                    "responseMimeType": "application/json",
+                }
+            }
         }
-    }
+
+        requests.append(request)
+
+    return requests
 
 
 def submit_batch_job(
-    batch_request: dict,
-    input_gcs_path: Optional[str] = None
-) -> str:
+    requests: list[dict],
+    input_gcs_uri: str,
+    output_gcs_uri_prefix: str,
+    model_id: str = None,
+    display_name: str = None
+) -> types.BatchJob:
     """
-    Submit batch prediction job to Vertex AI.
+    Submit batch prediction job to Vertex AI using google-genai SDK.
 
     Args:
-        batch_request: Batch request dict from prepare_batch_request()
-        input_gcs_path: Optional GCS path to save request JSON
+        requests: List of request dicts (from prepare_batch_requests)
+        input_gcs_uri: GCS URI where requests JSONL will be uploaded
+        output_gcs_uri_prefix: GCS URI prefix for output results
+        model_id: Gemini model ID (defaults to VERTEX_JUDGE_BATCH_MODEL from .env)
+        display_name: Optional display name for the job
 
     Returns:
-        Batch job ID for monitoring
-
-    Note: This is a simplified stub. Actual implementation would use
-    google.cloud.aiplatform for batch job submission.
+        BatchJob object with job details (name, state, etc.)
     """
-    # TODO: Implement actual batch job submission
-    # Would use: aiplatform.BatchPredictionJob.create(...)
-    raise NotImplementedError(
-        "Batch job submission not yet implemented. "
-        "Use call_vertex_judge() for single-example mode, or implement "
-        "batch submission using google.cloud.aiplatform.BatchPredictionJob"
+    from .gcs_utils import upload_jsonl_to_gcs
+
+    # Upload requests to GCS
+    upload_jsonl_to_gcs(requests, input_gcs_uri)
+
+    # Get client
+    client = get_vertex_client()
+
+    # Use model from env if not specified
+    if model_id is None:
+        model_id = os.getenv("VERTEX_JUDGE_BATCH_MODEL", "publishers/google/models/gemini-2.5-pro")
+
+    # Create batch job
+    config = types.CreateBatchJobConfig(
+        dest=output_gcs_uri_prefix,
+        display_name=display_name or f"judge-batch-{get_timestamp()}"
     )
 
+    batch_job = client.batches.create(
+        model=model_id,
+        src=input_gcs_uri,
+        config=config
+    )
 
-def parse_batch_results(results_gcs_path: str) -> list[dict]:
+    return batch_job
+
+
+def get_timestamp() -> str:
+    """Get ISO timestamp for naming."""
+    from datetime import datetime
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+def poll_batch_job(batch_job_name: str, poll_interval: int = 30, max_wait: int = 3600) -> types.BatchJob:
+    """
+    Poll batch job until complete.
+
+    Args:
+        batch_job_name: Name of batch job (from BatchJob.name)
+        poll_interval: Seconds between polls (default 30s)
+        max_wait: Max seconds to wait (default 1 hour)
+
+    Returns:
+        Final BatchJob object
+
+    Raises:
+        TimeoutError: If job doesn't complete within max_wait
+        RuntimeError: If job fails
+    """
+    import time
+    from datetime import datetime
+
+    client = get_vertex_client()
+    start_time = time.time()
+    poll_count = 0
+
+    while True:
+        batch_job = client.batches.get(name=batch_job_name)
+
+        state = batch_job.state
+        poll_count += 1
+        elapsed = time.time() - start_time
+        elapsed_min = int(elapsed // 60)
+        elapsed_sec = int(elapsed % 60)
+
+        # Print progress update
+        print(f"  [{elapsed_min:02d}:{elapsed_sec:02d}] Poll #{poll_count}: {state}", end="")
+
+        # Try to get progress info if available
+        if hasattr(batch_job, 'model_monitoring_stats') and batch_job.model_monitoring_stats:
+            stats = batch_job.model_monitoring_stats
+            if hasattr(stats, 'completed_count') and hasattr(stats, 'total_count'):
+                print(f" ({stats.completed_count}/{stats.total_count} completed)", end="")
+
+        print()  # Newline
+
+        # Check terminal states
+        if state == types.JobState.JOB_STATE_SUCCEEDED:
+            return batch_job
+        elif state == types.JobState.JOB_STATE_FAILED:
+            error_msg = str(batch_job.error) if batch_job.error else "Unknown error"
+            raise RuntimeError(f"Batch job failed: {error_msg}")
+        elif state == types.JobState.JOB_STATE_CANCELLED:
+            raise RuntimeError("Batch job was cancelled")
+
+        # Check timeout
+        if elapsed > max_wait:
+            raise TimeoutError(
+                f"Batch job did not complete within {max_wait}s. "
+                f"Current state: {state}"
+            )
+
+        # Wait before next poll
+        time.sleep(poll_interval)
+
+
+def parse_batch_results(output_gcs_uri_prefix: str) -> list[dict]:
     """
     Parse results from completed batch job.
 
     Args:
-        results_gcs_path: GCS path to results JSON
+        output_gcs_uri_prefix: GCS URI prefix where results were written
 
     Returns:
-        List of dicts with example_id and judge response
+        List of response dicts with 'response' containing the judge output text
     """
-    # TODO: Implement GCS result parsing
-    # Would download from GCS and parse JSONL output
-    raise NotImplementedError(
-        "Batch result parsing not yet implemented. "
-        "Load results from GCS and parse JSONL format."
-    )
+    from .gcs_utils import list_gcs_blobs, download_jsonl_from_gcs
+
+    # List all output files (Vertex AI writes multiple shards)
+    output_files = list_gcs_blobs(output_gcs_uri_prefix)
+
+    if not output_files:
+        raise ValueError(f"No output files found at {output_gcs_uri_prefix}")
+
+    # Download and parse all JSONL files
+    all_results = []
+    for file_uri in output_files:
+        # Skip metadata files
+        if "metadata" in file_uri or file_uri.endswith("/"):
+            continue
+
+        results = download_jsonl_from_gcs(file_uri)
+        all_results.extend(results)
+
+    return all_results
 
 
 if __name__ == "__main__":

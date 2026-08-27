@@ -310,7 +310,8 @@ def run_online_planner(
     problem_pddl: str,
     solver: str = "dual-bfws-ffparser",
     timeout_sec: float = 60.0,
-    max_retries: int = 3
+    max_retries: int = 5,
+    initial_timeout: float = 60.0
 ) -> Tuple[Optional[str], str, str, bool]:
     """
     Run online PDDL solver using solver.planning.domains API.
@@ -323,7 +324,8 @@ def run_online_planner(
         problem_pddl: Problem PDDL string
         solver: Solver name (default: dual-bfws-ffparser)
         timeout_sec: Timeout for solver (not strictly enforced by API)
-        max_retries: Max retry attempts for API calls
+        max_retries: Max retry attempts for API calls (default 5)
+        initial_timeout: Initial HTTP timeout in seconds (default 60s, increases with retries)
 
     Returns:
         (plan, stdout, stderr, plan_found)
@@ -331,33 +333,51 @@ def run_online_planner(
     try:
         req_body = {"domain": domain_pddl, "problem": problem_pddl}
 
-        # Send job request to solve endpoint
+        # Send job request to solve endpoint with exponential backoff
         for attempt in range(max_retries):
+            # Increase timeout with each retry: 60s, 90s, 120s, 150s, 180s
+            current_timeout = initial_timeout * (1 + 0.5 * attempt)
+
             try:
                 solve_response = requests.post(
                     f"https://solver.planning.domains:5001/package/{solver}/solve",
                     json=req_body,
-                    timeout=30
+                    timeout=current_timeout
                 )
                 solve_response.raise_for_status()
                 solve_request = solve_response.json()
                 break
-            except (requests.RequestException, json.JSONDecodeError) as e:
+            except requests.Timeout as e:
+                # Timeout - retry with longer timeout
                 if attempt < max_retries - 1:
-                    time.sleep(1)
+                    backoff_time = 2 ** attempt  # 1s, 2s, 4s, 8s, 16s
+                    print(f"   ⚠ Solver submit timeout (attempt {attempt + 1}/{max_retries}), "
+                          f"retrying in {backoff_time}s with {current_timeout * 1.5:.0f}s timeout...")
+                    time.sleep(backoff_time)
                     continue
                 else:
-                    return None, "", f"Failed to submit solver request: {str(e)}", False
+                    return None, "", f"SOLVER_TIMEOUT: Failed to submit solver request after {max_retries} attempts: {str(e)}", False
+            except (requests.RequestException, json.JSONDecodeError) as e:
+                if attempt < max_retries - 1:
+                    backoff_time = 2 ** attempt
+                    print(f"   ⚠ Solver request failed (attempt {attempt + 1}/{max_retries}), retrying in {backoff_time}s...")
+                    time.sleep(backoff_time)
+                    continue
+                else:
+                    return None, "", f"Failed to submit solver request after {max_retries} attempts: {str(e)}", False
 
-        # Poll for result
+        # Poll for result with retries
         result_url = 'https://solver.planning.domains:5001' + solve_request['result']
         start_time = time.time()
+        poll_failures = 0
+        max_poll_failures = 10  # Allow temporary failures during polling
 
         while time.time() - start_time < timeout_sec:
             try:
-                result_response = requests.post(result_url, timeout=10)
+                result_response = requests.post(result_url, timeout=30)  # Increased from 10s to 30s
                 result_response.raise_for_status()
                 result_data = result_response.json()
+                poll_failures = 0  # Reset failure count on success
 
                 status = result_data.get("status", "")
                 if status == "PENDING":
@@ -386,7 +406,10 @@ def run_online_planner(
                     return None, "", stderr, False
 
             except (requests.RequestException, json.JSONDecodeError) as e:
-                time.sleep(0.5)
+                poll_failures += 1
+                if poll_failures > max_poll_failures:
+                    return None, "", f"Polling failed after {max_poll_failures} consecutive errors: {str(e)}", False
+                time.sleep(1)  # Longer sleep on error
                 continue
 
         # Timeout

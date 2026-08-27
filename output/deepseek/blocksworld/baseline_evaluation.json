@@ -5,13 +5,13 @@
     "condition": "baseline",
     "execution_json": "output/deepseek/blocksworld/baseline_execution.json",
     "constraints_json": "data/constraints/blocksworld_constraints.json",
-    "timestamp": "2026-08-27T15:39:34Z",
+    "timestamp": "2026-08-27T23:38:20Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.76,
-    "constraint_correct": 76,
-    "constraint_incorrect": 24,
+    "constraint_based_accuracy": 0.78,
+    "constraint_correct": 78,
+    "constraint_incorrect": 22,
     "error_breakdown": {
       "no_code_extracted": 0,
       "execution_error": 4,
@@ -20,7 +20,7 @@
       "parse_error": 0,
       "constraint_violation": 0,
       "pddl_error": 1,
-      "planning_failure": 19,
+      "planning_failure": 17,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -51,7 +51,7 @@
       "validation": {
         "error": "planner did not find a valid plan (but plan should exist)",
         "error_type": "planning_failure",
-        "planner_output": "Solver timeout after 30.0s"
+        "planner_output": "planner timeout or no solution"
       }
     },
     {
@@ -240,13 +240,9 @@
     },
     {
       "example_id": "blocksworld_p10_action_constraint2",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "Solver timeout after 30.0s"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p57_action_constraint41",
@@ -428,13 +424,9 @@
     },
     {
       "example_id": "blocksworld_p70_goal_constraint10",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "Solver timeout after 30.0s"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p18_baseline_constraint18",

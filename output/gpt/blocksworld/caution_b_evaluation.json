@@ -5,7 +5,7 @@
     "condition": "caution_b",
     "execution_json": "output/gpt/blocksworld/caution_b_execution.json",
     "constraints_json": "data/constraints/blocksworld_constraints.json",
-    "timestamp": "2026-08-27T01:04:35Z",
+    "timestamp": "2026-08-27T23:42:08Z",
     "num_examples": 100
   },
   "summary": {
@@ -289,7 +289,7 @@
       "validation": {
         "error": "planner did not find a valid plan (but plan should exist)",
         "error_type": "planning_failure",
-        "planner_output": "Solver timeout after 30.0s"
+        "planner_output": "planner timeout or no solution"
       }
     },
     {

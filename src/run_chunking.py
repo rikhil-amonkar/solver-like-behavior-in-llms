@@ -3,6 +3,9 @@
 Chunking pipeline runner.
 
 Uses Gemini judge to classify reasoning traces into sound vs solver-like chunks.
+
+Default mode: Batch processing (fast, parallel via Vertex AI Batch API)
+Sequential mode: One-by-one processing (--sequential flag)
 """
 
 import argparse
@@ -11,8 +14,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from general.io_utils import load_json_file, get_timestamp, IncrementalJSONWriter, make_path_relative
+from general.io_utils import load_json_file, get_timestamp, make_path_relative, IncrementalJSONWriter
 from general.cli import ProgressTracker
+from chunking.vertex_batch_judge import (
+    prepare_batch_requests,
+    submit_batch_job,
+    poll_batch_job,
+    parse_batch_results
+)
 from chunking.judge_caller import call_judge
 from chunking.chunk_parser import (
     parse_judge_response,
@@ -20,40 +29,37 @@ from chunking.chunk_parser import (
     has_solver_like_chunks,
     parse_and_stitch_segments,
 )
-from chunking.reasoning_splitter import (
-    should_split_reasoning,
-    split_reasoning_by_tokens,
-    count_tokens,
-)
+from chunking.reasoning_splitter import split_reasoning_by_tokens, should_split_reasoning
+import json
+import os
 import time
 
 
-def run_chunking_pipeline(
+def run_batch_chunking_pipeline(
     execution_json_path: str,
     judge_prompt_path: str,
-    fix_mode: bool = False,
+    gcs_bucket: str,
+    gcs_prefix: str = None,
 ):
     """
-    Run chunking pipeline on execution results.
+    Run batch chunking pipeline on execution results.
 
     Args:
         execution_json_path: Path to execution JSON output
         judge_prompt_path: Path to judge prompt file
-        fix_mode: If True, only re-process examples with empty chunk_analysis from existing chunking file
+        gcs_bucket: GCS bucket name for batch I/O
+        gcs_prefix: Optional GCS prefix (defaults to judge-batch/<timestamp>)
     """
-    print(f"\n=== Chunking Pipeline {'(Fix Mode)' if fix_mode else ''} ===")
+    print(f"\n=== Batch Chunking Pipeline ===")
     print(f"Input: {execution_json_path}")
-    print(f"Judge prompt: {judge_prompt_path}\n")
+    print(f"Judge prompt: {judge_prompt_path}")
+    print(f"GCS bucket: {gcs_bucket}\n")
 
-    # Validate environment variables for Vertex AI
+    # Validate environment
     import os
     project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
     if not project_id:
         print("❌ ERROR: GOOGLE_CLOUD_PROJECT not set in environment")
-        print("   Add to your .env file:")
-        print("     GOOGLE_CLOUD_PROJECT=your-project-id")
-        print("   Or export it:")
-        print("     export GOOGLE_CLOUD_PROJECT=your-project-id")
         sys.exit(1)
 
     location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
@@ -62,100 +68,347 @@ def run_chunking_pipeline(
     print(f"  Location: {location}")
     print()
 
-    # Determine if we're working with execution or chunking file
-    if fix_mode:
-        # If user provided execution file, derive chunking file path
-        input_path = Path(execution_json_path)
+    # Load execution results
+    print("Loading execution results...")
+    execution_data = load_json_file(execution_json_path)
 
-        # Check if input is execution or chunking file
-        if "_execution.json" in input_path.name:
-            # Derive chunking file path
-            condition = input_path.name.replace("_execution.json", "").replace("execution.json", "baseline")
-            chunking_path = input_path.parent / f"{condition}_chunking.json"
+    task = execution_data["run_metadata"]["task"]
+    model = execution_data["run_metadata"]["model"]
+    condition = execution_data["run_metadata"].get("condition", "baseline")
+    examples = execution_data["examples"]
 
-            if not chunking_path.exists():
-                print(f"❌ ERROR: Chunking file not found: {chunking_path}")
-                print(f"   Run chunking first without --fix flag, or check file path.")
-                sys.exit(1)
+    print(f"Task: {task}")
+    print(f"Model: {model}")
+    print(f"Condition: {condition}")
+    print(f"Examples: {len(examples)}")
 
-            print(f"Detected execution file, loading chunking file: {chunking_path}")
-            chunking_data = load_json_file(str(chunking_path))
-            actual_chunking_path = chunking_path
+    # Determine output path
+    execution_path = Path(execution_json_path)
+    output_filename = f"{condition}_chunking.json"
+    output_path = execution_path.parent / output_filename
+    print(f"Output: {output_path}\n")
+
+    # Load judge prompt
+    judge_prompt = Path(judge_prompt_path).read_text(encoding="utf-8")
+
+    # Prepare batch requests (handle splitting)
+    print("Preparing batch requests...")
+    batch_examples = []
+    example_id_to_segments = {}  # Track which examples were split
+
+    max_judge_tokens = int(os.getenv("MAX_JUDGE_TOKENS", 65536))
+
+    for example in examples:
+        example_id = example["example_id"]
+        reasoning_before_code = example.get("reasoning_before_code", "")
+
+        if not reasoning_before_code or not reasoning_before_code.strip():
+            # Empty reasoning - will handle separately
+            example_id_to_segments[example_id] = []
+            continue
+
+        # Check if needs splitting
+        needs_split, reasoning_tokens = should_split_reasoning(
+            reasoning_before_code,
+            max_output_tokens=max_judge_tokens
+        )
+
+        if needs_split:
+            # Split into segments
+            segments = split_reasoning_by_tokens(reasoning_before_code)
+            print(f"  ℹ {example_id}: Splitting {reasoning_tokens} tokens into {len(segments)} segments")
+
+            # Create batch request for each segment
+            segment_ids = []
+            for seg_idx, segment in enumerate(segments):
+                segment_id = f"{example_id}__segment_{seg_idx}"
+                batch_examples.append({
+                    "example_id": segment_id,
+                    "reasoning_text": segment
+                })
+                segment_ids.append(segment_id)
+
+            example_id_to_segments[example_id] = segment_ids
         else:
-            # Assume it's already a chunking file
-            print("Loading existing chunking results...")
-            chunking_data = load_json_file(execution_json_path)
-            actual_chunking_path = input_path
+            # Single request
+            batch_examples.append({
+                "example_id": example_id,
+                "reasoning_text": reasoning_before_code
+            })
+            example_id_to_segments[example_id] = [example_id]
 
-        task = chunking_data["run_metadata"]["task"]
-        model = chunking_data["run_metadata"]["model"]
-        condition = chunking_data["run_metadata"].get("condition", "baseline")
+    print(f"Total batch requests: {len(batch_examples)}")
 
-        # Filter examples with empty chunk_analysis
-        all_examples = chunking_data["examples"]
-        examples_to_fix = [ex for ex in all_examples if not ex.get("chunk_analysis")]
+    # Prepare requests in Vertex AI format
+    requests = prepare_batch_requests(
+        batch_examples,
+        judge_prompt,
+        max_output_tokens=max_judge_tokens
+    )
 
-        print(f"Task: {task}")
-        print(f"Model: {model}")
-        print(f"Condition: {condition}")
-        print(f"Total examples: {len(all_examples)}")
-        print(f"Examples to fix (empty chunk_analysis): {len(examples_to_fix)}")
+    # Setup GCS paths
+    timestamp = get_timestamp()
+    if gcs_prefix is None:
+        gcs_prefix = f"judge-batch/{model}/{task}/{condition}/{timestamp}"
 
-        if not examples_to_fix:
-            print("\n✓ No examples to fix - all have chunk_analysis!")
-            return
+    input_gcs_uri = f"gs://{gcs_bucket}/{gcs_prefix}/input.jsonl"
+    output_gcs_uri_prefix = f"gs://{gcs_bucket}/{gcs_prefix}/output"
 
-        examples = examples_to_fix
-        all_examples_for_output = all_examples
+    print(f"\nGCS paths:")
+    print(f"  Input: {input_gcs_uri}")
+    print(f"  Output: {output_gcs_uri_prefix}")
 
-        # Output path is the chunking file (we'll overwrite)
-        output_path = actual_chunking_path
-        print(f"Output: {output_path} (will update in place)\n")
-    else:
-        # Load execution results
-        print("Loading execution results...")
-        execution_data = load_json_file(execution_json_path)
+    # Submit batch job
+    print("\nSubmitting batch job to Vertex AI...")
+    batch_job = submit_batch_job(
+        requests=requests,
+        input_gcs_uri=input_gcs_uri,
+        output_gcs_uri_prefix=output_gcs_uri_prefix,
+        display_name=f"judge-{model}-{task}-{condition}"
+    )
 
-        task = execution_data["run_metadata"]["task"]
-        model = execution_data["run_metadata"]["model"]
-        condition = execution_data["run_metadata"].get("condition", "baseline")
-        examples = execution_data["examples"]
+    print(f"Batch job created: {batch_job.name}")
+    print(f"State: {batch_job.state}")
 
-        print(f"Task: {task}")
-        print(f"Model: {model}")
-        print(f"Condition: {condition}")
-        print(f"Examples: {len(examples)}")
+    # Poll until complete
+    print("\nWaiting for batch job to complete...")
+    print("(This may take 10-30 minutes depending on dataset size)")
 
-        # Determine output path (use same condition as execution)
-        execution_path = Path(execution_json_path)
-        output_filename = f"{condition}_chunking.json"
-        output_path = execution_path.parent / output_filename
-        print(f"Output: {output_path}\n")
+    completed_job = poll_batch_job(
+        batch_job_name=batch_job.name,
+        poll_interval=30,
+        max_wait=7200  # 2 hours max
+    )
 
-        all_examples_for_output = None
+    print(f"\n✓ Batch job completed!")
+    print(f"  Duration: {(completed_job.end_time - completed_job.start_time).total_seconds():.0f}s")
+
+    # Download and parse results
+    print("\nDownloading batch results from GCS...")
+    batch_results = parse_batch_results(output_gcs_uri_prefix)
+
+    print(f"Retrieved {len(batch_results)} responses")
+
+    # Map results back to examples (handle segments)
+    print("\nProcessing results...")
+    example_id_to_response = {}
+
+    for idx, result in enumerate(batch_results):
+        # Extract response text from Vertex AI format
+        response_text = ""
+
+        if "response" in result and "candidates" in result["response"]:
+            candidate = result["response"]["candidates"][0]
+            if "content" in candidate and "parts" in candidate["content"]:
+                response_text = candidate["content"]["parts"][0].get("text", "")
+
+        # Map by index since batch results don't include custom_id in current format
+        # Results are returned in same order as input requests
+        if idx < len(batch_examples):
+            example_id = batch_examples[idx]["example_id"]
+            example_id_to_response[example_id] = response_text
+
+    # Build final results
+    judge_model = os.getenv("VERTEX_JUDGE_BATCH_MODEL", "publishers/google/models/gemini-2.5-pro")
+
+    metadata = {
+        "task": task,
+        "model": model,
+        "condition": condition,
+        "execution_json": make_path_relative(str(execution_json_path)),
+        "judge_model": judge_model,
+        "judge_prompt": judge_prompt_path,
+        "timestamp": timestamp,
+        "num_examples": len(examples),
+        "max_judge_tokens": max_judge_tokens,
+        "batch_job_name": batch_job.name,
+        "gcs_input": input_gcs_uri,
+        "gcs_output": output_gcs_uri_prefix,
+    }
+
+    final_examples = []
+    examples_with_solver_like = 0
+    examples_sound_only = 0
+
+    for example in examples:
+        example_id = example["example_id"]
+        reasoning_before_code = example.get("reasoning_before_code", "")
+
+        # Check if this was split
+        segment_ids = example_id_to_segments.get(example_id, [])
+
+        if not segment_ids:
+            # Empty reasoning
+            result = {
+                "example_id": example_id,
+                "reasoning_before_code": reasoning_before_code,
+                "chunk_analysis": [],
+                "token_statistics": {
+                    "encoding": "cl100k_base",
+                    "reasoning_total_tokens": 0,
+                    "solver_like_total_tokens": 0,
+                    "sound_total_tokens": 0,
+                    "solver_like_fraction": 0.0,
+                },
+                "has_solver_like": False,
+                "judge_metadata": {},
+            }
+            examples_sound_only += 1
+        elif len(segment_ids) > 1:
+            # Multiple segments - need to stitch
+            segment_responses = []
+            for seg_id in segment_ids:
+                if seg_id in example_id_to_response:
+                    segment_responses.append(example_id_to_response[seg_id])
+
+            # Parse and stitch
+            from chunking.chunk_parser import parse_and_stitch_segments
+            try:
+                enriched_chunks, token_stats, has_solver_like = parse_and_stitch_segments(
+                    segment_responses
+                )
+            except ValueError as e:
+                print(f"  ⚠ Failed to parse segments for {example_id}: {str(e)}")
+                enriched_chunks = []
+                token_stats = {
+                    "encoding": "cl100k_base",
+                    "reasoning_total_tokens": 0,
+                    "solver_like_total_tokens": 0,
+                    "sound_total_tokens": 0,
+                    "solver_like_fraction": 0.0,
+                }
+                has_solver_like = False
+
+            result = {
+                "example_id": example_id,
+                "reasoning_before_code": reasoning_before_code,
+                "chunk_analysis": enriched_chunks,
+                "token_statistics": token_stats,
+                "has_solver_like": has_solver_like,
+                "judge_metadata": {
+                    "num_segments": len(segment_ids),
+                    "was_split": True
+                },
+            }
+
+            if has_solver_like:
+                examples_with_solver_like += 1
+            else:
+                examples_sound_only += 1
+        else:
+            # Single response
+            response_text = example_id_to_response.get(segment_ids[0], "")
+
+            try:
+                parsed_response = parse_judge_response(response_text)
+                chunks = parsed_response["chunk_analysis"]
+            except ValueError as e:
+                print(f"  ⚠ Failed to parse response for {example_id}: {str(e)}")
+                chunks = []
+
+            # Enrich with tokens
+            enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
+            has_solver_like = has_solver_like_chunks(chunks)
+
+            result = {
+                "example_id": example_id,
+                "reasoning_before_code": reasoning_before_code,
+                "chunk_analysis": enriched_chunks,
+                "token_statistics": token_stats,
+                "has_solver_like": has_solver_like,
+                "judge_metadata": {},
+            }
+
+            if has_solver_like:
+                examples_with_solver_like += 1
+            else:
+                examples_sound_only += 1
+
+        final_examples.append(result)
+
+    # Write output
+    output_data = {
+        "run_metadata": metadata,
+        "examples": final_examples,
+        "summary": {
+            "total_examples": len(examples),
+            "examples_with_solver_like": examples_with_solver_like,
+            "examples_sound_only": examples_sound_only,
+        }
+    }
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, indent=2, ensure_ascii=False)
+
+    print(f"\n✓ Batch chunking complete!")
+    print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
+    print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
+    print(f"  Output: {output_path}")
+
+
+def run_sequential_chunking_pipeline(
+    execution_json_path: str,
+    judge_prompt_path: str,
+):
+    """
+    Run sequential chunking pipeline (one example at a time).
+
+    Args:
+        execution_json_path: Path to execution JSON output
+        judge_prompt_path: Path to judge prompt file
+    """
+    print(f"\n=== Sequential Chunking Pipeline ===")
+    print(f"Input: {execution_json_path}")
+    print(f"Judge prompt: {judge_prompt_path}\n")
+
+    # Validate environment
+    project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
+    if not project_id:
+        print("❌ ERROR: GOOGLE_CLOUD_PROJECT not set in environment")
+        sys.exit(1)
+
+    location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
+    print(f"Vertex AI Configuration:")
+    print(f"  Project: {project_id}")
+    print(f"  Location: {location}")
+    print()
+
+    # Load execution results
+    print("Loading execution results...")
+    execution_data = load_json_file(execution_json_path)
+
+    task = execution_data["run_metadata"]["task"]
+    model = execution_data["run_metadata"]["model"]
+    condition = execution_data["run_metadata"].get("condition", "baseline")
+    examples = execution_data["examples"]
+
+    print(f"Task: {task}")
+    print(f"Model: {model}")
+    print(f"Condition: {condition}")
+    print(f"Examples: {len(examples)}")
+
+    # Determine output path
+    execution_path = Path(execution_json_path)
+    output_filename = f"{condition}_chunking.json"
+    output_path = execution_path.parent / output_filename
+    print(f"Output: {output_path}\n")
 
     # Build metadata
-    import os
     judge_model = os.getenv("VERTEX_JUDGE_BATCH_MODEL", "publishers/google/models/gemini-2.5-pro")
     max_judge_tokens = int(os.getenv("MAX_JUDGE_TOKENS", 65536))
 
-    if fix_mode:
-        # Preserve existing metadata, update timestamp
-        metadata = chunking_data["run_metadata"].copy()
-        metadata["last_fix_timestamp"] = get_timestamp()
-        metadata["num_examples_fixed"] = len(examples)
-    else:
-        metadata = {
-            "task": task,
-            "model": model,
-            "condition": condition,
-            "execution_json": make_path_relative(str(execution_json_path)),
-            "judge_model": judge_model,
-            "judge_prompt": judge_prompt_path,
-            "timestamp": get_timestamp(),
-            "num_examples": len(examples),
-            "max_judge_tokens": max_judge_tokens,
-        }
+    metadata = {
+        "task": task,
+        "model": model,
+        "condition": condition,
+        "execution_json": make_path_relative(str(execution_json_path)),
+        "judge_model": judge_model,
+        "judge_prompt": judge_prompt_path,
+        "timestamp": get_timestamp(),
+        "num_examples": len(examples),
+        "max_judge_tokens": max_judge_tokens,
+        "mode": "sequential",
+    }
 
     # Process examples
     examples_with_solver_like = 0
@@ -163,19 +416,12 @@ def run_chunking_pipeline(
     total_chunks = 0
     examples_split = 0
 
-    # Rate limiting: ~2.5 seconds between requests to avoid hitting Vertex AI rate limits
-    # More conservative to handle retry backoffs better
+    # Rate limiting: ~2.5 seconds between requests
     last_request_time = 0
-    min_request_interval = 2.5  # seconds
+    min_request_interval = 2.5
 
     with IncrementalJSONWriter(str(output_path), metadata) as writer:
-        # In fix mode, first write all non-fixed examples as-is
-        if fix_mode:
-            for ex in all_examples_for_output:
-                if ex.get("chunk_analysis"):  # Already has chunks, keep as-is
-                    writer.write_example(ex)
-
-        with ProgressTracker(len(examples), f"{'Fixing' if fix_mode else 'Chunking'} {task}") as progress:
+        with ProgressTracker(len(examples), f"Chunking {task}") as progress:
             for example in examples:
                 try:
                     example_id = example["example_id"]
@@ -252,7 +498,6 @@ def run_chunking_pipeline(
 
                         except ValueError as e:
                             print(f"\n  ⚠ Failed to parse segments for {example_id}: {str(e)}")
-                            # Fallback: empty chunks
                             enriched_chunks = []
                             token_stats = {
                                 "encoding": "cl100k_base",
@@ -262,13 +507,10 @@ def run_chunking_pipeline(
                                 "solver_like_fraction": 0.0,
                             }
                             has_solver_like = False
-                            judge_metadata = {
-                                "error": f"Segment parsing failed: {str(e)}",
-                            }
+                            judge_metadata = {"error": f"Segment parsing failed: {str(e)}"}
 
                     else:
-                        # Normal single-call path (no splitting needed)
-                        # Rate limiting
+                        # Normal single-call path
                         time_since_last_request = time.time() - last_request_time
                         if last_request_time > 0 and time_since_last_request < min_request_interval:
                             sleep_time = min_request_interval - time_since_last_request
@@ -284,82 +526,23 @@ def run_chunking_pipeline(
                         raw_response = judge_result["raw_response"]
                         judge_metadata = judge_result["metadata"]
 
-                        # Check if judge hit MAX_TOKENS - if so, retry with splitting
-                        finish_reason = judge_metadata.get("finish_reason")
-                        if finish_reason == "FinishReason.MAX_TOKENS":
-                            print(f"\n  ℹ {example_id}: Judge hit MAX_TOKENS, retrying with splitting...")
+                        # Parse judge response
+                        try:
+                            parsed_response = parse_judge_response(raw_response)
+                            chunks = parsed_response["chunk_analysis"]
+                        except ValueError as e:
+                            print(f"\n  ⚠ Failed to parse judge response for {example_id}: {str(e)}")
+                            chunks = []
 
-                            # Split and retry
-                            segments = split_reasoning_by_tokens(reasoning_before_code)
-                            examples_split += 1
+                        # Enrich with tokens
+                        enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
+                        has_solver_like = has_solver_like_chunks(chunks)
 
-                            segment_responses = []
-                            segment_metadata = []
-
-                            for seg_idx, segment in enumerate(segments):
-                                # Rate limiting
-                                time_since_last_request = time.time() - last_request_time
-                                if last_request_time > 0 and time_since_last_request < min_request_interval:
-                                    sleep_time = min_request_interval - time_since_last_request
-                                    time.sleep(sleep_time)
-
-                                last_request_time = time.time()
-                                seg_result = call_judge(
-                                    reasoning_text=segment,
-                                    judge_prompt_path=judge_prompt_path,
-                                )
-
-                                segment_responses.append(seg_result["raw_response"])
-                                segment_metadata.append(seg_result["metadata"])
-
-                            # Parse and stitch segments
-                            try:
-                                enriched_chunks, token_stats, has_solver_like = parse_and_stitch_segments(
-                                    segment_responses
-                                )
-                                judge_metadata = {
-                                    "model": segment_metadata[0].get("model"),
-                                    "temperature": segment_metadata[0].get("temperature"),
-                                    "max_output_tokens": segment_metadata[0].get("max_output_tokens"),
-                                    "finish_reason": segment_metadata[-1].get("finish_reason"),
-                                    "attempts": sum(m.get("attempts", 1) for m in segment_metadata),
-                                }
-                            except ValueError as e:
-                                print(f"\n  ⚠ Failed to parse segments after MAX_TOKENS retry for {example_id}: {str(e)}")
-                                enriched_chunks = []
-                                token_stats = {
-                                    "encoding": "cl100k_base",
-                                    "reasoning_total_tokens": 0,
-                                    "solver_like_total_tokens": 0,
-                                    "sound_total_tokens": 0,
-                                    "solver_like_fraction": 0.0,
-                                }
-                                has_solver_like = False
-                                judge_metadata = {
-                                    "error": f"Segment parsing failed after MAX_TOKENS retry: {str(e)}",
-                                }
-                        else:
-                            # Normal path - no MAX_TOKENS issue
-                            # Parse judge response
-                            try:
-                                parsed_response = parse_judge_response(raw_response)
-                                chunks = parsed_response["chunk_analysis"]
-                            except ValueError as e:
-                                print(f"\n  ⚠ Failed to parse judge response for {example_id}: {str(e)}")
-                                # Use empty chunks
-                                chunks = []
-
-                            # Enrich with tokens
-                            enriched_chunks, token_stats = enrich_chunks_with_tokens(chunks)
-
-                            # Check for solver-like
-                            has_solver_like = has_solver_like_chunks(chunks)
-
-                    # Build result (use enriched chunks as the main chunk_analysis)
+                    # Build result
                     result = {
                         "example_id": example_id,
                         "reasoning_before_code": reasoning_before_code,
-                        "chunk_analysis": enriched_chunks,  # Only enriched version
+                        "chunk_analysis": enriched_chunks,
                         "token_statistics": token_stats,
                         "has_solver_like": has_solver_like,
                         "judge_metadata": judge_metadata,
@@ -376,12 +559,11 @@ def run_chunking_pipeline(
                     total_chunks += len(enriched_chunks)
 
                 except Exception as e:
-                    # Print detailed error to terminal
+                    # Print detailed error
                     import traceback
                     print(f"\n❌ Error chunking {example.get('example_id', '?')}:")
                     print(f"   {type(e).__name__}: {str(e)}")
-                    if "--verbose" in sys.argv:
-                        traceback.print_exc()
+                    traceback.print_exc()
 
                     # Write error result
                     result = {
@@ -417,32 +599,31 @@ def run_chunking_pipeline(
         }
         writer.finalize_with_summary(summary)
 
-    # Print summary
-    if fix_mode:
-        print(f"\n✓ Fix complete!")
-        print(f"  Fixed examples: {len(examples)}")
-        print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
-        print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
-        print(f"  Examples split into segments: {examples_split}/{len(examples)}")
-        print(f"  Total chunks: {total_chunks}")
-        print(f"  Output: {output_path}")
-    else:
-        print(f"\n✓ Chunking complete!")
-        print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
-        print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
-        print(f"  Examples split into segments: {examples_split}/{len(examples)}")
-        print(f"  Total chunks: {total_chunks}")
-        print(f"  Output: {output_path}")
+    print(f"\n✓ Sequential chunking complete!")
+    print(f"  Examples with solver-like: {examples_with_solver_like}/{len(examples)}")
+    print(f"  Examples sound only: {examples_sound_only}/{len(examples)}")
+    print(f"  Examples split into segments: {examples_split}/{len(examples)}")
+    print(f"  Total chunks: {total_chunks}")
+    print(f"  Output: {output_path}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run chunking pipeline",
+        description="Run chunking pipeline (batch mode by default, sequential with --sequential)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python src/run_chunking.py --input output/deepseek/calendar/execution.json \\
-                              --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
+  # Batch mode (default, fast):
+  python src/run_chunking.py \\
+      --input output/deepseek/calendar/baseline_execution.json \\
+      --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt \\
+      --gcs-bucket my-vertex-batch-bucket
+
+  # Sequential mode (slower, no GCS needed):
+  python src/run_chunking.py \\
+      --input output/deepseek/calendar/baseline_execution.json \\
+      --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt \\
+      --sequential
         """
     )
 
@@ -459,19 +640,46 @@ Examples:
         help="Path to judge prompt file"
     )
     parser.add_argument(
-        "--fix",
+        "--sequential",
         action="store_true",
-        help="Fix mode: re-process only examples with empty chunk_analysis from existing chunking file"
+        help="Use sequential mode (one-by-one API calls) instead of batch mode"
+    )
+    parser.add_argument(
+        "--gcs-bucket",
+        help="GCS bucket name for batch I/O (required for batch mode, ignored for sequential)"
+    )
+    parser.add_argument(
+        "--gcs-prefix",
+        help="Optional GCS prefix for batch mode (defaults to judge-batch/<timestamp>)"
     )
 
     args = parser.parse_args()
 
     try:
-        run_chunking_pipeline(
-            args.execution_json,
-            args.judge_prompt,
-            fix_mode=args.fix,
-        )
+        if args.sequential:
+            # Sequential mode - no GCS required
+            run_sequential_chunking_pipeline(
+                args.execution_json,
+                args.judge_prompt,
+            )
+        else:
+            # Batch mode (default) - GCS required
+            gcs_bucket = args.gcs_bucket or os.getenv("JUDGE_VERTEX_GCS_BUCKET")
+
+            if not gcs_bucket:
+                print("❌ ERROR: --gcs-bucket is required for batch mode")
+                print("   Either:")
+                print("   1. Provide --gcs-bucket your-bucket")
+                print("   2. Set JUDGE_VERTEX_GCS_BUCKET in .env")
+                print("   3. Use --sequential flag (no GCS needed)")
+                sys.exit(1)
+
+            run_batch_chunking_pipeline(
+                args.execution_json,
+                args.judge_prompt,
+                gcs_bucket,
+                args.gcs_prefix,
+            )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")
         sys.exit(1)

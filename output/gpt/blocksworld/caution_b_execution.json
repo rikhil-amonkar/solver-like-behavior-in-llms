@@ -872,12 +872,11 @@
         "plan_found": false,
         "val_valid": null,
         "val_output": "",
-        "stdout": "",
-        "stderr": "Solver timeout after 30.0s",
+        "stdout": " --- OK.\n Match tree built with 364 nodes.\n\nPDDL problem description loaded: \n\tDomain: BLOCKSWORLD\n\tProblem: BLOCKSWORLD-P03\n\t#Actions: 364\n\t#Fluents: 209\nGoals found: 13\nGoals_Edges found: 13\nStarting search with 1-BFWS...\n--[11 / 0]--\n--[11 / 2]--\n--[11 / 4]--\n--[10 / 0]--\n--[10 / 5]--\n--[9 / 0]--\n--[9 / 5]--\n--[8 / 0]--\n--[8 / 5]--\n--[8 / 6]--\n--[8 / 7]--\n--[8 / 8]--\n--[7 / 0]--\n--[7 / 8]--\n--[6 / 0]--\n--[6 / 7]--\n--[5 / 0]--\n--[5 / 4]--\n--[5 / 5]--\n--[5 / 6]--\n--[5 / 7]--\n--[5 / 8]--\n--[4 / 0]--\n--[4 / 7]--\n--[3 / 0]--\n--[3 / 4]--\n--[3 / 5]--\n--[3 / 7]--\n--[2 / 0]--\n--[2 / 8]--\n--[2 / 9]--\n--[2 / 11]--\n--[2 / 12]--\n--[2 / 13]--\n--[2 / 14]--\n--[2 / 15]--\n--[2 / 16]--\n--[2 / 17]--\n--[2 / 18]--\n--[2 / 19]--\n--[2 / 20]--\n--[2 / 21]--\n--[2 / 22]--\n--[2 / 23]--\n--[2 / 24]--\n--[2 / 25]--\n--[2 / 26]--\n--[2 / 27]--\n--[2 / 28]--\nTotal time: 0.11644\nNodes generated during search: 19413\nNodes expanded during search: 17472\nPlan found with cost: NOTFOUND\nFast-BFS search completed in 0.11644 secs\nStarting search with BFWS(novel,land,h_(add)ff)...\nLandmarks found: 36\nLandmarks_Edges found: 75\n--[73 / 4294967295]--\n--[73 / 73]--\n--[71 / 73]--\n--[71 / 60]--\n--[70 / 60]--\n--[67 / 60]--\n--[67 / 50]--\n--[66 / 50]--\n--[65 / 50]--\n--[62 / 50]--\n--[62 / 43]--\n--[60 / 43]--\n--[58 / 43]--\n--[57 / 43]--\n--[57 / 36]--\n--[54 / 36]--\n--[52 / 36]--\n--[50 / 36]--\n--[50 / 34]--\n--[50 / 33]--\n--[49 / 33]--\n--[47 / 33]--\n--[46 / 33]--\n--[46 / 31]--\n--[46 / 24]--\n--[44 / 24]--\n--[40 / 24]--\n--[40 / 20]--\n--[36 / 20]--\n--[33 / 20]--\n--[33 / 16]--\n--[32 / 16]--\n--[32 / 13]--\n--[31 / 13]--\n--[29 / 13]--\n--[27 / 13]--\n--[27 / 11]--\n--[24 / 11]--\n--[22 / 11]--\n--[22 / 10]--\n--[22 / 9]--\n--[20 / 9]--\n--[19 / 9]--\n--[17 / 9]--\n",
+        "stderr": "",
         "error": "planner did not find a plan",
-        "timeout_sec": 30.0,
-        "used_online_solver": true,
-        "parsed_output": null
+        "timeout_sec": 120.0,
+        "used_online_solver": true
       }
     },
     {

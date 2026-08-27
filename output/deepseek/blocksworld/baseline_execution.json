@@ -111,11 +111,10 @@
         "val_valid": null,
         "val_output": "",
         "stdout": "",
-        "stderr": "Solver timeout after 30.0s",
+        "stderr": "",
         "error": "planner did not find a plan",
-        "timeout_sec": 30.0,
-        "used_online_solver": true,
-        "parsed_output": null
+        "timeout_sec": 120.0,
+        "used_online_solver": true
       }
     },
     {
@@ -850,16 +849,15 @@
         "domain_pddl": "(define (domain blocksworld)\n  (:requirements :strips)\n  (:predicates\n    (on ?x ?y)\n    (on-table ?x)\n    (clear ?x)\n    (holding ?x)\n    (arm-empty)\n    ;; CONSTRAINT: one fuel token is consumed by each pickup/unstack action.\n    (fuel ?f)\n  )\n\n  (:action pickup\n    :parameters (?b ?f)\n    :precondition (and (fuel ?f) (on-table ?b) (clear ?b) (arm-empty))\n    :effect (and (holding ?b)\n                 (not (on-table ?b))\n                 (not (clear ?b))\n                 (not (arm-empty))\n                 (not (fuel ?f)))\n  )\n\n  (:action putdown\n    :parameters (?b)\n    :precondition (holding ?b)\n    :effect (and (on-table ?b)\n                 (clear ?b)\n                 (arm-empty)\n                 (not (holding ?b)))\n  )\n\n  (:action stack\n    :parameters (?b ?c)\n    :precondition (and (holding ?b) (clear ?c))\n    :effect (and (on ?b ?c)\n                 (clear ?b)\n                 (arm-empty)\n                 (not (holding ?b))\n                 (not (clear ?c)))\n  )\n\n  (:action unstack\n    :parameters (?b ?c ?f)\n    :precondition (and (fuel ?f) (on ?b ?c) (clear ?b) (arm-empty))\n    :effect (and (holding ?b)\n                 (clear ?c)\n                 (not (on ?b ?c))\n                 (not (clear ?b))\n                 (not (arm-empty))\n                 (not (fuel ?f)))\n  )\n)\n",
         "problem_pddl": "(define (problem blocksworld-p11)\n  (:domain blocksworld)\n  (:objects block1 block2 block3 block4 block5 block6 block7 block8 block9 block10 block11 block12 block13\n            fuel1 fuel2 fuel3 fuel4 fuel5 fuel6 fuel7 fuel8 fuel9 fuel10 fuel11 fuel12 fuel13 fuel14 fuel15 fuel16 fuel17 fuel18 fuel19 fuel20)\n  (:init\n    (on-table block10)\n    (on block7 block10)\n    (on block1 block7)\n    (clear block1)\n    (on-table block12)\n    (on block11 block12)\n    (on block6 block11)\n    (clear block6)\n    (on-table block8)\n    (on block3 block8)\n    (on block5 block3)\n    (on block4 block5)\n    (on block13 block4)\n    (on block2 block13)\n    (on block9 block2)\n    (clear block9)\n    (arm-empty)\n    ;; CONSTRAINT: 20 fuel tokens = 20 allowed pickups.\n    (fuel fuel1)\n    (fuel fuel2)\n    (fuel fuel3)\n    (fuel fuel4)\n    (fuel fuel5)\n    (fuel fuel6)\n    (fuel fuel7)\n    (fuel fuel8)\n    (fuel fuel9)\n    (fuel fuel10)\n    (fuel fuel11)\n    (fuel fuel12)\n    (fuel fuel13)\n    (fuel fuel14)\n    (fuel fuel15)\n    (fuel fuel16)\n    (fuel fuel17)\n    (fuel fuel18)\n    (fuel fuel19)\n    (fuel fuel20)\n  )\n  (:goal (and\n    (on-table block7)\n    (on block3 block7)\n    (on-table block10)\n    (on-table block8)\n    (on block13 block8)\n    (on-table block11)\n    (on-table block6)\n    (on-table block4)\n    (on-table block5)\n    (on block2 block5)\n    (on block1 block2)\n    (on-table block9)\n    (on-table block12)\n  ))\n)\n",
         "syntax_valid": true,
-        "plan": null,
-        "plan_found": false,
-        "val_valid": null,
-        "val_output": "",
-        "stdout": "",
-        "stderr": "Solver timeout after 30.0s",
-        "error": "planner did not find a plan",
-        "timeout_sec": 30.0,
+        "plan": "(UNSTACK BLOCK9 BLOCK2 FUEL20)\n(PUTDOWN BLOCK9)\n(UNSTACK BLOCK6 BLOCK11 FUEL19)\n(PUTDOWN BLOCK6)\n(UNSTACK BLOCK1 BLOCK7 FUEL18)\n(STACK BLOCK1 BLOCK2)\n(UNSTACK BLOCK11 BLOCK12 FUEL17)\n(PUTDOWN BLOCK11)\n(UNSTACK BLOCK7 BLOCK10 FUEL16)\n(PUTDOWN BLOCK7)\n(UNSTACK BLOCK1 BLOCK2 FUEL15)\n(STACK BLOCK1 BLOCK11)\n(UNSTACK BLOCK2 BLOCK13 FUEL14)\n(PUTDOWN BLOCK2)\n(UNSTACK BLOCK1 BLOCK11 FUEL13)\n(STACK BLOCK1 BLOCK2)\n(UNSTACK BLOCK13 BLOCK4 FUEL12)\n(STACK BLOCK13 BLOCK12)\n(UNSTACK BLOCK4 BLOCK5 FUEL11)\n(PUTDOWN BLOCK4)\n(UNSTACK BLOCK5 BLOCK3 FUEL10)\n(PUTDOWN BLOCK5)\n(UNSTACK BLOCK3 BLOCK8 FUEL9)\n(STACK BLOCK3 BLOCK7)\n(UNSTACK BLOCK13 BLOCK12 FUEL8)\n(STACK BLOCK13 BLOCK8)\n(UNSTACK BLOCK1 BLOCK2 FUEL7)\n(STACK BLOCK1 BLOCK11)\n(PICKUP BLOCK2 FUEL6)\n(STACK BLOCK2 BLOCK5)\n(UNSTACK BLOCK1 BLOCK11 FUEL5)\n(STACK BLOCK1 BLOCK2)\n",
+        "plan_found": true,
+        "val_valid": true,
+        "val_output": "Checking plan: /tmp/val_validation_wv38ecvd/plan.txt\nPlan executed successfully - checking goal\nPlan valid\nFinal value: 32 \n\nSuccessful plans:\nValue: 32\n /tmp/val_validation_wv38ecvd/plan.txt 32 \n\n",
+        "stdout": " --- OK.\n Match tree built with 3822 nodes.\n\nPDDL problem description loaded: \n\tDomain: BLOCKSWORLD\n\tProblem: BLOCKSWORLD-P11\n\t#Actions: 3822\n\t#Fluents: 229\nGoals found: 13\nGoals_Edges found: 13\nStarting search with 1-BFWS...\n--[10 / 0]--\n--[10 / 2]--\n--[9 / 0]--\n--[9 / 5]--\n--[8 / 0]--\n--[8 / 5]--\n--[7 / 0]--\n--[7 / 5]--\n--[6 / 0]--\n--[6 / 5]--\n--[5 / 0]--\n--[5 / 5]--\n--[5 / 6]--\n--[5 / 7]--\n--[4 / 0]--\n--[4 / 7]--\n--[3 / 0]--\n--[3 / 5]--\n--[2 / 0]--\n--[2 / 5]--\n--[1 / 0]--\n--[1 / 5]--\n--[1 / 6]--\n--[0 / 0]--\n--[0 / 5]--\nTotal time: 0.01424\nNodes generated during search: 749\nNodes expanded during search: 240\nPlan found with cost: 32\nFast-BFS search completed in 0.01424 secs\n",
+        "stderr": "",
         "used_online_solver": true,
-        "parsed_output": null
+        "error": null,
+        "timeout_sec": 120.0
       }
     },
     {
@@ -1543,16 +1541,15 @@
         "domain_pddl": "(define (domain blocksworld)\n  (:requirements :strips)\n  (:predicates\n    (on ?x ?y)\n    (on-table ?x)\n    (clear ?x)\n    (holding ?x)\n    (arm-empty)\n    ;; CONSTRAINT predicates: divisibility by 3 labels\n    (multiple-of-3 ?x)\n    (nonmultiple-of-3 ?x)\n  )\n  (:action pickup\n    :parameters (?b)\n    :precondition (and (on-table ?b) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (not (on-table ?b)) (not (clear ?b)) (not (arm-empty)))\n  )\n  (:action putdown\n    :parameters (?b)\n    :precondition (holding ?b)\n    :effect (and (on-table ?b) (clear ?b) (arm-empty) (not (holding ?b)))\n  )\n  (:action stack\n    :parameters (?b ?c)\n    :precondition (and (holding ?b) (clear ?c))\n    :effect (and (on ?b ?c) (clear ?b) (arm-empty) (not (holding ?b)) (not (clear ?c)))\n  )\n  (:action unstack\n    :parameters (?b ?c)\n    :precondition (and (on ?b ?c) (clear ?b) (arm-empty))\n    :effect (and (holding ?b) (clear ?c) (not (on ?b ?c)) (not (clear ?b)) (not (arm-empty)))\n  )\n)\n",
         "problem_pddl": "(define (problem blocksworld-p81)\n  (:domain blocksworld)\n  (:objects block1 block2 block3 block4 block5 block6 block7 block8 block9 block10 block11 block12 block13 block14 block15)\n  (:init\n    (on-table block5)\n    (clear block5)\n    (on-table block2)\n    (on block15 block2)\n    (on block4 block15)\n    (clear block4)\n    (on-table block12)\n    (clear block12)\n    (on-table block1)\n    (on block13 block1)\n    (on block8 block13)\n    (clear block8)\n    (on-table block14)\n    (clear block14)\n    (on-table block3)\n    (clear block3)\n    (on-table block11)\n    (clear block11)\n    (on-table block7)\n    (clear block7)\n    (on-table block10)\n    (clear block10)\n    (on-table block9)\n    (clear block9)\n    (on-table block6)\n    (clear block6)\n    (arm-empty)\n    ;; CONSTRAINT static initial classification by divisibility by 3\n    (multiple-of-3 block3)\n    (multiple-of-3 block6)\n    (multiple-of-3 block9)\n    (multiple-of-3 block12)\n    (multiple-of-3 block15)\n    (nonmultiple-of-3 block1)\n    (nonmultiple-of-3 block2)\n    (nonmultiple-of-3 block4)\n    (nonmultiple-of-3 block5)\n    (nonmultiple-of-3 block7)\n    (nonmultiple-of-3 block8)\n    (nonmultiple-of-3 block10)\n    (nonmultiple-of-3 block11)\n    (nonmultiple-of-3 block13)\n    (nonmultiple-of-3 block14)\n  )\n  (:goal (and\n    ;; CONSTRAINT: exactly two final stacks, sorted lowest on table, highest on top.\n    ;; Multiples-of-3 tower: bottom 3 -> 6 -> 9 -> 12 -> 15 top\n    (on-table block3)\n    (on block6 block3)\n    (on block9 block6)\n    (on block12 block9)\n    (on block15 block12)\n    ;; Non-multiples-of-3 tower: bottom 1 -> 2 -> 4 -> 5 -> 7 -> 8 -> 10 -> 11 -> 13 -> 14 top\n    (on-table block1)\n    (on block2 block1)\n    (on block4 block2)\n    (on block5 block4)\n    (on block7 block5)\n    (on block8 block7)\n    (on block10 block8)\n    (on block11 block10)\n    (on block13 block11)\n    (on block14 block13)\n    (clear block14)\n    (clear block15)\n    (arm-empty)\n  ))\n)\n",
         "syntax_valid": true,
-        "plan": null,
-        "plan_found": false,
-        "val_valid": null,
-        "val_output": "",
-        "stdout": "",
-        "stderr": "Solver timeout after 30.0s",
-        "error": "planner did not find a plan",
-        "timeout_sec": 30.0,
+        "plan": "(UNSTACK BLOCK4 BLOCK15)\n(PUTDOWN BLOCK4)\n(PICKUP BLOCK7)\n(STACK BLOCK7 BLOCK5)\n(PICKUP BLOCK6)\n(STACK BLOCK6 BLOCK3)\n(UNSTACK BLOCK8 BLOCK13)\n(STACK BLOCK8 BLOCK7)\n(PICKUP BLOCK12)\n(STACK BLOCK12 BLOCK9)\n(PICKUP BLOCK11)\n(STACK BLOCK11 BLOCK10)\n(UNSTACK BLOCK13 BLOCK1)\n(STACK BLOCK13 BLOCK11)\n(PICKUP BLOCK14)\n(STACK BLOCK14 BLOCK13)\n(UNSTACK BLOCK15 BLOCK2)\n(STACK BLOCK15 BLOCK12)\n(PICKUP BLOCK2)\n(STACK BLOCK2 BLOCK1)\n(PICKUP BLOCK4)\n(STACK BLOCK4 BLOCK2)\n(UNSTACK BLOCK8 BLOCK7)\n(STACK BLOCK8 BLOCK6)\n(UNSTACK BLOCK7 BLOCK5)\n(PUTDOWN BLOCK7)\n(PICKUP BLOCK5)\n(STACK BLOCK5 BLOCK4)\n(PICKUP BLOCK7)\n(STACK BLOCK7 BLOCK5)\n(UNSTACK BLOCK8 BLOCK6)\n(STACK BLOCK8 BLOCK7)\n(UNSTACK BLOCK15 BLOCK12)\n(PUTDOWN BLOCK15)\n(UNSTACK BLOCK12 BLOCK9)\n(PUTDOWN BLOCK12)\n(PICKUP BLOCK9)\n(STACK BLOCK9 BLOCK6)\n(PICKUP BLOCK12)\n(STACK BLOCK12 BLOCK9)\n(PICKUP BLOCK15)\n(STACK BLOCK15 BLOCK12)\n(UNSTACK BLOCK14 BLOCK13)\n(STACK BLOCK14 BLOCK8)\n(UNSTACK BLOCK13 BLOCK11)\n(PUTDOWN BLOCK13)\n(UNSTACK BLOCK14 BLOCK8)\n(STACK BLOCK14 BLOCK13)\n(UNSTACK BLOCK11 BLOCK10)\n(PUTDOWN BLOCK11)\n(PICKUP BLOCK10)\n(STACK BLOCK10 BLOCK8)\n(PICKUP BLOCK11)\n(STACK BLOCK11 BLOCK10)\n(UNSTACK BLOCK14 BLOCK13)\n(STACK BLOCK14 BLOCK11)\n(PICKUP BLOCK13)\n(STACK BLOCK13 BLOCK15)\n(UNSTACK BLOCK14 BLOCK11)\n(PUTDOWN BLOCK14)\n(UNSTACK BLOCK13 BLOCK15)\n(STACK BLOCK13 BLOCK11)\n(PICKUP BLOCK14)\n(STACK BLOCK14 BLOCK13)\n",
+        "plan_found": true,
+        "val_valid": true,
+        "val_output": "Checking plan: /tmp/val_validation_ycybk1aj/plan.txt\nPlan executed successfully - checking goal\nPlan valid\nFinal value: 64 \n\nSuccessful plans:\nValue: 64\n /tmp/val_validation_ycybk1aj/plan.txt 64 \n\n",
+        "stdout": " --- OK.\n Match tree built with 480 nodes.\n\nPDDL problem description loaded: \n\tDomain: BLOCKSWORLD\n\tProblem: BLOCKSWORLD-P81\n\t#Actions: 480\n\t#Fluents: 271\nGoals found: 18\nGoals_Edges found: 18\nStarting search with 1-BFWS...\n--[14 / 0]--\n--[14 / 2]--\n--[13 / 0]--\n--[13 / 4]--\n--[13 / 6]--\n--[12 / 0]--\n--[12 / 4]--\n--[11 / 0]--\n--[11 / 4]--\n--[10 / 0]--\n--[10 / 5]--\n--[9 / 0]--\n--[9 / 4]--\n--[8 / 0]--\n--[8 / 4]--\n--[7 / 0]--\n--[7 / 5]--\n--[7 / 6]--\n--[6 / 0]--\n--[6 / 4]--\n--[6 / 5]--\n--[5 / 0]--\n--[5 / 5]--\n--[4 / 0]--\n--[4 / 4]--\n--[3 / 0]--\n--[3 / 4]--\n--[3 / 5]--\n--[3 / 6]--\n--[2 / 0]--\n--[2 / 5]--\n--[2 / 6]--\n--[1 / 0]--\n--[1 / 4]--\n--[1 / 5]--\n--[1 / 6]--\n--[1 / 7]--\n--[0 / 0]--\n--[0 / 4]--\nTotal time: 0.016454\nNodes generated during search: 2194\nNodes expanded during search: 725\nPlan found with cost: 64\nFast-BFS search completed in 0.016454 secs\n",
+        "stderr": "",
         "used_online_solver": true,
-        "parsed_output": null
+        "error": null,
+        "timeout_sec": 120.0
       }
     },
     {
