@@ -209,9 +209,9 @@ def run_chunking_pipeline(
                     )
 
                     if needs_split:
-                        # Split reasoning into segments (2.5k tokens each)
+                        # Split reasoning into segments (15k tokens each)
                         segments = split_reasoning_by_tokens(reasoning_before_code)
-                        print(f"\n  ℹ {example_id}: Splitting {reasoning_tokens} tokens into {len(segments)} segments (~2.5k tokens each)")
+                        print(f"\n  ℹ {example_id}: Splitting {reasoning_tokens} tokens into {len(segments)} segments (~15k tokens each)")
                         examples_split += 1
 
                         # Call judge for each segment

@@ -91,7 +91,7 @@ def extract_pddl_sections(code: str) -> Tuple[Optional[str], Optional[str], Opti
         (domain_pddl, problem_pddl, error_message)
     """
     # Try JSON format first (new preferred format)
-    if "{" in code and "domain_pddl" in code:
+    if "{" in code and ("domain_pddl" in code or "domain_file" in code):
         domain, problem, error = extract_pddl_from_json(code)
         if domain and problem:
             return domain, problem, None

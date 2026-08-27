@@ -10,11 +10,11 @@ from typing import List, Tuple
 
 
 # Conservative token limit per segment to avoid output overflow
-# Always split into smaller chunks (2-3k tokens) to:
-# 1. Prevent MAX_TOKENS errors (judge can expand input 2-3x)
-# 2. Make chunking more granular and reliable
-# 3. Avoid overwhelming judge with massive traces
-MAX_REASONING_TOKENS_PER_SEGMENT = 2500  # 2.5k tokens per segment
+# Split into 15k token chunks to:
+# 1. Prevent MAX_TOKENS errors (judge can expand input 2-3x, so 15k*3=45k < 65k limit)
+# 2. Reduce number of API calls while staying safe
+# 3. Balance granularity with efficiency
+MAX_REASONING_TOKENS_PER_SEGMENT = 15000  # 15k tokens per segment
 SAFETY_MARGIN = 0.8  # Use 80% of limit for safety
 
 
