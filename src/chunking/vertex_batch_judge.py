@@ -294,14 +294,14 @@ def get_timestamp() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
 
-def poll_batch_job(batch_job_name: str, poll_interval: int = 30, max_wait: int = 3600) -> types.BatchJob:
+def poll_batch_job(batch_job_name: str, poll_interval: int = 30, max_wait: int = 2592000) -> types.BatchJob:
     """
     Poll batch job until complete.
 
     Args:
         batch_job_name: Name of batch job (from BatchJob.name)
         poll_interval: Seconds between polls (default 30s)
-        max_wait: Max seconds to wait (default 1 hour)
+        max_wait: Max seconds to wait (default 30 days)
 
     Returns:
         Final BatchJob object

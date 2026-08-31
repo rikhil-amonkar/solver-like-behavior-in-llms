@@ -481,7 +481,7 @@ Note: This script uses batch processing with 5K token segments (vs 15K in normal
         completed_job = poll_batch_job(
             batch_job.name,
             poll_interval=30,
-            max_wait=3600  # 1 hour max
+            max_wait=2592000  # 30 days max (effectively unlimited)
         )
 
         print(f"\n✓ Batch job completed: {completed_job.state}")

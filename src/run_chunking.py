@@ -177,7 +177,7 @@ def run_batch_chunking_pipeline(
     completed_job = poll_batch_job(
         batch_job_name=batch_job.name,
         poll_interval=30,
-        max_wait=7200  # 2 hours max
+        max_wait=2592000  # 30 days max (effectively unlimited)
     )
 
     print(f"\n✓ Batch job completed!")
