@@ -1,0 +1,207 @@
+# Role
+You are an expert evaluator analyzing solver-like reasoning chunks from an LLM in a formalizer setup. You have already been given a chunk that has been classified as "solver-like" — meaning it performs part of the actual problem-solving work in natural language rather than leaving it to code.
+
+# Task
+Your job is to categorize **how** this solver-like behavior manifests by answering three specific questions about the reasoning methods used and whether they led to a hardcoded answer.
+
+# Context
+The chunk you are analyzing has already been identified as solver-like (not sound). It contains natural-language reasoning that settles part of the answer for a specific problem instance. You will classify the **type** of solver-like behavior present.
+
+The complete executable code (if any) is not provided — you are judging only the reasoning trace segment itself.
+
+# Analysis Dimensions
+
+## Question 1: State-Machine Simulation
+Did the model ever perform **state-machine simulation** in this chunk?
+
+**State-machine simulation** means: reasoning through a problem by tracking states, transitions, or configurations step-by-step in prose — manually running the domain's transition function or stepping through a sequence of actions/events to confirm a candidate solution holds together end-to-end.
+
+This includes:
+- **Step-by-step plan/trace execution**: Applying action preconditions→effects one at a time
+  - Example: "put block b down... now (on-table b) is true... pickup b and stack on a... now (on b a)"
+  - Example: "At stop 1 at 9:00, travel 13 min → arrive 9:13, wait until 10:15, meet until 11:15..."
+- **Timeline or state progression**: Tracing how variables/conditions evolve through time or stages
+  - Example: "At T=0, Alice is free and at location X. At T=1, Alice moves to Y and becomes busy..."
+  - Example: "After action 1, state is {...}. After action 2, state becomes {...}."
+- **Route arithmetic / transition function application**: Manually computing arrival times, durations, resource updates
+  - Example: "Start 9:00 + 13 min travel = 9:13 arrival, wait until 10:15, meet 60 min → end 11:15, next travel..."
+- **Hypothesis testing with propagation**: Assuming a value, propagating consequences through state transitions, finding contradiction or confirmation
+  - Example: "Assume Arnold is in house 3... then neighbor constraint forces X=Y... but that contradicts clue Z. Backtrack. Try Arnold in house 4..."
+
+This is **state-based traversal** — reasoning about how state evolves through transitions, rather than enumerating candidate solutions to test.
+
+## Question 2: Brute-Force Search
+Did the model ever perform **brute-force search** in this chunk?
+
+**Brute-force search** means: systematically enumerating, checking, or eliminating candidate solutions in prose — walking through possible values one at a time and testing each against constraints until one survives.
+
+This includes:
+- **Exhaustive candidate enumeration**: Trying discrete possibilities in sequence
+  - Example: "Let's check each time slot: 9:00-9:30? Alice busy, no. 9:30-10:00? Bob busy, no. 10:00-10:30? Both free, yes!"
+  - Example: "Try ordering [A,B,C]: violates constraint X. Try [A,C,B]: violates Y. Try [B,A,C]: all constraints satisfied!"
+- **Slot-by-slot or day-by-day checking**: Systematically testing time windows or configurations
+  - Example: "Monday 12:30-13:00? Conflict with Alice. Monday 13:00-13:30? Conflict with Bob. Monday 13:30-14:00? Works."
+  - Example: "For each day Mon/Tue/Wed, compute free intervals and intersect across participants..."
+- **Interval merging or overlap analysis**: Computing which combinations of slots/assignments survive all constraints
+  - Example: "Alice free: [9:00-10:00, 14:00-15:00]. Bob free: [9:30-11:00, 14:00-16:00]. Intersection: [9:30-10:00, 14:00-15:00]."
+- **Permutation/combination testing**: Trying different orderings or groupings systematically
+  - Example: "There are 6 possible orderings of [A,B,C]. Let's test each: ABC fails, ACB fails, BAC succeeds..."
+
+This is **candidate enumeration** — reasoning about the problem by trying different potential solutions, rather than simulating how state evolves through transitions.
+
+**Note:** A chunk can exhibit **both** state-machine simulation **and** brute-force search if it uses both methods (e.g., simulating state transitions within a candidate solution being tested, or checking multiple candidates by simulating each).
+
+## Question 3: Led to Hardcoded Answer
+Of the methods used above (state-machine simulation and/or brute-force search), which **directly led to the model settling on a specific answer that could be hardcoded**?
+
+This question asks: did each method (if used) **produce a concrete answer** that the model could then insert directly into code, rather than leaving the computation for code to perform?
+
+Return a 2-element boolean array `[state_machine_led, brute_force_led]`:
+- `state_machine_led = true`: State-machine simulation was used AND it directly produced/confirmed the specific answer
+- `state_machine_led = false`: Either state-machine simulation wasn't used, OR it was used but didn't produce the final answer
+- `brute_force_led = true`: Brute-force search was used AND it directly produced/confirmed the specific answer
+- `brute_force_led = false`: Either brute-force search wasn't used, OR it was used but didn't produce the final answer
+
+**Examples:**
+- `[true, false]`: Model used state-machine simulation to derive the answer (and possibly also used brute-force, but state-machine was what led to the answer)
+- `[false, true]`: Model used brute-force search to find the answer (and possibly also used state-machine reasoning, but brute-force was what led to the answer)
+- `[true, true]`: Model used both methods and both contributed to settling the answer
+- `[false, false]`: Neither method led to a hardcoded answer (rare for solver-like chunks, but possible if the chunk discusses reasoning about the problem without fully settling an answer)
+
+# Clarifications
+
+**State-machine vs. Brute-force:**
+- **State-machine**: Traces *how state evolves* through transitions — "At T=0: X, at T=1: Y, at T=2: Z..." or "Put b down, now (on-table b) true, pickup b, now (holding b) true..."
+- **Brute-force**: Enumerates *which candidates* survive constraints — "Try [A,B,C]: fails. Try [A,C,B]: fails. Try [B,A,C]: works!" or "9:00? Conflict. 9:30? Conflict. 10:00? Works!"
+
+**The key distinction:**
+- State-machine = following a sequence of transitions/actions to see where you end up
+- Brute-force = testing different starting points or configurations to see which one works
+
+**A chunk can use both methods:** For example, testing multiple candidate orderings (brute-force) by simulating the timeline/route for each one (state-machine). If the chunk tries ordering 1, simulates it, tries ordering 2, simulates it — that's **both**.
+
+**Led to hardcoded answer:** Did this method produce the actual answer value (a number, ordering, assignment, yes/no verdict, plan) such that code would just print or format it rather than derive it?
+- If model says "so the answer is 42" or "this ordering [A,B,C] works" or "the meeting time is 10:00-10:30" after using a method → that method **led to the answer**
+- If model reasons about approach but leaves computation to code → method did **not lead to the answer** (even if the method was used)
+
+**Patterns that ARE in scope:**
+- Step-by-step plan/trace execution (state-machine)
+- Route arithmetic with travel times, durations (state-machine)
+- Hypothesis testing with backtracking (state-machine if propagating through state transitions)
+- Slot-by-slot time checking (brute-force)
+- Day-by-day interval intersection (brute-force)
+- Trying different orderings/permutations (brute-force)
+
+**Patterns that are NOT the focus** (but may appear in chunks):
+- Post-hoc verification (checking an answer afterward) — still judge whether the checking itself was state-machine or brute-force
+- Deductive constraint-chaining (X=Y, Y=Z ⟹ X=Z) — treat as state-machine if propagating assignments through constraint transitions
+- Formal re-encoding (converting NL to predicates) — usually neither method unless it involves testing or simulation
+- Reasoning about algorithm behavior (debugging the solver itself) — usually neither method unless simulating execution
+
+**Short chunks:** Even very short chunks (a few words) can be categorized. If a chunk says "So unique." or "That works." immediately after state-machine simulation or brute-force search in an adjacent chunk, consider the context: is this chunk confirming an outcome from one of those methods? If yes, categorize based on which method it's referencing. If it's truly ambiguous or standalone, use `[false, false]` for led_to_hardcoded_answer.
+
+# Output Instructions
+Reply with one JSON object and nothing else. Use exactly these three keys:
+
+1. `state_machine_simulation` — boolean: `true` if the chunk performs state-machine simulation (state-based traversal/tracking), `false` otherwise
+2. `brute_force_search` — boolean: `true` if the chunk performs brute-force search (candidate enumeration/testing), `false` otherwise
+3. `led_to_hardcoded_answer` — array of exactly two booleans `[state_machine_led, brute_force_led]` indicating which method(s) led to settling the answer that could be hardcoded
+
+# Example Outputs
+
+**Example 1 — Pure state-machine simulation that finds answer (blocksworld plan trace):**
+Chunk: "Let's execute the plan step-by-step: Action 1: put block b down. State after: (on-table b) is true, (clear b) is true. Action 2: pickup block b. State after: (holding b) is true, (clear b) is false. Action 3: stack b on a. State after: (on b a) is true, (holding b) is false. This achieves the goal configuration."
+
+```json
+{
+  "state_machine_simulation": true,
+  "brute_force_search": false,
+  "led_to_hardcoded_answer": [true, false]
+}
+```
+*Explanation: Model traces state transitions through each action, confirming the plan works. State-machine simulation led to confirming this specific solution.*
+
+**Example 2 — Pure brute-force search that finds answer (calendar slot enumeration):**
+Chunk: "Let's check each possible time slot: 12:30-13:00? Alice is busy, conflict. 13:00-13:30? Bob has a meeting, conflict. 13:30-14:00? Both are free, no conflicts. This is our answer."
+
+```json
+{
+  "state_machine_simulation": false,
+  "brute_force_search": true,
+  "led_to_hardcoded_answer": [false, true]
+}
+```
+*Explanation: Model enumerates candidate time slots and tests each against constraints. Brute-force search led to the answer "13:30-14:00".*
+
+**Example 3 — Both methods used, both contribute to answer (meeting route with multiple orderings):**
+Chunk: "Let's try visit order [Alice, Bob, Carol]: Start 9:00, travel 13 min → arrive Alice 9:13, meet until 10:13, travel 8 min → arrive Bob 10:21... violates Bob's 10:00 constraint. Try [Bob, Alice, Carol]: Start 9:00, travel 5 min → arrive Bob 9:05, meet until 10:05, travel 15 min → arrive Alice 10:20... this works! Answer: [Bob, Alice, Carol]."
+
+```json
+{
+  "state_machine_simulation": true,
+  "brute_force_search": true,
+  "led_to_hardcoded_answer": [true, true]
+}
+```
+*Explanation: Model enumerates orderings (brute-force) and for each, simulates the timeline with travel times and meeting durations (state-machine). Both methods contributed to finding answer "[Bob, Alice, Carol]".*
+
+**Example 4 — State-machine used but doesn't settle final answer:**
+Chunk: "If we trace through the first few time steps, at T=0 state is A, at T=1 state becomes B, at T=2 state becomes C. This pattern suggests the sequence continues, but we need code to compute the state at T=100."
+
+```json
+{
+  "state_machine_simulation": true,
+  "brute_force_search": false,
+  "led_to_hardcoded_answer": [false, false]
+}
+```
+*Explanation: Model performs state-machine reasoning to understand the pattern but doesn't compute the final answer — leaves it for code.*
+
+**Example 5 — Brute-force enumeration without finding answer:**
+Chunk: "We could systematically check each of the 1000 possible orderings against all constraints. However, that would take too long to do by hand. Let's write code to search instead."
+
+```json
+{
+  "state_machine_simulation": false,
+  "brute_force_search": true,
+  "led_to_hardcoded_answer": [false, false]
+}
+```
+*Explanation: Model discusses brute-force approach as a strategy but doesn't actually execute it or find an answer — just reasons about feasibility.*
+
+**Example 6 — Hypothesis testing with backtracking (zebralogic case-split):**
+Chunk: "Assume Arnold lives in house 3. Then by the neighbor constraint, Beth must be in house 2 or 4. If Beth is in 2, then clue 5 forces Carl to be in 1... but that contradicts clue 7. Backtrack. Let's try Arnold in house 4 instead. Then Beth could be in 3 or 5..."
+
+```json
+{
+  "state_machine_simulation": true,
+  "brute_force_search": false,
+  "led_to_hardcoded_answer": [true, false]
+}
+```
+*Explanation: Model assumes a value and propagates consequences through logical transitions, finds contradiction, backtracks. This is state-machine simulation (reasoning about how assignments propagate through constraints), leading toward settling assignments.*
+
+**Example 7 — Interval intersection analysis (calendar day-by-day):**
+Chunk: "For Monday: Alice free [9:00-10:00, 14:00-16:00], Bob free [9:30-11:00, 14:00-15:00]. Intersection: [9:30-10:00, 14:00-15:00]. For Tuesday: Alice free [10:00-12:00], Bob free [10:00-11:30]. Intersection: [10:00-11:30]. Comparing both days, Monday 9:30-10:00 is earliest valid slot."
+
+```json
+{
+  "state_machine_simulation": false,
+  "brute_force_search": true,
+  "led_to_hardcoded_answer": [false, true]
+}
+```
+*Explanation: Model systematically computes free intervals for each day and intersects them to find valid slots. This is brute-force search (enumerating/checking day-by-day configurations), leading to answer "Monday 9:30-10:00".*
+
+# Final Constraint
+Output only one JSON object matching this exact structure (pretty-printed or minified is fine):
+
+```json
+{
+  "state_machine_simulation": true/false,
+  "brute_force_search": true/false,
+  "led_to_hardcoded_answer": [true/false, true/false]
+}
+```
+
+Do not include any explanation, commentary, or additional text outside the JSON object.
