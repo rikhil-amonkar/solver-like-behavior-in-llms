@@ -114,48 +114,79 @@ def contains_hardcoded_solution(chunk_text: str, extracted_code: str) -> bool:
     return False
 
 
-def extract_solver_like_chunks_with_hardcoding(chunking_data: dict, execution_data: dict) -> list[dict]:
+def extract_solver_like_chunks(chunking_data: dict) -> list[dict]:
     """
-    Extract only solver-like chunks that led to hardcoded solutions.
+    Extract all solver-like chunks from chunking output.
 
     Args:
         chunking_data: Loaded chunking JSON data
-        execution_data: Loaded execution JSON data (for code analysis)
 
     Returns:
-        List of dicts with example_id, chunk_index, chunk_text for each solver-like chunk with hardcoding
+        List of dicts with example_id, chunk_index, chunk_text for each solver-like chunk
     """
-    # Build mapping of example_id to extracted code
-    code_by_example = {}
-    for example in execution_data["examples"]:
-        code_by_example[example["example_id"]] = example.get("extracted_code", "")
-
-    solver_chunks_with_hardcoding = []
-    total_solver_chunks = 0
+    solver_chunks = []
 
     for example in chunking_data["examples"]:
         example_id = example["example_id"]
         chunk_analysis = example.get("chunk_analysis", [])
-        extracted_code = code_by_example.get(example_id, "")
 
         for chunk_idx, chunk in enumerate(chunk_analysis):
             # Check if this chunk is solver-like
             if "solver-like" in chunk:
-                total_solver_chunks += 1
-                chunk_text = chunk["solver-like"]
+                solver_chunks.append({
+                    "example_id": example_id,
+                    "chunk_index": chunk_idx,
+                    "chunk_text": chunk["solver-like"]
+                })
 
-                # Check if this led to hardcoded solution
-                if contains_hardcoded_solution(chunk_text, extracted_code):
-                    solver_chunks_with_hardcoding.append({
-                        "example_id": example_id,
-                        "chunk_index": chunk_idx,
-                        "chunk_text": chunk_text
-                    })
+    return solver_chunks
 
-    print(f"  Total solver-like chunks: {total_solver_chunks}")
-    print(f"  Solver-like chunks with hardcoding: {len(solver_chunks_with_hardcoding)}")
 
-    return solver_chunks_with_hardcoding
+def build_example_metadata(execution_data: dict, evaluation_data: dict) -> dict:
+    """
+    Build metadata about each example: correctness, has_solution, code_hardcoded.
+
+    Args:
+        execution_data: Loaded execution JSON data
+        evaluation_data: Loaded evaluation JSON data
+
+    Returns:
+        Dict mapping example_id to metadata dict
+    """
+    metadata = {}
+
+    # Get correctness from evaluation data
+    for example in evaluation_data["examples"]:
+        example_id = example["example_id"]
+        metadata[example_id] = {
+            "example_correct": example.get("passed", False),
+            "example_has_solution": False,  # Will update from execution
+            "example_code_hardcoded": False  # Will update from execution
+        }
+
+    # Get solution status and hardcoding from execution data
+    for example in execution_data["examples"]:
+        example_id = example["example_id"]
+
+        if example_id not in metadata:
+            metadata[example_id] = {
+                "example_correct": False,
+                "example_has_solution": False,
+                "example_code_hardcoded": False
+            }
+
+        # Check if has solution (non-empty parsed output)
+        parsed_output = example.get("parsed_output")
+        has_solution = parsed_output is not None and parsed_output != "" and parsed_output != []
+
+        # Check if code is hardcoded
+        extracted_code = example.get("extracted_code", "")
+        code_hardcoded = contains_hardcoded_solution("", extracted_code)
+
+        metadata[example_id]["example_has_solution"] = has_solution
+        metadata[example_id]["example_code_hardcoded"] = code_hardcoded
+
+    return metadata
 
 
 def run_batch_categorization_pipeline(
@@ -204,20 +235,33 @@ def run_batch_categorization_pipeline(
     print(f"Condition: {condition}")
     print(f"Total examples: {total_examples}")
 
-    # Load execution results (need code to detect hardcoding)
-    print("\nLoading execution results...")
+    # Load execution and evaluation results (for metadata)
+    print("\nLoading execution and evaluation results...")
     execution_json_path = chunking_data["run_metadata"]["execution_json"]
     execution_data = load_json_file(execution_json_path)
 
-    # Extract solver-like chunks with hardcoded solutions
-    print("\nFiltering for solver-like chunks with hardcoded solutions...")
-    solver_chunks = extract_solver_like_chunks_with_hardcoding(chunking_data, execution_data)
+    # Get evaluation path from execution metadata
+    evaluation_json_path = execution_data["run_metadata"].get("evaluation_json")
+    if not evaluation_json_path:
+        # Construct it from execution path
+        execution_path = Path(execution_json_path)
+        evaluation_json_path = str(execution_path.parent / f"{condition}_evaluation.json")
+
+    evaluation_data = load_json_file(evaluation_json_path)
+
+    # Build example metadata (correctness, has_solution, code_hardcoded)
+    print("Building example metadata...")
+    example_metadata = build_example_metadata(execution_data, evaluation_data)
+
+    # Extract all solver-like chunks
+    print("\nExtracting solver-like chunks...")
+    solver_chunks = extract_solver_like_chunks(chunking_data)
 
     if not solver_chunks:
-        print("⚠ No solver-like chunks with hardcoded solutions found. Nothing to categorize.")
+        print("⚠ No solver-like chunks found in input. Nothing to categorize.")
         sys.exit(0)
 
-    print(f"\n✓ Found {len(solver_chunks)} solver-like chunks with hardcoded solutions")
+    print(f"✓ Found {len(solver_chunks)} solver-like chunks")
 
     # Count unique examples
     unique_examples = len(set(chunk["example_id"] for chunk in solver_chunks))
@@ -312,14 +356,22 @@ def run_batch_categorization_pipeline(
                 categorization = {
                     "state_machine_simulation": False,
                     "brute_force_search": False,
-                    "led_to_hardcoded_answer": [False, False],
                     "error": str(e)
                 }
 
+            # Get metadata for this example
+            example_id = chunk_info["example_id"]
+            metadata_for_example = example_metadata.get(example_id, {
+                "example_correct": False,
+                "example_has_solution": False,
+                "example_code_hardcoded": False
+            })
+
             categorization_results.append({
-                "example_id": chunk_info["example_id"],
+                "example_id": example_id,
                 "chunk_index": chunk_info["chunk_index"],
                 "categorization": categorization,
+                "example_metadata": metadata_for_example
             })
 
     # Build metadata
@@ -330,6 +382,8 @@ def run_batch_categorization_pipeline(
         "model": model,
         "condition": condition,
         "chunking_json": make_path_relative(str(chunking_json_path)),
+        "execution_json": make_path_relative(str(execution_json_path)),
+        "evaluation_json": make_path_relative(str(evaluation_json_path)),
         "judge_model": judge_model,
         "categorization_prompt": categorization_prompt_path,
         "timestamp": timestamp,
@@ -347,8 +401,10 @@ def run_batch_categorization_pipeline(
     for cat_result in categorization_results:
         example_id = cat_result["example_id"]
         if example_id not in examples_output:
+            # Add example-level metadata
             examples_output[example_id] = {
                 "example_id": example_id,
+                "example_metadata": cat_result["example_metadata"],
                 "solver_like_chunks": []
             }
 
@@ -422,20 +478,33 @@ def run_sequential_categorization_pipeline(
     print(f"Condition: {condition}")
     print(f"Total examples: {total_examples}")
 
-    # Load execution results (need code to detect hardcoding)
-    print("\nLoading execution results...")
+    # Load execution and evaluation results (for metadata)
+    print("\nLoading execution and evaluation results...")
     execution_json_path = chunking_data["run_metadata"]["execution_json"]
     execution_data = load_json_file(execution_json_path)
 
-    # Extract solver-like chunks with hardcoded solutions
-    print("\nFiltering for solver-like chunks with hardcoded solutions...")
-    solver_chunks = extract_solver_like_chunks_with_hardcoding(chunking_data, execution_data)
+    # Get evaluation path from execution metadata
+    evaluation_json_path = execution_data["run_metadata"].get("evaluation_json")
+    if not evaluation_json_path:
+        # Construct it from execution path
+        execution_path = Path(execution_json_path)
+        evaluation_json_path = str(execution_path.parent / f"{condition}_evaluation.json")
+
+    evaluation_data = load_json_file(evaluation_json_path)
+
+    # Build example metadata (correctness, has_solution, code_hardcoded)
+    print("Building example metadata...")
+    example_metadata = build_example_metadata(execution_data, evaluation_data)
+
+    # Extract all solver-like chunks
+    print("\nExtracting solver-like chunks...")
+    solver_chunks = extract_solver_like_chunks(chunking_data)
 
     if not solver_chunks:
-        print("⚠ No solver-like chunks with hardcoded solutions found. Nothing to categorize.")
+        print("⚠ No solver-like chunks found in input. Nothing to categorize.")
         sys.exit(0)
 
-    print(f"\n✓ Found {len(solver_chunks)} solver-like chunks with hardcoded solutions")
+    print(f"✓ Found {len(solver_chunks)} solver-like chunks")
 
     unique_examples = len(set(chunk["example_id"] for chunk in solver_chunks))
     print(f"  From {unique_examples} unique examples")
@@ -455,6 +524,8 @@ def run_sequential_categorization_pipeline(
         "model": model,
         "condition": condition,
         "chunking_json": make_path_relative(str(chunking_json_path)),
+        "execution_json": make_path_relative(str(execution_json_path)),
+        "evaluation_json": make_path_relative(str(evaluation_json_path)),
         "judge_model": judge_model,
         "categorization_prompt": categorization_prompt_path,
         "timestamp": get_timestamp(),
@@ -503,7 +574,6 @@ def run_sequential_categorization_pipeline(
                     categorization = {
                         "state_machine_simulation": False,
                         "brute_force_search": False,
-                        "led_to_hardcoded_answer": [False, False],
                         "error": str(e)
                     }
 
@@ -513,10 +583,19 @@ def run_sequential_categorization_pipeline(
                 if categorization.get("brute_force_search", False):
                     brute_force_count += 1
 
+                # Get metadata for this example
+                example_id = chunk_info["example_id"]
+                metadata_for_example = example_metadata.get(example_id, {
+                    "example_correct": False,
+                    "example_has_solution": False,
+                    "example_code_hardcoded": False
+                })
+
                 categorization_results.append({
-                    "example_id": chunk_info["example_id"],
+                    "example_id": example_id,
                     "chunk_index": chunk_info["chunk_index"],
                     "categorization": categorization,
+                    "example_metadata": metadata_for_example
                 })
 
             except Exception as e:
@@ -526,16 +605,23 @@ def run_sequential_categorization_pipeline(
                 traceback.print_exc()
 
                 # Write error result
+                example_id = chunk_info["example_id"]
+                metadata_for_example = example_metadata.get(example_id, {
+                    "example_correct": False,
+                    "example_has_solution": False,
+                    "example_code_hardcoded": False
+                })
+
                 categorization_results.append({
-                    "example_id": chunk_info["example_id"],
+                    "example_id": example_id,
                     "chunk_index": chunk_info["chunk_index"],
                     "categorization": {
                         "state_machine_simulation": False,
                         "brute_force_search": False,
-                        "led_to_hardcoded_answer": [False, False],
                         "error": str(e),
                         "error_type": type(e).__name__
-                    }
+                    },
+                    "example_metadata": metadata_for_example
                 })
 
             progress.update(1)
@@ -546,8 +632,10 @@ def run_sequential_categorization_pipeline(
     for cat_result in categorization_results:
         example_id = cat_result["example_id"]
         if example_id not in examples_output:
+            # Add example-level metadata
             examples_output[example_id] = {
                 "example_id": example_id,
+                "example_metadata": cat_result["example_metadata"],
                 "solver_like_chunks": []
             }
 

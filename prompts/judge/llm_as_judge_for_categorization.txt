@@ -89,71 +89,33 @@ Reply with one JSON object and nothing else. Use exactly these two keys:
 
 # Example Outputs
 
-**Example 1 — Pure state-machine simulation (blocksworld plan trace):**
-Chunk: "Let's execute the plan step-by-step: Action 1: put block b down. State after: (on-table b) is true, (clear b) is true. Action 2: pickup block b. State after: (holding b) is true, (clear b) is false. Action 3: stack b on a. State after: (on b a) is true, (holding b) is false. This achieves the goal configuration."
+**Example 1 — State-machine simulation:**
+Chunk: "At 9:00, travel 13 min → arrive 9:13, wait until 10:15, meet 60 min → end 11:15..."
 
 ```json
-{
-  "state_machine_simulation": true,
-  "brute_force_search": false
-}
+{"state_machine_simulation": true, "brute_force_search": false}
 ```
-*Explanation: Model traces state transitions through each action. Uses state-machine simulation only.*
 
-**Example 2 — Pure brute-force search (calendar slot enumeration):**
-Chunk: "Let's check each possible time slot: 12:30-13:00? Alice is busy, conflict. 13:00-13:30? Bob has a meeting, conflict. 13:30-14:00? Both are free, no conflicts. This is our answer."
+**Example 2 — Brute-force search:**
+Chunk: "Check each slot: 12:30? Alice busy. 13:00? Bob busy. 13:30? Both free, works!"
 
 ```json
-{
-  "state_machine_simulation": false,
-  "brute_force_search": true
-}
+{"state_machine_simulation": false, "brute_force_search": true}
 ```
-*Explanation: Model enumerates candidate time slots and tests each against constraints. Uses brute-force search only.*
 
-**Example 3 — Both methods used (meeting route with multiple orderings):**
-Chunk: "Let's try visit order [Alice, Bob, Carol]: Start 9:00, travel 13 min → arrive Alice 9:13, meet until 10:13, travel 8 min → arrive Bob 10:21... violates Bob's 10:00 constraint. Try [Bob, Alice, Carol]: Start 9:00, travel 5 min → arrive Bob 9:05, meet until 10:05, travel 15 min → arrive Alice 10:20... this works!"
+**Example 3 — Both methods:**
+Chunk: "Try [A,B,C]: Start 9:00, travel 13 min → 9:13... violates constraint. Try [B,A,C]: Start 9:00, travel 5 min → 9:05... works!"
 
 ```json
-{
-  "state_machine_simulation": true,
-  "brute_force_search": true
-}
+{"state_machine_simulation": true, "brute_force_search": true}
 ```
-*Explanation: Model enumerates orderings (brute-force) and for each, simulates the timeline with travel times and meeting durations (state-machine). Uses both methods.*
 
-**Example 4 — State-machine used (hypothesis testing with backtracking):**
-Chunk: "Assume Arnold lives in house 3. Then by the neighbor constraint, Beth must be in house 2 or 4. If Beth is in 2, then clue 5 forces Carl to be in 1... but that contradicts clue 7. Backtrack. Let's try Arnold in house 4 instead. Then Beth must be in 3... this works."
+**Example 4 — Neither method:**
+Chunk: "This is a scheduling problem. The code should loop through times and check constraints."
 
 ```json
-{
-  "state_machine_simulation": true,
-  "brute_force_search": false
-}
+{"state_machine_simulation": false, "brute_force_search": false}
 ```
-*Explanation: Model assumes a value and propagates consequences through logical transitions, finds contradiction, backtracks. This is state-machine simulation (propagating assignments through constraints).*
-
-**Example 5 — Brute-force search (interval intersection):**
-Chunk: "For Monday: Alice free [9:00-10:00, 14:00-16:00], Bob free [9:30-11:00, 14:00-15:00]. Intersection: [9:30-10:00, 14:00-15:00]. For Tuesday: Alice free [10:00-12:00], Bob free [10:00-11:30]. Intersection: [10:00-11:30]. Comparing both days, Monday 9:30-10:00 is earliest valid slot."
-
-```json
-{
-  "state_machine_simulation": false,
-  "brute_force_search": true
-}
-```
-*Explanation: Model systematically computes free intervals for each day and intersects them. This is brute-force search (enumerating/checking day-by-day configurations).*
-
-**Example 6 — Neither method clearly present:**
-Chunk: "This is a scheduling problem with multiple constraints. We need to find a time that works for all participants. The code should loop through possible times and check each against the constraints."
-
-```json
-{
-  "state_machine_simulation": false,
-  "brute_force_search": false
-}
-```
-*Explanation: Model discusses the approach at a high level but doesn't actually perform state-machine simulation or brute-force search in this chunk — just describes what code should do.*
 
 # Final Constraint
 Output only one JSON object matching this exact structure (pretty-printed or minified is fine):
