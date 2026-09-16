@@ -28,32 +28,134 @@ import json
 import os
 
 
-def extract_solver_like_chunks(chunking_data: dict) -> list[dict]:
+def contains_hardcoded_solution(chunk_text: str, extracted_code: str) -> bool:
     """
-    Extract only solver-like chunks from chunking output.
+    Detect if a solver-like chunk contains reasoning that led to a hardcoded solution.
+
+    A hardcoded solution is one where the generated code directly outputs the answer
+    using print statements or similar, rather than actually computing it.
+
+    Args:
+        chunk_text: The solver-like reasoning chunk
+        extracted_code: The actual code that was generated (from execution JSON)
+
+    Returns:
+        True if the chunk appears to have led to hardcoded output in the code
+    """
+    if not extracted_code:
+        return False
+
+    # Patterns indicating hardcoded solutions in code:
+    # - Direct print of literal values: print([...]), print("..."), return [...]
+    # - Variable assignment followed by direct output with no computation
+    # - Comments like "hardcode", "just output", "directly return"
+
+    code_lower = extracted_code.lower()
+
+    # Strong indicators of hardcoding
+    hardcode_indicators = [
+        "hardcode",
+        "just print",
+        "directly print",
+        "just return",
+        "directly return",
+        "output the answer",
+        "print the answer",
+    ]
+
+    for indicator in hardcode_indicators:
+        if indicator in code_lower:
+            return True
+
+    # Check for direct print/return of literal structures without computation
+    # This is a heuristic - if print/return appears with literal data structures
+    # and minimal/no variable references or function calls, likely hardcoded
+
+    lines = extracted_code.strip().split('\n')
+
+    # Count computational vs direct output lines
+    computation_lines = 0
+    direct_output_lines = 0
+    assignment_lines = 0
+
+    for line in lines:
+        line_stripped = line.strip()
+        if not line_stripped or line_stripped.startswith('#'):
+            continue
+
+        # Direct print/return with literal data
+        if 'print(' in line_stripped or 'return ' in line_stripped:
+            # Check if it contains literal structures like lists, strings, numbers
+            if any(char in line_stripped for char in ['[', '"', "'"]):
+                direct_output_lines += 1
+            # Also check if printing a simple variable (that was likely assigned a literal)
+            elif 'print(' in line_stripped:
+                direct_output_lines += 1
+
+        # Simple assignments with literals
+        if '=' in line_stripped and any(char in line_stripped for char in ['[', '"', "'"]):
+            # Not a comparison or augmented assignment
+            if not any(op in line_stripped for op in ['==', '!=', '<=', '>=', '+=', '-=', '*=', '/=']):
+                assignment_lines += 1
+
+        # Computational indicators: loops, conditionals, function calls (besides print)
+        if any(keyword in line_stripped for keyword in ['for ', 'while ', 'if ', 'def ', 'range(', 'enumerate(', 'zip(']):
+            computation_lines += 1
+
+    # Hardcoded if:
+    # - Has direct output and minimal/no computation, OR
+    # - Has assignment of literals followed by print with very little computation
+    if direct_output_lines > 0 and computation_lines < 2:
+        return True
+
+    if assignment_lines > 0 and direct_output_lines > 0 and computation_lines == 0:
+        return True
+
+    return False
+
+
+def extract_solver_like_chunks_with_hardcoding(chunking_data: dict, execution_data: dict) -> list[dict]:
+    """
+    Extract only solver-like chunks that led to hardcoded solutions.
 
     Args:
         chunking_data: Loaded chunking JSON data
+        execution_data: Loaded execution JSON data (for code analysis)
 
     Returns:
-        List of dicts with example_id, chunk_index, chunk_text for each solver-like chunk
+        List of dicts with example_id, chunk_index, chunk_text for each solver-like chunk with hardcoding
     """
-    solver_chunks = []
+    # Build mapping of example_id to extracted code
+    code_by_example = {}
+    for example in execution_data["examples"]:
+        code_by_example[example["example_id"]] = example.get("extracted_code", "")
+
+    solver_chunks_with_hardcoding = []
+    total_solver_chunks = 0
 
     for example in chunking_data["examples"]:
         example_id = example["example_id"]
         chunk_analysis = example.get("chunk_analysis", [])
+        extracted_code = code_by_example.get(example_id, "")
 
         for chunk_idx, chunk in enumerate(chunk_analysis):
             # Check if this chunk is solver-like
             if "solver-like" in chunk:
-                solver_chunks.append({
-                    "example_id": example_id,
-                    "chunk_index": chunk_idx,
-                    "chunk_text": chunk["solver-like"]
-                })
+                total_solver_chunks += 1
+                chunk_text = chunk["solver-like"]
 
-    return solver_chunks
+                # Check if this led to hardcoded solution
+                if contains_hardcoded_solution(chunk_text, extracted_code):
+                    solver_chunks_with_hardcoding.append({
+                        "example_id": example_id,
+                        "chunk_index": chunk_idx,
+                        "chunk_text": chunk_text
+                    })
+
+    print(f"  Total solver-like chunks: {total_solver_chunks}")
+    print(f"  Solver-like chunks with hardcoding: {len(solver_chunks_with_hardcoding)}")
+
+    return solver_chunks_with_hardcoding
 
 
 def run_batch_categorization_pipeline(
@@ -102,17 +204,22 @@ def run_batch_categorization_pipeline(
     print(f"Condition: {condition}")
     print(f"Total examples: {total_examples}")
 
-    # Extract solver-like chunks
-    print("\nExtracting solver-like chunks...")
-    solver_chunks = extract_solver_like_chunks(chunking_data)
+    # Load execution results (need code to detect hardcoding)
+    print("\nLoading execution results...")
+    execution_json_path = chunking_data["run_metadata"]["execution_json"]
+    execution_data = load_json_file(execution_json_path)
+
+    # Extract solver-like chunks with hardcoded solutions
+    print("\nFiltering for solver-like chunks with hardcoded solutions...")
+    solver_chunks = extract_solver_like_chunks_with_hardcoding(chunking_data, execution_data)
 
     if not solver_chunks:
-        print("⚠ No solver-like chunks found in input. Nothing to categorize.")
+        print("⚠ No solver-like chunks with hardcoded solutions found. Nothing to categorize.")
         sys.exit(0)
 
-    print(f"Found {len(solver_chunks)} solver-like chunks across examples")
+    print(f"\n✓ Found {len(solver_chunks)} solver-like chunks with hardcoded solutions")
 
-    # Count unique examples with solver-like chunks
+    # Count unique examples
     unique_examples = len(set(chunk["example_id"] for chunk in solver_chunks))
     print(f"  From {unique_examples} unique examples")
 
@@ -315,15 +422,20 @@ def run_sequential_categorization_pipeline(
     print(f"Condition: {condition}")
     print(f"Total examples: {total_examples}")
 
-    # Extract solver-like chunks
-    print("\nExtracting solver-like chunks...")
-    solver_chunks = extract_solver_like_chunks(chunking_data)
+    # Load execution results (need code to detect hardcoding)
+    print("\nLoading execution results...")
+    execution_json_path = chunking_data["run_metadata"]["execution_json"]
+    execution_data = load_json_file(execution_json_path)
+
+    # Extract solver-like chunks with hardcoded solutions
+    print("\nFiltering for solver-like chunks with hardcoded solutions...")
+    solver_chunks = extract_solver_like_chunks_with_hardcoding(chunking_data, execution_data)
 
     if not solver_chunks:
-        print("⚠ No solver-like chunks found in input. Nothing to categorize.")
+        print("⚠ No solver-like chunks with hardcoded solutions found. Nothing to categorize.")
         sys.exit(0)
 
-    print(f"Found {len(solver_chunks)} solver-like chunks across examples")
+    print(f"\n✓ Found {len(solver_chunks)} solver-like chunks with hardcoded solutions")
 
     unique_examples = len(set(chunk["example_id"] for chunk in solver_chunks))
     print(f"  From {unique_examples} unique examples")
