@@ -155,16 +155,20 @@ def build_example_metadata(execution_data: dict, evaluation_data: dict) -> dict:
     """
     metadata = {}
 
-    # Get correctness from evaluation data
+    # Get correctness and solution status from evaluation data
     for example in evaluation_data["examples"]:
         example_id = example["example_id"]
+        # Check if has solution (non-None, non-empty solution field)
+        solution = example.get("solution")
+        has_solution = solution is not None and solution != "" and solution != []
+
         metadata[example_id] = {
-            "example_correct": example.get("passed", False),
-            "example_has_solution": False,  # Will update from execution
+            "example_correct": example.get("correct", False),
+            "example_has_solution": has_solution,
             "example_code_hardcoded": False  # Will update from execution
         }
 
-    # Get solution status and hardcoding from execution data
+    # Get hardcoding status from execution data
     for example in execution_data["examples"]:
         example_id = example["example_id"]
 
@@ -175,15 +179,10 @@ def build_example_metadata(execution_data: dict, evaluation_data: dict) -> dict:
                 "example_code_hardcoded": False
             }
 
-        # Check if has solution (non-empty parsed output)
-        parsed_output = example.get("parsed_output")
-        has_solution = parsed_output is not None and parsed_output != "" and parsed_output != []
-
         # Check if code is hardcoded
         extracted_code = example.get("extracted_code", "")
         code_hardcoded = contains_hardcoded_solution("", extracted_code)
 
-        metadata[example_id]["example_has_solution"] = has_solution
         metadata[example_id]["example_code_hardcoded"] = code_hardcoded
 
     return metadata
