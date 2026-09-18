@@ -1,0 +1,2062 @@
+{
+  "run_metadata": {
+    "task": "calendar",
+    "model": "gpt",
+    "condition": "baseline",
+    "chunking_json": "output/gpt/calendar/baseline_chunking.json",
+    "execution_json": "output/gpt/calendar/baseline_execution.json",
+    "evaluation_json": "output/gpt/calendar/baseline_evaluation.json",
+    "judge_model": "publishers/google/models/gemini-2.5-pro",
+    "categorization_prompt": "prompts/judge/llm_as_judge_for_categorization.txt",
+    "timestamp": "2026-09-18T00:51:01Z",
+    "total_examples": 100,
+    "examples_with_solver_like": 99,
+    "total_solver_like_chunks": 149,
+    "max_judge_tokens": 65536,
+    "batch_job_name": "projects/1038782312322/locations/us-central1/batchPredictionJobs/807257459973423104",
+    "gcs_input": "gs://bucket-quickstart-lrm-formalizing-behavior/categorize-batch/gpt/calendar/baseline/2026-09-18T00:51:01Z/input.jsonl",
+    "gcs_output": "gs://bucket-quickstart-lrm-formalizing-behavior/categorize-batch/gpt/calendar/baseline/2026-09-18T00:51:01Z/output"
+  },
+  "examples": [
+    {
+      "example_id": "calendar_scheduling_example_543",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_544",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_398",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_625",
+      "example_metadata": {
+        "example_correct": false,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_502",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_798",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_710",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_25",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_493",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_548",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_446",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_786",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_185",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_724",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_819",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_111",
+      "example_metadata": {
+        "example_correct": false,
+        "example_has_solution": false,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 7,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 9,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_42",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_476",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_458",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_964",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_629",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_702",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 2,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 4,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 6,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_36",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_244",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 6,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_473",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_583",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_652",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_867",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_626",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_479",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_812",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_938",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_678",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_116",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_45",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_707",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_457",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_773",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_17",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_206",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_114",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_82",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_304",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_429",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_776",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_246",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_91",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_325",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 7,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_904",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_113",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_266",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_32",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_669",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_975",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_723",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_658",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 7,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_356",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_215",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_135",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 2,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_1",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_778",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_33",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_735",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_436",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_865",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_682",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_173",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_360",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_30",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_875",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_978",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_307",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_541",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_396",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_579",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_858",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_227",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_791",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_70",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_106",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_172",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 6,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 7,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_594",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_553",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_935",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_640",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_985",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 2,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 4,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_337",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_98",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 5,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_555",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": false
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_784",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_825",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": true
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_765",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        },
+        {
+          "chunk_index": 3,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_103",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_767",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": true,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_441",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_662",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_703",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_826",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    },
+    {
+      "example_id": "calendar_scheduling_example_704",
+      "example_metadata": {
+        "example_correct": true,
+        "example_has_solution": true,
+        "example_code_hardcoded": false
+      },
+      "solver_like_chunks": [
+        {
+          "chunk_index": 1,
+          "categorization": {
+            "state_machine_simulation": false,
+            "brute_force_search": true
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_examples": 100,
+    "examples_with_solver_like": 99,
+    "total_solver_like_chunks": 149,
+    "state_machine_count": 13,
+    "brute_force_count": 123
+  }
+}
