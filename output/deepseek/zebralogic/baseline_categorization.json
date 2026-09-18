@@ -23,7 +23,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -46,8 +47,9 @@
       "example_id": "zebralogic_grid_lgp-test-3x6-14",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -78,7 +80,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -130,7 +133,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -259,7 +263,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -318,7 +323,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -349,7 +355,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -401,7 +408,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -502,7 +510,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -561,7 +570,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -620,7 +630,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -644,7 +655,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -815,7 +827,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -853,7 +866,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": true
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -898,7 +912,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1139,7 +1154,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1310,7 +1326,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1369,7 +1386,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1407,7 +1425,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1445,7 +1464,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1490,7 +1510,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1514,7 +1535,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1580,7 +1602,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1639,7 +1662,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1719,7 +1743,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1820,7 +1845,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1836,8 +1862,9 @@
       "example_id": "zebralogic_grid_lgp-test-4x6-7",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -1903,7 +1930,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1955,7 +1983,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1986,7 +2015,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2010,7 +2040,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2034,7 +2065,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2086,7 +2118,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2138,7 +2171,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2218,7 +2252,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2277,7 +2312,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2308,7 +2344,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2360,7 +2397,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2377,7 +2415,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2408,7 +2447,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2453,7 +2493,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2505,7 +2546,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2536,7 +2578,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2574,7 +2617,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2591,7 +2635,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2685,7 +2730,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2709,7 +2755,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2789,7 +2836,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2827,7 +2875,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2872,7 +2921,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2888,8 +2938,9 @@
       "example_id": "zebralogic_grid_lgp-test-3x4-37",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -2906,7 +2957,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2923,7 +2975,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2975,7 +3028,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -2999,7 +3053,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3044,7 +3099,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3180,7 +3236,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3204,7 +3261,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3249,7 +3307,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3328,8 +3387,9 @@
       "example_id": "zebralogic_grid_lgp-test-6x3-4",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -3367,7 +3427,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3398,7 +3459,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3576,7 +3638,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3635,7 +3698,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3701,7 +3765,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3788,7 +3853,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3847,7 +3913,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -3962,7 +4029,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4028,7 +4096,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4073,7 +4142,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4146,7 +4216,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4163,7 +4234,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4236,7 +4308,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4267,7 +4340,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4305,7 +4379,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4497,7 +4572,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4514,7 +4590,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4545,7 +4622,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4597,7 +4675,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4621,7 +4700,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4701,7 +4781,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4732,7 +4813,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4749,7 +4831,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4773,7 +4856,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4832,7 +4916,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4849,7 +4934,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -4943,7 +5029,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5009,7 +5096,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5033,7 +5121,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5379,7 +5468,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5410,7 +5500,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5686,7 +5777,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5731,7 +5823,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5776,7 +5869,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -5814,7 +5908,8 @@
       "example_metadata": {
         "example_correct": true,
         "example_has_solution": true,
-        "example_code_hardcoded": false
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {

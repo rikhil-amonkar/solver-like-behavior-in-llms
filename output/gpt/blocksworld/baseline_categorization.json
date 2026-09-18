@@ -22,8 +22,9 @@
       "example_id": "blocksworld_p45_action_constraint29",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -46,8 +47,9 @@
       "example_id": "blocksworld_p14_state_constraint12",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -70,8 +72,9 @@
       "example_id": "blocksworld_p22_baseline_constraint22",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -94,8 +97,9 @@
       "example_id": "blocksworld_p17_baseline_constraint17",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -118,8 +122,9 @@
       "example_id": "blocksworld_p62_goal_constraint2",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -142,8 +147,9 @@
       "example_id": "blocksworld_p74_goal_constraint14",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -194,8 +200,9 @@
       "example_id": "blocksworld_p40_action_constraint24",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -225,8 +232,9 @@
       "example_id": "blocksworld_p15_baseline_constraint15",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -249,8 +257,9 @@
       "example_id": "blocksworld_p19_baseline_constraint19",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -266,8 +275,9 @@
       "example_id": "blocksworld_p18_state_constraint14",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -290,8 +300,9 @@
       "example_id": "blocksworld_p66_goal_constraint6",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -314,8 +325,9 @@
       "example_id": "blocksworld_p10_baseline_constraint10",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -338,8 +350,9 @@
       "example_id": "blocksworld_p89_initial_constraint9",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -362,8 +375,9 @@
       "example_id": "blocksworld_p06_state_constraint6",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -379,8 +393,9 @@
       "example_id": "blocksworld_p70_baseline_constraint70",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -431,8 +446,9 @@
       "example_id": "blocksworld_p77_baseline_constraint77",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -455,8 +471,9 @@
       "example_id": "blocksworld_p10_action_constraint2",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -500,8 +517,9 @@
       "example_id": "blocksworld_p20_state_constraint16",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -524,8 +542,9 @@
       "example_id": "blocksworld_p56_action_constraint40",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -555,8 +574,9 @@
       "example_id": "blocksworld_p51_baseline_constraint51",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -572,8 +592,9 @@
       "example_id": "blocksworld_p48_baseline_constraint48",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -596,8 +617,9 @@
       "example_id": "blocksworld_p27_baseline_constraint27",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -620,8 +642,9 @@
       "example_id": "blocksworld_p64_goal_constraint4",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -651,8 +674,9 @@
       "example_id": "blocksworld_p34_action_constraint18",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -696,8 +720,9 @@
       "example_id": "blocksworld_p70_goal_constraint10",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -713,8 +738,9 @@
       "example_id": "blocksworld_p34_baseline_constraint34",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -730,8 +756,9 @@
       "example_id": "blocksworld_p98_initial_constraint18",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -747,8 +774,9 @@
       "example_id": "blocksworld_p42_action_constraint26",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -785,8 +813,9 @@
       "example_id": "blocksworld_p75_goal_constraint15",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -816,8 +845,9 @@
       "example_id": "blocksworld_p81_initial_constraint1",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -840,8 +870,9 @@
       "example_id": "blocksworld_p79_baseline_constraint79",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -878,8 +909,9 @@
       "example_id": "blocksworld_p07_state_constraint7",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -916,8 +948,9 @@
       "example_id": "blocksworld_p82_baseline_constraint82",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -940,8 +973,9 @@
       "example_id": "blocksworld_p82_initial_constraint2",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -964,8 +998,9 @@
       "example_id": "blocksworld_p42_baseline_constraint42",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -988,8 +1023,9 @@
       "example_id": "blocksworld_p37_baseline_constraint37",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1026,8 +1062,9 @@
       "example_id": "blocksworld_p38_action_constraint22",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -1043,8 +1080,9 @@
       "example_id": "blocksworld_p67_goal_constraint7",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1060,8 +1098,9 @@
       "example_id": "blocksworld_p95_baseline_constraint95",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -1091,8 +1130,9 @@
       "example_id": "blocksworld_p08_baseline_constraint8",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -1136,8 +1176,9 @@
       "example_id": "blocksworld_p84_baseline_constraint84",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
@@ -1160,8 +1201,9 @@
       "example_id": "blocksworld_p88_initial_constraint8",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1184,8 +1226,9 @@
       "example_id": "blocksworld_p72_goal_constraint12",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1201,8 +1244,9 @@
       "example_id": "blocksworld_p19_state_constraint15",
       "example_metadata": {
         "example_correct": true,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": true,
+        "example_code_hardcoded": false,
+        "example_code_error": false
       },
       "solver_like_chunks": [
         {
@@ -1225,8 +1269,9 @@
       "example_id": "blocksworld_p01_state_constraint1",
       "example_metadata": {
         "example_correct": false,
-        "example_has_solution": false,
-        "example_code_hardcoded": false
+        "example_has_solution": null,
+        "example_code_hardcoded": null,
+        "example_code_error": true
       },
       "solver_like_chunks": [
         {
