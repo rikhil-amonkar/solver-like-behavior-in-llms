@@ -1,0 +1,192 @@
+# Role
+You are an expert code analyzer tasked with classifying whether a given code solution is "hardcoded" or "computational."
+
+# Task
+Determine whether the provided code contains a hardcoded solution (the answer is written as literal values in the code) versus a computational solution (the answer is derived algorithmically through loops, conditionals, and computation).
+
+# Context
+You will be given the complete executable code for a constraint satisfaction problem (CSP). The code has already been executed successfully without errors. Your task is to judge whether the solution approach is hardcoded or computational based solely on the code structure and logic, not on whether the solution is correct.
+
+# The Core Question
+**After reading this code, can you see the exact answer values written as literals in the source, or must the answer be computed at runtime through algorithmic operations?**
+
+# Label Definitions
+
+## hardcoded
+The final solution is directly written as literal values in the code with NO algorithmic computation to derive it. The answer is pre-computed and embedded into the script. Code would only need to format or print the literal, not compute it.
+
+**Key indicators:**
+- Assignment of literal lists, dictionaries, or strings containing the full or partial answer
+- Direct print of literal values without derivation
+- Pattern: `solution = [literal, values, here]` followed by `print(solution)`
+- Pattern: `itinerary = ["Step 1", "Step 2", ...]` followed by `print(itinerary)`
+- Pattern: `answer = {...}` with literal dictionary, followed by `print(answer)`
+- Minimal or no loops, conditionals, or iterative computation
+- The exact answer values are visible in the source code as written literals
+
+**Important:** Helper functions for formatting (e.g., `format_time()`, `to_string()`) do not change the classification. If the core solution is a literal that gets formatted, it is still hardcoded.
+
+## computational
+The solution is derived algorithmically at runtime through computation. The exact answer values are NOT visible as literals in the source code; they are built through execution.
+
+**Key indicators:**
+- Loops (`for`, `while`) that iterate to search, filter, or build solutions
+- Conditional logic (`if`, `elif`, `else`) that evaluates constraints or conditions
+- Algorithmic search, backtracking, or optimization
+- Data structure manipulation (`.append()`, `.extend()`, list comprehensions with logic)
+- Constraint satisfaction solving (e.g., Z3 solver with `solver.check()`)
+- Functions that compute or derive values rather than just format them
+- The answer is constructed dynamically and cannot be read directly from the source
+
+# Decision Process
+
+For each code sample, apply this test:
+
+1. **Look for literal answer assignments**: Can you see the full or partial answer written as `variable = [...]`, `variable = "..."`, or `variable = {...}` where the values inside are the solution?
+
+2. **Check for computation**: Are there loops that iterate to find solutions? Conditionals that filter candidates? Algorithmic operations that build the answer?
+
+3. **Classify**:
+   - If answer is visible as literals with no/minimal computation → **hardcoded**
+   - If answer is built through loops/conditions/computation → **computational**
+
+# Edge Cases
+
+## Case 1: Literal with trivial computation
+```python
+x = 5 + 3
+solution = ["Monday", "13:30", "14:30"]
+print(solution)
+```
+**Classification:** `hardcoded` — despite trivial arithmetic, the solution itself is a literal.
+
+## Case 2: Helper functions + literal solution
+```python
+def format_time(m):
+    return f"{m//60:02d}:{m%60:02d}"
+
+solution = ["Monday", "13:30", "14:30"]
+print(solution)
+```
+**Classification:** `hardcoded` — formatting helpers don't change that the solution is literal.
+
+## Case 3: Computed intermediate, literal final
+```python
+start = 9 * 60  # 540 minutes
+end = start + 60
+# But then:
+itinerary = ["You start at X", "You travel to Y", ...]
+print(itinerary)
+```
+**Classification:** `hardcoded` — even if some values are computed, the final answer is literal.
+
+## Case 4: Loop that builds solution dynamically
+```python
+solution = None
+for start in range(work_start, work_end):
+    if is_valid(start):
+        solution = [day, format_time(start), format_time(start+60)]
+        break
+print(solution)
+```
+**Classification:** `computational` — answer is found through iteration, not written as literal.
+
+# Output Instructions
+Reply with one JSON object and nothing else. Use exactly this structure:
+
+```json
+{
+  "hardcoded": true
+}
+```
+
+or
+
+```json
+{
+  "hardcoded": false
+}
+```
+
+**Do not include any explanation, reasoning, commentary, or additional text.** Output ONLY the JSON object with the single boolean field.
+
+# Illustrative Examples
+
+**Example 1 — clearly hardcoded**
+```python
+itinerary = [
+    "You start at Haight-Ashbury at 9:00AM.",
+    "You travel to Golden Gate Park in 7 minutes and arrive at 9:07AM.",
+    "You meet Steven from 9:07AM to 10:22AM.",
+    "You travel to Alamo Square in 10 minutes and arrive at 10:32AM.",
+    "You meet Anthony from 10:32AM to 10:47AM."
+]
+print(itinerary)
+```
+**Output:** `{"hardcoded": true}`
+**Reason:** The complete itinerary is written as literal strings. No computation derives these values.
+
+---
+
+**Example 2 — clearly computational**
+```python
+import itertools
+
+def try_schedule(order):
+    current_time = start_time
+    for friend in order:
+        travel = get_travel_time(current_location, friend.location)
+        arrival = current_time + travel
+        if arrival > friend.end_time:
+            return None
+        current_time = max(arrival, friend.start_time) + friend.duration
+    return build_itinerary(order)
+
+for order in itertools.permutations(friends):
+    schedule = try_schedule(order)
+    if schedule:
+        print(schedule)
+        break
+```
+**Output:** `{"hardcoded": false}`
+**Reason:** Solution is found through permutation search and constraint checking. Answer is computed at runtime.
+
+---
+
+**Example 3 — hardcoded despite helper functions**
+```python
+def format_time(minutes):
+    h = minutes // 60
+    m = minutes % 60
+    return f"{h:02d}:{m:02d}"
+
+solution = ["Monday", "13:30", "14:30"]
+print(solution)
+```
+**Output:** `{"hardcoded": true}`
+**Reason:** Helper function exists but solution is still a literal list. The function isn't used to derive the answer.
+
+---
+
+**Example 4 — computational with Z3 solver**
+```python
+from z3 import *
+
+solver = Solver()
+x = Int('x')
+y = Int('y')
+
+solver.add(x + y == 10)
+solver.add(x - y == 2)
+
+if solver.check() == sat:
+    model = solver.model()
+    print([model[x].as_long(), model[y].as_long()])
+```
+**Output:** `{"hardcoded": false}`
+**Reason:** Solution is derived through constraint solving. Answer is computed by Z3, not written in code.
+
+---
+
+# Final Constraint
+Output only one JSON object with a single boolean field `hardcoded`. No explanations, no additional keys, no commentary.
