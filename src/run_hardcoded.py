@@ -21,21 +21,22 @@ Usage:
 import json
 import sys
 import argparse
+import os
 from pathlib import Path
 from datetime import datetime
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from general.io_utils import load_json_file, save_json_output
+from general.io_utils import load_json_file, save_json_output, get_timestamp
 from hardcoded.batch_judge import (
-    prepare_batch_requests,
+    prepare_batch_examples,
     run_batch_judging,
     run_sequential_judging
 )
 
 
-def run_batch_pipeline(execution_json_path: str, judge_prompt_path: str):
+def run_batch_pipeline(execution_json_path: str, judge_prompt_path: str, gcs_bucket: str):
     """Run batch hardcoded detection pipeline."""
 
     print("="*80)
@@ -43,6 +44,7 @@ def run_batch_pipeline(execution_json_path: str, judge_prompt_path: str):
     print("="*80)
     print(f"Input: {execution_json_path}")
     print(f"Judge prompt: {judge_prompt_path}")
+    print(f"GCS bucket: {gcs_bucket}")
     print()
 
     # Load inputs
@@ -52,19 +54,37 @@ def run_batch_pipeline(execution_json_path: str, judge_prompt_path: str):
     with open(judge_prompt_path, 'r') as f:
         judge_prompt = f.read()
 
-    # Prepare batch requests
+    # Prepare examples for batch judging
     print("\nPreparing batch requests...")
-    requests = prepare_batch_requests(execution_data, judge_prompt)
-    print(f"  Total examples to judge: {len(requests)}")
+    examples = prepare_batch_examples(execution_data)
+    print(f"  Total examples to judge: {len(examples)}")
 
-    if len(requests) == 0:
+    if len(examples) == 0:
         print("No examples to judge")
         return
 
+    # Setup GCS paths
+    timestamp = get_timestamp()
+    exec_path = Path(execution_json_path)
+    model = execution_data["run_metadata"]["model"]
+    task = execution_data["run_metadata"]["task"]
+    condition = execution_data["run_metadata"].get("condition", "baseline")
+
+    gcs_prefix = f"hardcoded-judge/{model}/{task}/{condition}/{timestamp}"
+    input_gcs_uri = f"gs://{gcs_bucket}/{gcs_prefix}/input.jsonl"
+    output_gcs_uri_prefix = f"gs://{gcs_bucket}/{gcs_prefix}/output"
+
+    print(f"\nGCS paths:")
+    print(f"  Input: {input_gcs_uri}")
+    print(f"  Output: {output_gcs_uri_prefix}")
+
     # Run batch judging
     results = run_batch_judging(
-        requests=requests,
-        job_display_name=f"hardcoded_judge_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        examples=examples,
+        judge_prompt=judge_prompt,
+        input_gcs_uri=input_gcs_uri,
+        output_gcs_uri_prefix=output_gcs_uri_prefix,
+        display_name=f"hardcoded-{model}-{task}-{condition}"
     )
 
     # Build output
@@ -73,8 +93,8 @@ def run_batch_pipeline(execution_json_path: str, judge_prompt_path: str):
             "execution_file": execution_json_path,
             "judge_prompt": judge_prompt_path,
             "mode": "batch",
-            "timestamp": datetime.now().isoformat(),
-            "total_examples": len(requests)
+            "timestamp": timestamp,
+            "total_examples": len(examples)
         },
         "examples": []
     }
@@ -129,14 +149,25 @@ def run_sequential_pipeline(execution_json_path: str, judge_prompt_path: str):
     with open(judge_prompt_path, 'r') as f:
         judge_prompt = f.read()
 
-    # Prepare requests
+    # Prepare examples
     print("\nPreparing requests...")
-    requests = prepare_batch_requests(execution_data, judge_prompt)
-    print(f"  Total examples to judge: {len(requests)}")
+    examples = prepare_batch_examples(execution_data)
+    print(f"  Total examples to judge: {len(examples)}")
 
-    if len(requests) == 0:
+    if len(examples) == 0:
         print("No examples to judge")
         return
+
+    # Convert examples to request format for sequential judging
+    requests = []
+    for ex in examples:
+        full_prompt = judge_prompt + "\n\n```python\n" + ex['code'] + "\n```"
+        requests.append({
+            "example_id": ex['example_id'],
+            "request": {
+                "contents": full_prompt
+            }
+        })
 
     # Run sequential judging
     results = run_sequential_judging(requests, judge_prompt)
@@ -148,7 +179,7 @@ def run_sequential_pipeline(execution_json_path: str, judge_prompt_path: str):
             "judge_prompt": judge_prompt_path,
             "mode": "sequential",
             "timestamp": datetime.now().isoformat(),
-            "total_examples": len(requests)
+            "total_examples": len(examples)
         },
         "examples": []
     }
@@ -205,6 +236,10 @@ def main():
         action='store_true',
         help='Use sequential mode instead of batch (slower)'
     )
+    parser.add_argument(
+        '--gcs-bucket',
+        help='GCS bucket name for batch I/O (required for batch mode, ignored for sequential)'
+    )
 
     args = parser.parse_args()
 
@@ -220,7 +255,18 @@ def main():
     if args.sequential:
         run_sequential_pipeline(args.input, args.judge_prompt)
     else:
-        run_batch_pipeline(args.input, args.judge_prompt)
+        # Batch mode - GCS required
+        gcs_bucket = args.gcs_bucket or os.getenv("JUDGE_VERTEX_GCS_BUCKET")
+
+        if not gcs_bucket:
+            print("❌ ERROR: --gcs-bucket is required for batch mode")
+            print("   Either:")
+            print("   1. Provide --gcs-bucket your-bucket")
+            print("   2. Set JUDGE_VERTEX_GCS_BUCKET in .env")
+            print("   3. Use --sequential flag (no GCS needed)")
+            sys.exit(1)
+
+        run_batch_pipeline(args.input, args.judge_prompt, gcs_bucket)
 
 
 if __name__ == '__main__':

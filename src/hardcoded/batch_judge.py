@@ -9,23 +9,23 @@ from chunking.vertex_batch_judge import (
     submit_batch_job,
     poll_batch_job,
     parse_batch_results,
-    get_vertex_client
+    get_vertex_client,
+    prepare_batch_requests as prepare_vertex_requests
 )
 from hardcoded.judge_parser import parse_judge_response
 
 
-def prepare_batch_requests(execution_data: dict, judge_prompt: str) -> list[dict]:
+def prepare_batch_examples(execution_data: dict) -> list[dict]:
     """
-    Prepare batch requests for all examples with successful code execution.
+    Prepare examples for batch judging (filter to successful executions).
 
     Args:
         execution_data: Loaded execution JSON
-        judge_prompt: Judge prompt template
 
     Returns:
-        List of batch request dicts with example_id
+        List of example dicts with example_id and extracted_code
     """
-    requests = []
+    examples = []
 
     for example in execution_data.get('examples', []):
         example_id = example['example_id']
@@ -39,64 +39,102 @@ def prepare_batch_requests(execution_data: dict, judge_prompt: str) -> list[dict
         if code_execution.get('exit_code', 0) != 0:
             continue
 
-        # Build full prompt
-        full_prompt = judge_prompt + "\n\n```python\n" + extracted_code + "\n```"
-
-        requests.append({
+        examples.append({
             "example_id": example_id,
-            "request": {
-                "contents": full_prompt
-            }
+            "code": extracted_code
         })
 
-    return requests
+    return examples
 
 
-def run_batch_judging(requests: list[dict], job_display_name: str) -> list[dict]:
+def run_batch_judging(
+    examples: list[dict],
+    judge_prompt: str,
+    input_gcs_uri: str,
+    output_gcs_uri_prefix: str,
+    display_name: str
+) -> list[dict]:
     """
     Run batch judging via Vertex AI Batch API.
 
     Args:
-        requests: List of request dicts with example_id and request fields
-        job_display_name: Display name for the batch job
+        examples: List of dicts with example_id and code
+        judge_prompt: Judge prompt template
+        input_gcs_uri: GCS URI for input JSONL
+        output_gcs_uri_prefix: GCS URI prefix for output
+        display_name: Display name for the batch job
 
     Returns:
         List of result dicts with example_id, hardcoded, error, raw_response
     """
-    print("\nSubmitting batch job...")
-    job_name = submit_batch_job(
-        requests=[req["request"] for req in requests],
-        job_display_name=job_display_name
+    # Prepare examples in format expected by vertex batch API
+    # Convert code blocks to reasoning_text format
+    batch_examples = []
+    for ex in examples:
+        # Wrap code in markdown for judge
+        code_with_markdown = f"```python\n{ex['code']}\n```"
+        batch_examples.append({
+            "example_id": ex['example_id'],
+            "reasoning_text": code_with_markdown  # Use reasoning_text key expected by prepare_batch_requests
+        })
+
+    # Prepare batch requests using chunking infrastructure
+    requests = prepare_vertex_requests(
+        examples=batch_examples,
+        judge_prompt=judge_prompt,
+        max_output_tokens=int(os.getenv("MAX_JUDGE_TOKENS", 8192))
     )
-    print(f"  Job name: {job_name}")
+
+    print(f"\nSubmitting batch job with {len(requests)} requests...")
+    batch_job = submit_batch_job(
+        requests=requests,
+        input_gcs_uri=input_gcs_uri,
+        output_gcs_uri_prefix=output_gcs_uri_prefix,
+        display_name=display_name
+    )
+    print(f"  Job name: {batch_job.name}")
+    print(f"  State: {batch_job.state}")
 
     # Poll for completion
     print("\nWaiting for batch job to complete...")
-    state = poll_batch_job(job_name)
+    print("(This may take 10-30 minutes depending on dataset size)")
+    completed_job = poll_batch_job(
+        batch_job_name=batch_job.name,
+        poll_interval=30,
+        max_wait=2592000  # 30 days max
+    )
 
-    if state != "JOB_STATE_SUCCEEDED":
-        raise RuntimeError(f"Batch job failed with state: {state}")
-
-    print("\n✓ Batch job completed successfully")
+    print(f"\n✓ Batch job completed!")
+    print(f"  Duration: {(completed_job.end_time - completed_job.start_time).total_seconds():.0f}s")
 
     # Parse results
-    print("\nParsing results...")
-    raw_results = parse_batch_results(job_name)
-    print(f"  Parsed {len(raw_results)} results")
+    print("\nDownloading batch results from GCS...")
+    raw_results = parse_batch_results(output_gcs_uri_prefix)
+    print(f"  Retrieved {len(raw_results)} responses")
 
     # Map results back to example IDs and parse responses
     results = []
-    for i, response_text in enumerate(raw_results):
-        if i < len(requests):
-            example_id = requests[i]['example_id']
-            parsed = parse_judge_response(response_text)
+    for i, result in enumerate(raw_results):
+        if i >= len(examples):
+            break
 
-            results.append({
-                'example_id': example_id,
-                'hardcoded': parsed.get('hardcoded'),
-                'error': parsed.get('error'),
-                'raw_response': response_text
-            })
+        example_id = examples[i]['example_id']
+
+        # Extract response text from Vertex AI format
+        response_text = ""
+        if "response" in result and "candidates" in result["response"]:
+            candidate = result["response"]["candidates"][0]
+            if "content" in candidate and "parts" in candidate["content"]:
+                response_text = candidate["content"]["parts"][0].get("text", "")
+
+        parsed = parse_judge_response(response_text)
+
+        results.append({
+            'example_id': example_id,
+            'hardcoded': parsed.get('hardcoded'),
+            'error': parsed.get('error'),
+            'raw_response': response_text
+        })
 
     return results
 
