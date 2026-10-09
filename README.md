@@ -6,11 +6,25 @@ This repository supports a research project investigating solver-like behavior i
 
 This research pipeline analyzes how LLMs approach constraint satisfaction problems (CSPs) when asked to formalize and solve them. We track whether models solve problems in natural language reasoning ("solver-like") versus properly formalizing them in code ("sound").
 
-### Pipeline Stages
+### Pipeline Architecture
 
-1. **Inference** → Call models with CSP problems, extract & execute code
-2. **Evaluation** → Validate outputs against task-specific constraints
-3. **Chunking** → Classify reasoning into "sound" vs "solver-like" segments using Gemini judge
+![Pipeline Flowchart](images/solver-like-behavior-flowchart.png)
+
+The pipeline consists of three main stages:
+
+1. **Inference** → LLM receives a CSP problem and generates reasoning traces with executable code
+2. **Evaluation** → Code is executed and outputs are validated against task-specific constraints
+3. **Chunking** → An LLM judge classifies reasoning into "sound" (formalization) vs "solver-like" (natural language solution) segments
+
+### Key Results
+
+![Results Table](images/solver-like-behavior-in-llms-table-results.png)
+
+**Key Findings:**
+- **Accuracy**: Models achieve 47-99% accuracy across tasks (Calendar highest, BlocksWorld lowest)
+- **Solver-like Ratio**: Proportion of reasoning spent solving vs formalizing (0.05-0.64)
+- **Cautionary Prompts**: Anti-solver prompts (CautA, CautB) have mixed effects—sometimes improve accuracy (DeepSeek Calendar: 0.93→0.99), sometimes degrade (all models on BlocksWorld)
+- **Token Efficiency**: Average reasoning tokens range from 130 (ZebraLogic) to 12,916 (Meeting)
 
 ---
 
