@@ -47,7 +47,7 @@ temp/
 *.key
 secrets/
 
-# Claude Code
+# Claude related
 .claude/
 .claude_code/
 claude_history/
@@ -56,6 +56,9 @@ claude_history/
 CLAUDE.md
 .claude_cache/
 
-# Old / Helper Code
+# Old / helper code
 legacy/
 repos/
+
+# Anonymous information
+hidden/

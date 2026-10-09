@@ -4,7 +4,7 @@
     "model": "deepseek",
     "condition": "baseline",
     "test_type": "smoke_test",
-    "inference_json": "/local-ssd/rma336/solver-like-behavior-in-llms/tests/smoke/output/smoke_meeting_inference.json",
+    "inference_json": "tests/smoke/output/smoke_meeting_inference.json",
     "timestamp": "2026-08-19T01:42:41Z",
     "num_examples": 3
   },

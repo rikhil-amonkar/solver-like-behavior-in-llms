@@ -10,8 +10,8 @@
     "num_examples": 100,
     "max_judge_tokens": 65536,
     "batch_job_name": "projects/1038782312322/locations/us-central1/batchPredictionJobs/1144748980706476032",
-    "gcs_input": "gs://bucket-quickstart-lrm-formalizing-behavior/judge-batch/gpt/blocksworld/caution_a/2026-08-30T14:59:30Z/input.jsonl",
-    "gcs_output": "gs://bucket-quickstart-lrm-formalizing-behavior/judge-batch/gpt/blocksworld/caution_a/2026-08-30T14:59:30Z/output"
+    "gcs_input": "gs://anonymous-research-bucket/judge-batch/gpt/blocksworld/caution_a/2026-08-30T14:59:30Z/input.jsonl",
+    "gcs_output": "gs://anonymous-research-bucket/judge-batch/gpt/blocksworld/caution_a/2026-08-30T14:59:30Z/output"
   },
   "examples": [
     {

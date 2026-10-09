@@ -18,7 +18,7 @@ from inference.code_executor_pddl import run_val_validator
 def evaluate_blocksworld_solution(
     problem: dict,
     execution_result: dict,
-    val_path: str = "/local-ssd/rma336/solver-like-behavior-in-llms/repos/VAL/build/bin/Validate",
+    val_path: str = None,  # Will default to repos/VAL/build/bin/Validate relative to project root
     validate_with_golden_plan: bool = True
 ) -> Tuple[bool, dict]:
     """
@@ -47,6 +47,11 @@ def evaluate_blocksworld_solution(
     Returns:
         (is_valid, error_detail)
     """
+    # Set default val_path if not provided
+    if val_path is None:
+        project_root = Path(__file__).parent.parent.parent
+        val_path = str(project_root / "repos" / "VAL" / "build" / "bin" / "Validate")
+
     # Check if PDDL was extracted and validated
     if not execution_result.get("ran"):
         return False, {"error": "PDDL code was not executed"}

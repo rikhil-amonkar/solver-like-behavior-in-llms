@@ -10,8 +10,8 @@
     "num_examples": 100,
     "max_judge_tokens": 65536,
     "batch_job_name": "projects/1038782312322/locations/us-central1/batchPredictionJobs/6195069769872310272",
-    "gcs_input": "gs://bucket-quickstart-lrm-formalizing-behavior/judge-batch/qwen/zebralogic/caution_a/2026-08-30T19:14:37Z/input.jsonl",
-    "gcs_output": "gs://bucket-quickstart-lrm-formalizing-behavior/judge-batch/qwen/zebralogic/caution_a/2026-08-30T19:14:37Z/output"
+    "gcs_input": "gs://anonymous-research-bucket/judge-batch/qwen/zebralogic/caution_a/2026-08-30T19:14:37Z/input.jsonl",
+    "gcs_output": "gs://anonymous-research-bucket/judge-batch/qwen/zebralogic/caution_a/2026-08-30T19:14:37Z/output"
   },
   "examples": [
     {

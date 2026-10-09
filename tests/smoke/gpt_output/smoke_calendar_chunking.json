@@ -6,7 +6,7 @@
     "test_type": "smoke_test",
     "inference_json": "tests/smoke/output/smoke_calendar_inference.json",
     "judge_model": "publishers/google/models/gemini-2.5-pro",
-    "judge_prompt": "/local-ssd/rma336/solver-like-behavior-in-llms/prompts/llm_as_judge_for_chunking.txt",
+    "judge_prompt": "prompts/llm_as_judge_for_chunking.txt",
     "timestamp": "2026-08-19T21:02:46Z",
     "num_examples": 3,
     "max_judge_tokens": 65536

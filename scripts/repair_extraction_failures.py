@@ -153,8 +153,9 @@ def main():
     total_failed = 0
     repaired_files = []
 
+    script_dir = Path(__file__).parent.parent
     for json_path, affected_ids in AFFECTED_EXAMPLES.items():
-        full_path = Path("/local-ssd/rma336/solver-like-behavior-in-llms") / json_path
+        full_path = script_dir / json_path
 
         if not full_path.exists():
             print(f"\n⚠️  Skipping {json_path} (file not found)")

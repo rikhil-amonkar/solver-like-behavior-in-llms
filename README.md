@@ -68,10 +68,10 @@ ls output/deepseek/calendar/
 
 ## Documentation
 
-- **[QUICKSTART.md](QUICKSTART.md)** - ⚡ Quick start guide (start here!)
-- **[USAGE_GUIDE.md](docs/USAGE_GUIDE.md)** - Complete usage documentation with all options
-- **[CAUTIONARY_SUFFIX.md](docs/CAUTIONARY_SUFFIX.md)** - Baseline vs caution condition comparison
+- **[USAGE_GUIDE.md](docs/USAGE_GUIDE.md)** - ⚡ Quick start and complete usage guide (start here!)
+- **[RESULTS.md](docs/RESULTS.md)** - Comprehensive experimental results across models and tasks
 - **[OUTPUT_SCHEMA.md](docs/OUTPUT_SCHEMA.md)** - JSON output format specification
+- **[CAUTIONARY_SUFFIX.md](docs/CAUTIONARY_SUFFIX.md)** - Baseline vs caution condition comparison
 - **[CLAUDE.md](CLAUDE.md)** - Architecture & design decisions
 
 ---
@@ -150,12 +150,11 @@ Processing calendar | 5/5 [00:23<00:00, success=5, errors=0]
 
 ## Authors
 
-- Rikhil Amonkar - Bachelor of Science Candidate in Computer Science, Minor in Data Science, Drexel University
-- Stuti Mohan - Bachelor of Science Candidate in Computer Science, Minor in Mathematics, Drexel University
+[ANONYMOUS AUTHORS]
 
-## Advisor
+## Advisors
 
-- Li "Harry" Zhang, Ph.D. - Assistant Professor, Drexel University
+[ANONYMOUS ADVISORS]
 
 ## License
 

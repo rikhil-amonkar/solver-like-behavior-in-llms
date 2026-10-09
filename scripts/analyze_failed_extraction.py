@@ -5,6 +5,7 @@ Analyze why specific examples failed code extraction.
 
 import json
 import re
+from pathlib import Path
 from typing import List, Tuple
 
 # Copy the exact heuristic from parsing_utils.py
@@ -190,8 +191,9 @@ def main():
     }
 
     # Load JSONs
+    script_dir = Path(__file__).parent.parent
     for task, example_ids in examples_to_check.items():
-        json_path = f"/local-ssd/rma336/solver-like-behavior-in-llms/output/gpt/{task}/baseline_inference.json"
+        json_path = script_dir / "output" / "gpt" / task / "baseline_inference.json"
 
         print(f"\n{'#'*80}")
         print(f"# TASK: {task.upper()}")

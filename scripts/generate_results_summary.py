@@ -52,7 +52,9 @@ def extract_metrics(eval_path, exec_path, task):
     return metrics
 
 def main():
-    output_dir = Path('/local-ssd/rma336/solver-like-behavior-in-llms/output')
+    # Use relative path from script location
+    script_dir = Path(__file__).parent.parent
+    output_dir = script_dir / 'output'
 
     # Structure: results[task][model][condition] = metrics
     results = defaultdict(lambda: defaultdict(dict))
@@ -184,7 +186,7 @@ def main():
     ])
 
     # Write to file
-    output_path = Path('/local-ssd/rma336/solver-like-behavior-in-llms/docs') / f'{today}_RESULTS.md'
+    output_path = script_dir / 'docs' / f'{today}_RESULTS.md'
     with open(output_path, 'w') as f:
         f.write('\n'.join(md_lines))
 
