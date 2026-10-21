@@ -91,11 +91,12 @@ All output JSONs include condition information:
 python src/run_inference.py --task calendar --model deepseek --n 10
 
 # Evaluation
-python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
 
 # Chunking
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
@@ -113,11 +114,12 @@ python src/run_chunking.py \
 python src/run_inference.py --task calendar --model deepseek --n 10 --caution-a
 
 # Evaluation (same command, detects condition from input)
-python src/run_evaluation.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_execution.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_a_execution.json
 
 # Chunking (same command, detects condition from input)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/caution_a_inference.json \
+  --input output/deepseek/calendar/caution_a_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
@@ -135,11 +137,12 @@ python src/run_chunking.py \
 python src/run_inference.py --task calendar --model deepseek --n 10 --caution-b
 
 # Evaluation (same command, detects condition from input)
-python src/run_evaluation.py --input output/deepseek/calendar/caution_b_inference.json
+python src/run_execution.py --input output/deepseek/calendar/caution_b_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_b_execution.json
 
 # Chunking (same command, detects condition from input)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/caution_b_inference.json \
+  --input output/deepseek/calendar/caution_b_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
@@ -157,16 +160,18 @@ To run both conditions for comparison:
 ```bash
 # === BASELINE CONDITION ===
 python src/run_inference.py --task calendar --model deepseek --n 10
-python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 
 # === CAUTION CONDITION ===
 python src/run_inference.py --task calendar --model deepseek --n 10 --caution
-python src/run_evaluation.py --input output/deepseek/calendar/caution_inference.json
+python src/run_execution.py --input output/deepseek/calendar/caution_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_execution.json
 python src/run_chunking.py \
-  --input output/deepseek/calendar/caution_inference.json \
+  --input output/deepseek/calendar/caution_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 
 # Now you have both sets of outputs for comparison
@@ -292,7 +297,7 @@ python src/run_evaluation.py \
 
 ```bash
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
