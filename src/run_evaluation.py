@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from general.io_utils import load_json_file, load_constraints_json, load_problems_with_solutions, get_timestamp, IncrementalJSONWriter, make_path_relative
+from general.io_utils import load_json_file, load_constraints_json, load_problems_json, load_problems_with_solutions, get_timestamp, IncrementalJSONWriter, make_path_relative
 from general.cli import ProgressTracker
 from evaluation.calendar_eval_python import evaluate_calendar_solution
 from evaluation.meeting_eval_python import evaluate_meeting_solution
@@ -106,6 +106,7 @@ def run_evaluation_pipeline(execution_json_path: str):
     all_constraints = load_constraints_json(task)
     print("Loading golden solutions...")
     golden_solutions = load_problems_with_solutions(task)
+    problems = load_problems_json(task)
 
     # Determine output path (use same condition as execution)
     execution_path = Path(execution_json_path)
@@ -132,8 +133,11 @@ def run_evaluation_pipeline(execution_json_path: str):
         "no_solution",
         "parse_error",
         "constraint_violation",
+        "suboptimal",  # Valid meeting itinerary that meets fewer friends than the golden one
         "pddl_error",  # PDDL semantic/syntax errors
         "planning_failure",  # Planner couldn't find solution (when it should exist)
+        "solver_timeout",  # Planner timed out on the model's PDDL
+        "invalid_plan",  # Plan from model's PDDL fails VAL under the golden PDDL
         "incorrect_plan_exists",  # Found plan when none should exist
         "evaluation_error",
     ]
@@ -255,11 +259,13 @@ def run_evaluation_pipeline(execution_json_path: str):
                             is_correct, error_detail = evaluate_solution(
                                 task,
                                 example_constraints,
-                                solution_data
+                                solution_data,
+                                problem=problems.get(example_id, {}),
+                                golden_solution=golden_solution,
                             )
 
                             # For blocksworld, use more specific error types from evaluator
-                            if task == "blocksworld" and not is_correct and "error_type" in error_detail:
+                            if not is_correct and "error_type" in error_detail:
                                 classification = error_detail["error_type"]
                             else:
                                 classification = "correct" if is_correct else "constraint_violation"
@@ -421,7 +427,7 @@ def run_evaluation_pipeline(execution_json_path: str):
     print(f"  Output: {output_path}")
 
 
-def evaluate_solution(task: str, constraints: dict, solution) -> tuple:
+def evaluate_solution(task: str, constraints: dict, solution, problem: dict = None, golden_solution=None) -> tuple:
     """
     Dispatch to task-specific evaluator.
 
@@ -429,6 +435,8 @@ def evaluate_solution(task: str, constraints: dict, solution) -> tuple:
         task: Task name
         constraints: Constraints dict
         solution: Parsed solution
+        problem: Problem dict from the problems JSON (needed for blocksworld)
+        golden_solution: Parsed golden solution (needed for meeting optimality)
 
     Returns:
         (is_valid, error_detail)
@@ -436,14 +444,14 @@ def evaluate_solution(task: str, constraints: dict, solution) -> tuple:
     if task == "calendar":
         return evaluate_calendar_solution(constraints, solution)
     elif task == "meeting":
-        return evaluate_meeting_solution(constraints, solution)
+        return evaluate_meeting_solution(constraints, solution, golden_solution)
     elif task == "zebralogic":
         # For zebralogic, extract stdout from solution (execution result)
         stdout = solution.get("stdout", "") if isinstance(solution, dict) else str(solution)
         return evaluate_zebralogic_solution(constraints, stdout)
     elif task == "blocksworld":
         # For blocksworld, pass full execution result
-        return evaluate_blocksworld_solution(constraints, solution)
+        return evaluate_blocksworld_solution(problem or {}, solution)
     else:
         return False, {"error": f"unknown task: {task}"}
 
