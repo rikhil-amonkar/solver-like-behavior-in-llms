@@ -48,8 +48,16 @@ def split_reasoning_and_code(reasoning_trace: str) -> Tuple[str, Optional[str]]:
     if not code_blocks:
         return reasoning_trace.strip(), None
 
-    # Select the best code block (first, longest, or most complete)
-    selected_block = select_best_code_block(code_blocks, reasoning_trace)
+    # Prefer code from the final answer over drafts inside the thinking section
+    answer_start = find_answer_start(reasoning_trace)
+    selected_block = None
+    if answer_start >= 0:
+        answer_blocks = [b for b in code_blocks if b["start"] >= answer_start]
+        selected_block = select_best_code_block(answer_blocks, reasoning_trace)
+
+    # Otherwise select the best code block (first, longest, or most complete)
+    if not selected_block:
+        selected_block = select_best_code_block(code_blocks, reasoning_trace)
 
     if not selected_block:
         return reasoning_trace.strip(), None
@@ -60,6 +68,23 @@ def split_reasoning_and_code(reasoning_trace: str) -> Tuple[str, Optional[str]]:
     extracted_code = selected_block["code"]
 
     return reasoning_before_code, extracted_code
+
+
+# Markers that end a model's thinking section and start its final answer
+ANSWER_MARKERS = ["</think>", "<|channel|>final<|message|>", "assistantfinal"]
+
+
+def find_answer_start(text: str) -> int:
+    """
+    Return the index where the final answer starts (just after the last
+    end-of-thinking marker), or -1 if the trace has no such marker.
+    """
+    best = -1
+    for marker in ANSWER_MARKERS:
+        idx = text.rfind(marker)
+        if idx >= 0:
+            best = max(best, idx + len(marker))
+    return best
 
 
 def extract_all_code_blocks(text: str) -> List[dict]:
