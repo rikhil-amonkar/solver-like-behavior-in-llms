@@ -1,58 +1,54 @@
 """
-BlocksWorld PDDL planning task evaluation (PDDL task).
+BlocksWorld (PDDL) evaluation.
 
-Validates PDDL domain and problem definitions against BlocksWorld constraints.
-Checks syntax, required actions, proper constraint encoding, and VAL validation.
+Evaluation pipeline:
+1. The execution stage runs a planner on the model's domain + the model's problem PDDL.
+2. Here, the resulting plan is validated with VAL against the golden domain + golden
+   problem PDDL (which encode the instance's additional constraint).
+
+A response is correct if:
+- the instance is solvable (plan_exists) and the plan from the model's PDDL is valid
+  under the golden PDDL, or
+- the instance is unsolvable and the planner proved the model's PDDL has no plan.
 """
 
-from typing import Tuple, Dict, Optional
 import re
-import sys
 from pathlib import Path
+from typing import Tuple
 
-# Import VAL validator from code_executor_pddl
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from inference.code_executor_pddl import run_val_validator
+from inference.code_executor_pddl import (
+    run_val_validator,
+    FD_INPUT_ERROR_CODES,
+    FD_TIMEOUT_CODES,
+)
 
 
 def evaluate_blocksworld_solution(
     problem: dict,
     execution_result: dict,
     val_path: str = None,  # Will default to repos/VAL/build/bin/Validate relative to project root
-    validate_with_golden_plan: bool = True
 ) -> Tuple[bool, dict]:
     """
-    Validate BlocksWorld PDDL solution.
-
-    Evaluation pipeline for PDDL (on BlocksWorld):
-    1. Solver receives problem file and domain file
-    2. Solver output (predicted PDDL domain + groundtruth problem) → produces a calculated plan
-    3. Calculated plan + groundtruth problem PDDL are fed into VAL
-    4. VAL runs the plan's actions against the groundtruth PDDL to check whether they actually work
-
-    Evaluation criteria:
-    1. PDDL syntax is valid (domain and problem extracted)
-    2. Domain includes required actions (pickup, putdown, stack, unstack)
-    3. Problem defines correct objects, init, and goal states
-    4. Plan was found by planner (using model's domain + groundtruth problem)
-    5. Plan is valid according to VAL validator (validated against groundtruth problem)
-    6. Constraint encoding is correct (comments present, semantic checks)
+    Validate a BlocksWorld PDDL solution against the golden PDDL.
 
     Args:
-        problem: Problem dict from blocksworld_100.json (contains groundtruth_problem_pddl)
+        problem: Problem dict from blocksworld_100.json (contains golden_solution and plan_exists)
         execution_result: Result from run_pddl_code()
         val_path: Path to VAL Validate binary
-        validate_with_golden_plan: Whether to perform semantic validation
 
     Returns:
         (is_valid, error_detail)
     """
-    # Set default val_path if not provided
     if val_path is None:
         project_root = Path(__file__).parent.parent.parent
         val_path = str(project_root / "repos" / "VAL" / "build" / "bin" / "Validate")
 
-    # Check if PDDL was extracted and validated
+    golden = problem.get("golden_solution") or {}
+    golden_domain = golden.get("domain_pddl")
+    golden_problem = golden.get("problem_pddl")
+    if not golden_domain or not golden_problem:
+        return False, {"error": "golden domain/problem PDDL missing", "error_type": "evaluation_error"}
+
     if not execution_result.get("ran"):
         return False, {"error": "PDDL code was not executed"}
 
@@ -62,348 +58,71 @@ def evaluate_blocksworld_solution(
             "details": execution_result.get("error", "unknown syntax error")
         }
 
-    domain_pddl = execution_result.get("domain_pddl", "")
-    problem_pddl = execution_result.get("problem_pddl", "")
-
-    # Validate domain has required actions
-    # Accept both hyphenated and non-hyphenated variants
-    required_actions = {
-        "pickup": ["pickup", "pick-up"],
-        "putdown": ["putdown", "put-down"],
-        "stack": ["stack"],
-        "unstack": ["unstack"],
-    }
-    missing_actions = []
-
-    for action_canonical, action_variants in required_actions.items():
-        # Check if any variant is present
-        found = False
-        for variant in action_variants:
-            if f":action {variant}" in domain_pddl or f":action\n  {variant}" in domain_pddl:
-                found = True
-                break
-
-        if not found:
-            missing_actions.append(action_canonical)
-
-    if missing_actions:
-        return False, {
-            "error": "domain missing required actions",
-            "missing": missing_actions
-        }
-
-    # Validate domain has predicates
-    if ":predicates" not in domain_pddl:
-        return False, {"error": "domain missing :predicates section"}
-
-    # Validate problem structure
-    problem_checks = [
-        (":domain", "problem missing :domain reference"),
-        (":objects", "problem missing :objects section"),
-        (":init", "problem missing :init section"),
-        (":goal", "problem missing :goal section"),
-    ]
-
-    for pattern, error_msg in problem_checks:
-        if pattern not in problem_pddl:
-            return False, {"error": error_msg}
-
-    # Check if problem references correct domain
-    # Extract domain name from domain definition
-    domain_name_match = re.search(r'\(define\s+\(domain\s+([\w-]+)\)', domain_pddl)
-    if domain_name_match:
-        domain_name = domain_name_match.group(1)
-        if f":domain {domain_name}" not in problem_pddl:
-            return False, {
-                "error": "problem does not reference correct domain",
-                "domain_name": domain_name
-            }
-
-    # Check if plan was found (if planner was run)
-    plan_found = execution_result.get("plan_found")
-    plan_should_exist = problem.get("plan_exists", True)  # Default to True if not specified
-
-    if plan_found is not None and not plan_found:
-        # Planner did not find a plan - check if this is expected or an error
-        stderr = execution_result.get("stderr", "")
-
-        # Check for timeout errors first
-        is_timeout_error = "SOLVER_TIMEOUT" in stderr or "Read timed out" in stderr or "timeout" in stderr.lower()
-
-        if is_timeout_error:
-            return False, {
-                "error": "Online solver timeout",
-                "error_type": "solver_timeout",
-                "planner_output": stderr[:500]  # Truncate for readability
-            }
-
-        # Check for PDDL semantic/syntax errors
-        pddl_errors = [
-            "SemanticError",
-            "ValueError",
-            "unknown predicate",
-            "unknown keyword",
-            "parse error",
-            "syntax error",
-        ]
-
-        is_pddl_error = any(error_type in stderr for error_type in pddl_errors)
-
-        if is_pddl_error:
-            # This is a PDDL formalization error, not a constraint violation
-            return False, {
-                "error": "PDDL semantic or syntax error",
-                "error_type": "pddl_error",
-                "planner_output": stderr[:500]  # Truncate for readability
-            }
-
-        # No PDDL errors - check if not finding a plan is expected
-        if not plan_should_exist:
-            # Correctly identified that no plan exists - this is CORRECT!
-            return True, {
-                "note": "Correctly determined that no valid plan exists for this problem"
-            }
-
-        # Plan should exist but wasn't found (timeout or genuine planning failure)
-        return False, {
-            "error": "planner did not find a valid plan (but plan should exist)",
-            "error_type": "planning_failure",
-            "planner_output": stderr[:500] if stderr else "planner timeout or no solution"
-        }
-
-    # Check VAL validation result (if validator was run)
-    # NOTE: The plan from execution_result was validated against the model's problem PDDL
-    # But we need to RE-VALIDATE against the groundtruth problem PDDL
-    val_valid = execution_result.get("val_valid")
+    plan_should_exist = problem.get("plan_exists", True)
     plan = execution_result.get("plan")
+    exit_code = execution_result.get("planner_exit_code")
+    planner_output = (execution_result.get("stderr") or execution_result.get("stdout") or "")[-500:]
 
-    if val_valid is not None and plan:
-        # Re-validate plan against groundtruth problem PDDL
-        groundtruth_problem_pddl = problem.get("groundtruth_problem_pddl")
-
-        if groundtruth_problem_pddl:
-            # Validate model's domain + groundtruth problem + plan using VAL
-            groundtruth_val_valid, groundtruth_val_stdout, groundtruth_val_stderr = run_val_validator(
-                domain_pddl,
-                groundtruth_problem_pddl,
-                plan,
-                val_path
-            )
-
-            if not groundtruth_val_valid:
-                return False, {
-                    "error": "VAL validation failed against groundtruth problem - plan is not valid",
-                    "val_output": groundtruth_val_stdout if groundtruth_val_stdout else groundtruth_val_stderr,
-                    "note": "Plan was generated but does not work with the groundtruth problem PDDL"
-                }
-        else:
-            # Fall back to model's problem validation
-            if not val_valid:
-                return False, {
-                    "error": "VAL validation failed - plan is not valid",
-                    "val_output": execution_result.get("val_output", "")
-                }
-
-        # Plan was found and is valid - check if this is expected
-        if not plan_should_exist:
-            # Found a valid plan but shouldn't have - this is WRONG!
+    if not execution_result.get("plan_found") or not plan:
+        if exit_code in FD_TIMEOUT_CODES:
             return False, {
-                "error": "Found a valid plan, but no plan should exist for this problem",
-                "error_type": "incorrect_plan_exists"
+                "error": "planner timed out on the model's PDDL",
+                "error_type": "solver_timeout",
+                "planner_output": planner_output,
             }
-
-    # Semantic validation: check if model's PDDL can execute golden plan
-    # This ensures the model's formalization matches the intended problem semantics
-    golden = problem.get("golden_solution", {})
-    if validate_with_golden_plan and golden:
-        # First check constraint encoding
-        constraint_validation = validate_constraint_encoding(
-            domain_pddl,
-            problem_pddl,
-            problem.get("problem", "")
-        )
-        if not constraint_validation[0]:
-            return False, constraint_validation[1]
-
-        # Semantic check: can model's PDDL execute a plan for the golden problem?
-        # We use the golden problem's plan with the model's domain
-        # If VAL says valid, the model understood the problem correctly
-        semantic_check = validate_with_golden_solution(
-            domain_pddl,
-            problem_pddl,
-            golden,
-            val_path
-        )
-        if not semantic_check[0]:
-            return False, semantic_check[1]
-
-    return True, {}
-
-
-def validate_with_golden_solution(
-    model_domain_pddl: str,
-    model_problem_pddl: str,
-    golden_solution: dict,
-    val_path: str
-) -> Tuple[bool, dict]:
-    """
-    Validate model's PDDL against golden solution using VAL.
-
-    This performs a semantic check by attempting to run a reference plan
-    (from the golden solution) against the model's domain/problem.
-    If VAL validates the plan, the model correctly understood the problem.
-
-    Args:
-        model_domain_pddl: Model's domain PDDL
-        model_problem_pddl: Model's problem PDDL
-        golden_solution: Golden solution dict with domain_pddl and problem_pddl
-        val_path: Path to VAL Validate binary
-
-    Returns:
-        (is_valid, error_detail)
-    """
-    # Extract golden domain and problem
-    golden_domain = golden_solution.get("domain_pddl", "")
-    golden_problem = golden_solution.get("problem_pddl", "")
-
-    if not golden_domain or not golden_problem:
-        # No golden solution available for comparison
-        return True, {}
-
-    # Generate a plan using the golden PDDL (we'll use a simple planner)
-    # For now, we'll skip this semantic check if we don't have a golden plan
-    # TODO: Could add pyperplan to generate golden plan on-the-fly
-
-    # Simplified approach: just check that constraint markers are present
-    # This is less rigorous but avoids needing to generate plans dynamically
-    return True, {}
-
-
-def validate_constraint_encoding(
-    domain_pddl: str,
-    problem_pddl: str,
-    problem_description: str
-) -> Tuple[bool, dict]:
-    """
-    Validate that additional constraints are properly encoded in PDDL.
-
-    BlocksWorld problems may have additional constraints like:
-    - "Block 1 is fragile" (no blocks can be placed on it)
-    - "Start holding block2" (initial state constraint)
-    - "Max 3 stacks at once" (state constraint)
-
-    Args:
-        domain_pddl: Domain PDDL
-        problem_pddl: Problem PDDL
-        problem_description: Natural language problem description
-
-    Returns:
-        (is_valid, error_detail)
-    """
-    # Extract constraint mentions from description
-    constraint_markers = [
-        "Additional constraint:",
-        "CONSTRAINT:",
-    ]
-
-    has_constraint = any(marker in problem_description for marker in constraint_markers)
-
-    if not has_constraint:
-        # No additional constraints, basic PDDL is sufficient
-        return True, {}
-
-    # Check if PDDL includes constraint-related comments
-    constraint_comments = [
-        ";; CONSTRAINT",
-        ";; BEGIN ADD",
-        ";; BEGIN EDIT",
-    ]
-
-    has_constraint_markers = any(marker in domain_pddl or marker in problem_pddl
-                                   for marker in constraint_comments)
-
-    if not has_constraint_markers:
+        if exit_code in FD_INPUT_ERROR_CODES or exit_code is None:
+            return False, {
+                "error": "planner rejected the model's PDDL",
+                "error_type": "pddl_error",
+                "planner_exit_code": exit_code,
+                "planner_output": planner_output,
+            }
+        if not plan_should_exist:
+            if execution_result.get("plan_proven_unsolvable"):
+                return True, {"note": "Correctly determined that no valid plan exists for this problem"}
+            return False, {
+                "error": "no plan found, but unsolvability was not proven",
+                "error_type": "planning_failure",
+                "planner_exit_code": exit_code,
+            }
         return False, {
-            "error": "problem has constraints but PDDL lacks constraint markers",
-            "suggestion": "use comments like ';; CONSTRAINT' or ';; BEGIN ADD' to mark modifications"
+            "error": "planner did not find a plan (but plan should exist)",
+            "error_type": "planning_failure",
+            "planner_exit_code": exit_code,
+            "planner_output": planner_output,
         }
 
-    # All checks passed
+    if not plan_should_exist:
+        return False, {
+            "error": "Found a plan, but no plan should exist for this problem",
+            "error_type": "incorrect_plan_exists",
+        }
+
+    golden_plan = rename_plan_actions(plan, golden_domain)
+    val_valid, val_stdout, val_stderr = run_val_validator(golden_domain, golden_problem, golden_plan, val_path)
+    if not val_valid:
+        return False, {
+            "error": "plan from the model's PDDL is not valid under the golden PDDL",
+            "error_type": "invalid_plan",
+            "val_output": (val_stdout or val_stderr)[-1000:],
+        }
+
     return True, {}
 
 
-def extract_plan_from_output(stdout: str) -> Optional[list]:
+def rename_plan_actions(plan: str, golden_domain: str) -> str:
     """
-    Extract plan steps from planner output.
-
-    Different planners have different output formats.
-    This handles common formats.
-
-    Args:
-        stdout: Planner stdout
-
-    Returns:
-        List of action strings, or None if no plan found
+    Map plan action names onto the golden domain's names when they differ only
+    in case, hyphens or underscores (e.g. PICK-UP -> pickup).
     """
-    if not stdout or "plan" not in stdout.lower():
-        return None
+    golden_actions = re.findall(r'\(:action\s+([\w-]+)', golden_domain)
+    lookup = {re.sub(r'[-_]', '', a.lower()): a for a in golden_actions}
 
-    plan = []
-    lines = stdout.split('\n')
+    def rename(match):
+        name = match.group(1)
+        return "(" + lookup.get(re.sub(r'[-_]', '', name.lower()), name)
 
-    for line in lines:
-        line = line.strip()
-
-        # Skip empty lines and comments
-        if not line or line.startswith(';') or line.startswith('#'):
-            continue
-
-        # Fast Downward format: "action-name arg1 arg2"
-        # Pyperplan format: "(action-name arg1 arg2)"
-
-        # Remove parentheses and parse
-        action_line = line.strip('()')
-
-        # Check if it looks like an action
-        if ' ' in action_line or '-' in action_line:
-            plan.append(action_line)
-
-    return plan if plan else None
-
-
-def check_blocksworld_plan_validity(
-    domain_pddl: str,
-    problem_pddl: str,
-    plan: list
-) -> Tuple[bool, dict]:
-    """
-    Check if a plan is valid for the given PDDL problem.
-
-    This is a simplified check - full validation requires a PDDL validator.
-
-    Args:
-        domain_pddl: Domain definition
-        problem_pddl: Problem definition
-        plan: List of action strings
-
-    Returns:
-        (is_valid, error_detail)
-    """
-    # Basic check: plan is non-empty
-    if not plan:
-        return False, {"error": "plan is empty"}
-
-    # Check that all actions in plan are defined in domain
-    defined_actions = re.findall(r':action\s+([\w-]+)', domain_pddl)
-
-    for action_str in plan:
-        action_name = action_str.split()[0] if ' ' in action_str else action_str
-
-        if action_name not in defined_actions:
-            return False, {
-                "error": f"plan uses undefined action: {action_name}",
-                "defined_actions": defined_actions
-            }
-
-    # All basic checks passed
-    return True, {}
+    return "\n".join(
+        line if line.lstrip().startswith(";") else re.sub(r'^\s*\(\s*([\w-]+)', rename, line)
+        for line in plan.splitlines()
+    )

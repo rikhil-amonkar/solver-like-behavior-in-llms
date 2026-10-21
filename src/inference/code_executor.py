@@ -79,12 +79,10 @@ def execute_code_by_language(code: str, language: str, timeout_sec: float = 30.0
     elif language == "pddl":
         from .code_executor_pddl import run_pddl_code
         planner_path = kwargs.get("planner_path")
-        groundtruth_problem_pddl = kwargs.get("groundtruth_problem_pddl")
         return run_pddl_code(
             code,
             timeout_sec=timeout_sec,
             planner_path=planner_path,
-            groundtruth_problem_pddl=groundtruth_problem_pddl
         )
 
     else:

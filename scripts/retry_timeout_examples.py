@@ -64,16 +64,11 @@ def retry_timeout_examples(execution_json_path: str, output_path: str = None):
             example_id = example["example_id"]
             extracted_code = example.get("extracted_code", "")
 
-            # Get groundtruth problem PDDL if available (for blocksworld)
-            problem = data.get("problems", {}).get(example_id, {})
-            groundtruth_problem_pddl = problem.get("groundtruth_problem_pddl")
-
             # Re-run PDDL execution
             try:
                 result = run_pddl_code(
                     extracted_code,
                     timeout_sec=120.0,  # Longer timeout
-                    groundtruth_problem_pddl=groundtruth_problem_pddl,
                     use_online_solver=True,
                 )
 
