@@ -4,7 +4,7 @@
     "model": "gpt",
     "condition": "caution_a",
     "inference_json": "output/gpt/calendar/caution_a_inference.json",
-    "timestamp": "2026-08-23T13:46:38Z",
+    "timestamp": "2026-10-21T21:19:39Z",
     "num_examples": 100,
     "code_timeout_sec": 30.0
   },

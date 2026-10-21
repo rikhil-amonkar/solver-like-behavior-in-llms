@@ -5,7 +5,7 @@
     "condition": "caution_a",
     "execution_json": "output/deepseek/zebralogic/caution_a_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-25T15:18:16Z",
+    "timestamp": "2026-10-21T21:19:40Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,8 +22,11 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0,
       "incorrect_solution": 4
@@ -2139,7 +2142,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_7j7q6o1o/solution_z3.py\", line 1\n    block must be valid Python syntax (code or comments only). All reasoning, explanations, or commentary must appear OUTSIDE the code block.\" Tha"
+        "stderr": "  File \"/tmp/z3_exec_pgspc9zk/solution_z3.py\", line 1\n    block must be valid Python syntax (code or comments only). All reasoning, explanations, or commentary must appear OUTSIDE the code block.\" Tha"
       }
     },
     {
@@ -4308,7 +4311,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_n6p_dsxm/solution_z3.py\", line 27\n    houses = [None, None]? Need list of dict.\n                         ^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/z3_exec_0kwdek8w/solution_z3.py\", line 27\n    houses = [None, None]? Need list of dict.\n                         ^\nSyntaxError: invalid syntax\n"
       }
     },
     {

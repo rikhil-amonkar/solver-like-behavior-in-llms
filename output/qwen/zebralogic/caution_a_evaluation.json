@@ -5,25 +5,28 @@
     "condition": "caution_a",
     "execution_json": "output/qwen/zebralogic/caution_a_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-27T03:15:55Z",
+    "timestamp": "2026-10-21T21:20:26Z",
     "num_examples": 100
   },
   "summary": {
     "constraint_based_accuracy": null,
     "constraint_correct": null,
     "constraint_incorrect": null,
-    "golden_solution_accuracy": 0.55,
-    "golden_matches": 55,
+    "golden_solution_accuracy": 0.56,
+    "golden_matches": 56,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 0,
-      "execution_error": 43,
+      "execution_error": 42,
       "no_output": 2,
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -153,7 +156,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_szm_e1s3/solution_z3.py\", line 34, in <module>\n    s.add(Iff(nat[i] == SWED, car[i] == FORD))\n          ^^^\nNameError: name 'Iff' is not defined"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_9bfc4grf/solution_z3.py\", line 34, in <module>\n    s.add(Iff(nat[i] == SWED, car[i] == FORD))\n          ^^^\nNameError: name 'Iff' is not defined"
       }
     },
     {
@@ -199,7 +202,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_bvcsnzjl/solution_z3.py\", line 46, in <module>\n    s.add(Iff(Drink[h] == MILK, Style[h] == VICTORIAN))\n          ^^^\nNameError: name 'Iff' is no"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_azwy6ph5/solution_z3.py\", line 46, in <module>\n    s.add(Iff(Drink[h] == MILK, Style[h] == VICTORIAN))\n          ^^^\nNameError: name 'Iff' is no"
       }
     },
     {
@@ -476,7 +479,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_dyu_jago/solution_z3.py\", line 21, in <module>\n    solver.add(AllDifferent(list(name_pos.values())))\n               ^^^^^^^^^^^^\nNameError: name"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_o5k2vy2h/solution_z3.py\", line 21, in <module>\n    solver.add(AllDifferent(list(name_pos.values())))\n               ^^^^^^^^^^^^\nNameError: name"
       }
     },
     {
@@ -661,7 +664,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_rsk0e2lu/solution_z3.py\", line 61, in <module>\n    main()\n  File \"/tmp/z3_exec_rsk0e2lu/solution_z3.py\", line 18, in main\n    name_pos = {name: "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_q2tijix3/solution_z3.py\", line 61, in <module>\n    main()\n  File \"/tmp/z3_exec_q2tijix3/solution_z3.py\", line 18, in main\n    name_pos = {name: "
       }
     },
     {
@@ -773,7 +776,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_5btwahku/solution_z3.py\", line 59, in <module>\n    main()\n  File \"/tmp/z3_exec_5btwahku/solution_z3.py\", line 18, in main\n    s.add(0 <= name[i]"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_r1b5bid_/solution_z3.py\", line 59, in <module>\n    main()\n  File \"/tmp/z3_exec_r1b5bid_/solution_z3.py\", line 18, in main\n    s.add(0 <= name[i]"
       }
     },
     {
@@ -831,7 +834,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_5lkqrw4x/solution_z3.py\", line 125, in <module>\n    main()\n  File \"/tmp/z3_exec_5lkqrw4x/solution_z3.py\", line 47, in main\n    solver.add(AllDif"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_ey4rbxwu/solution_z3.py\", line 125, in <module>\n    main()\n  File \"/tmp/z3_exec_ey4rbxwu/solution_z3.py\", line 47, in main\n    solver.add(AllDif"
       }
     },
     {
@@ -910,7 +913,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec__8dkv5qv/solution_z3.py\", line 30, in <module>\n    solver.add(AllDifferent(cat_vars))\n               ^^^^^^^^^^^^\nNameError: name 'AllDifferent'"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_idjcv7ct/solution_z3.py\", line 30, in <module>\n    solver.add(AllDifferent(cat_vars))\n               ^^^^^^^^^^^^\nNameError: name 'AllDifferent'"
       }
     },
     {
@@ -1052,7 +1055,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_wl_n4nu2/solution_z3.py\", line 40\n    *[And(name[h][peter], name[h + 1][alice]) for h in range(3)]\n    ^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/z3_exec_j0vs3917/solution_z3.py\", line 40\n    *[And(name[h][peter], name[h + 1][alice]) for h in range(3)]\n    ^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -1117,7 +1120,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_xvwdbvij/solution_z3.py\", line 74, in <module>\n    main()\n  File \"/tmp/z3_exec_xvwdbvij/solution_z3.py\", line 25, in main\n    s.add(AllDifferent"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_gn310elo/solution_z3.py\", line 74, in <module>\n    main()\n  File \"/tmp/z3_exec_gn310elo/solution_z3.py\", line 25, in main\n    s.add(AllDifferent"
       }
     },
     {
@@ -1286,7 +1289,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_gf0g1qy1/solution_z3.py\", line 31\n    (name_pos[\"Eric\"] - animal_pos[\"cat\"] == 1)\n     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nSyntaxError: invalid syntax. Perhaps you forgot a"
+        "stderr": "  File \"/tmp/z3_exec_bmuwev3q/solution_z3.py\", line 31\n    (name_pos[\"Eric\"] - animal_pos[\"cat\"] == 1)\n     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nSyntaxError: invalid syntax. Perhaps you forgot a"
       }
     },
     {
@@ -1519,7 +1522,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_q2_v7bj5/solution_z3.py\", line 42, in <module>\n    same(hobby, idx(hobbies, \"cooking\"), book, idx(books, \"romance\"))\n  File \"/tmp/z3_exec_q2_v7b"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_j5fpr907/solution_z3.py\", line 42, in <module>\n    same(hobby, idx(hobbies, \"cooking\"), book, idx(books, \"romance\"))\n  File \"/tmp/z3_exec_j5fpr9"
       }
     },
     {
@@ -1550,7 +1553,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_axd4q_z8/solution_z3.py\", line 19, in <module>\n    solver.add(ExactlyOne(name_at[i]))\n               ^^^^^^^^^^\nNameError: name 'ExactlyOne' is "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_eb0qxmsa/solution_z3.py\", line 19, in <module>\n    solver.add(ExactlyOne(name_at[i]))\n               ^^^^^^^^^^\nNameError: name 'ExactlyOne' is "
       }
     },
     {
@@ -1927,7 +1930,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_7lqtu77d/solution_z3.py\", line 81, in <module>\n    house = int(model.eval(p[cat][value]))\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_q53h2p7o/solution_z3.py\", line 81, in <module>\n    house = int(model.eval(p[cat][value]))\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: "
       }
     },
     {
@@ -2157,7 +2160,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_ty0rsg2h/solution_z3.py\", line 11, in <module>\n    name_vars = [IntVar(f\"name_{i}\") for i in range(N)]\n                 ^^^^^^\nNameError: name '"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_lmvbfgia/solution_z3.py\", line 11, in <module>\n    name_vars = [IntVar(f\"name_{i}\") for i in range(N)]\n                 ^^^^^^\nNameError: name '"
       }
     },
     {
@@ -2292,7 +2295,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_0j_fdu65/solution_z3.py\", line 35, in <module>\n    if int(model.evaluate(pos[(cat, value)])) == house:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_2685bdpt/solution_z3.py\", line 35, in <module>\n    if int(model.evaluate(pos[(cat, value)])) == house:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
       }
     },
     {
@@ -2491,7 +2494,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_jvk5z19k/solution_z3.py\", line 17\n    But `Distinct(*name_pos.values())` with 6 args. Good.\n        ^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/z3_exec_1io8wubn/solution_z3.py\", line 17\n    But `Distinct(*name_pos.values())` with 6 args. Good.\n        ^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -2531,7 +2534,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_d9vn0_66/solution_z3.py\", line 14, in <module>\n    solver.add(0 <= name[i] < 3, 0 <= lunch[i] < 3, 0 <= color[i] < 3)\n               ^^^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_9r8q5rqn/solution_z3.py\", line 14, in <module>\n    solver.add(0 <= name[i] < 3)\n               ^^^^^^^^^^^^^^^^\n  File \"/local-ssd/hz466/vllm-en"
       }
     },
     {
@@ -2670,7 +2673,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_u_q3fkgg/solution_z3.py\", line 64, in <module>\n    f\"{value_at('name', h)}, \"\n       ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3_exec_u_q3fkgg/solution_"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_fp6cbwsz/solution_z3.py\", line 64, in <module>\n    f\"{value_at('name', h)}, \"\n       ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3_exec_fp6cbwsz/solution_"
       }
     },
     {
@@ -2778,7 +2781,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_jrzhh9jm/solution_z3.py\", line 16, in <module>\n    s.add(ExactlyOne(*name_at[h]))\n          ^^^^^^^^^^\nNameError: name 'ExactlyOne' is not defin"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_8hj7b6gt/solution_z3.py\", line 16, in <module>\n    s.add(ExactlyOne(*name_at[h]))\n          ^^^^^^^^^^\nNameError: name 'ExactlyOne' is not defin"
       }
     },
     {
@@ -2917,7 +2920,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_lv86907c/solution_z3.py\", line 73, in <module>\n    main()\n  File \"/tmp/z3_exec_lv86907c/solution_z3.py\", line 23, in main\n    solver.add(AllDiff"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_46wp62wq/solution_z3.py\", line 73, in <module>\n    main()\n  File \"/tmp/z3_exec_46wp62wq/solution_z3.py\", line 23, in main\n    solver.add(AllDiff"
       }
     },
     {
@@ -3533,7 +3536,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_8e7003yq/solution_z3.py\", line 40, in <module>\n    s.add(Iff(mothers[i] == HOLLY, hobbies[i] == PHOTOGRAPHY))\n          ^^^\nNameError: name 'Iff"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec__n1y_9om/solution_z3.py\", line 40, in <module>\n    s.add(Iff(mothers[i] == HOLLY, hobbies[i] == PHOTOGRAPHY))\n          ^^^\nNameError: name 'Iff"
       }
     },
     {
@@ -3622,7 +3625,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_ymft4rw1/solution_z3.py\", line 18, in <module>\n    solver.add(In(name[i], 0, len(names) - 1))\n               ^^\nNameError: name 'In' is not defi"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_0o2fplaf/solution_z3.py\", line 18, in <module>\n    solver.add(In(name[i], 0, len(names) - 1))\n               ^^\nNameError: name 'In' is not defi"
       }
     },
     {
@@ -4189,7 +4192,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_0ufszylr/solution_z3.py\", line 39, in <module>\n    s.add(Iff(music[i] == classical, lunch[i] == stew))\n          ^^^\nNameError: name 'Iff' is no"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_2lqlvl7g/solution_z3.py\", line 39, in <module>\n    s.add(Iff(music[i] == classical, lunch[i] == stew))\n          ^^^\nNameError: name 'Iff' is no"
       }
     },
     {
@@ -4247,7 +4250,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_1cjf0np5/solution_z3.py\", line 42, in <module>\n    name = next(n for n in names if int(m.eval(name_pos[n])) == house)\n           ^^^^^^^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_quglyaj3/solution_z3.py\", line 42, in <module>\n    name = next(n for n in names if int(m.eval(name_pos[n])) == house)\n           ^^^^^^^^^^^^^^^"
       }
     },
     {
@@ -4587,7 +4590,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_nh_jpyym/solution_z3.py\", line 101, in <module>\n    main()\n  File \"/tmp/z3_exec_nh_jpyym/solution_z3.py\", line 92, in main\n    name = value_at(n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_q6s_yn2t/solution_z3.py\", line 101, in <module>\n    main()\n  File \"/tmp/z3_exec_q6s_yn2t/solution_z3.py\", line 92, in main\n    name = value_at(n"
       }
     },
     {
@@ -4621,7 +4624,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_ctzah9u6/solution_z3.py\", line 20, in <module>\n    solver.add(AllDifferent(*name))\n               ^^^^^^^^^^^^\nNameError: name 'AllDifferent' is"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_qmp1cu5o/solution_z3.py\", line 20, in <module>\n    solver.add(AllDifferent(*name))\n               ^^^^^^^^^^^^\nNameError: name 'AllDifferent' is"
       }
     },
     {
@@ -4691,7 +4694,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_xy1dr_9r/solution_z3.py\", line 21, in <module>\n    name = make_positions(\"name\", names)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_zhdt8786/solution_z3.py\", line 21, in <module>\n    name = make_positions(\"name\", names)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3"
       }
     },
     {
@@ -4770,7 +4773,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_bvqkrmqs/solution_z3.py\", line 20, in <module>\n    solver.add(AllDifferent([pos[(cat, value)] for value in values]))\n               ^^^^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_2x50jc1z/solution_z3.py\", line 20, in <module>\n    solver.add(AllDifferent([pos[(cat, value)] for value in values]))\n               ^^^^^^^^^^^^"
       }
     },
     {
@@ -5189,7 +5192,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_wz_tk6c_/solution_z3.py\", line 92, in <module>\n    main()\n  File \"/tmp/z3_exec_wz_tk6c_/solution_z3.py\", line 29, in main\n    solver.add(AllDiff"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_s8ixf29n/solution_z3.py\", line 92, in <module>\n    main()\n  File \"/tmp/z3_exec_s8ixf29n/solution_z3.py\", line 29, in main\n    solver.add(AllDiff"
       }
     },
     {
@@ -5233,7 +5236,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_eleo6w9g/solution_z3.py\", line 21, in <module>\n    solver.add(AllDifferent(name_vars))\n               ^^^^^^^^^^^^\nNameError: name 'AllDifferent"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_7d0m4ylb/solution_z3.py\", line 21, in <module>\n    solver.add(AllDifferent(name_vars))\n               ^^^^^^^^^^^^\nNameError: name 'AllDifferent"
       }
     },
     {
@@ -5281,7 +5284,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4gzu88u3/solution_z3.py\", line 57, in <module>\n    if int(m.eval(pos[a])) == h:\n       ^^^^^^^^^^^^^^^^^^^\nTypeError: int() argument must be a s"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4_d6pux2/solution_z3.py\", line 57, in <module>\n    if int(m.eval(pos[a])) == h:\n       ^^^^^^^^^^^^^^^^^^^\nTypeError: int() argument must be a s"
       }
     },
     {
@@ -5503,7 +5506,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_d7cc9qdw/solution_z3.py\", line 23, in <module>\n    s.add(AllDifferent(name))\n          ^^^^^^^^^^^^\nNameError: name 'AllDifferent' is not define"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_mav9d3r4/solution_z3.py\", line 23, in <module>\n    s.add(AllDifferent(name))\n          ^^^^^^^^^^^^\nNameError: name 'AllDifferent' is not define"
       }
     },
     {
@@ -5546,7 +5549,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_99j9286e/solution_z3.py\", line 75, in <module>\n    main()\n  File \"/tmp/z3_exec_99j9286e/solution_z3.py\", line 65, in main\n    names[value(name[i"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_wh2x87jc/solution_z3.py\", line 75, in <module>\n    main()\n  File \"/tmp/z3_exec_wh2x87jc/solution_z3.py\", line 65, in main\n    names[value(name[i"
       }
     },
     {
@@ -5744,7 +5747,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_80rp8tm5/solution_z3.py\", line 72, in <module>\n    attrs = [attribute_at(category, house) for category in categories]\n             ^^^^^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_50vqflx3/solution_z3.py\", line 74, in <module>\n    attrs = [attribute_at(category, house) for category in categories]\n             ^^^^^^^^^^^^^"
       }
     },
     {
@@ -5775,7 +5778,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_sjcydx3o/solution_z3.py\", line 36, in <module>\n    main()\n  File \"/tmp/z3_exec_sjcydx3o/solution_z3.py\", line 24, in main\n    solver.add(Iff(nam"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_kcefmxgi/solution_z3.py\", line 36, in <module>\n    main()\n  File \"/tmp/z3_exec_kcefmxgi/solution_z3.py\", line 24, in main\n    solver.add(Iff(nam"
       }
     },
     {
@@ -5826,15 +5829,36 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4xxnpnkf/solution_z3.py\", line 94, in <module>\n    n = name_inverse[m.eval(name_vars[h], model_completion=True).as_long()]\n        ~~~~~~~~~~~~^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_0inwv2qx/solution_z3.py\", line 94, in <module>\n    n = name_inverse[m.eval(name_vars[h], model_completion=True).as_long()]\n        ~~~~~~~~~~~~^"
       }
     },
     {
       "example_id": "zebralogic_grid_lgp-test-2x3-17",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": {
+        "header": [
+          "House",
+          "Name",
+          "HairColor",
+          "Flower"
+        ],
+        "rows": [
+          [
+            "1",
+            "Arnold",
+            "brown",
+            "daffodils"
+          ],
+          [
+            "2",
+            "Eric",
+            "black",
+            "carnations"
+          ]
+        ]
+      },
       "expected_solution": {
         "header": [
           "House",
@@ -5857,11 +5881,7 @@
           ]
         ]
       },
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_u2mrw11a/solution_z3.py\", line 44, in <module>\n    main()\n  File \"/tmp/z3_exec_u2mrw11a/solution_z3.py\", line 16, in main\n    s.add(In(name[i], "
-      }
+      "validation": {}
     },
     {
       "example_id": "zebralogic_grid_lgp-test-3x2-38",
@@ -5896,7 +5916,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_r_5m0lb8/solution_z3.py\", line 48, in <module>\n    main()\n  File \"/tmp/z3_exec_r_5m0lb8/solution_z3.py\", line 13, in main\n    s.add(0 <= name_at"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_9ls52sg9/solution_z3.py\", line 49, in <module>\n    main()\n  File \"/tmp/z3_exec_9ls52sg9/solution_z3.py\", line 14, in main\n    s.add(0 <= name_at"
       }
     },
     {
@@ -5942,7 +5962,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_h52zdrep/solution_z3.py\", line 71, in <module>\n    main()\n  File \"/tmp/z3_exec_h52zdrep/solution_z3.py\", line 31, in main\n    s.add(Iff(name_var"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_7vnxc_0z/solution_z3.py\", line 71, in <module>\n    main()\n  File \"/tmp/z3_exec_7vnxc_0z/solution_z3.py\", line 31, in main\n    s.add(Iff(name_var"
       }
     },
     {
@@ -6235,7 +6255,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_x7i5eg2x/solution_z3.py\", line 24, in <module>\n    s.add(AllDifferent(attr_vars))\n          ^^^^^^^^^^^^\nNameError: name 'AllDifferent' is not d"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_qhq_s5yc/solution_z3.py\", line 24, in <module>\n    s.add(AllDifferent(attr_vars))\n          ^^^^^^^^^^^^\nNameError: name 'AllDifferent' is not d"
       }
     },
     {
@@ -6279,7 +6299,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_hd0xdb97/solution_z3.py\", line 46, in <module>\n    name_at = house_map(pos_name)\n              ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3_exec_hd0xdb97"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_y2xuqp2j/solution_z3.py\", line 46, in <module>\n    name_at = house_map(pos_name)\n              ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3_exec_y2xuqp2j"
       }
     },
     {
@@ -6330,7 +6350,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_pdmj7710/solution_z3.py\", line 73, in <module>\n    main()\n  File \"/tmp/z3_exec_pdmj7710/solution_z3.py\", line 13, in main\n    s.add(AllDifferent"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_jl5csimg/solution_z3.py\", line 73, in <module>\n    main()\n  File \"/tmp/z3_exec_jl5csimg/solution_z3.py\", line 13, in main\n    s.add(AllDifferent"
       }
     },
     {
@@ -6409,7 +6429,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_e4lff1l0/solution_z3.py\", line 21, in <module>\n    p = IntVar(f\"pos_{cat}_{i}\")\n        ^^^^^^\nNameError: name 'IntVar' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_2c3fs8a0/solution_z3.py\", line 20, in <module>\n    p = IntVar(f\"pos_{cat}_{i}\")\n        ^^^^^^\nNameError: name 'IntVar' is not defined\n"
       }
     },
     {

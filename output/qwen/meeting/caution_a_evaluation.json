@@ -5,13 +5,13 @@
     "condition": "caution_a",
     "execution_json": "output/qwen/meeting/caution_a_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-26T23:26:31Z",
+    "timestamp": "2026-10-21T21:20:17Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.79,
-    "constraint_correct": 79,
-    "constraint_incorrect": 21,
+    "constraint_based_accuracy": 0.74,
+    "constraint_correct": 74,
+    "constraint_incorrect": 26,
     "golden_solution_accuracy": 0.25,
     "golden_matches": 25,
     "golden_available": 100,
@@ -21,9 +21,12 @@
       "no_output": 2,
       "no_solution": 0,
       "parse_error": 0,
-      "constraint_violation": 0,
+      "constraint_violation": 5,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -269,9 +272,9 @@
     },
     {
       "example_id": "meeting_planning_example_423",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Presidio at 9:00AM.",
         "You travel to Richmond District in 7 minutes and arrive at 9:07AM.",
@@ -301,7 +304,13 @@
         "You travel to North Beach in 10 minutes and arrive at 7:02PM.",
         "You meet Melissa for 45 minutes from 7:02PM to 7:47PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "meeting shorter than minimum duration",
+        "step": 7,
+        "text": "You meet Laura for 75 minutes from 4:46PM to 6:01AM.",
+        "required": 75,
+        "got": -645
+      }
     },
     {
       "example_id": "meeting_planning_example_715",
@@ -415,7 +424,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_ofw4hpto/solution.py\", line 1\n    ...code...\n       ^^^^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/code_exec_jboyofcz/solution.py\", line 1\n    ...code...\n       ^^^^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -446,7 +455,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_c73btzep/solution.py\", line 29, in <module>\n    left, right = line.split(': ')\n    ^^^^^^^^^^^\nValueError: not enough values to unpack (expect"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_qrlw4a_k/solution.py\", line 29, in <module>\n    left, right = line.split(': ')\n    ^^^^^^^^^^^\nValueError: not enough values to unpack (expect"
       }
     },
     {
@@ -537,7 +546,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec__pjflj2b/solution.py\", line 48\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
+        "stderr": "  File \"/tmp/code_exec_lrlp51kn/solution.py\", line 48\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
       }
     },
     {
@@ -576,7 +585,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_r2p98y_4/solution.py\", line 174, in <module>\n    main()\n  File \"/tmp/code_exec_r2p98y_4/solution.py\", line 134, in main\n    prev_t, prev_li, p"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_gw5lrviq/solution.py\", line 174, in <module>\n    main()\n  File \"/tmp/code_exec_gw5lrviq/solution.py\", line 134, in main\n    prev_t, prev_li, p"
       }
     },
     {
@@ -607,7 +616,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_k696mji3/solution.py\", line 119, in <module>\n    mask, last = parent[mask][last]\n    ^^^^^^^^^^\nTypeError: cannot unpack non-iterable int obje"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_wkhpvj8a/solution.py\", line 119, in <module>\n    mask, last = parent[mask][last]\n    ^^^^^^^^^^\nTypeError: cannot unpack non-iterable int obje"
       }
     },
     {
@@ -710,9 +719,9 @@
     },
     {
       "example_id": "meeting_planning_example_813",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Marina District at 9:00AM.",
         "You travel to Chinatown in 15 minutes and arrive at 9:15AM.",
@@ -756,13 +765,18 @@
         "You travel to Mission District in 11 minutes and arrive at 7:41PM.",
         "You meet Rebecca for 45 minutes from 7:41PM to 8:26PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong arrival time",
+        "step": 3,
+        "text": "You travel to Financial District in 5 minutes and arrive at 9:20AM.",
+        "expected": "10:20AM"
+      }
     },
     {
       "example_id": "meeting_planning_example_170",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at North Beach at 12:00PM.",
         "You travel to Union Square in 7 minutes and arrive at 7:07PM.",
@@ -781,13 +795,18 @@
         "You wait until 7:00PM.",
         "You meet Margaret for 120 minutes from 7:00PM to 9:00PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong start time",
+        "step": 0,
+        "text": "You start at North Beach at 12:00PM.",
+        "expected": "9:00AM"
+      }
     },
     {
       "example_id": "meeting_planning_example_892",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Marina District at 9:00AM.",
         "You travel to Embarcadero in 14 minutes and arrive at 9:14AM.",
@@ -831,7 +850,13 @@
         "You travel to Richmond District in 12 minutes and arrive at 8:28PM.",
         "You meet Karen for 60 minutes from 8:28PM to 9:28PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "meeting shorter than minimum duration",
+        "step": 15,
+        "text": "You meet Rebecca for 90 minutes from 5:03PM to 6:33AM.",
+        "required": 90,
+        "got": -630
+      }
     },
     {
       "example_id": "meeting_planning_example_258",
@@ -922,7 +947,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_8ni0fip8/solution.py\", line 1\n    if \"Print only a Python list\" might mean our response after SOLUTION: should be the list, not code. But earlier \"enclose the complete solution "
+        "stderr": "  File \"/tmp/code_exec_2415j97_/solution.py\", line 1\n    if \"Print only a Python list\" might mean our response after SOLUTION: should be the list, not code. But earlier \"enclose the complete solution "
       }
     },
     {
@@ -1268,7 +1293,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_hbyi_1tu/solution.py\", line 32\n    {\"name\": \"Karen\", \"location\": \"Bayview\", \"start\": 12 * 60 + 45, \"end\": 3 * 60, \"end_pm\"?}\n                                                    "
+        "stderr": "  File \"/tmp/code_exec_22ux2k7k/solution.py\", line 32\n    {\"name\": \"Karen\", \"location\": \"Bayview\", \"start\": 12 * 60 + 45, \"end\": 3 * 60, \"end_pm\"?}\n                                                    "
       }
     },
     {
@@ -1420,7 +1445,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_o_kfinq8/solution.py\", line 26\n    (0,1):8, ...\n               ^\nSyntaxError: ':' expected after dictionary key\n"
+        "stderr": "  File \"/tmp/code_exec_ndpfyl4y/solution.py\", line 26\n    (0,1):8, ...\n               ^\nSyntaxError: ':' expected after dictionary key\n"
       }
     },
     {
@@ -2110,7 +2135,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_nl73ey2f/solution.py\", line 35, in <module>\n    travel[location][location] = 0\n    ~~~~~~^^^^^^^^^^\nTypeError: 'set' object is not subscriptab"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_47jlxjgs/solution.py\", line 35, in <module>\n    travel[location][location] = 0\n    ~~~~~~^^^^^^^^^^\nTypeError: 'set' object is not subscriptab"
       }
     },
     {
@@ -2204,7 +2229,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_yoo_5nby/solution.py\", line 16, in <module>\n    print(stmts)\n          ^^^^^\nNameError: name 'stmts' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_pylkxui1/solution.py\", line 16, in <module>\n    print(stmts)\n          ^^^^^\nNameError: name 'stmts' is not defined\n"
       }
     },
     {
@@ -2258,7 +2283,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec__6mo3r2h/solution.py\", line 39, in <module>\n    arrive = cur_time + travel[cur_loc][loc]\n                        ~~~~~~~~~~~~~~~^^^^^\nTypeErro"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_xpchhq3h/solution.py\", line 39, in <module>\n    arrive = cur_time + travel[cur_loc][loc]\n                        ~~~~~~~~~~~~~~~^^^^^\nTypeErro"
       }
     },
     {
@@ -2711,9 +2736,9 @@
     },
     {
       "example_id": "meeting_planning_example_352",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Union Square at 12:00AM.",
         "You travel to Chinatown in 7 minutes and arrive at 7:07AM.",
@@ -2740,7 +2765,12 @@
         "You wait until 9:15PM.",
         "You meet Karen for 30 minutes from 9:15PM to 9:45PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong start time",
+        "step": 0,
+        "text": "You start at Union Square at 12:00AM.",
+        "expected": "9:00AM"
+      }
     },
     {
       "example_id": "meeting_planning_example_409",
@@ -3051,7 +3081,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_tqn_uksv/solution.py\", line 164, in <module>\n    (\"Mark\", \"Marina District\", parse_time(\"6:45PM\"), parse_time(\"9:00PM\"), 90),\n                "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_7hznylnj/solution.py\", line 164, in <module>\n    (\"Mark\", \"Marina District\", parse_time(\"6:45PM\"), parse_time(\"9:00PM\"), 90),\n                "
       }
     },
     {
@@ -3357,7 +3387,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_58w4hysv/solution.py\", line 149, in <module>\n    main()\n  File \"/tmp/code_exec_58w4hysv/solution.py\", line 79, in main\n    friends.append((per"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_w9v0ape4/solution.py\", line 149, in <module>\n    main()\n  File \"/tmp/code_exec_w9v0ape4/solution.py\", line 79, in main\n    friends.append((per"
       }
     },
     {

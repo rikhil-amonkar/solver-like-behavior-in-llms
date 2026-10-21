@@ -4,7 +4,7 @@
     "model": "deepseek",
     "condition": "caution_b",
     "inference_json": "output/deepseek/calendar/caution_b_inference.json",
-    "timestamp": "2026-08-25T23:36:11Z",
+    "timestamp": "2026-10-21T21:19:23Z",
     "num_examples": 100,
     "code_timeout_sec": 30.0
   },
@@ -45,7 +45,7 @@
         "ran": true,
         "exit_code": 1,
         "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_qe1k8unm/solution.py\", line 54, in <module>\n    print([day, to_time_string(start), to_time_string(end)])\n           ^^^\nNameError: name 'day' is not defined\n",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_1rdpka48/solution.py\", line 54, in <module>\n    print([day, to_time_string(start), to_time_string(end)])\n           ^^^\nNameError: name 'day' is not defined\n",
         "timed_out": false,
         "timeout_sec": 30.0,
         "error": "exit code 1",

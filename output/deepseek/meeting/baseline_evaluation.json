@@ -5,13 +5,13 @@
     "condition": "baseline",
     "execution_json": "output/deepseek/meeting/baseline_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-23T13:51:33Z",
+    "timestamp": "2026-10-21T21:20:29Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.9,
-    "constraint_correct": 90,
-    "constraint_incorrect": 10,
+    "constraint_based_accuracy": 0.89,
+    "constraint_correct": 89,
+    "constraint_incorrect": 11,
     "golden_solution_accuracy": 0.29,
     "golden_matches": 29,
     "golden_available": 100,
@@ -21,7 +21,13 @@
       "no_output": 4,
       "no_solution": 0,
       "parse_error": 0,
-      "constraint_violation": 0,
+      "constraint_violation": 1,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
   },
@@ -1156,7 +1162,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_z6vncm_6/solution.py\", line 1, in <module>\n    missing = [(a,b) for a in all_locations for b in all_locations if a != b and (a,b) not in trave"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_prsom3n0/solution.py\", line 1, in <module>\n    missing = [(a,b) for a in all_locations for b in all_locations if a != b and (a,b) not in trave"
       }
     },
     {
@@ -1801,7 +1807,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_n7u4erlk/solution.py\", line 1\n    code block. likely final answer starts \"SOLUTION:\" then code block. Need solve CSP and print final itinerary. Need formulate variables/constrai"
+        "stderr": "  File \"/tmp/code_exec_fbo21kq3/solution.py\", line 1\n    code block. likely final answer starts \"SOLUTION:\" then code block. Need solve CSP and print final itinerary. Need formulate variables/constrai"
       }
     },
     {
@@ -1825,7 +1831,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec__b8oea6g/solution.py\", line 1\n    code block\" and \"no prose outside\"? Hmm \"CRITICAL: Your Python code block must be a complete, executable script with no prose, explanations, or"
+        "stderr": "  File \"/tmp/code_exec_uaodkmz9/solution.py\", line 1\n    code block\" and \"no prose outside\"? Hmm \"CRITICAL: Your Python code block must be a complete, executable script with no prose, explanations, or"
       }
     },
     {
@@ -2529,7 +2535,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec__3ieypr2/solution.py\", line 1\n    import itertools...\n                    ^^^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/code_exec_9al9rr9y/solution.py\", line 1\n    import itertools...\n                    ^^^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -3060,9 +3066,9 @@
     },
     {
       "example_id": "meeting_planning_example_174",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at 9:00AM.",
         "You travel to Mission District in 13 minutes and arrive at 9:13AM.",
@@ -3081,7 +3087,11 @@
         "You wait until 3:30PM.",
         "You meet Thomas for 75 minutes from 3:30PM to 4:45PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "first step must be 'You start at [place] at [time].'",
+        "step": 0,
+        "text": "You start at 9:00AM."
+      }
     },
     {
       "example_id": "meeting_planning_example_976",
@@ -3354,7 +3364,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_kj820y6m/solution.py\", line 5\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
+        "stderr": "  File \"/tmp/code_exec_njdupdef/solution.py\", line 5\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
       }
     },
     {

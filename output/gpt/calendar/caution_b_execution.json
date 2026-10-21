@@ -4,7 +4,7 @@
     "model": "gpt",
     "condition": "caution_b",
     "inference_json": "output/gpt/calendar/caution_b_inference.json",
-    "timestamp": "2026-08-25T19:11:45Z",
+    "timestamp": "2026-10-21T21:19:40Z",
     "num_examples": 100,
     "code_timeout_sec": 30.0
   },
@@ -43,12 +43,12 @@
       "extracted_code_tokens": 559,
       "code_execution": {
         "ran": true,
-        "exit_code": null,
+        "exit_code": 1,
         "stdout": "",
-        "stderr": "",
-        "timed_out": true,
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_p6ejdswl/solution.py\", line 78, in <module>\n    main()\n  File \"/tmp/code_exec_p6ejdswl/solution.py\", line 44, in main\n    data = json.load(sys.stdin)\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/json/__init__.py\", line 293, in load\n    return loads(fp.read(),\n           ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/json/decoder.py\", line 337, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/json/decoder.py\", line 355, in raw_decode\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\njson.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n",
+        "timed_out": false,
         "timeout_sec": 30.0,
-        "error": "timeout after 30.0s",
+        "error": "exit code 1",
         "parsed_output": null
       }
     },

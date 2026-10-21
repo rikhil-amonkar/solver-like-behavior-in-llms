@@ -5,13 +5,13 @@
     "condition": "caution_b",
     "execution_json": "output/qwen/meeting/caution_b_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-27T15:17:47Z",
+    "timestamp": "2026-10-21T21:20:19Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.83,
-    "constraint_correct": 83,
-    "constraint_incorrect": 17,
+    "constraint_based_accuracy": 0.81,
+    "constraint_correct": 81,
+    "constraint_incorrect": 19,
     "golden_solution_accuracy": 0.23,
     "golden_matches": 23,
     "golden_available": 100,
@@ -21,9 +21,12 @@
       "no_output": 4,
       "no_solution": 0,
       "parse_error": 1,
-      "constraint_violation": 0,
+      "constraint_violation": 2,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -80,7 +83,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_n3hrz6yk/solution.py\", line 12, in <module>\n    travel[loc][loc] = 0\n    ~~~~~~^^^^^\nTypeError: 'set' object is not subscriptable\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_oluw5lu4/solution.py\", line 12, in <module>\n    travel[loc][loc] = 0\n    ~~~~~~^^^^^\nTypeError: 'set' object is not subscriptable\n"
       }
     },
     {
@@ -179,7 +182,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_9ns78q_j/solution.py\", line 19\n    ...\n    ^\nIndentationError: expected an indented block after function definition on line 18\n"
+        "stderr": "  File \"/tmp/code_exec_khqpuziw/solution.py\", line 19\n    ...\n    ^\nIndentationError: expected an indented block after function definition on line 18\n"
       }
     },
     {
@@ -431,14 +434,14 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_fxs6xpwl/solution.py\", line 173, in <module>\n    between = [[dist[locs[i]][locs[j]] for j in range(n)] for i in range(n)]\n                ~~~~"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_f0hk2ial/solution.py\", line 173, in <module>\n    between = [[dist[locs[i]][locs[j]] for j in range(n)] for i in range(n)]\n                ~~~~"
       }
     },
     {
       "example_id": "meeting_planning_example_789",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Union Square at 9:00AM.",
         "You travel to Bayview in 15 minutes and arrive at 9:15AM.",
@@ -471,7 +474,13 @@
         "You wait until 7:30PM.",
         "You meet Emily for 120 minutes from 7:30PM to 9:30PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "meeting shorter than minimum duration",
+        "step": 10,
+        "text": "You meet Joshua for 90 minutes from 4:46PM to 6:16AM.",
+        "required": 90,
+        "got": -630
+      }
     },
     {
       "example_id": "meeting_planning_example_219",
@@ -605,7 +614,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_b5an0rfz/solution.py\", line 1\n    code block. Program prints only final answer exact format: Python list of concise chronological statements. Need solve CSP by program, not pros"
+        "stderr": "  File \"/tmp/code_exec_wnant5_j/solution.py\", line 1\n    code block. Program prints only final answer exact format: Python list of concise chronological statements. Need solve CSP by program, not pros"
       }
     },
     {
@@ -951,7 +960,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_kaqz2bgu/solution.py\", line 3, in <module>\n    print(solution)\n          ^^^^^^^^\nNameError: name 'solution' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_4g0ba98m/solution.py\", line 3, in <module>\n    print(solution)\n          ^^^^^^^^\nNameError: name 'solution' is not defined\n"
       }
     },
     {
@@ -1285,9 +1294,9 @@
     },
     {
       "example_id": "meeting_planning_example_612",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Alamo Square at 9:00AM.",
         "You travel to The Castro in 8 minutes and arrive at 9:08AM.",
@@ -1324,7 +1333,12 @@
         "You wait until 9:30PM.",
         "You meet Margaret for 60 minutes from 9:30PM to 10:30PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong arrival time",
+        "step": 13,
+        "text": "You travel to Embarcadero in 25 minutes and arrive at 6:07AM.",
+        "expected": "6:07PM"
+      }
     },
     {
       "example_id": "meeting_planning_example_901",
@@ -1355,7 +1369,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_yzzvsfi2/solution.py\", line 1\n    \"Print only a Python list\" is program output. The response can have prose. However, they may want only code block. The critical says \"Your Pyth"
+        "stderr": "  File \"/tmp/code_exec_r6k4tl38/solution.py\", line 1\n    \"Print only a Python list\" is program output. The response can have prose. However, they may want only code block. The critical says \"Your Pyth"
       }
     },
     {
@@ -1701,7 +1715,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_ypy6nlcl/solution.py\", line 1\n    they also say \"Print only a Python list...\" That's program output, not our response. Need provide complete executable script in single python c"
+        "stderr": "  File \"/tmp/code_exec_cxaban3r/solution.py\", line 1\n    they also say \"Print only a Python list...\" That's program output, not our response. Need provide complete executable script in single python c"
       }
     },
     {
@@ -2572,7 +2586,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_3h9l_f3b/solution.py\", line 1\n    they also said \"enclose the complete solution in a single\n                   ^\nSyntaxError: unterminated string literal (detected at line 1)\n"
+        "stderr": "  File \"/tmp/code_exec_pa8pwg1_/solution.py\", line 1\n    they also said \"enclose the complete solution in a single\n                   ^\nSyntaxError: unterminated string literal (detected at line 1)\n"
       }
     },
     {
@@ -2840,7 +2854,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_idbhuf1e/solution.py\", line 26, in <module>\n    max_time = max(f[\"end\"] for f in friends)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_p2qlyjxn/solution.py\", line 26, in <module>\n    max_time = max(f[\"end\"] for f in friends)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File"
       }
     },
     {
@@ -3092,7 +3106,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_u225cwhk/solution.py\", line 88, in <module>\n    main()\n  File \"/tmp/code_exec_u225cwhk/solution.py\", line 66, in main\n    dfs(0, START_TIME, S"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_oy178z3s/solution.py\", line 88, in <module>\n    main()\n  File \"/tmp/code_exec_oy178z3s/solution.py\", line 66, in main\n    dfs(0, START_TIME, S"
       }
     },
     {
@@ -3370,7 +3384,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec__od3t94p/solution.py\", line 7, in <module>\n    if best_solution is None:\n       ^^^^^^^^^^^^^\nNameError: name 'best_solution' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_0tgpw17x/solution.py\", line 7, in <module>\n    if best_solution is None:\n       ^^^^^^^^^^^^^\nNameError: name 'best_solution' is not defined\n"
       }
     },
     {

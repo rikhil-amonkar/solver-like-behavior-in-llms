@@ -5,7 +5,7 @@
     "condition": "baseline",
     "execution_json": "output/deepseek/calendar/baseline_execution.json",
     "constraints_json": "data/constraints/calendar_constraints.json",
-    "timestamp": "2026-08-23T13:47:40Z",
+    "timestamp": "2026-10-21T21:19:32Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,6 +22,12 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 2,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
   },
@@ -57,7 +63,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_php6xu2u/solution.py\", line 50\n    albert_free = subtract_busy(deborah_free? no)\n                                            ^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/code_exec_j7qbvjw9/solution.py\", line 50\n    albert_free = subtract_busy(deborah_free? no)\n                                            ^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -91,7 +97,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_a5simk_l/solution.py\", line 44\n    candidates.sort(key=lambda x: (x[0] == 'Tuesday', x[1]))? Need careful. Since all candidates Tuesday due to filter, just sort by start.\n      "
+        "stderr": "  File \"/tmp/code_exec_mhz1hnwp/solution.py\", line 44\n    candidates.sort(key=lambda x: (x[0] == 'Tuesday', x[1]))? Need careful. Since all candidates Tuesday due to filter, just sort by start.\n      "
       }
     },
     {
@@ -244,7 +250,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec__2w3j19u/solution.py\", line 18\n    For each start in range(work_start, work_end - duration +1): end = start+duration. Check within work hours and no overlap with busy intervals:"
+        "stderr": "  File \"/tmp/code_exec_95h1xi7l/solution.py\", line 18\n    For each start in range(work_start, work_end - duration +1): end = start+duration. Check within work hours and no overlap with busy intervals:"
       }
     },
     {
@@ -421,7 +427,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_t99cduis/solution.py\", line 37, in <module>\n    if feasible(cur):\n       ^^^^^^^^^^^^^\n  File \"/tmp/code_exec_t99cduis/solution.py\", line 32, "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_5l9y63d1/solution.py\", line 37, in <module>\n    if feasible(cur):\n       ^^^^^^^^^^^^^\n  File \"/tmp/code_exec_5l9y63d1/solution.py\", line 32, "
       }
     },
     {
@@ -1669,7 +1675,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_l5ct1mj7/solution.py\", line 9, in <module>\n    busy: Dict[str, List[Tuple[int, int]]] = {\n          ^^^^\nNameError: name 'Dict' is not defined"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_wrlom4r3/solution.py\", line 9, in <module>\n    busy: Dict[str, List[Tuple[int, int]]] = {\n          ^^^^\nNameError: name 'Dict' is not defined"
       }
     },
     {

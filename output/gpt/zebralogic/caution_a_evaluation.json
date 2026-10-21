@@ -5,7 +5,7 @@
     "condition": "caution_a",
     "execution_json": "output/gpt/zebralogic/caution_a_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-24T15:19:26Z",
+    "timestamp": "2026-10-21T21:19:55Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,6 +22,12 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0,
       "incorrect_solution": 5
     }
@@ -463,7 +469,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_aly1irtg/solution_z3.py\", line 36, in <module>\n    And(i + 1 < H, occ[i + 1] == OCCUPATIONS[\"doctor\"])))\n                   ~~~^^^^^^^\nIndexErro"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_fypx4cz5/solution_z3.py\", line 36, in <module>\n    And(i + 1 < H, occ[i + 1] == OCCUPATIONS[\"doctor\"])))\n                   ~~~^^^^^^^\nIndexErro"
       }
     },
     {
@@ -521,7 +527,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_i3fi2q0z/solution_z3.py\", line 62, in <module>\n    s.add(Implies(lunch[i] == 2, And(i < 5, lunch[i+1] == 5)))\n                                  "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_zxe3mx6l/solution_z3.py\", line 62, in <module>\n    s.add(Implies(lunch[i] == 2, And(i < 5, lunch[i+1] == 5)))\n                                  "
       }
     },
     {
@@ -1473,7 +1479,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_t1e5wlfx/solution_z3.py\", line 89, in <module>\n    solver.add(style_pos[\"ranch\"] < sport_pos[\"cooking\"])\n                                    ~~~"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_kcarfnnt/solution_z3.py\", line 89, in <module>\n    solver.add(style_pos[\"ranch\"] < sport_pos[\"cooking\"])\n                                    ~~~"
       }
     },
     {
@@ -3415,7 +3421,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_79ghr_n2/solution_z3.py\", line 90, in <module>\n    n = names[val(name_at, house)]\n              ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3_exec_79ghr_n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec__4h7dw_q/solution_z3.py\", line 90, in <module>\n    n = names[val(name_at, house)]\n              ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/z3_exec__4h7dw_"
       }
     },
     {
@@ -4937,7 +4943,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_sinb18d4/solution_z3.py\", line 85, in <module>\n    s.add(Implies(hair[n] == red, house[n] < house[[m for m in names if occ[m] == doctor][0]]))\n "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_q4d4a2dq/solution_z3.py\", line 85, in <module>\n    s.add(Implies(hair[n] == red, house[n] < house[[m for m in names if occ[m] == doctor][0]]))\n "
       }
     },
     {
@@ -6347,7 +6353,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_sx945mcr/solution_z3.py\", line 37, in <module>\n    s.add(car_vars[\"tesla_model_3\"] == fl_vars[\"carnations\"])                     # 1\n          ~"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_qq4lipez/solution_z3.py\", line 37, in <module>\n    s.add(car_vars[\"tesla_model_3\"] == fl_vars[\"carnations\"])                     # 1\n          ~"
       }
     },
     {
@@ -7421,7 +7427,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_a4u6m2i_/solution_z3.py\", line 149, in <module>\n    s.add(pos_carol := pos_of(name, name_idx['Carol']))\n  File \"/local-ssd/rma336/solver-like-be"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4vu6730a/solution_z3.py\", line 149, in <module>\n    s.add(pos_carol := pos_of(name, name_idx['Carol']))\n  File \"/local-ssd/hz466/vllm-env/lib/py"
       }
     },
     {
@@ -7783,7 +7789,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_5m6psbbe/solution_z3.py\", line 74, in <module>\n    if solver.check() == sat:\n                         ^^^\nNameError: name 'sat' is not defined. "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_418kd_4c/solution_z3.py\", line 74, in <module>\n    if solver.check() == sat:\n                         ^^^\nNameError: name 'sat' is not defined. "
       }
     },
     {

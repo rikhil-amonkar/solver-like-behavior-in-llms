@@ -5,7 +5,7 @@
     "condition": "caution_b",
     "execution_json": "output/deepseek/zebralogic/caution_b_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-26T20:17:11Z",
+    "timestamp": "2026-10-21T21:19:39Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,8 +22,11 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0,
       "incorrect_solution": 2
@@ -5761,7 +5764,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_nl6jk5g0/solution_z3.py\", line 12, in <module>\n    for v in list(names.values())+...:\n             ~~~~~~~~~~~~~~~~~~~~^~~~\nTypeError: can only "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_0mcpkcm6/solution_z3.py\", line 12, in <module>\n    for v in list(names.values())+...:\n             ~~~~~~~~~~~~~~~~~~~~^~~~\nTypeError: can only "
       }
     },
     {
@@ -7017,7 +7020,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_frm6wsqq/solution_z3.py\", line 19, in <module>\n    solver.add(Distinct(name_var.values()))\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/l"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_uri_z4qe/solution_z3.py\", line 19, in <module>\n    solver.add(Distinct(name_var.values()))\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/l"
       }
     },
     {

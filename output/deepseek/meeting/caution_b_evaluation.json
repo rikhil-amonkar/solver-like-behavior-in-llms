@@ -5,7 +5,7 @@
     "condition": "caution_b",
     "execution_json": "output/deepseek/meeting/caution_b_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-26T14:55:30Z",
+    "timestamp": "2026-10-21T21:20:03Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,8 +22,11 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 1,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -292,7 +295,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ovm9kbze/solution.py\", line 13, in <module>\n    for from_loc, to_loc, dur in [\n        ^^^^^^^^^^^^^^^^^^^^^\nTypeError: cannot unpack non-iter"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_mdrpakxv/solution.py\", line 13, in <module>\n    for from_loc, to_loc, dur in [\n        ^^^^^^^^^^^^^^^^^^^^^\nTypeError: cannot unpack non-iter"
       }
     },
     {
@@ -644,7 +647,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_5mwxktm9/solution.py\", line 213, in <module>\n    print(build_itinerary())\n          ^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_5mwxktm9/solution"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_9pts6ba3/solution.py\", line 213, in <module>\n    print(build_itinerary())\n          ^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_9pts6ba3/solution"
       }
     },
     {
@@ -1948,7 +1951,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_atnz9m4g/solution.py\", line 1\n    SOLUTION? No, code block only. Inside code no SOLUTION.\n            ^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/code_exec_c21fxwfm/solution.py\", line 1\n    SOLUTION? No, code block only. Inside code no SOLUTION.\n            ^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -1982,7 +1985,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_bdkq742z/solution.py\", line 1\n    code block. They said \"enclose the complete solution in a single\n                          ^\nSyntaxError: unterminated string literal (detected"
+        "stderr": "  File \"/tmp/code_exec_ycc_kgwa/solution.py\", line 1\n    code block. They said \"enclose the complete solution in a single\n                          ^\nSyntaxError: unterminated string literal (detected"
       }
     },
     {
@@ -2282,7 +2285,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_vhc7ftpr/solution.py\", line 1, in <module>\n    N = len(friends)\n            ^^^^^^^\nNameError: name 'friends' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_t8n32r4t/solution.py\", line 1, in <module>\n    N = len(friends)\n            ^^^^^^^\nNameError: name 'friends' is not defined\n"
       }
     },
     {
@@ -2808,7 +2811,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_br00p85w/solution.py\", line 63\n    if best_statements is None or len(order) > len(best_order?) ...\n                                                             ^\nSyntaxError: in"
+        "stderr": "  File \"/tmp/code_exec_yns2ss5e/solution.py\", line 63\n    if best_statements is None or len(order) > len(best_order?) ...\n                                                             ^\nSyntaxError: in"
       }
     },
     {

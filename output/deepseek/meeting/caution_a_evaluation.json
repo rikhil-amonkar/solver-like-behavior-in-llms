@@ -5,13 +5,13 @@
     "condition": "caution_a",
     "execution_json": "output/deepseek/meeting/caution_a_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-24T16:44:59Z",
+    "timestamp": "2026-10-21T21:19:47Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.92,
-    "constraint_correct": 92,
-    "constraint_incorrect": 8,
+    "constraint_based_accuracy": 0.91,
+    "constraint_correct": 91,
+    "constraint_incorrect": 9,
     "golden_solution_accuracy": 0.49,
     "golden_matches": 49,
     "golden_available": 100,
@@ -21,7 +21,13 @@
       "no_output": 1,
       "no_solution": 0,
       "parse_error": 0,
-      "constraint_violation": 0,
+      "constraint_violation": 1,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
   },
@@ -727,7 +733,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_1pc1_zp2/solution.py\", line 8, in <module>\n    friend_names = [f[\"name\"] for f in friends]\n                                       ^^^^^^^\nName"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_d8z6_6_1/solution.py\", line 8, in <module>\n    friend_names = [f[\"name\"] for f in friends]\n                                       ^^^^^^^\nName"
       }
     },
     {
@@ -1016,9 +1022,9 @@
     },
     {
       "example_id": "meeting_planning_example_488",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Russian Hill at 7:15AM.",
         "You meet Sarah for 98 minutes from 7:15AM to 8:53AM.",
@@ -1047,7 +1053,12 @@
         "You travel to Haight-Ashbury in 15 minutes and arrive at 5:32PM.",
         "You meet Margaret for 60 minutes from 5:32PM to 6:32PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong start location",
+        "step": 0,
+        "text": "You start at Russian Hill at 7:15AM.",
+        "expected": "Pacific Heights"
+      }
     },
     {
       "example_id": "meeting_planning_example_215",
@@ -1208,7 +1219,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_u9fhcj_g/solution.py\", line 1\n    ensure code prints only final answer. There might be no comments? Comments okay but no natural language? Python comments okay. The instruction "
+        "stderr": "  File \"/tmp/code_exec_uu8eqb8y/solution.py\", line 1\n    ensure code prints only final answer. There might be no comments? Comments okay but no natural language? Python comments okay. The instruction "
       }
     },
     {
@@ -1370,7 +1381,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_1z7cnkuh/solution.py\", line 3\n    I can avoid comments on tie-break; code just does it. It won't be obvious. Fine.\n                                                              "
+        "stderr": "  File \"/tmp/code_exec_38ra7kf_/solution.py\", line 3\n    I can avoid comments on tie-break; code just does it. It won't be obvious. Fine.\n                                                              "
       }
     },
     {
@@ -1519,7 +1530,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_muc3d94n/solution.py\", line 67, in <module>\n    solve()\n  File \"/tmp/code_exec_muc3d94n/solution.py\", line 64, in solve\n    dfs(START_LOCATION"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ypa9vb6e/solution.py\", line 67, in <module>\n    solve()\n  File \"/tmp/code_exec_ypa9vb6e/solution.py\", line 64, in solve\n    dfs(START_LOCATION"
       }
     },
     {
@@ -1543,7 +1554,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_nldjydo7/solution.py\", line 23\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
+        "stderr": "  File \"/tmp/code_exec_i5tr11z4/solution.py\", line 23\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
       }
     },
     {
@@ -1803,7 +1814,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_rlaqa3tk/solution.py\", line 105, in <module>\n    plan = dfs(initial_state, initial_plan)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_flz4y_d9/solution.py\", line 105, in <module>\n    plan = dfs(initial_state, initial_plan)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/"
       }
     },
     {
@@ -2164,7 +2175,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_im1op85e/solution.py\", line 7\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
+        "stderr": "  File \"/tmp/code_exec_wg70kthw/solution.py\", line 7\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
       }
     },
     {

@@ -5,7 +5,7 @@
     "condition": "baseline",
     "execution_json": "output/gpt/zebralogic/baseline_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-24T15:21:12Z",
+    "timestamp": "2026-10-21T21:19:51Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,6 +22,12 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0,
       "incorrect_solution": 4
     }
@@ -304,7 +310,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_vkj1iq31/solution_z3.py\", line 55, in <module>\n    mu = music[musicv[i].as_long()]\n               ^^^^^^^^^^^^^^^^^\nAttributeError: 'ArithRef' o"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_90a_0n29/solution_z3.py\", line 55, in <module>\n    mu = music[musicv[i].as_long()]\n               ^^^^^^^^^^^^^^^^^\nAttributeError: 'ArithRef' o"
       }
     },
     {
@@ -1505,7 +1511,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_bcntdl68/solution_z3.py\", line 97, in <module>\n    cooking_pos = pos_of(sport, idx(sports, 'cooking'))\n                                ^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4fnxmqws/solution_z3.py\", line 97, in <module>\n    cooking_pos = pos_of(sport, idx(sports, 'cooking'))\n                                ^^^^^^^^^"
       }
     },
     {
@@ -2553,7 +2559,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_0lsgzfor/solution_z3.py\", line 95, in <module>\n    s.add(sport[2] == sport_idx['lilies'])\n                      ~~~~~~~~~^^^^^^^^^^\nKeyError: 'l"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_j_o6duq6/solution_z3.py\", line 95, in <module>\n    s.add(sport[2] == sport_idx['lilies'])\n                      ~~~~~~~~~^^^^^^^^^^\nKeyError: 'l"
       }
     },
     {
@@ -2783,7 +2789,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_cxvmk3es/solution_z3.py\", line 37, in <module>\n    s.add(cigar_vars[\"blends\"] < cigar_vars[\"pizza\"])\n                                 ~~~~~~~~~~"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_sspzi96q/solution_z3.py\", line 37, in <module>\n    s.add(cigar_vars[\"blends\"] < cigar_vars[\"pizza\"])\n                                 ~~~~~~~~~~"
       }
     },
     {
@@ -3511,7 +3517,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_jzxedhjp/solution_z3.py\", line 36, in <module>\n    if s.check() == sat:\n                    ^^^\nNameError: name 'sat' is not defined. Did you me"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_mcwe4evq/solution_z3.py\", line 36, in <module>\n    if s.check() == sat:\n                    ^^^\nNameError: name 'sat' is not defined. Did you me"
       }
     },
     {
@@ -3628,7 +3634,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_tielrcq6/solution_z3.py\", line 39, in <module>\n    s.add(ForAll([Int('i')], Implies(child[Int('i')] == cidx[\"Fred\"], hobby[Int('i')] == hidx[\"ga"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_3spmpp8f/solution_z3.py\", line 39, in <module>\n    s.add(ForAll([Int('i')], Implies(child[Int('i')] == cidx[\"Fred\"], hobby[Int('i')] == hidx[\"ga"
       }
     },
     {
@@ -5399,7 +5405,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_m0g7c_8e/solution_z3.py\", line 74, in <module>\n    main()\n  File \"/tmp/z3_exec_m0g7c_8e/solution_z3.py\", line 39, in main\n    s.add(Abs(genre['s"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_m73d3sl5/solution_z3.py\", line 74, in <module>\n    main()\n  File \"/tmp/z3_exec_m73d3sl5/solution_z3.py\", line 39, in main\n    s.add(Abs(genre['s"
       }
     },
     {
@@ -5704,7 +5710,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_tbs4fuim/solution_z3.py\", line 55, in <module>\n    And(h + 1 < 4, name_at[h + 1] == idx_name[\"Eric\"])))\n                   ~~~~~~~^^^^^^^\nIndexE"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_bm0yuutr/solution_z3.py\", line 55, in <module>\n    And(h + 1 < 4, name_at[h + 1] == idx_name[\"Eric\"])))\n                   ~~~~~~~^^^^^^^\nIndexE"
       }
     },
     {
@@ -5762,7 +5768,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_zjabx4u_/solution_z3.py\", line 31, in <module>\n    s.add(var[\"desert\"] == var[\"Arnold\"] - 1)\n                           ~~~~~~~~~~~~~~^~~\nTypeEr"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_cynkmt_k/solution_z3.py\", line 31, in <module>\n    s.add(var[\"desert\"] == var[\"Arnold\"] - 1)\n                           ~~~~~~~~~~~~~~^~~\nTypeEr"
       }
     },
     {
@@ -7289,7 +7295,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_wyanlm2a/solution_z3.py\", line 42, in <module>\n    s.add(height_vars['very_short'] == hair_vars['auburn'])\n          ~~~~~~~~~~~^^^^^^^^^^^^^^\nK"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4qgpi3dg/solution_z3.py\", line 42, in <module>\n    s.add(height_vars['very_short'] == hair_vars['auburn'])\n          ~~~~~~~~~~~^^^^^^^^^^^^^^\nK"
       }
     },
     {
@@ -7333,7 +7339,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_jx20v38d/solution_z3.py\", line 11\n    We'll also ensure to import from z3 import *.\n      ^\nSyntaxError: unterminated string literal (detected at line 11)\n"
+        "stderr": "  File \"/tmp/z3_exec_u6cda7fo/solution_z3.py\", line 11\n    We'll also ensure to import from z3 import *.\n      ^\nSyntaxError: unterminated string literal (detected at line 11)\n"
       }
     },
     {
@@ -7724,7 +7730,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_p0p0xv1_/solution_z3.py\", line 67, in <module>\n    And(i + 1 < houses, occ[i + 1] == teacher)))\n                        ~~~^^^^^^^\nIndexError: l"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_rwcfipu2/solution_z3.py\", line 67, in <module>\n    And(i + 1 < houses, occ[i + 1] == teacher)))\n                        ~~~^^^^^^^\nIndexError: l"
       }
     },
     {

@@ -5,7 +5,7 @@
     "condition": "baseline",
     "execution_json": "output/deepseek/zebralogic/baseline_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-24T21:18:13Z",
+    "timestamp": "2026-10-21T21:19:36Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,6 +22,12 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
   },
@@ -150,7 +156,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_xf2yf8ir/solution_z3.py\", line 44, in <module>\n    solver.add(Or(toyota - arnold == 1, arnold - toyota == 1))\n                           ^^^^^^\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_xydzssb1/solution_z3.py\", line 44, in <module>\n    solver.add(Or(toyota - arnold == 1, arnold - toyota == 1))\n                           ^^^^^^\n"
       }
     },
     {
@@ -2322,7 +2328,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_n2a7ugd0/solution_z3.py\", line 39, in <module>\n    solver.add(eric == oneplus9)\n               ^^^^\nNameError: name 'eric' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_1crovzqh/solution_z3.py\", line 39, in <module>\n    solver.add(eric == oneplus9)\n               ^^^^\nNameError: name 'eric' is not defined\n"
       }
     },
     {
@@ -3740,7 +3746,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_yltj7cts/solution_z3.py\", line 20\n    s.add(C[\"Fred\"] == H[\"gardening\"])\n                                      ^\nIndentationError: unindent does not match any outer indentation le"
+        "stderr": "  File \"/tmp/z3_exec_0dnsvqez/solution_z3.py\", line 20\n    s.add(C[\"Fred\"] == H[\"gardening\"])\n                                      ^\nIndentationError: unindent does not match any outer indentation le"
       }
     },
     {
@@ -4287,7 +4293,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_bnwq7qzc/solution_z3.py\", line 24, in <module>\n    solver.add(v >= 1, v <= 3)\n               ^^^^^^\nTypeError: '>=' not supported between instan"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_o0080wmr/solution_z3.py\", line 24, in <module>\n    solver.add(v >= 1, v <= 3)\n               ^^^^^^\nTypeError: '>=' not supported between instan"
       }
     },
     {
@@ -4941,7 +4947,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_wnbrj62a/solution_z3.py\", line 1\n    But output format maybe expects final answer, not unsat. If unsat no solution but not. Should only print rows for sat. Could avoid `else` beca"
+        "stderr": "  File \"/tmp/z3_exec_ipqwl00q/solution_z3.py\", line 1\n    But output format maybe expects final answer, not unsat. If unsat no solution but not. Should only print rows for sat. Could avoid `else` beca"
       }
     },
     {
@@ -6187,7 +6193,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_2d7op26i/solution_z3.py\", line 36, in <module>\n    name = next(s for s, var in name_map.items() if val(var) == house)\n           ^^^^^^^^^^^^^^^"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_kfu64e_8/solution_z3.py\", line 36, in <module>\n    name = next(s for s, var in name_map.items() if val(var) == house)\n           ^^^^^^^^^^^^^^^"
       }
     },
     {
