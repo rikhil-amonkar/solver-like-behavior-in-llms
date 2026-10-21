@@ -7,6 +7,9 @@ load_dotenv()
 # Global vLLM model cache (lazy loaded)
 _gpt_llm = None
 
+# Context window (prompt + generation); generation budgets are clamped to fit
+MAX_MODEL_LEN = 131072
+
 
 def _load_gpt_model():
     """Lazy load GPT-OSS model with vLLM (heavy operation)."""
@@ -27,7 +30,7 @@ def _load_gpt_model():
             tokenizer_mode="auto",
             tensor_parallel_size=1,  # Adjust based on GPU count
             gpu_memory_utilization=0.9,
-            max_model_len=32768,  # GPT-OSS max context
+            max_model_len=MAX_MODEL_LEN,  # GPT-OSS max context
             max_num_seqs=256,  # Reduce for memory constraints
             enforce_eager=False,  # Use CUDA graphs for speed
         )
@@ -90,12 +93,17 @@ def call_gpt_oss_batch(prompts: list[str], max_tokens: int = None, reasoning_eff
     }
     params = effort_params.get(reasoning_effort, effort_params["medium"])
 
-    sampling_params = SamplingParams(
-        max_tokens=max_tokens,
-        temperature=params["temperature"],
-        top_p=params["top_p"],
-        skip_special_tokens=False,  # Keep reasoning tags
-    )
+    # One SamplingParams per prompt so long prompts don't push generation past the context window
+    prompt_lengths = [len(tokenizer.encode(p)) for p in formatted_prompts]
+    sampling_params = [
+        SamplingParams(
+            max_tokens=max(1, min(max_tokens, MAX_MODEL_LEN - n)),
+            temperature=params["temperature"],
+            top_p=params["top_p"],
+            skip_special_tokens=False,  # Keep reasoning tags
+        )
+        for n in prompt_lengths
+    ]
 
     # Generate (batch mode)
     outputs = llm.generate(formatted_prompts, sampling_params)

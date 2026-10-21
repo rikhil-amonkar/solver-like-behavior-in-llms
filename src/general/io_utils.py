@@ -328,7 +328,7 @@ class IncrementalJSONWriter:
                 self._convert_jsonl_to_json(self.summary)
 
 
-def get_output_path(model: str, task: str, stage: str, condition: str = "baseline") -> Path:
+def get_output_path(model: str, task: str, stage: str, condition: str = "baseline", output_root: str = None) -> Path:
     """
     Get standard output path for a pipeline stage.
 
@@ -337,12 +337,14 @@ def get_output_path(model: str, task: str, stage: str, condition: str = "baselin
         task: Task name (calendar, meeting)
         stage: Stage name (inference, evaluation, chunking)
         condition: Condition name (baseline, caution)
+        output_root: Output root directory (default: <repo>/output)
 
     Returns:
         Path to output file
     """
     filename = f"{condition}_{stage}.json"
-    return get_repo_root() / "output" / model / task / filename
+    root = Path(output_root) if output_root else get_repo_root() / "output"
+    return root / model / task / filename
 
 
 def get_timestamp() -> str:

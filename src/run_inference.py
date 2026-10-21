@@ -35,6 +35,7 @@ def run_inference_pipeline(
     caution_variant: str = None,
     continue_run: bool = False,
     batch_size: int = None,
+    output_root: str = None,
 ):
     """
     Run inference pipeline for a task and model.
@@ -47,6 +48,7 @@ def run_inference_pipeline(
         caution_variant: Cautionary suffix variant ('a' or 'b'), or None for baseline
         continue_run: Resume from last completed example in existing JSONL
         batch_size: Batch size for vLLM models (None = auto: 16 for qwen/gpt, 1 for deepseek)
+        output_root: Output root directory (None = <repo>/output)
     """
     condition = f"caution_{caution_variant}" if caution_variant else "baseline"
 
@@ -96,7 +98,7 @@ def run_inference_pipeline(
     print("Prompts loaded")
 
     # Prepare output path
-    output_path = get_output_path(model, task, "inference", condition)
+    output_path = get_output_path(model, task, "inference", condition, output_root)
     print(f"Output: {output_path}\n")
 
     # Handle continuation mode
@@ -366,6 +368,12 @@ Examples:
         help="Batch size for vLLM models (default: auto-detect - 16 for qwen/gpt, 1 for deepseek)"
     )
 
+    parser.add_argument(
+        "--output-root",
+        default=None,
+        help="Output root directory (default: output/). Use a scratch dir for test runs."
+    )
+
     args = parser.parse_args()
 
     try:
@@ -377,6 +385,7 @@ Examples:
             caution_variant=args.caution_variant,
             continue_run=args.continue_run,
             batch_size=args.batch_size,
+            output_root=args.output_root,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

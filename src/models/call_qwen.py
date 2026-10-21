@@ -7,6 +7,9 @@ load_dotenv()
 # Global vLLM model cache (lazy loaded)
 _qwen_llm = None
 
+# Context window (prompt + generation); generation budgets are clamped to fit
+MAX_MODEL_LEN = 131072
+
 
 def _load_qwen_model():
     """Lazy load Qwen model with vLLM (heavy operation)."""
@@ -27,7 +30,7 @@ def _load_qwen_model():
             tokenizer_mode="auto",
             tensor_parallel_size=1,  # Adjust based on GPU count
             gpu_memory_utilization=0.9,
-            max_model_len=131072,  # Qwen max context
+            max_model_len=MAX_MODEL_LEN,  # Qwen max context
             max_num_seqs=256,  # Reduce for memory constraints
             enforce_eager=False,  # Use CUDA graphs for speed
         )
@@ -83,12 +86,17 @@ def call_qwen_batch(prompts: list[str], max_tokens: int = None, enable_thinking:
         formatted_prompts.append(formatted_prompt)
 
     # Sampling parameters
-    sampling_params = SamplingParams(
-        max_tokens=max_tokens,
-        temperature=0.7,
-        top_p=0.9,
-        skip_special_tokens=False,  # Keep thinking tags
-    )
+    # One SamplingParams per prompt so long prompts don't push generation past the context window
+    prompt_lengths = [len(tokenizer.encode(p)) for p in formatted_prompts]
+    sampling_params = [
+        SamplingParams(
+            max_tokens=max(1, min(max_tokens, MAX_MODEL_LEN - n)),
+            temperature=0.7,
+            top_p=0.9,
+            skip_special_tokens=False,  # Keep thinking tags
+        )
+        for n in prompt_lengths
+    ]
 
     # Generate (batch mode)
     outputs = llm.generate(formatted_prompts, sampling_params)

@@ -43,6 +43,7 @@ temp/
 # Secrets and local env files
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 secrets/
@@ -62,3 +63,6 @@ repos/
 
 # Anonymous information
 hidden/
+
+# Scratch outputs from test runs
+output_test/
