@@ -5,24 +5,24 @@
     "condition": "baseline",
     "execution_json": "output/qwen/meeting/baseline_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-10-21T21:20:17Z",
+    "timestamp": "2026-10-22T15:47:00Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.82,
-    "constraint_correct": 82,
-    "constraint_incorrect": 18,
-    "golden_solution_accuracy": 0.29,
-    "golden_matches": 29,
+    "constraint_based_accuracy": 0.91,
+    "constraint_correct": 91,
+    "constraint_incorrect": 9,
+    "golden_solution_accuracy": 0.31,
+    "golden_matches": 31,
     "golden_available": 100,
     "error_breakdown": {
-      "no_code_extracted": 2,
-      "execution_error": 6,
-      "no_output": 2,
+      "no_code_extracted": 0,
+      "execution_error": 0,
+      "no_output": 0,
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 7,
-      "suboptimal": 1,
+      "suboptimal": 2,
       "pddl_error": 0,
       "planning_failure": 0,
       "solver_timeout": 0,
@@ -223,10 +223,32 @@
     },
     {
       "example_id": "meeting_planning_example_867",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "no_output",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Haight-Ashbury at 9:00AM.",
+        "You travel to Pacific Heights in 12 minutes and arrive at 9:12AM.",
+        "You meet Sandra for 120 minutes from 9:12AM to 11:12AM.",
+        "You travel to Marina District in 6 minutes and arrive at 11:18AM.",
+        "You meet Kenneth for 45 minutes from 11:18AM to 12:03PM.",
+        "You travel to Fisherman's Wharf in 10 minutes and arrive at 12:13PM.",
+        "You meet Robert for 15 minutes from 12:13PM to 12:28PM.",
+        "You travel to Mission District in 22 minutes and arrive at 12:50PM.",
+        "You meet Elizabeth for 90 minutes from 12:50PM to 2:20PM.",
+        "You travel to Union Square in 15 minutes and arrive at 2:35PM.",
+        "You wait until 3:15PM.",
+        "You meet David for 45 minutes from 3:15PM to 4:00PM.",
+        "You travel to Sunset District in 27 minutes and arrive at 4:27PM.",
+        "You meet Kimberly for 105 minutes from 4:27PM to 6:12PM.",
+        "You travel to Golden Gate Park in 11 minutes and arrive at 6:23PM.",
+        "You meet Amanda for 15 minutes from 6:23PM to 6:38PM.",
+        "You travel to Richmond District in 7 minutes and arrive at 6:45PM.",
+        "You meet Melissa for 15 minutes from 6:45PM to 7:00PM.",
+        "You travel to Bayview in 27 minutes and arrive at 7:27PM.",
+        "You wait until 7:30PM.",
+        "You meet Thomas for 30 minutes from 7:30PM to 8:00PM."
+      ],
       "expected_solution": [
         "You start at Haight-Ashbury at 9:00AM.",
         "You travel to Pacific Heights in 12 minutes and arrive at 9:12AM.",
@@ -250,9 +272,7 @@
         "You wait until 7:30PM.",
         "You meet Thomas for 30 minutes from 7:30PM to 8:00PM."
       ],
-      "validation": {
-        "error": "empty stdout"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_423",
@@ -372,10 +392,32 @@
     },
     {
       "example_id": "meeting_planning_example_728",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "no_code_extracted",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Marina District at 9:00AM.",
+        "You travel to Financial District in 17 minutes and arrive at 9:17AM.",
+        "You wait until 10:00AM.",
+        "You meet Elizabeth for 75 minutes from 10:00AM to 11:15AM.",
+        "You travel to Union Square in 9 minutes and arrive at 11:24AM.",
+        "You wait until 11:45AM.",
+        "You meet Joseph for 120 minutes from 11:45AM to 1:45PM.",
+        "You travel to Haight-Ashbury in 18 minutes and arrive at 2:03PM.",
+        "You wait until 2:15PM.",
+        "You meet Kimberly for 105 minutes from 2:15PM to 4:00PM.",
+        "You travel to Fisherman's Wharf in 23 minutes and arrive at 4:23PM.",
+        "You meet Richard for 30 minutes from 4:23PM to 4:53PM.",
+        "You travel to Sunset District in 27 minutes and arrive at 5:20PM.",
+        "You meet Helen for 105 minutes from 5:20PM to 7:05PM.",
+        "You travel to Russian Hill in 24 minutes and arrive at 7:29PM.",
+        "You meet Ashley for 45 minutes from 7:29PM to 8:14PM.",
+        "You travel to Mission District in 16 minutes and arrive at 8:30PM.",
+        "You meet Karen for 30 minutes from 8:30PM to 9:00PM.",
+        "You travel to Presidio in 25 minutes and arrive at 9:25PM.",
+        "You wait until 9:45PM.",
+        "You meet Robert for 60 minutes from 9:45PM to 10:45PM."
+      ],
       "expected_solution": [
         "You start at Marina District at 9:00AM.",
         "You travel to Financial District in 17 minutes and arrive at 9:17AM.",
@@ -399,9 +441,7 @@
         "You wait until 9:45PM.",
         "You meet Robert for 60 minutes from 9:45PM to 10:45PM."
       ],
-      "validation": {
-        "error": "code not extracted or invalid"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_831",
@@ -708,10 +748,20 @@
     },
     {
       "example_id": "meeting_planning_example_224",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "You start at Fisherman's Wharf at 9:00AM.",
+        "You travel to Golden Gate Park in 25 minutes and arrive at 9:25AM.",
+        "You meet Melissa for 15 minutes from 9:25AM to 9:40AM.",
+        "You travel to Richmond District in 7 minutes and arrive at 9:47AM.",
+        "You wait until 4:45PM.",
+        "You meet Emily for 120 minutes from 4:45PM to 6:45PM.",
+        "You travel to Presidio in 7 minutes and arrive at 6:52PM.",
+        "You wait until 7:45PM.",
+        "You meet Nancy for 105 minutes from 7:45PM to 9:30PM."
+      ],
       "expected_solution": [
         "You start at Fisherman's Wharf at 9:00AM.",
         "You travel to Golden Gate Park in 25 minutes and arrive at 9:25AM.",
@@ -723,11 +773,7 @@
         "You wait until 7:45PM.",
         "You meet Nancy for 105 minutes from 7:45PM to 9:30PM."
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_wn6q2yl9/solution.py\", line 1\n    code block\" and \"SOLUTION CODE:\" at end. This is from meta prompt: They want code, not the executed output. The last line \"SOLUTION CODE:\" like"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_813",
@@ -806,10 +852,31 @@
     },
     {
       "example_id": "meeting_planning_example_892",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "no_code_extracted",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Marina District at 9:00AM.",
+        "You travel to Embarcadero in 14 minutes and arrive at 9:14AM.",
+        "You meet Laura for 105 minutes from 9:14AM to 10:59AM.",
+        "You travel to Bayview in 21 minutes and arrive at 11:20AM.",
+        "You wait until 11:30AM.",
+        "You meet Charles for 45 minutes from 11:30AM to 12:15PM.",
+        "You travel to Russian Hill in 23 minutes and arrive at 12:38PM.",
+        "You wait until 1:00PM.",
+        "You meet Melissa for 30 minutes from 1:00PM to 1:30PM.",
+        "You travel to North Beach in 5 minutes and arrive at 1:35PM.",
+        "You wait until 2:00PM.",
+        "You meet Mark for 105 minutes from 2:00PM to 3:45PM.",
+        "You travel to Haight-Ashbury in 18 minutes and arrive at 4:03PM.",
+        "You meet Patricia for 45 minutes from 4:03PM to 4:48PM.",
+        "You travel to Nob Hill in 15 minutes and arrive at 5:03PM.",
+        "You meet Rebecca for 90 minutes from 5:03PM to 6:33PM.",
+        "You travel to Sunset District in 24 minutes and arrive at 6:57PM.",
+        "You meet Robert for 30 minutes from 6:57PM to 7:27PM.",
+        "You travel to Richmond District in 12 minutes and arrive at 7:39PM.",
+        "You meet Karen for 60 minutes from 7:39PM to 8:39PM."
+      ],
       "expected_solution": [
         "You start at Marina District at 9:00AM.",
         "You travel to Embarcadero in 14 minutes and arrive at 9:14AM.",
@@ -831,9 +898,7 @@
         "You travel to Richmond District in 12 minutes and arrive at 8:28PM.",
         "You meet Karen for 60 minutes from 8:28PM to 9:28PM."
       ],
-      "validation": {
-        "error": "code not extracted or invalid"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_258",
@@ -2170,10 +2235,27 @@
     },
     {
       "example_id": "meeting_planning_example_546",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Embarcadero at 9:00AM.",
+        "You travel to Pacific Heights in 11 minutes and arrive at 9:11AM.",
+        "You meet Nancy for 90 minutes from 9:11AM to 10:41AM.",
+        "You travel to Nob Hill in 8 minutes and arrive at 10:49AM.",
+        "You wait until 11:30AM.",
+        "You meet Andrew for 60 minutes from 11:30AM to 12:30PM.",
+        "You travel to Financial District in 9 minutes and arrive at 12:39PM.",
+        "You meet Joshua for 15 minutes from 12:39PM to 12:54PM.",
+        "You travel to Union Square in 9 minutes and arrive at 1:03PM.",
+        "You meet Lisa for 45 minutes from 1:03PM to 1:48PM.",
+        "You travel to Bayview in 15 minutes and arrive at 2:03PM.",
+        "You wait until 4:45PM.",
+        "You meet John for 75 minutes from 4:45PM to 6:00PM.",
+        "You travel to Richmond District in 25 minutes and arrive at 6:25PM.",
+        "You wait until 9:15PM.",
+        "You meet Kenneth for 30 minutes from 9:15PM to 9:45PM."
+      ],
       "expected_solution": [
         "You start at Embarcadero at 9:00AM.",
         "You travel to Pacific Heights in 11 minutes and arrive at 9:11AM.",
@@ -2192,11 +2274,7 @@
         "You wait until 9:15PM.",
         "You meet Kenneth for 30 minutes from 9:15PM to 9:45PM."
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_r1jdemdk/solution.py\", line 16\n    ...\n      ^\nSyntaxError: ':' expected after dictionary key\n"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_91",
@@ -2436,10 +2514,18 @@
     },
     {
       "example_id": "meeting_planning_example_309",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Financial District at 9:00AM.",
+        "You travel to Alamo Square in 17 minutes and arrive at 9:17AM.",
+        "You meet Mary for 75 minutes from 9:17AM to 10:32AM.",
+        "You travel to Chinatown in 16 minutes and arrive at 10:48AM.",
+        "You meet Nancy for 90 minutes from 10:48AM to 12:18PM.",
+        "You travel to Bayview in 22 minutes and arrive at 12:40PM.",
+        "You meet Jessica for 45 minutes from 12:40PM to 1:25PM."
+      ],
       "expected_solution": [
         "You start at Financial District at 9:00AM.",
         "You travel to Chinatown in 5 minutes and arrive at 9:05AM.",
@@ -2450,11 +2536,7 @@
         "You travel to Bayview in 16 minutes and arrive at 12:48PM.",
         "You meet Jessica for 45 minutes from 12:48PM to 1:33PM."
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_p99h2d_s/solution.py\", line 1\n    code block with complete script. But also says response should start with 'SOLUTION:'. Need satisfy: start with SOLUTION: then code block? The "
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_322",
@@ -2934,10 +3016,29 @@
     },
     {
       "example_id": "meeting_planning_example_952",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Bayview at 9:00AM.",
+        "You travel to Fisherman's Wharf in 25 minutes and arrive at 9:25AM.",
+        "You wait until 11:00AM.",
+        "You meet Richard for 60 minutes from 11:00AM to 12:00PM.",
+        "You travel to Nob Hill in 11 minutes and arrive at 12:11PM.",
+        "You meet Elizabeth for 75 minutes from 12:11PM to 1:26PM.",
+        "You travel to North Beach in 8 minutes and arrive at 1:34PM.",
+        "You meet Brian for 90 minutes from 1:34PM to 3:04PM.",
+        "You travel to Pacific Heights in 8 minutes and arrive at 3:12PM.",
+        "You meet Anthony for 30 minutes from 3:12PM to 3:42PM.",
+        "You travel to Chinatown in 11 minutes and arrive at 3:53PM.",
+        "You meet Kenneth for 105 minutes from 3:53PM to 5:38PM.",
+        "You travel to Haight-Ashbury in 19 minutes and arrive at 5:57PM.",
+        "You meet Ashley for 90 minutes from 5:57PM to 7:27PM.",
+        "You travel to Alamo Square in 5 minutes and arrive at 7:32PM.",
+        "You meet Kimberly for 45 minutes from 7:32PM to 8:17PM.",
+        "You travel to Union Square in 14 minutes and arrive at 8:31PM.",
+        "You meet Deborah for 60 minutes from 8:31PM to 9:31PM."
+      ],
       "expected_solution": [
         "You start at Bayview at 9:00AM.",
         "You travel to Fisherman's Wharf in 25 minutes and arrive at 9:25AM.",
@@ -2959,11 +3060,7 @@
         "You wait until 8:00PM.",
         "You meet Jessica for 105 minutes from 8:00PM to 9:45PM."
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_zxvf2kgf/solution.py\", line 1\n    ...script...\n       ^^^^^^\nSyntaxError: invalid syntax\n"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_870",
@@ -3166,8 +3263,10 @@
       "example_id": "meeting_planning_example_885",
       "correct": false,
       "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "classification": "suboptimal",
+      "solution": [
+        "You start at Russian Hill at 9:00AM."
+      ],
       "expected_solution": [
         "You start at Russian Hill at 9:00AM.",
         "You travel to Financial District in 11 minutes and arrive at 9:11AM.",
@@ -3188,9 +3287,10 @@
         "You meet Mark for 90 minutes from 7:27PM to 8:57PM."
       ],
       "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_tqlb0aer/solution.py\", line 1\n    they said enclose complete solution in a single\n         ^^^^\nSyntaxError: invalid syntax\n"
+        "error": "valid itinerary but meets fewer friends than the golden solution",
+        "error_type": "suboptimal",
+        "num_met": 0,
+        "golden_num_met": 7
       }
     },
     {
@@ -3355,10 +3455,21 @@
     },
     {
       "example_id": "meeting_planning_example_368",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Bayview at 9:00AM.",
+        "You travel to Russian Hill in 23 minutes and arrive at 9:23AM.",
+        "You meet Joseph for 60 minutes from 9:23AM to 10:23AM.",
+        "You travel to Financial District in 11 minutes and arrive at 10:34AM.",
+        "You meet Jeffrey for 45 minutes from 10:34AM to 11:19AM.",
+        "You travel to Alamo Square in 17 minutes and arrive at 11:36AM.",
+        "You meet Nancy for 90 minutes from 11:36AM to 1:06PM.",
+        "You travel to North Beach in 15 minutes and arrive at 1:21PM.",
+        "You wait until 4:45PM.",
+        "You meet Jason for 15 minutes from 4:45PM to 5:00PM."
+      ],
       "expected_solution": [
         "You start at Bayview at 9:00AM.",
         "You travel to Russian Hill in 23 minutes and arrive at 9:23AM.",
@@ -3372,11 +3483,7 @@
         "You wait until 4:45PM.",
         "You meet Jason for 15 minutes from 4:45PM to 5:00PM."
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_ewt3ofmg/solution.py\", line 1\n    ...code...\n       ^^^^\nSyntaxError: invalid syntax\n"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_115",
@@ -3424,10 +3531,16 @@
     },
     {
       "example_id": "meeting_planning_example_125",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "no_output",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "You start at Embarcadero at 9:00AM.",
+        "You travel to Financial District in 5 minutes and arrive at 9:05AM.",
+        "You meet Stephanie for 90 minutes from 9:05AM to 10:35AM.",
+        "You travel to Alamo Square in 17 minutes and arrive at 10:52AM.",
+        "You meet John for 30 minutes from 10:52AM to 11:22AM."
+      ],
       "expected_solution": [
         "You start at Embarcadero at 9:00AM.",
         "You travel to Financial District in 5 minutes and arrive at 9:05AM.",
@@ -3435,9 +3548,7 @@
         "You travel to Alamo Square in 17 minutes and arrive at 10:52AM.",
         "You meet John for 30 minutes from 10:52AM to 11:22AM."
       ],
-      "validation": {
-        "error": "empty stdout"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_131",
