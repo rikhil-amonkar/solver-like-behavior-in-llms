@@ -62,6 +62,8 @@ textarea { width: 100%; min-height: 40px; font: 13px var(--sans); background: va
 
 <script>
 const S = { items: [], marks: {}, db: null };
+// replaceChildren would print "null" for sections that do not apply, so drop them first
+const fill = (el, ...kids) => el.replaceChildren(...kids.filter(k => k != null));
 const h = (tag, attrs = {}, ...kids) => {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -88,7 +90,7 @@ function renderTally() {
   const done = S.items.filter(it => S.marks[it.id]?.extent);
   const ok = done.filter(it => S.marks[it.id].extent === it.gemma.extent).length;
   const ans = S.items.filter(it => S.marks[it.id]?.answerOk != null);
-  document.getElementById("tally").replaceChildren(
+  fill(document.getElementById("tally"),
     h("span", {}, "Checked ", h("b", {}, `${done.length}/${S.items.length}`)),
     h("span", {}, "Extent agrees ", h("b", {}, done.length ? `${ok}/${done.length}` : "–")),
     h("span", {}, "Extracted answer right ", h("b", {}, ans.length ? `${ans.filter(it => S.marks[it.id].answerOk).length}/${ans.length}` : "–")),
@@ -98,7 +100,7 @@ function renderCard(it) {
   const card = document.getElementById(it.id), m = S.marks[it.id] || {}, g = it.gemma;
   const r = it.reasoning, tail = r.length > 5000 ? "…" + r.slice(-5000) : r;
   const verdict = m.extent ? (m.extent === g.extent ? h("span", { class: "verdict ok" }, "agrees") : h("span", { class: "verdict bad" }, "you: " + m.extent)) : null;
-  card.replaceChildren(
+  fill(card,
     h("div", { class: "meta" }, h("span", { class: "id" }, it.id), `${it.model} · ${it.task} · ${it.cond}`,
       h("span", { class: "pill " + g.extent }, "Gemma: " + g.extent), verdict),
     g.extent === "complete" ? h("div", {}, h("div", { class: "label" }, `Answer Gemma extracted from the prose (Gemma says it ${g.match === "yes" ? "matches" : g.match === "no" ? "differs from" : "can't be compared with"} the program output)`), h("pre", { class: "answer" }, g.prose_answer || "(empty)")) : null,
