@@ -31,7 +31,8 @@ def parse_time(s):
 def marker(log, kind, label):
     if not label:
         return None
-    m = re.search(r"^=== %s %s(?: exit=\d+)? %s\s*$" % (kind, re.escape(label), TIME), log, re.M)
+    # not anchored: progress bars end lines with \r, so a marker can land mid-line
+    m = re.search(r"=== %s %s(?: exit=\d+)? %s" % (kind, re.escape(label), TIME), log)
     return parse_time(m.group(1)) if m else None
 
 
