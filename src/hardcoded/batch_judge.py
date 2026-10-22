@@ -10,7 +10,9 @@ from chunking.vertex_batch_judge import (
     poll_batch_job,
     parse_batch_results,
     get_vertex_client,
-    prepare_batch_requests as prepare_vertex_requests
+    prepare_batch_requests as prepare_vertex_requests,
+    match_batch_results,
+    batch_response_text,
 )
 from hardcoded.judge_parser import parse_judge_response
 
@@ -112,21 +114,18 @@ def run_batch_judging(
     raw_results = parse_batch_results(output_gcs_uri_prefix)
     print(f"  Retrieved {len(raw_results)} responses")
 
-    # Map results back to example IDs and parse responses
+    # Batch output order is not input order: match each result to its request
+    matched = match_batch_results(raw_results, requests, [ex['example_id'] for ex in examples])
+
     results = []
-    for i, result in enumerate(raw_results):
-        if i >= len(examples):
-            break
+    for ex in examples:
+        example_id = ex['example_id']
+        if example_id not in matched:
+            results.append({'example_id': example_id, 'hardcoded': None,
+                            'error': 'no batch output', 'raw_response': ''})
+            continue
 
-        example_id = examples[i]['example_id']
-
-        # Extract response text from Vertex AI format
-        response_text = ""
-        if "response" in result and "candidates" in result["response"]:
-            candidate = result["response"]["candidates"][0]
-            if "content" in candidate and "parts" in candidate["content"]:
-                response_text = candidate["content"]["parts"][0].get("text", "")
-
+        response_text = batch_response_text(matched[example_id])
         parsed = parse_judge_response(response_text)
 
         results.append({

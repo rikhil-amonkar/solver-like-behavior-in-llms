@@ -32,6 +32,7 @@ from chunking.vertex_batch_judge import (
     submit_batch_job,
     poll_batch_job,
     parse_batch_results,
+    match_batch_results,
     get_timestamp
 )
 from chunking.gcs_utils import upload_jsonl_to_gcs
@@ -231,6 +232,7 @@ def prepare_batch_data(empty_examples, judge_prompt_text):
 
 def process_batch_results(
     batch_results: list[dict],
+    batch_requests: list[dict],
     segment_map: dict,
     empty_examples_map: dict,
     chunking_data: dict
@@ -240,6 +242,7 @@ def process_batch_results(
 
     Args:
         batch_results: Results from Vertex AI batch job
+        batch_requests: Requests as submitted (index i is request i in segment_map)
         segment_map: Maps request index -> (list_idx, segment_idx, total_segments)
         empty_examples_map: Maps list_idx -> (original_idx, example)
         chunking_data: Original chunking data to update
@@ -247,7 +250,10 @@ def process_batch_results(
     # Group results by example
     example_segments = {}  # list_idx -> list of (segment_idx, response_text)
 
-    for req_idx, result in enumerate(batch_results):
+    # Batch output order is not input order: match each result to its request
+    matched = match_batch_results(batch_results, batch_requests, list(range(len(batch_requests))))
+
+    for req_idx, result in sorted(matched.items()):
         if req_idx not in segment_map:
             print(f"  ⚠ Warning: Request {req_idx} not in segment_map, skipping")
             continue
@@ -500,6 +506,7 @@ Note: This script uses batch processing with 5K token segments (vs 15K in normal
     print(f"\nProcessing results...")
     fixed_count, failed_count = process_batch_results(
         batch_results,
+        batch_requests,
         segment_map,
         empty_examples_map,
         chunking_data

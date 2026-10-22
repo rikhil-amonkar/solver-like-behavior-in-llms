@@ -230,4 +230,15 @@ Let's manually list intervals:
 
 ## Note: misaligned judge outputs
 
-`src/run_chunking.py` and `src/hardcoded/batch_judge.py` match Vertex batch results to examples by position, assuming the output keeps input order. It does not. In the stored `*_chunking.json` files, a 150-character passage from an example's chunks matches exactly one trace in 3,337 of 3,600 cases, and that trace is a different example's in 3,288 of them. So per-example solver-like fractions, and per-example hardcoded-judge verdicts, belong to other examples. Means over each 100-example file are unaffected, because the mix-up stays within a file. The local vLLM re-judge (`src/run_chunking_local.py`) zips outputs with their requests in order and is not affected.
+`src/run_chunking.py` and `src/hardcoded/batch_judge.py` match Vertex batch results to examples by position, assuming the output keeps input order. It does not. In the stored `*_chunking.json` files, a 150-character passage from an example's chunks matches exactly one trace in 3,337 of 3,600 cases, and that trace is a different example's in 3,288 of them. So per-example solver-like fractions, and per-example hardcoded-judge verdicts, belong to other examples. The local vLLM re-judge (`src/run_chunking_local.py`) zips outputs with their requests in order and is not affected.
+
+**Fixed 2026-10-22.** All three batch mapping sites (`src/run_chunking.py`, `src/hardcoded/batch_judge.py`, `scripts/fix_empty_chunks.py`) now match each output line to its request through the request it echoes (`match_batch_results` in `src/chunking/vertex_batch_judge.py`; test: `tests/batch/test_result_mapping.py`).
+
+**Stored chunks re-keyed.** `scripts/rekey_chunking.py` re-assigned every judge chunk to the trace that contains it verbatim and wrote `output/*/*/*_chunking_rekeyed.json`; the originals are untouched.
+- Of 44,752 chunks, 41,316 matched a trace directly and 2,134 were placed by their neighbours, so 97% were placed and 1,302 were left out. Placed chunks keep 94–100% of the chunk text in every model–task pair.
+- Of 3,600 examples, 1,926 are fully repaired (chunks cover at least 90% of the trace), 1,313 partly and 361 not at all. Those not repaired have `token_statistics: null`.
+- Partial and missing coverage was already there before the mix-up: the judge's chunks cover only 41–81% of DeepSeek and Qwen trace text, against 96–99% for GPT-OSS. Repair rates are therefore high for GPT-OSS (83–100 fully repaired per file) and low for DeepSeek and Qwen BlocksWorld (6–8 per file).
+- Per-file means do change, by up to 0.07 (Qwen Meeting baseline 0.435 → 0.363). Long traces were split into segments, and their segment responses were mixed across examples, so per-example fractions changed and not just which example they were filed under.
+- Matching used the traces stored in the chunking files, i.e. what the judge saw. 128 of those 3,600 differ from the current execution traces, which were regenerated on 2026-10-21.
+
+The stored `*_hardcoded.json` verdicts cannot be re-keyed, because each response is only `{"hardcoded": bool}`. That judge needs a re-run, or should be replaced by `src/hardcoded/static_checker.py`.
