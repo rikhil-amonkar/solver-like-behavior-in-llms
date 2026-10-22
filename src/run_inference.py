@@ -31,6 +31,7 @@ def run_inference_pipeline(
     task: str,
     model: str,
     num_examples: int = None,
+    offset: int = 0,
     max_tokens: int = None,
     caution_variant: str = None,
     continue_run: bool = False,
@@ -44,6 +45,7 @@ def run_inference_pipeline(
         task: Task name (calendar, meeting, zebralogic, blocksworld)
         model: Model name (deepseek, qwen, gpt)
         num_examples: Number of examples to process (None = all)
+        offset: Skip this many examples first (to split a run across GPUs)
         max_tokens: Max tokens for generation (None = use model default)
         caution_variant: Cautionary suffix variant ('a' or 'b'), or None for baseline
         continue_run: Resume from last completed example in existing JSONL
@@ -73,6 +75,7 @@ def run_inference_pipeline(
     example_ids = list(problems.keys())
 
     # Limit examples if requested
+    example_ids = example_ids[offset:]
     if num_examples is not None:
         example_ids = example_ids[:num_examples]
 
@@ -334,6 +337,12 @@ Examples:
         help="Number of examples to process (default: all)"
     )
     parser.add_argument(
+        "--offset",
+        type=int,
+        default=0,
+        help="Skip this many examples first (with --n, splits a run across GPUs)"
+    )
+    parser.add_argument(
         "--max-tokens",
         type=int,
         default=None,
@@ -381,6 +390,7 @@ Examples:
             task=args.task,
             model=args.model,
             num_examples=args.num_examples,
+            offset=args.offset,
             max_tokens=args.max_tokens,
             caution_variant=args.caution_variant,
             continue_run=args.continue_run,
