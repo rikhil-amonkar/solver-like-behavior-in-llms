@@ -1,0 +1,367 @@
+{
+ "model": "google/gemma-4-31B-it",
+ "judge_prompt": "prompts/judge/llm_as_judge_for_chunking.txt",
+ "quantization": "fp8",
+ "kv_cache_dtype": "fp8",
+ "agreement_with_gemini": 0.85,
+ "results": [
+  {
+   "id": 1,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 261,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "Monday 12:30-13:00. If preference soft and choose earliest overall, Monday 9:30-10:00 violates preference but maybe allowed? They say would rather not, likely should avoid if possible. If hard, Monday 12:30. But \"Wednesday.\" likely wants Wednesday. Need decide."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"Monday 12:30-13:00. If preference soft and choose earliest overall, Monday 9:30-10:00 violates preference but maybe allowed? They say would rather not, likely should avoid if possible. If hard, Monday 12:30. But \\\"Wednesday.\\\" likely wants Wednesday. Need decide.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 2,
+   "gemini_label": "solver-like",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 287
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "We need to find schedule that maximizes number of meetings. Since number of friends is 9 (Elizabeth, Joshua, Timothy, David, Kimberly, Lisa, Ronald, Stephanie, Helen, Laura) actually 10? Let's count: Elizabeth, Joshua, Timothy, David, Kimberly, Lisa, Ronald, Stephanie, Helen, Laura =10."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"We need to find schedule that maximizes number of meetings. Since number of friends is 9 (Elizabeth, Joshua, Timothy, David, Kimberly, Lisa, Ronald, Stephanie, Helen, Laura) actually 10? Let's count: Elizabeth, Joshua, Timothy, David, Kimberly, Lisa, Ronald, Stephanie, Helen, Laura =10.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 3,
+   "gemini_label": "sound",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 238,
+    "sound": 138
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "Thus code will find this or maybe another. Good.\n\nNeed ensure output attribute names: For flower 'carnations' (plural) as given. 'daffodils', 'lilies', 'roses', 'tulips'. In solution above house3 carnations, house5 lilies. Use exact list."
+    },
+    {
+     "sound": "\n\nNow final code. Need maybe not include manual solution. Code will solve.\n\nPotential issue with Z3 and Abs/Or. Use Or.\n\nLet's draft code:"
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"Thus code will find this or maybe another. Good.\\n\\nNeed ensure output attribute names: For flower 'carnations' (plural) as given. 'daffodils', 'lilies', 'roses', 'tulips'. In solution above house3 carnations, house5 lilies. Use exact list.\"\n    },\n    {\n      \"sound\": \"\\n\\nNow final code. Need maybe not include manual solution. Code will solve.\\n\\nPotential issue with Z3 and Abs/Or. Use Or.\\n\\nLet's draft code:\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 4,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 1225
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Now, if the additional constraint intended final three stacks, our goal doesn't. But we have stack-permitted pairs to build them. If someone changes goal to three stacks, domain supports. Could we add a comment in problem goal? Maybe not.\n\nCould we add a separate problem_file with goal three stacks? No, only one.\n\nMaybe we can include in goal both groundtruth and a predicate (constraint-acknowledged) that is true. But no.\n\nLet's think if there is a way to encode the additional final constraint as a set of action preconditions that make the groundtruth goal impossible? No.\n\nMaybe we should output the three-stack goal to be semantically correct with additional constraint. Let's explore that version. Domain could be standard plus category restrictions. Problem goal:\n(on-table block3)\n(on block6 block3)\n(on block9 block6)\n(on block12 block9)\n(on-table block1)\n(on block5 block1)\n(on block7 block5)\n(on block11 block7)\n(on block13 block11)\n(on-table block2)\n(on block4 block2)\n(on block8 block4)\n(on block10 block8)\n(on block14 block10)\nMaybe also clear tops? Not necessary. This goal is reachable from initial? Need check with stack action allowing adjacent category pairs. Initial: 8 on12, 14 on3. Need build towers."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Now, if the additional constraint intended final three stacks, our goal doesn't. But we have stack-permitted pairs to build them. If someone changes goal to three stacks, domain supports. Could we add a comment in problem goal? Maybe not.\\n\\nCould we add a separate problem_file with goal three stacks? No, only one.\\n\\nMaybe we can include in goal both groundtruth and a predicate (constraint-acknowledged) that is true. But no.\\n\\nLet's think if there is a way to encode the additional final constraint as a set of action preconditions that make the groundtruth goal impossible? No.\\n\\nMaybe we should output the three-stack goal to be semantically correct with additional constraint. Let's explore that version. Domain could be standard plus category restrictions. Problem goal:\\n(on-table block3)\\n(on block6 block3)\\n(on block9 block6)\\n(on block12 block9)\\n(on-table block1)\\n(on block5 block1)\\n(on block7 block5)\\n(on block11 block7)\\n(on block13 block11)\\n(on-table block2)\\n(on block4 block2)\\n(on block8 block4)\\n(on block10 block8)\\n(on block14 block10)\\nMaybe also clear tops? Not necessary. This goal is reachable from initial? Need check with stack action allowing adjacent category pairs. Initial: 8 on12, 14 on3. Need build towers.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 5,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 248
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Now write Python script that computes as described and prints list.\n\nNeed to ensure formatting: zero-padded HH:MM.\n\nImplementation details:\n\n- Define data structures.\n\n- Function minutes_to_str.\n\n- Compute.\n\nNow produce final answer with code only."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Now write Python script that computes as described and prints list.\\n\\nNeed to ensure formatting: zero-padded HH:MM.\\n\\nImplementation details:\\n\\n- Define data structures.\\n\\n- Function minutes_to_str.\\n\\n- Compute.\\n\\nNow produce final answer with code only.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 6,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 171,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "But to unstack 8 from12, arm empty, 8 clear. Then putdown. To unstack14 from3, putdown. Then pickup7, stack7 on6. All other blocks remain on table. So plan length 5. Good."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"But to unstack 8 from12, arm empty, 8 clear. Then putdown. To unstack14 from3, putdown. Then pickup7, stack7 on6. All other blocks remain on table. So plan length 5. Good.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 7,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 496,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "You arrive at Nob Hill at 9:00AM. Robert will be at Presidio from 11:15AM to 5:45PM. You'd like to meet Robert for a minimum of 120 minutes. Travel distances given. Natural: start at Nob Hill, travel to Presidio, wait until Robert arrives, meet. That yields statements:\n['You start at Nob Hill at 9:00AM.', 'You travel to Presidio in 17 minutes and arrive at 9:17AM.', 'You wait until 11:15AM.', 'You meet Robert for 120 minutes from 11:15AM to 1:15PM.']\nCheck time format: 1:15PM no space. Good."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"You arrive at Nob Hill at 9:00AM. Robert will be at Presidio from 11:15AM to 5:45PM. You'd like to meet Robert for a minimum of 120 minutes. Travel distances given. Natural: start at Nob Hill, travel to Presidio, wait until Robert arrives, meet. That yields statements:\\n['You start at Nob Hill at 9:00AM.', 'You travel to Presidio in 17 minutes and arrive at 9:17AM.', 'You wait until 11:15AM.', 'You meet Robert for 120 minutes from 11:15AM to 1:15PM.']\\nCheck time format: 1:15PM no space. Good.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 8,
+   "gemini_label": "solver-like",
+   "label": "sound",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 145,
+    "sound": 606
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "We have 2 houses numbered 1,2 left to right. Categories:\n- name: Arnold, Eric, unique\n- lunch: pizza, grilled cheese, unique\n- pet: cat, dog, unique\n- occupation: doctor, engineer, unique\n\nNeed assign each house a unique attribute for each category. Clues:\n1. Eric is the person who loves eating grilled cheese. Means Eric's lunch = grilled cheese. Also one house has Eric, one has grilled cheese; same house.\n"
+    },
+    {
+     "solver-like": "2. Arnold is not in second house. Arnold in house 1 (since 2 houses and unique names, if not house2 then house1). But encode not h2; Z3 derives.\n"
+    },
+    {
+     "sound": "3. The person who has a cat is the person who loves eating grilled cheese. Thus pet cat at same house as lunch grilled cheese.\n4. The person who is a doctor is Arnold. Doctor same house as Arnold."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"We have 2 houses numbered 1,2 left to right. Categories:\\n- name: Arnold, Eric, unique\\n- lunch: pizza, grilled cheese, unique\\n- pet: cat, dog, unique\\n- occupation: doctor, engineer, unique\\n\\nNeed assign each house a unique attribute for each category. Clues:\\n1. Eric is the person who loves eating grilled cheese. Means Eric's lunch = grilled cheese. Also one house has Eric, one has grilled cheese; same house.\\n\"\n    },\n    {\n      \"solver-like\": \"2. Arnold is not in second house. Arnold in house 1 (since 2 houses and unique names, if not house2 then house1). But encode not h2; Z3 derives.\\n\"\n    },\n    {\n      \"sound\": \"3. The person who has a cat is the person who loves eating grilled cheese. Thus pet cat at same house as lunch grilled cheese.\\n4. The person who is a doctor is Arnold. Doctor same house as Arnold.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 9,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 716
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Overlap function:\ndef conflicts(day, start, end):\n for person in participants:\n  for bs, be in busy[person].get(day, []):\n   if start < be and end > bs: return True\n return False\n\nPreference function:\ndef violates_pref(day,start,end):\n if day == \"Monday\" and start < 12*60: return True\n # maybe if preferred day Wednesday? We handle by order not hard.\n return False\n\nTwo-pass:\nfor strict in (True, False):\n for day in day_order:\n  for start in range(...):\n   end=start+duration\n   if strict and violates_pref(day,start,end): continue\n   if not conflicts: print([day, to_str(start), to_str(end)]); exit()\n# If none, maybe print nothing? But guaranteed.\n\nIf day_order = [\"Wednesday\", \"Monday\", \"Tuesday\"], strict true,"
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Overlap function:\\ndef conflicts(day, start, end):\\n for person in participants:\\n  for bs, be in busy[person].get(day, []):\\n   if start < be and end > bs: return True\\n return False\\n\\nPreference function:\\ndef violates_pref(day,start,end):\\n if day == \\\"Monday\\\" and start < 12*60: return True\\n # maybe if preferred day Wednesday? We handle by order not hard.\\n return False\\n\\nTwo-pass:\\nfor strict in (True, False):\\n for day in day_order:\\n  for start in range(...):\\n   end=start+duration\\n   if strict and violates_pref(day,start,end): continue\\n   if not conflicts: print([day, to_str(start), to_str(end)]); exit()\\n# If none, maybe print nothing? But guaranteed.\\n\\nIf day_order = [\\\"Wednesday\\\", \\\"Monday\\\", \\\"Tuesday\\\"], strict true,\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 10,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 939
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "We need answer code only? User asks: \"You are given CSP... Formalize variables and constraints... write Z3-Python... enclose complete solution in single python code block... CRITICAL: code block complete executable script no prose... All reasoning explanations commentary must appear OUTSIDE code block.\" We need provide explanation outside? The final answer probably should contain code block. Need not include reasoning because final answer desired code. But need maybe some intro? The instructions: \"Your Python code block must be complete... Any text inside block valid Python syntax... All reasoning, explanations, commentary must appear OUTSIDE code block.\" So final answer can include maybe a brief phrase outside? But likely should only code block to satisfy. Need produce Z3 Python code that solves and prints final answer. Need be careful with variables and constraints, then solve. No manual solving.\n\nLet's reason to formalize."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"We need answer code only? User asks: \\\"You are given CSP... Formalize variables and constraints... write Z3-Python... enclose complete solution in single python code block... CRITICAL: code block complete executable script no prose... All reasoning explanations commentary must appear OUTSIDE code block.\\\" We need provide explanation outside? The final answer probably should contain code block. Need not include reasoning because final answer desired code. But need maybe some intro? The instructions: \\\"Your Python code block must be complete... Any text inside block valid Python syntax... All reasoning, explanations, commentary must appear OUTSIDE code block.\\\" So final answer can include maybe a brief phrase outside? But likely should only code block to satisfy. Need produce Z3 Python code that solves and prints final answer. Need be careful with variables and constraints, then solve. No manual solving.\\n\\nLet's reason to formalize.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 11,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 884
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "analysisWe need to produce a solution: output a python script that computes an optimal itinerary meeting as many friends as possible respecting time windows, travel times, start at The Castro at 9:00AM, need to meet each friend for minimum required minutes within their availability.\n\nWe need to maximize number of friends met (or maybe total? Problem says \"meet as many friends as possible\". So maximize count.\n\nWe must write code that searches schedules. Since time horizon is day (likely until maybe 10pm). Need to consider travel times (bidirectional distances given but may be asymmetric). We'll treat travel as given directed minutes (use the given matrix). We'll model states: location, current time. Actions: travel to a location (add travel time). Wait (maybe to align). Meet friend if at their location, within window, and can allocate required duration fully within window."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"analysisWe need to produce a solution: output a python script that computes an optimal itinerary meeting as many friends as possible respecting time windows, travel times, start at The Castro at 9:00AM, need to meet each friend for minimum required minutes within their availability.\\n\\nWe need to maximize number of friends met (or maybe total? Problem says \\\"meet as many friends as possible\\\". So maximize count.\\n\\nWe must write code that searches schedules. Since time horizon is day (likely until maybe 10pm). Need to consider travel times (bidirectional distances given but may be asymmetric). We'll treat travel as given directed minutes (use the given matrix). We'll model states: location, current time. Actions: travel to a location (add travel time). Wait (maybe to align). Meet friend if at their location, within window, and can allocate required duration fully within window.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 12,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 519,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "This matches groundtruth. Then \"Additional constraint: You must end the task with the blocks in 3 stacks...\" is impossible with that goal? Let's check if \"3 stacks\" could count stack of height 1? Actually a single block on table is a stack of height1. Number of stacks in groundtruth goal: block11/10 stack = 1, plus each single table block = 11? There are 11 single blocks? Blocks 1,2,3,4,5,6,7,8,9,12 = 10? Wait block12 table; block1,5,3,7,8,9,4,6,2,12 = 10 individual stack, plus one stack 11-10 => 11 stacks. Not 3."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"This matches groundtruth. Then \\\"Additional constraint: You must end the task with the blocks in 3 stacks...\\\" is impossible with that goal? Let's check if \\\"3 stacks\\\" could count stack of height 1? Actually a single block on table is a stack of height1. Number of stacks in groundtruth goal: block11/10 stack = 1, plus each single table block = 11? There are 11 single blocks? Blocks 1,2,3,4,5,6,7,8,9,12 = 10? Wait block12 table; block1,5,3,7,8,9,4,6,2,12 = 10 individual stack, plus one stack 11-10 => 11 stacks. Not 3.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 13,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 281
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Let's maybe verify problem instance solvability under our domain. Need no accidental unsolvable due to requiring `forbidden-stack` static and no action deletes. It allows stack actions all except block1 on block4. Need possible plan? Let's find high-level maybe to ensure no issue:"
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Let's maybe verify problem instance solvability under our domain. Need no accidental unsolvable due to requiring `forbidden-stack` static and no action deletes. It allows stack actions all except block1 on block4. Need possible plan? Let's find high-level maybe to ensure no issue:\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 14,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 449
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Now, final code. Should we include scoring? If we include scoring, code longer but still fine. The prompt says \"considering various different schedules and picking the best one\". Scoring demonstrates. But if no secondary, min score with arbitrary secondary maybe okay. Could just choose max count and then maybe earliest completion. That's a natural secondary. Let's implement score = (-count, end_time, total_wait, total_travel, tuple(statements))."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Now, final code. Should we include scoring? If we include scoring, code longer but still fine. The prompt says \\\"considering various different schedules and picking the best one\\\". Scoring demonstrates. But if no secondary, min score with arbitrary secondary maybe okay. Could just choose max count and then maybe earliest completion. That's a natural secondary. Let's implement score = (-count, end_time, total_wait, total_travel, tuple(statements)).\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 15,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 199,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "In problem init, we need to list heavier facts: block4 heavier than block1,2,3; block3 heavier than block1,2; block2 heavier than block1; block1 heavier than none. So add (heavier block4 block3) etc."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"In problem init, we need to list heavier facts: block4 heavier than block1,2,3; block3 heavier than block1,2; block2 heavier than block1; block1 heavier than none. So add (heavier block4 block3) etc.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 16,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 372,
+    "sound": 131
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "Let's perhaps think if there is a way to meet 6 friends with lower mask than190 by meeting Ronald? no. Good."
+    },
+    {
+     "sound": "\n\nPotential issue: If code's DP might output a count6 schedule that starts with Elizabeth because first feasible count6 maybe 159? "
+    },
+    {
+     "solver-like": "no.\nPotential issue: If there is a count6 mask at 159 if we skip Elizabeth and meet Timothy? Wait mask 159 includes both Elizabeth and Timothy, impossible. If we meet Timothy but not Elizabeth, the mask would not have bit0; count would be 5 (bits1,2,3,4,7). So no."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"Let's perhaps think if there is a way to meet 6 friends with lower mask than190 by meeting Ronald? no. Good.\"\n    },\n    {\n      \"sound\": \"\\n\\nPotential issue: If code's DP might output a count6 schedule that starts with Elizabeth because first feasible count6 maybe 159? \"\n    },\n    {\n      \"solver-like\": \"no.\\nPotential issue: If there is a count6 mask at 159 if we skip Elizabeth and meet Timothy? Wait mask 159 includes both Elizabeth and Timothy, impossible. If we meet Timothy but not Elizabeth, the mask would not have bit0; count would be 5 (bits1,2,3,4,7). So no.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 17,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 398,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "Roy Monday busy: 10:00-11:30, 12:00-13:00, 14:00-14:30, 15:00-17:00. Work day starts 9. Slot 9:00-10:00 doesn't overlap busy (busy starts 10). Meeting ends at 10:00, start 9:00. Does it touch? no. So earliest Monday 9-10. But need check if \"meeting for one hour between work hours\" means start time and end time between 9 and 17; 9:00-10:00 okay. Therefore answer likely ['Monday','09:00','10:00']."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"Roy Monday busy: 10:00-11:30, 12:00-13:00, 14:00-14:30, 15:00-17:00. Work day starts 9. Slot 9:00-10:00 doesn't overlap busy (busy starts 10). Meeting ends at 10:00, start 9:00. Does it touch? no. So earliest Monday 9-10. But need check if \\\"meeting for one hour between work hours\\\" means start time and end time between 9 and 17; 9:00-10:00 okay. Therefore answer likely ['Monday','09:00','10:00'].\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 18,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 91,
+    "sound": 1158
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Now we have three houses. Let's assign variables. Represent each attribute as integer 0..2 for each house. Or easier: arrays of length 3 for each attribute: name_at_house[house] = name index, etc. Or we could use permutation variables: name_pos for each name: position (house) where that name lives. Similarly lunch_pos for each lunch, color_pos for each color.\n\nConstraints: all positions distinct.\n\nNow encode.\n\nGiven: spaghetti person is Eric -> lunch_spaghetti is same house as name Eric. So position_spaghetti == position_Eric.\n\nAlso spaghetti person = yellow: from clue2, spaghetti = yellow. So color_yellow same house as spaghetti => position_yellow == position_spaghetti.\n\nThus position_Eric = position_spaghetti = position_yellow.\n\n Peter directly left of spaghetti person: Peter is house index one less than spaghetti person. So position_Peter +1 = position_spaghetti.\n\n adjacency constraints: red next to yellow: absolute difference 1.\n\n pizza next to red: position_pizza adjacent to position_red.\n\nAll positions must be 1..3 (or 0..2). Use ints.\n\nAlso distinctness: all names positions distinct, all lunch positions distinct, all colors distinct."
+    },
+    {
+     "solver-like": "\n\nNow we can solve quickly: There are only 3 houses. Let's reason: positions must be 1,2,3."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Now we have three houses. Let's assign variables. Represent each attribute as integer 0..2 for each house. Or easier: arrays of length 3 for each attribute: name_at_house[house] = name index, etc. Or we could use permutation variables: name_pos for each name: position (house) where that name lives. Similarly lunch_pos for each lunch, color_pos for each color.\\n\\nConstraints: all positions distinct.\\n\\nNow encode.\\n\\nGiven: spaghetti person is Eric -> lunch_spaghetti is same house as name Eric. So position_spaghetti == position_Eric.\\n\\nAlso spaghetti person = yellow: from clue2, spaghetti = yellow. So color_yellow same house as spaghetti => position_yellow == position_spaghetti.\\n\\nThus position_Eric = position_spaghetti = position_yellow.\\n\\n Peter directly left of spaghetti person: Peter is house index one less than spaghetti person. So position_Peter +1 = position_spaghetti.\\n\\n adjacency constraints: red next to yellow: absolute difference 1.\\n\\n pizza next to red: position_pizza adjacent to position_red.\\n\\nAll positions must be 1..3 (or 0..2). Use ints.\\n\\nAlso distinctness: all names positions distinct, all lunch positions distinct, all colors distinct.\"\n    },\n    {\n      \"solver-like\": \"\\n\\nNow we can solve quickly: There are only 3 houses. Let's reason: positions must be 1,2,3.\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 19,
+   "gemini_label": "solver-like",
+   "label": "solver-like",
+   "any_solver_like": true,
+   "weights": {
+    "solver-like": 161,
+    "sound": 0
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "solver-like": "The Z3 solver is then invoked, and the model is printed as a table:\n\n```\nHouse 1: Arnold, tesla model 3\nHouse 2: Peter, ford f150\nHouse 3: Eric, toyota camry\n```"
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"solver-like\": \"The Z3 solver is then invoked, and the model is printed as a table:\\n\\n```\\nHouse 1: Arnold, tesla model 3\\nHouse 2: Peter, ford f150\\nHouse 3: Eric, toyota camry\\n```\"\n    }\n  ]\n}\n```"
+  },
+  {
+   "id": 20,
+   "gemini_label": "sound",
+   "label": "sound",
+   "any_solver_like": false,
+   "weights": {
+    "solver-like": 0,
+    "sound": 478
+   },
+   "parse_error": null,
+   "judge_chunks": [
+    {
+     "sound": "Potential issue: The DFS updates best_count at the node len 7 and then since len+remaining<=7? remaining=0, prune. It will backtrack. To prove no 8, need explore many branches. But perhaps not too many. Brute force may be simpler. Which code is more likely accepted? Both. Need avoid overcomplication? The prompt says \"solve it directly\" and \"formalize variables constraints\" but code would solve. A simple exhaustive solver is transparent. Since final response code only, okay."
+    }
+   ],
+   "raw_response": "```json\n{\n  \"chunk_analysis\": [\n    {\n      \"sound\": \"Potential issue: The DFS updates best_count at the node len 7 and then since len+remaining<=7? remaining=0, prune. It will backtrack. To prove no 8, need explore many branches. But perhaps not too many. Brute force may be simpler. Which code is more likely accepted? Both. Need avoid overcomplication? The prompt says \\\"solve it directly\\\" and \\\"formalize variables constraints\\\" but code would solve. A simple exhaustive solver is transparent. Since final response code only, okay.\"\n    }\n  ]\n}\n```"
+  }
+ ]
+}

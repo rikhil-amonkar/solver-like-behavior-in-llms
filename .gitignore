@@ -66,3 +66,7 @@ hidden/
 
 # Scratch outputs from test runs
 output_test/
+
+# Local judge segment caches
+output/judge_cache_*.jsonl
+output/judge_segments_*.json

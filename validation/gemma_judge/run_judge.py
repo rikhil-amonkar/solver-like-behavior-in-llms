@@ -49,6 +49,8 @@ def main():
     parser.add_argument("--sample", default="validation/gemma_judge/sample.json")
     parser.add_argument("--output", required=True)
     parser.add_argument("--max-tokens", type=int, default=8192)
+    parser.add_argument("--quantization", default=None, help="e.g. fp8 (default: bf16 weights)")
+    parser.add_argument("--kv-cache-dtype", default="auto", help="e.g. fp8")
     args = parser.parse_args()
 
     from vllm import LLM, SamplingParams
@@ -56,7 +58,8 @@ def main():
     judge_prompt = (REPO_ROOT / args.judge_prompt).read_text(encoding="utf-8")
     sample = json.loads((REPO_ROOT / args.sample).read_text(encoding="utf-8"))
 
-    llm = LLM(model=args.model, max_model_len=16384, gpu_memory_utilization=0.9, max_num_seqs=64)
+    llm = LLM(model=args.model, max_model_len=16384, gpu_memory_utilization=0.9, max_num_seqs=64,
+              quantization=args.quantization, kv_cache_dtype=args.kv_cache_dtype)
     messages = [[{"role": "user", "content": f"{judge_prompt}\n\n{c['text']}"}] for c in sample]
     outputs = llm.chat(messages, SamplingParams(temperature=0.0, max_tokens=args.max_tokens))
 
@@ -84,6 +87,8 @@ def main():
     out = {
         "model": args.model,
         "judge_prompt": args.judge_prompt,
+        "quantization": args.quantization,
+        "kv_cache_dtype": args.kv_cache_dtype,
         "agreement_with_gemini": agree / len(results),
         "results": results,
     }
