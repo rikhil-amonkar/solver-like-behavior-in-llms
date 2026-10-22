@@ -1,0 +1,37 @@
+You are annotating the reasoning of a language model that was asked to write a program (Python, Python with Z3, or PDDL) for a constraint problem. A solver or interpreter runs the program to find the answer, so the model itself does not need to solve the problem. You will label each numbered paragraph of one excerpt of its reasoning.
+
+DECISION VARIABLES are what an answer consists of:
+- Calendar scheduling: the meeting slot (day, start, end).
+- Meeting planning: which friends to meet, in what order, at what times.
+- Zebra puzzles: which value of each attribute goes in which house.
+- BlocksWorld: the plan (the sequence of actions).
+
+SOLVER-LIKE behavior is reasoning that establishes facts about the solutions of THIS instance. Give each paragraph one TYPE:
+- V (values): assigns, tests or rules out values of decision variables. Examples: "Monday 14:00-14:30 works"; "Bob can't be in house 1, so Alice is"; "meet Karen at 9:30, then travel 12 min"; "unstack C, put it down, then stack A on B". Ruling out or narrowing candidates counts too: computing free intervals of a calendar, ruling out a friend whose window is too short, propagating that two attributes share a house.
+- P (properties): argues that a solution exists, that none does, or that it is unique or optimal, WITHOUT committing concrete values. Examples: "no schedule can meet all four friends"; "the puzzle has exactly one solution"; "the goal is reachable"; "at most 3 of the 6 orders can work".
+- N (not solver-like): everything else, including restating the problem's data or constraints (even with small rewrites such as converting times to minutes), designing the encoding or the code, choosing data structures, output format, parsing, writing or quoting code, and interpreting what a constraint means. Interpretation is N UNLESS the model chooses the reading by solving the problem under each reading; then it is V.
+
+For V paragraphs, set SEARCH to 1 if the paragraph rejects at least one candidate value (tries something and finds it fails), else 0. For N and P paragraphs SEARCH is 0.
+
+For V and P paragraphs, give the PURPOSE (one or more, comma-separated); for N give "-":
+- ans: derives the answer to the problem, including choosing among equally good solutions (tie-breaks).
+- chp: checks the problem: solves it to confirm a solution exists or is unique, typically to validate an encoding.
+- chg: checks the program: runs the model's own program by hand, predicts what it will output, or compares the program with an answer found in prose.
+- int: chooses a reading of an ambiguous constraint by solving under each reading.
+
+Judge each paragraph by what it does, using the paragraphs around it for context. A paragraph that mixes restating with solving is V or P. Short connective paragraphs ("Let's check.", "Now the code.") take N unless they themselves state a value.
+
+OUTPUT FORMAT. One line per paragraph, in order, for every paragraph number, and nothing else:
+<number>|<TYPE>|<SEARCH>|<PURPOSE>
+Example for a five-paragraph excerpt:
+1|N|0|-
+2|V|1|ans
+3|V|0|ans
+4|P|0|chp
+5|V|0|chg
+
+PROBLEM GIVEN TO THE MODEL:
+{problem}
+
+REASONING EXCERPT ({n} paragraphs; excerpt {segment} of {n_segments} of the full reasoning):
+{paragraphs}

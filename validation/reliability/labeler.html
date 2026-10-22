@@ -225,7 +225,9 @@ const B_OPTS = [["hardcoded", "Hardcoded", "prints an answer it does not compute
   ["independent", "Independent", "solves the problem on its own"],
   ["na", "N/A", "program does not run or prints nothing"]];
 const SPEC_OPTS = [["none", "No change"], ["required", "Changed, required by the problem"], ["not_required", "Changed, not required"]];
-function progLabel(id) { return state.progLabels[id] || (state.progLabels[id] = { b: null, spec: "none", note: "", done: false }); }
+const EXTENT_OPTS = [["complete", "Complete", "a full answer is stated"], ["partial", "Partial", "some decisions only"], ["none", "None", "no values committed"]];
+const MATCH_OPTS = [["yes", "Same answer"], ["no", "Different answer"], ["na", "N/A", "not complete, or no output"]];
+function progLabel(id) { return state.progLabels[id] || (state.progLabels[id] = { b: null, spec: "none", extent: null, match: null, note: "", done: false }); }
 function renderProg() {
   const pr = state.progs[state.cur.prog], lab = progLabel(pr.id), root = $("#item");
   const radio = (name, opts, val, on) => opts.map(([v, n, d]) => h("label", { class: "opt" },
@@ -246,6 +248,10 @@ function renderProg() {
         radio("b", B_OPTS, lab.b, v => { lab.b = v; save("prog_labels", pr.id, lab); renderStatus(); })),
       h("fieldset", {}, h("legend", {}, "Specification-change flag (drops, relaxes or adds constraints, goals or actions)"),
         radio("spec", SPEC_OPTS, lab.spec, v => { lab.spec = v; save("prog_labels", pr.id, lab); })),
+      h("fieldset", {}, h("legend", {}, "A2. Does the reasoning state an answer? (its final one, if it changes its mind)"),
+        radio("extent", EXTENT_OPTS, lab.extent, v => { lab.extent = v; if (v !== "complete") lab.match = "na"; save("prog_labels", pr.id, lab); renderProg(); })),
+      h("fieldset", {}, h("legend", {}, "C1. If complete: does the program's output give the same answer?"),
+        radio("match", MATCH_OPTS, lab.match, v => { lab.match = v; save("prog_labels", pr.id, lab); })),
       h("label", { for: "prog-note", class: "saved" }, "Note (optional)"),
       h("textarea", { id: "prog-note", oninput: e => { lab.note = e.target.value; save("prog_labels", pr.id, lab); } }),
       h("div", { class: "actions" },
@@ -256,7 +262,7 @@ function renderProg() {
 }
 function finishProg(pr) {
   const lab = progLabel(pr.id);
-  if (!lab.b) { setSaved("Choose a B label first", true); return; }
+  if (!lab.b || !lab.extent || (lab.extent === "complete" && !lab.match)) { setSaved("Answer B, A2 and (if complete) C1 first", true); return; }
   lab.done = true; save("prog_labels", pr.id, lab);
   const next = state.progs.findIndex((p, j) => j > state.cur.prog && !progLabel(p.id).done);
   if (next >= 0) state.cur.prog = next; renderAll(); window.scrollTo({ top: 0 });
