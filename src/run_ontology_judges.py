@@ -116,11 +116,14 @@ def main():
         if args.split:
             items = [it for it in items if it.get("split") == args.split]
         out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
-    items = [it for i, it in enumerate(items) if i % n_shards == shard]
+    # The cache is every shard's file: when traces change, items move between shards.
     key = lambda r: (r["id"], r.get("h"))
-    done = {key(json.loads(l)) for l in out.open()} if out.exists() else set()
-    todo = [it for it in items if key(it) not in done]
-    print(f"{len(items)} items, {len(items) - len(todo)} cached, {len(todo)} to judge -> {out}", flush=True)
+    done = set()
+    for f in out.parent.glob(f"judge_{args.kind}_{args.tag}*.jsonl"):
+        done |= {key(json.loads(l)) for l in f.open()}
+    pending = [it for it in items if key(it) not in done]
+    todo = [it for i, it in enumerate(pending) if i % n_shards == shard]
+    print(f"{len(items)} items, {len(items) - len(pending)} cached, {len(todo)} to judge in this shard -> {out}", flush=True)
     if not todo:
         return
 
