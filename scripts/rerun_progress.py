@@ -11,6 +11,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+BATCH = 16  # run_inference.py's default vLLM batch size
 TIME = r"(\w{3} \w{3} .+? UTC \d{4})"
 # (task, condition, GPUs, [(output prefix, log file, START marker, END marker)])
 RUNS = [
@@ -54,6 +55,7 @@ def main(out_dir):
     for task, cond, gpus, parts in RUNS:
         old = {x["example_id"]: x for x in json.load(open(f"output/qwen/{task}/{cond}_inference.json"))["examples"]}
         new, starts, ends, finished_parts, active = [], [], [], 0, 0
+        part_eta = []  # minutes left per unfinished part, from its measured batch time
         for prefix, logf, start_label, end_label in parts:
             log = Path(logf).read_text(errors="replace") if Path(logf).exists() else ""
             recs, done = records(prefix)
@@ -63,6 +65,11 @@ def main(out_dir):
                 finished_parts += 1
             elif st or recs:
                 active += 1
+            size = len(old) // len(parts)
+            if st and recs and not done:
+                batches_done = len(recs) // BATCH
+                per_batch = (now - st).total_seconds() / 60 / max(1, batches_done)
+                part_eta.append(-(-(size - len(recs)) // BATCH) * per_batch - ((now - st).total_seconds() / 60 - batches_done * per_batch))
             if st:
                 starts.append(st)
                 end = en or (now if not done else None)
@@ -84,12 +91,16 @@ def main(out_dir):
                      "done": len(new), "total": len(old), "elapsed_min": round(elapsed, 1),
                      "tokens_generated": gen, "active_parts": active, "parts": len(parts),
                      "old_tokens_total": sum(x["model_metadata"].get("generated_tokens") or 0 for x in old.values()),
-                     "started": min(starts).isoformat() if starts else None})
+                     "started": min(starts).isoformat() if starts else None,
+                     "batch_eta_min": round(max(part_eta)) if part_eta else None})
 
     rate = tokens_done / gpu_minutes if gpu_minutes else None  # tokens per GPU-minute so far
     for r in runs:
         if r["status"] == "finished" or not rate:
             r["eta_min"] = 0 if r["status"] == "finished" else None
+            continue
+        if r.get("batch_eta_min") is not None:  # measured batch time beats the token estimate
+            r["eta_min"] = r["batch_eta_min"]
             continue
         remaining = max(r["old_tokens_total"] - r["tokens_generated"], 0)
         r["eta_min"] = round(remaining / (rate * max(1, r["active_parts"] or r["parts"])), 0)
