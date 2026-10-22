@@ -71,16 +71,21 @@ The BlocksWorld prompt includes the ground-truth problem PDDL, so hardcoding the
 
 ## Judges
 
-| Node | Judge | Status (2026-10-22) |
+Gemma 4 31B (FP8, vLLM, temperature 0) where reading is needed; scripts everywhere else. Run with `src/run_ontology_judges.py --items all`, assembled per trace by `scripts/assemble_ontology_labels.py` into `output/<model>/<task>/<cond>_ontology_<tag>.json`.
+
+| Node | Judge | How |
 |---|---|---|
-| A1, A2, A3 and the A span | LLM judge, cross-checked by `scripts/analyze_prose_search_outcome.py` | the judge prompt needs rewriting for this version; the scripts exist |
-| A3 check the program | `scripts/analyze_prose_search_answer_position.py` (where the answer first appears) | partial (Calendar, Meeting, ZebraLogic) |
-| B hardcoded / partly fixed, Python | `src/hardcoded/static_checker.py` | Meeting done (30/30 against human labels); Calendar rule to do |
-| B steered | re-run the program with the candidate order shuffled and check whether the answer changes, plus an LLM check of tie-break/objective | to do |
-| B, Z3 | static check: match each constraint to a clue; flag `x == k` facts that no clue states | to do |
-| B, PDDL | LLM judge, or a diff against a reference domain | to do |
-| Specification-change flag | LLM judge comparing the encoding with the problem | to do |
-| C1, C2 | script: parse the prose answer, compare it with the output, run the validator | to do |
+| A1 type, search flag, A3 purposes (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
+| A1, A3 per trace; solver-like ratio | script | union over paragraphs; ratio = characters in SLB paragraphs / all characters |
+| A2 extent; prose answer in output format | Gemma C judge (`prompts/judge/c_prose_answer.txt`) | reads the reasoning and the program output |
+| C1 | script, Gemma fallback | parse prose answer and program output with the task parsers and compare; the C judge's yes/no only when either does not parse |
+| C2 | script | the task validators (VAL for BlocksWorld) on the prose answer (`scripts/validate_prose_answers.py`) |
+| B = n/a | script | no program, failed run, or no output |
+| B label, specification change | Gemma B judge (`prompts/judge/b_program.txt`) | problem, reasoning (head + tail), program, output |
+| B cross-check, GPT-OSS Meeting | script (`src/hardcoded/static_checker.py`) | 30/30 against human labels |
+| Consistency | script | flags B ≠ independent without A1 values, and A2 complete without a values paragraph |
+
+**Reliability.** Each judge is to be reported with its agreement against human labels on the reliability sets (`validation/reliability/`, `scripts/judge_agreement.py`). Not measured yet (as of 2026-10-22); the labelling page is ready.
 
 ## Outside the ontology
 

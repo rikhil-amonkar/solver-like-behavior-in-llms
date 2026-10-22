@@ -12,14 +12,21 @@ Gemma judges for the SLB ontology (docs/SLB_ONTOLOGY.md), run offline with vLLM.
 Results are cached as JSONL (one line per item); re-running skips cached items, so
 changing a prompt needs a new --tag.
 
-Usage (vllm-env, one GPU):
+With --items all, items are built from every stored run (src/ontology_items.py) and
+results go to output/ontology/judge_<kind>_<tag>[.shard<i>].jsonl. Cache keys are the item
+id plus a hash of its text, so re-run traces are judged again. --shard i/n splits the
+items across processes (one per GPU).
+
+Usage (vllm-env, one GPU each):
     python src/run_ontology_judges.py a --items validation/reliability/segments.json --tag gemma_v1
-    python src/run_ontology_judges.py b --items validation/reliability/programs.json --tag gemma_v1
+    python src/run_ontology_judges.py a --items all --tag gemma_v1 --shard 0/2
 """
 
 import argparse
 import json
 import re
+import sys
+import time
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -87,16 +94,33 @@ def main():
     ap.add_argument("--max-num-seqs", type=int, default=64)
     ap.add_argument("--quantization", default="fp8")
     ap.add_argument("--split", default=None, help="Only judge items of this split (dev/test)")
+    ap.add_argument("--shard", default="0/1", help="i/n: judge every n-th item starting at i")
+    ap.add_argument("--wave-size", type=int, default=1024, help="Requests per vLLM call between cache flushes")
     args = ap.parse_args()
+    shard, n_shards = map(int, args.shard.split("/"))
 
-    items_path = Path(args.items)
-    items = json.load(open(items_path))
-    if args.split:
-        items = [it for it in items if it.get("split") == args.split]
-    out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
-    done = {json.loads(l)["id"] for l in out.open()} if out.exists() else set()
-    todo = [it for it in items if it["id"] not in done]
-    print(f"{len(items)} items, {len(done)} cached, {len(todo)} to judge -> {out}")
+    if args.items == "all":
+        sys.path.insert(0, str(REPO / "src"))
+        from ontology_items import build_items
+        segments, traces = build_items()
+        items = segments if args.kind == "a" else [t for t in traces if t["reasoning"].strip()]
+        if args.kind == "b":
+            items = [t for t in items if t["program"].strip()]
+        out_dir = REPO / "output/ontology"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        suffix = f".shard{shard}" if n_shards > 1 else ""
+        out = out_dir / f"judge_{args.kind}_{args.tag}{suffix}.jsonl"
+    else:
+        items_path = Path(args.items)
+        items = json.load(open(items_path))
+        if args.split:
+            items = [it for it in items if it.get("split") == args.split]
+        out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
+    items = [it for i, it in enumerate(items) if i % n_shards == shard]
+    key = lambda r: (r["id"], r.get("h"))
+    done = {key(json.loads(l)) for l in out.open()} if out.exists() else set()
+    todo = [it for it in items if key(it) not in done]
+    print(f"{len(items)} items, {len(items) - len(todo)} cached, {len(todo)} to judge -> {out}", flush=True)
     if not todo:
         return
 
@@ -107,18 +131,33 @@ def main():
               kv_cache_dtype="fp8", enable_prefix_caching=True)
     tok = llm.get_tokenizer()
     template = PROMPTS[args.kind].read_text(encoding="utf-8")
-    msgs = [[{"role": "user", "content": build_prompt(args.kind, it, template)}] for it in todo]
-    params = []
-    for m, it in zip(msgs, todo):
-        n_in = len(tok.apply_chat_template(m, tokenize=True, add_generation_prompt=True))
-        budget = 20 * len(it["paragraphs"]) + 200 if args.kind == "a" else 400 if args.kind == "b" else 1500
-        params.append(SamplingParams(temperature=0.0, max_tokens=max(1, min(budget, max_len - n_in))))
-    outputs = llm.chat(msgs, params)
-    with out.open("a", encoding="utf-8") as f:
-        for it, o in zip(todo, outputs):
-            text = o.outputs[0].text
-            f.write(json.dumps({"id": it["id"], "response": text, "finish_reason": o.outputs[0].finish_reason,
-                                **parse(args.kind, text, it)}) + "\n")
+    start = time.time()
+    for w in range(0, len(todo), args.wave_size):
+        wave = todo[w:w + args.wave_size]
+        msgs, params, keep = [], [], []
+        for it in wave:
+            m = [{"role": "user", "content": build_prompt(args.kind, it, template)}]
+            n_in = len(tok.apply_chat_template(m, tokenize=True, add_generation_prompt=True))
+            budget = 20 * len(it["paragraphs"]) + 200 if args.kind == "a" else 400 if args.kind == "b" else 1500
+            if n_in + 50 > max_len:  # prompt too long even after truncation: record, do not guess
+                skipped = {"a": {"paras": {}, "missing": list(range(len(it.get("paragraphs", []))))},
+                           "b": {"b": None, "spec": None, "evidence": "", "parse_error": True},
+                           "c": {"extent": None, "match": None, "prose_answer": "", "parse_error": True}}[args.kind]
+                with out.open("a", encoding="utf-8") as f:
+                    f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": "", "finish_reason": "prompt_too_long", **skipped}) + "\n")
+                continue
+            msgs.append(m)
+            params.append(SamplingParams(temperature=0.0, max_tokens=min(budget, max_len - n_in)))
+            keep.append(it)
+        outputs = llm.chat(msgs, params, use_tqdm=False) if msgs else []
+        with out.open("a", encoding="utf-8") as f:
+            for it, o in zip(keep, outputs):
+                text = o.outputs[0].text
+                f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": text,
+                                    "finish_reason": o.outputs[0].finish_reason, **parse(args.kind, text, it)}) + "\n")
+        n = min(w + args.wave_size, len(todo))
+        rate = n / (time.time() - start)
+        print(f"{n}/{len(todo)} judged, {rate:.2f}/s, ~{(len(todo) - n) / rate / 60:.0f} min left", flush=True)
     print("wrote", out)
 
 
