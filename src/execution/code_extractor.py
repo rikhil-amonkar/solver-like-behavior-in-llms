@@ -251,8 +251,10 @@ def select_best_code_block(blocks: List[dict], full_text: str = "") -> Optional[
 
         # Skip if contains natural language reasoning words in suspicious contexts
         # These patterns indicate prose/reasoning leaked into the code block
+        # The word must not be used as code: Meeting programs often name a variable `wait`
+        as_code = r'(?!\s*(?:[-+*/%]?=|\(|\[|\.|,|:|\)))'
         reasoning_patterns = [
-            r'^\s*maybe\b', r'^\s*actually\b', r'^\s*wait\b',  # Line starts with reasoning
+            r'^\s*maybe\b' + as_code, r'^\s*actually\b' + as_code, r'^\s*wait\b' + as_code,  # Line starts with reasoning
         ]
 
         # Check for lines starting with reasoning words (non-comment)
