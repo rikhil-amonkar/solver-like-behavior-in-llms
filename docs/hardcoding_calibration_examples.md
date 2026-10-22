@@ -4,7 +4,7 @@
 
 Labels below are mine. *Judge* = the existing Gemini hardcoded judge; *Correct* = evaluator verdict. Please mark where you disagree.
 
-BlocksWorld is excluded (the output is PDDL). No Calendar or ZebraLogic program I found was hardcoded, so all 10 hardcoded examples are Meeting; 9 are GPT-OSS and 1 is GPT-OSS with the caution_b prompt. DeepSeek and Qwen produced none in a usable form (their literal-only programs are elided sketches that print nothing).
+BlocksWorld is excluded (the output is PDDL). All 10 hardcoded examples are GPT-OSS Meeting (9 baseline, 1 caution_b). A broader sweep on 2026-10-22 (every program, all models, tasks and conditions; flagged programs read by hand) found no hardcoded Calendar or ZebraLogic program from any model, and no hardcoded DeepSeek or Qwen program on any task. Every DeepSeek/Qwen program that looked hardcoded turned out to be a real search, such as bitmask dynamic programming. Under caution_a/caution_b, GPT-OSS mostly stops writing literal lists (one left: H8) but still writes about 16 programs that follow one fixed friend order (like H10 or N3). Those still need a label.
 
 ## Hardcoded (my label: YES)
 
