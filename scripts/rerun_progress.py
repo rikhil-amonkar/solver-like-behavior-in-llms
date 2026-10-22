@@ -3,7 +3,8 @@
 
 Usage: python scripts/rerun_progress.py OUT_DIR
 Writes OUT_DIR/runs.json (one row per run) and OUT_DIR/traces.json (one row per finished trace).
-Meeting baseline runs as two halves (problems 1-50 on GPU 4, 51-100 on GPU 7) and is reported as one run.
+Meeting baseline runs in parts reported as one run: half A (problems 1-48, GPU 4), half B (51-100, GPU 7),
+and part C (49-50, GPU 7 after half B).
 """
 import json
 import re
@@ -21,7 +22,9 @@ RUNS = [
      [("output_rerun/qwen/calendar/caution_a_inference", "logs/qwen-rerun.log", "--task calendar --caution-a", None)]),
     ("meeting", "baseline", "4 + 7",
      [("output_rerun_parts/a/qwen/meeting/baseline_inference", "logs/qwen-meeting-a.log", "meeting half A", "meeting half A"),
-      ("output_rerun_parts/b/qwen/meeting/baseline_inference", "logs/qwen-meeting-b.log", "meeting half B", "meeting half B")]),
+      ("output_rerun_parts/b/qwen/meeting/baseline_inference", "logs/qwen-meeting-b.log", "meeting half B", "meeting half B"),
+      # half A is stopped after 48 problems; its last 2 run as part C on GPU 7
+      ("output_rerun_parts/c/qwen/meeting/baseline_inference", "logs/qwen-meeting-c.log", "meeting part C", "meeting part C")]),
 ]
 
 
@@ -59,13 +62,14 @@ def main(out_dir):
         for prefix, logf, start_label, end_label in parts:
             log = Path(logf).read_text(errors="replace") if Path(logf).exists() else ""
             recs, done = records(prefix)
+            done = done or bool(start_label and re.search(r"=== STOP %s" % re.escape(start_label), log))
             new += recs
             st, en = marker(log, "START", start_label), marker(log, "END", end_label)
             if done:
                 finished_parts += 1
             elif st or recs:
                 active += 1
-            size = len(old) // len(parts)
+            size = {"meeting half A": 48, "meeting part C": 2}.get(start_label, len(old) // 2 if len(parts) > 1 else len(old))
             if st and recs and not done:
                 batches_done = len(recs) // BATCH
                 per_batch = (now - st).total_seconds() / 60 / max(1, batches_done)
