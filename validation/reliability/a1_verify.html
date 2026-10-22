@@ -1,0 +1,153 @@
+<title>A1 Label Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one card per Gemma label, in a single column; a sticky header keeps the running agreement tally. */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #1d2330; --muted: #5d6676; --line: #dde1e8; --accent: #2f5fb3;
+  --values: #8a4a74; --values-bg: #f6e9f1; --props: #1f7a5c; --props-bg: #e3f3ec; --none: #5d6676; --none-bg: #eef0f3;
+  --ok: #1f7a5c; --bad: #a33b2b;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d; --accent: #7aa2e8;
+  --values: #e3a5cf; --values-bg: #3a2333; --props: #6fd1ad; --props-bg: #173328; --none: #9aa3b2; --none-bg: #232833;
+  --ok: #6fd1ad; --bad: #f08a7a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d; --accent: #7aa2e8;
+  --values: #e3a5cf; --values-bg: #3a2333; --props: #6fd1ad; --props-bg: #173328; --none: #9aa3b2; --none-bg: #232833;
+  --ok: #6fd1ad; --bad: #f08a7a; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel) }
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline }
+h1 { font-size: 15px; font-weight: 600; margin: 0 }
+.tally { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 4px 14px }
+.tally b { color: var(--fg) }
+main { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;
+  padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.intro { font-size: 13px; color: var(--muted) }
+.intro b.V { color: var(--values) } .intro b.P { color: var(--props) }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.card.focus { outline: 2px solid var(--accent); outline-offset: 1px }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; font-size: 12px; color: var(--muted) }
+.meta .id { font: 600 13px var(--mono); color: var(--fg) }
+.pill { font: 600 12px var(--sans); padding: 1px 9px; border-radius: 999px }
+.pill.V { background: var(--values-bg); color: var(--values) } .pill.P { background: var(--props-bg); color: var(--props) } .pill.N { background: var(--none-bg); color: var(--none) }
+pre { font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; word-break: break-word; margin: 0 }
+.ctx { color: var(--muted); max-height: 140px; overflow: auto; border-left: 2px solid var(--line); padding-left: 10px }
+.target { padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line) }
+.target.V { background: var(--values-bg); border-color: var(--values) } .target.P { background: var(--props-bg); border-color: var(--props) } .target.N { background: var(--none-bg) }
+details > summary { cursor: pointer; color: var(--muted); font-size: 12px }
+details pre { max-height: 300px; overflow: auto; margin-top: 6px; padding: 8px; background: var(--bg); border-radius: 6px }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+.row .lbl { font-size: 12px; color: var(--muted); margin-right: 4px }
+button { font: 13px var(--sans); border: 1px solid var(--line); background: var(--panel); color: var(--fg); padding: 4px 12px; border-radius: 6px; cursor: pointer }
+button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--panel) }
+button.agree[aria-pressed="true"] { border-color: var(--ok); background: var(--ok) }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+textarea { width: 100%; min-height: 40px; font: 13px var(--sans); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px }
+.verdict { font-size: 12px } .verdict.ok { color: var(--ok) } .verdict.bad { color: var(--bad) }
+.banner { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--bad); color: var(--bad); background: var(--panel) }
+kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px }
+</style>
+
+<header>
+  <h1>A1 label check · Gemma paragraph judge</h1>
+  <div class="tally" id="tally">Loading…</div>
+</header>
+<main id="main">
+  <p class="intro">Each card shows one paragraph and the type Gemma gave it. Agree, or pick the right type.
+    <b class="V">Values</b>: assigns, tests or rules out values of the answer (slot; friends/order/times; house assignments; plan), incl. pruning.
+    <b class="P">Properties</b>: argues a solution exists, none does, or it is unique/optimal, without values.
+    <b>Not SLB</b>: restating, encoding/code design, format, parsing, interpreting a constraint (unless by solving).
+    Keys: <kbd>j</kbd>/<kbd>k</kbd> move, <kbd>y</kbd> agree, <kbd>v</kbd>/<kbd>p</kbd>/<kbd>n</kbd> correct type.</p>
+</main>
+
+<script>
+const S = { items: [], marks: {}, focus: 0, db: null };
+const h = (tag, attrs = {}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return el;
+};
+const NAME = { V: "Values", P: "Properties", N: "Not SLB" };
+const saving = new Map();
+async function save(id) {
+  const body = S.marks[id];
+  if (!S.db) return;
+  if (saving.get(id)) { saving.set(id, "again"); return; }
+  saving.set(id, true);
+  try { await S.db.doc("verify/" + id).set({ ...body, updatedAt: new Date().toISOString() }); }
+  catch (e) { console.error(e); }
+  const again = saving.get(id) === "again"; saving.delete(id); if (again) save(id);
+}
+function mark(it, human) {
+  S.marks[it.id] = { ...(S.marks[it.id] || {}), human, gemma: it.gemma.t, task: it.task, model: it.model };
+  save(it.id); renderCard(it); renderTally();
+}
+function renderTally() {
+  const done = S.items.filter(it => S.marks[it.id]?.human);
+  const by = t => { const xs = done.filter(it => it.gemma.t === t); const ok = xs.filter(it => S.marks[it.id].human === t).length; return xs.length ? `${ok}/${xs.length}` : "–"; };
+  const ok = done.filter(it => S.marks[it.id].human === it.gemma.t).length;
+  document.getElementById("tally").replaceChildren(
+    h("span", {}, "Checked ", h("b", {}, `${done.length}/${S.items.length}`)),
+    h("span", {}, "Agree ", h("b", {}, done.length ? `${Math.round(100 * ok / done.length)}%` : "–")),
+    h("span", {}, "Gemma Values correct ", h("b", {}, by("V"))),
+    h("span", {}, "Properties ", h("b", {}, by("P"))),
+    h("span", {}, "Not SLB ", h("b", {}, by("N"))),
+    S.db ? null : h("span", {}, "· not signed in, marks are not saved"));
+}
+function renderCard(it) {
+  const card = document.getElementById(it.id), m = S.marks[it.id] || {};
+  const g = it.gemma;
+  const verdict = m.human ? (m.human === g.t ? h("span", { class: "verdict ok" }, "agrees") : h("span", { class: "verdict bad" }, `you: ${NAME[m.human]}`)) : null;
+  card.replaceChildren(
+    h("div", { class: "meta" }, h("span", { class: "id" }, it.id), `${it.model} · ${it.task} · ${it.cond}`,
+      h("span", { class: "pill " + g.t }, "Gemma: " + NAME[g.t] + (g.t === "V" && g.s ? " · rejects" : "") + (g.p.length ? " · " + g.p.join(", ") : "")), verdict),
+    h("details", {}, h("summary", {}, "Problem"), h("pre", {}, it.problem)),
+    it.before ? h("pre", { class: "ctx" }, it.before) : null,
+    h("pre", { class: "target " + g.t }, it.text),
+    it.after ? h("pre", { class: "ctx" }, it.after) : null,
+    h("div", { class: "row" }, h("span", { class: "lbl" }, "Gemma's type is"),
+      h("button", { class: "agree", "aria-pressed": m.human === g.t, onclick: () => mark(it, g.t) }, "Correct"),
+      h("span", { class: "lbl" }, "or should be"),
+      ...["V", "P", "N"].filter(t => t !== g.t).map(t => h("button", { "aria-pressed": m.human === t, onclick: () => mark(it, t) }, NAME[t]))),
+    h("textarea", { placeholder: "Note (optional)", oninput: e => { S.marks[it.id] = { ...(S.marks[it.id] || {}), note: e.target.value, gemma: g.t, task: it.task, model: it.model }; clearTimeout(card.t); card.t = setTimeout(() => save(it.id), 600); } }));
+  card.querySelector("textarea").value = m.note || "";
+  card.classList.toggle("focus", S.items[S.focus] === it);
+}
+function setFocus(i) {
+  const prev = S.items[S.focus]; S.focus = Math.max(0, Math.min(S.items.length - 1, i));
+  if (prev) document.getElementById(prev.id).classList.remove("focus");
+  const el = document.getElementById(S.items[S.focus].id); el.classList.add("focus"); el.scrollIntoView({ block: "center" });
+}
+document.addEventListener("keydown", e => {
+  if (e.target.closest("textarea") || e.metaKey || e.ctrlKey || e.altKey || !S.items.length) return;
+  const it = S.items[S.focus];
+  if (e.key === "j") setFocus(S.focus + 1);
+  else if (e.key === "k") setFocus(S.focus - 1);
+  else if (e.key === "y") { mark(it, it.gemma.t); setFocus(S.focus + 1); }
+  else if ("vpn".includes(e.key) && e.key.length === 1) { mark(it, e.key.toUpperCase()); setFocus(S.focus + 1); }
+});
+(async () => {
+  try { S.items = await fetch("data/a1_verify.json").then(r => r.json()); }
+  catch (e) { document.getElementById("main").append(h("div", { class: "banner" }, "Could not load the items. Reload the page.")); return; }
+  const main = document.getElementById("main");
+  for (const it of S.items) { const c = h("section", { class: "card", id: it.id, onclick: () => setFocus(S.items.indexOf(it)) }); main.append(c); renderCard(it); }
+  renderTally();
+  S.db = window.claude ? await window.claude.use("db") : null;
+  if (S.db) {
+    try { const snap = await S.db.collection("verify").get(); for (const d of snap.docs) S.marks[d.id] = structuredClone(d.data()); } catch (e) { console.error(e); }
+    S.items.forEach(renderCard);
+  }
+  renderTally();
+})();
+</script>
