@@ -31,7 +31,13 @@ def main(out_dir):
     for task, cond, args in RUNS:
         old = {x["example_id"]: x for x in json.load(open(f"output/qwen/{task}/{cond}_inference.json"))["examples"]}
         path = Path(f"output_rerun/qwen/{task}/{cond}_inference.jsonl")
-        new = [json.loads(l) for l in path.read_text().splitlines() if l.strip()] if path.exists() else []
+        final = path.with_suffix(".json")
+        if path.exists():
+            new = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
+        elif final.exists():  # a finished run replaces its .jsonl with the final .json
+            new = json.load(open(final))["examples"]
+        else:
+            new = []
         new = [r for r in new if "example_id" in r]
         for r in new:
             o = old.get(r["example_id"], {})
