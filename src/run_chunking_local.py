@@ -31,9 +31,37 @@ REPO_ROOT = Path(__file__).parent.parent
 
 
 def extract_json_object(response: str) -> str:
-    """Keep the outermost JSON object (open models often wrap it in a code fence)."""
-    start, end = response.find("{"), response.rfind("}")
-    return response[start:end + 1] if start >= 0 and end > start else response
+    """
+    Keep the first complete JSON object. Open models often wrap it in a code
+    fence, and Gemma sometimes repeats the whole object after finishing it.
+    """
+    start = response.find("{")
+    if start < 0:
+        return response
+    try:
+        _, end = json.JSONDecoder().raw_decode(response, start)
+        return response[start:end]
+    except json.JSONDecodeError:
+        return response[start:response.rfind("}") + 1]
+
+
+def loop_start(text: str, window: int = 300):
+    """Position where the response starts repeating a 300-char passage it already wrote, else None."""
+    for i in range(0, len(text) - window, 50):
+        if text.find(text[i:i + window]) < i:
+            return i
+    return None
+
+
+def needs_retry(row: dict) -> bool:
+    """A segment is retried in smaller pieces if it looped, truncated or did not parse."""
+    if row["finish_reason"] == "length" or loop_start(extract_json_object(row["response"])) is not None:
+        return True
+    try:
+        parse_and_stitch_segments([extract_json_object(row["response"])])
+    except ValueError:
+        return True
+    return False
 
 
 def build_requests(input_paths: list, segment_tokens: int) -> tuple:
@@ -62,12 +90,9 @@ def load_cache(cache_path: Path) -> dict:
     return done
 
 
-def run_judge(requests: list, cache_path: Path, args) -> None:
-    """Judge all pending segments in length-sorted waves, appending results to the cache."""
-    from vllm import LLM, SamplingParams
-
-    judge_prompt = (REPO_ROOT / args.judge_prompt).read_text(encoding="utf-8")
-    llm = LLM(
+def load_llm(args):
+    from vllm import LLM
+    return LLM(
         model=args.model,
         max_model_len=args.max_model_len,
         gpu_memory_utilization=args.gpu_memory_utilization,
@@ -76,6 +101,13 @@ def run_judge(requests: list, cache_path: Path, args) -> None:
         kv_cache_dtype=args.kv_cache_dtype,
         enable_prefix_caching=True,
     )
+
+
+def run_judge(llm, requests: list, cache_path: Path, args) -> None:
+    """Judge all pending segments in length-sorted waves, appending results to the cache."""
+    from vllm import SamplingParams
+
+    judge_prompt = (REPO_ROOT / args.judge_prompt).read_text(encoding="utf-8")
     tokenizer = llm.get_tokenizer()
 
     # Longest first, so the slowest requests do not form the tail of the run
@@ -110,6 +142,25 @@ def run_judge(requests: list, cache_path: Path, args) -> None:
               f"{generated / elapsed:,.0f} tok/s, {elapsed / 3600:.2f} h elapsed", flush=True)
 
 
+def resolve_segment(segment_id: str, done: dict):
+    """
+    Response for one segment. If it was retried in pieces, the pieces' chunk
+    lists are merged into one response; pieces that still fail are dropped.
+    """
+    row = done.get(segment_id)
+    if row is None or f"{segment_id}::r0" not in done:
+        return row
+    chunks, j = [], 0
+    while f"{segment_id}::r{j}" in done:
+        piece = done[f"{segment_id}::r{j}"]
+        if not needs_retry(piece):
+            chunks += json.loads(extract_json_object(piece["response"]))["chunk_analysis"]
+        j += 1
+    if not chunks:  # every piece failed: leave the segment unjudged rather than empty
+        return {"response": "", "finish_reason": "stop"}
+    return {"response": json.dumps({"chunk_analysis": chunks}), "finish_reason": "stop"}
+
+
 def assemble_outputs(examples: dict, done: dict, args) -> None:
     """Write one {condition}_chunking_{tag}.json per execution file."""
     by_path = {}
@@ -123,7 +174,7 @@ def assemble_outputs(examples: dict, done: dict, args) -> None:
 
         for key, info in items:
             example = info["example"]
-            rows = [done.get(f"{key}::{i}") for i in range(info["num_segments"])]
+            rows = [resolve_segment(f"{key}::{i}", done) for i in range(info["num_segments"])]
             base = {"example_id": example["example_id"],
                     "reasoning_before_code": example.get("reasoning_before_code", "")}
             if info["num_segments"] == 0:
@@ -152,7 +203,7 @@ def assemble_outputs(examples: dict, done: dict, args) -> None:
                 "judge_metadata": {
                     "num_segments": len(rows),
                     "was_split": len(rows) > 1,
-                    "truncated_segments": sum(r["finish_reason"] == "length" for r in rows),
+                    "retried_segments": sum(f"{key}::{i}::r0" in done for i in range(info["num_segments"])),
                     "coverage": judged_chars / len(text) if text else None,
                 },
             })
@@ -185,8 +236,11 @@ def main():
     parser.add_argument("--tag", required=True, help="Output suffix, e.g. 'gemma' -> *_chunking_gemma.json")
     parser.add_argument("--model", default="google/gemma-4-31B-it")
     parser.add_argument("--judge-prompt", default="prompts/judge/llm_as_judge_for_chunking.txt")
-    parser.add_argument("--segment-tokens", type=int, default=6000, help="Max cl100k tokens per judged segment")
-    parser.add_argument("--max-model-len", type=int, default=20480)
+    parser.add_argument("--segment-tokens", type=int, default=2000,
+                        help="Max cl100k tokens per judged segment (longer segments make Gemma loop)")
+    parser.add_argument("--retry-tokens", type=int, default=700,
+                        help="Segments that loop, truncate or fail to parse are re-judged in pieces this size")
+    parser.add_argument("--max-model-len", type=int, default=8192)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.92)
     parser.add_argument("--max-num-seqs", type=int, default=128)
     parser.add_argument("--quantization", default="fp8", help="Weight quantization ('none' for bf16)")
@@ -207,9 +261,26 @@ def main():
         pending = pending[:args.limit]
     print(f"{len(examples)} examples, {len(requests)} segments, {len(done)} cached, {len(pending)} to judge")
 
-    if pending and not args.assemble_only:
-        run_judge(pending, cache_path, args)
-        done = load_cache(cache_path)
+    if not args.assemble_only:
+        llm = None
+        if pending:
+            llm = load_llm(args)
+            run_judge(llm, pending, cache_path, args)
+            done = load_cache(cache_path)
+        if args.limit is None:
+            # Retry pass: re-judge failed segments in smaller pieces (once)
+            text = {r["id"]: r["text"] for r in requests}
+            retries = []
+            for seg_id, row in done.items():
+                if seg_id in text and f"{seg_id}::r0" not in done and needs_retry(row):
+                    for j, piece in enumerate(split_reasoning_by_tokens(text[seg_id], args.retry_tokens)):
+                        retries.append({"id": f"{seg_id}::r{j}", "text": piece})
+            print(f"Retrying {len({r['id'].rsplit('::', 1)[0] for r in retries})} failed segments "
+                  f"as {len(retries)} pieces")
+            if retries:
+                llm = llm or load_llm(args)
+                run_judge(llm, retries, cache_path, args)
+                done = load_cache(cache_path)
     if args.limit is None or args.assemble_only:
         assemble_outputs(examples, done, args)
 

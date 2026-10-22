@@ -103,9 +103,10 @@ def render(args, lengths: dict) -> str:
     out_tokens = sum(r.get("output_tokens", 0) for r in rows)
     truncated = sum(r.get("finish_reason") == "length" for r in rows)
 
-    running = subprocess.run(["tmux", "has-session", "-t", args.session],
-                             capture_output=True).returncode == 0
-    started = datetime.fromtimestamp(log_path.stat().st_ctime, timezone.utc) if log_path.exists() else None
+    created = subprocess.run(["tmux", "display-message", "-p", "-t", args.session, "#{session_created}"],
+                             capture_output=True, text=True)
+    running = created.returncode == 0
+    started = datetime.fromtimestamp(int(created.stdout.strip()), timezone.utc) if running else None
 
     # Character rate over the last few waves (falls back to the whole run)
     eta = rate_line = "waiting for the first wave to finish"
@@ -115,7 +116,10 @@ def render(args, lengths: dict) -> str:
         for i in ordered:
             cum.append(cum[-1] + lengths[i])
         recent = waves[-4:]
-        t0, n0 = (recent[0] if len(recent) > 1 else (started, 0))
+        if len(recent) > 1:
+            t0, n0 = recent[0]
+        else:  # only one wave: measure from job start (includes model loading)
+            t0, n0 = (started or recent[0][0]), 0
         t1, n1 = recent[-1]
         chars = cum[min(n1, len(ordered))] - cum[min(n0, len(ordered))]
         secs = (t1 - t0).total_seconds()
@@ -152,7 +156,7 @@ def main():
     parser.add_argument("--session", default="gemma-rejudge")
     parser.add_argument("--log-name", default="gemma-rejudge")
     parser.add_argument("--gpu", type=int, default=7)
-    parser.add_argument("--segment-tokens", type=int, default=6000)
+    parser.add_argument("--segment-tokens", type=int, default=2000)
     parser.add_argument("--interval", type=int, default=30)
     parser.add_argument("--once", action="store_true")
     args = parser.parse_args()
