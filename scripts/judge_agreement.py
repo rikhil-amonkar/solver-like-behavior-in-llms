@@ -2,8 +2,9 @@
 """
 Agreement between Harry's labels (the reliability sets) and each ontology judge.
 
-Human labels come from the labelling artifact's database, saved with
-ArtifactData (out_dir) as validation/reliability/human/{seg_labels,prog_labels}/<id>.json.
+Reference labels live in validation/reliability/<labeler>/{seg_labels,prog_labels}/<id>.json:
+human (Harry, from the labelling artifact via ArtifactData out_dir) or claude
+(Claude subagents, scripts/import_claude_labels.py).
 Only items marked done count.
 
 Reports, per split:
@@ -59,8 +60,8 @@ def pearson(xs, ys):
     return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sx * sy) if sx and sy else float("nan")
 
 
-def load_human(coll):
-    d = REL / "human" / coll
+def load_human(coll, labeler="human"):
+    d = REL / labeler / coll
     out = {}
     for f in sorted(d.glob("*.json")) if d.exists() else []:
         doc = json.load(open(f))
@@ -150,6 +151,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
     ap.add_argument("--split", default="dev", choices=["dev", "test", "all"])
+    ap.add_argument("--labeler", default="human", help="Reference labels: validation/reliability/<labeler>/ (human or claude)")
     args = ap.parse_args()
     segs = json.load(open(REL / "segments.json"))
     progs = json.load(open(REL / "programs.json"))
@@ -158,9 +160,9 @@ def main():
         for e in json.load(open(REPO / f"output/gpt/meeting/{c}_hardcoded_static.json"))["examples"]:
             if e["label"] in ("hardcoded", "not_hardcoded"):
                 static[(c, e["example_id"])] = e["label"] == "hardcoded"
-    print(f"== split: {args.split}, judge tag: {args.tag} ==")
-    report_a(segs, load_human("seg_labels"), load_judge("a", args.tag), args.split)
-    report_b(progs, load_human("prog_labels"), load_judge("b", args.tag), args.split, static, args.tag)
+    print(f"== split: {args.split}, judge tag: {args.tag}, reference: {args.labeler} ==")
+    report_a(segs, load_human("seg_labels", args.labeler), load_judge("a", args.tag), args.split)
+    report_b(progs, load_human("prog_labels", args.labeler), load_judge("b", args.tag), args.split, static, args.tag)
 
 
 if __name__ == "__main__":
