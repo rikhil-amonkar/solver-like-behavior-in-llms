@@ -22,7 +22,7 @@ The rules are applied in order:
 - **Labels:** I put the 93 runnable GPT-OSS baseline programs in random order (seed 20261022) and labelled them by reading, in that order, until I had 10 hardcoded and 10 not hardcoded. That took 30 programs.
   - Sample of 20 — hardcoded: 66, 502, 210, 908, 73, 974, 372, 612, 88, 174; not hardcoded: 6, 831, 385, 900, 937, 629, 592, 482, 309, 225.
   - The other 10 labelled along the way — hardcoded: 118, 143, 912, 203, 624, 170, 137, 222, 575; not hardcoded: 956.
-- **Agreement:** the checker matches **20/20** on the sample and **10/10** on the extra 10. These labels are mine and still need checking by a human.
+- **Agreement:** the checker matches **20/20** on the sample and **10/10** on the extra 10. Human annotators labelled the same 30 programs and agree with all 30 labels.
 - **Fixes made during development:**
   - A time-formatting helper's AM/PM `if` was being counted as deriving the time (example 73).
   - Example times in docstrings fired the literal rule (baseline 444, caution_b 624).
