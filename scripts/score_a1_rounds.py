@@ -22,7 +22,8 @@ REPO = Path(__file__).resolve().parent.parent
 REL = REPO / "validation/reliability"
 
 CORRECTIONS = {"v016": "N",      # 2026-10-29: assuming a solution exists is not SLB
-               "a1r3-15": "V"}   # 2026-10-29: ruling out slots before 11:30 is Values
+               "a1r3-15": "V",    # 2026-10-29: ruling out slots before 11:30 is Values
+               "v004": "N", "v009": "N", "v013": "N", "v017": "N"}  # 2026-10-29: encoding checks, a general dominance argument, a solvability hedge
 V2_EXAMPLES = {"v010", "v011"}
 V9_EXAMPLES = V2_EXAMPLES | {"v016", "a1r2-06", "a1r2-11", "a1r2-12", "a1r2-13", "a1r2-18", "a1r2-19",
                              "a1r3-03", "a1r3-04", "a1r3-08", "a1r3-14", "a1r3-15", "a1r3-17", "a1r3-18"}
