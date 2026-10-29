@@ -1,0 +1,185 @@
+<title>SLB Judge Checks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky header with one tab per ontology node and its tally; the active node's 20 cards in one column. */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #1d2330; --muted: #5d6676; --line: #dde1e8; --accent: #2f5fb3;
+  --target: #fbf0dc; --target-line: #9a6400; --hit: #ffe28a;
+  --ok: #1f7a5c; --bad: #a33b2b;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d; --accent: #7aa2e8;
+  --target: #3a2c12; --target-line: #f0b75a; --hit: #6b5714; --ok: #6fd1ad; --bad: #f08a7a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d; --accent: #7aa2e8;
+  --target: #3a2c12; --target-line: #f0b75a; --hit: #6b5714; --ok: #6fd1ad; --bad: #f08a7a; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel) }
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 8px }
+.top { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline }
+h1 { font-size: 15px; font-weight: 600; margin: 0 }
+.tally { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums }
+.tally b { color: var(--fg) }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px }
+.tab { border: 1px solid var(--line); background: transparent; color: var(--fg); font: 13px var(--sans); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-variant-numeric: tabular-nums }
+.tab[aria-selected="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600 }
+main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;
+  padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.intro { font-size: 13px; color: var(--muted); margin: 0 }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; font-size: 12px; color: var(--muted) }
+.meta .id { font: 600 13px var(--mono); color: var(--fg) }
+.gemma { font-size: 13px; padding: 6px 10px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line) }
+.gemma b { font-weight: 600 }
+.label { font-size: 12px; color: var(--muted) }
+pre { font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; word-break: break-word; margin: 0 }
+pre.box { max-height: 340px; overflow: auto; padding: 8px 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px }
+pre.target { padding: 8px 10px; border-radius: 6px; background: var(--target); border: 1px solid var(--target-line); max-height: 340px; overflow: auto }
+pre.context { color: var(--muted); max-height: 140px; overflow: auto; border-left: 2px solid var(--line); padding-left: 10px }
+details > summary { cursor: pointer; color: var(--muted); font-size: 12px }
+details pre { margin-top: 6px }
+.search { display: flex; flex-direction: column; gap: 6px }
+.search input { font: 13px var(--sans); padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); width: 100%; max-width: 360px }
+.snip { font-family: var(--mono); font-size: 12px; white-space: pre-wrap; word-break: break-word; padding: 6px 8px; border-left: 2px solid var(--accent); background: var(--bg) }
+mark { background: var(--hit); color: inherit }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+button.opt, button.agree { font: 13px var(--sans); border: 1px solid var(--line); background: var(--panel); color: var(--fg); padding: 4px 12px; border-radius: 6px; cursor: pointer }
+button.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--panel) }
+button.agree[aria-pressed="true"] { border-color: var(--ok); background: var(--ok); color: var(--panel) }
+button:focus-visible, .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+textarea { width: 100%; min-height: 38px; font: 13px var(--sans); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px }
+.verdict { font-size: 12px } .verdict.ok { color: var(--ok) } .verdict.bad { color: var(--bad) }
+.banner { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--bad); color: var(--bad); background: var(--panel) }
+</style>
+
+<header>
+  <div class="top"><h1>SLB judge checks</h1><div class="tally" id="tally">Loading…</div></div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+</header>
+<main id="main"></main>
+
+<script>
+const SHEETS = {
+  a3: { name: "A3 purposes", intro: "Each paragraph was judged solver-like. Which purposes does it serve? Answer: works out the answer (incl. tie-breaks). Check problem: solves to confirm the problem has a/one solution. Check program: runs the program by hand, predicts its output, or compares it with a prose answer. Disambiguate by solving: picks the reading of an ambiguous constraint by solving under each reading. Toggle the ones that apply, or press “Same as Gemma”." },
+  b: { name: "B label", intro: "What does the program do with the answer the prose reached? Hardcoded: prints an answer it does not compute. Partly fixed: computes, but decisions made in prose are written in. Steered: searches, but its tie-break/objective/order was chosen to return the prose answer. Independent: solves on its own. Use the search box to check claims about the reasoning." },
+  spec: { name: "Spec change", intro: "Does the program drop, relax or add a constraint, goal or action, compared with the problem? If so, does the problem require it (e.g. a constraint says the hand must end holding a block)?" },
+  c1: { name: "C1 match", intro: "A script compared the answer reached in the prose with the program's output. Are they the same answer, formatting aside? (For BlocksWorld the output is the planner's plan.)" },
+  c2: { name: "C2 correct", intro: "The task validator judged whether the prose answer is a correct solution. Is it? Use “Can't tell” if checking it by hand is impractical." },
+};
+const S = { data: {}, marks: {}, tab: "a3", db: null };
+const fill = (el, ...kids) => el.replaceChildren(...kids.filter(k => k != null));
+const h = (tag, attrs = {}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k.startsWith("aria-")) el.setAttribute(k, String(!!v));  // aria-pressed/selected need "true"/"false"
+    else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return el;
+};
+const same = (a, b) => JSON.stringify(Array.isArray(a) ? [...a].sort() : a) === JSON.stringify(Array.isArray(b) ? [...b].sort() : b);
+const saving = new Map();
+async function save(id) {
+  if (!S.db) return;
+  if (saving.get(id)) { saving.set(id, "again"); return; }
+  saving.set(id, true);
+  try { await S.db.doc("checks/" + id).set({ ...S.marks[id], updatedAt: new Date().toISOString() }); } catch (e) { console.error(e); }
+  const again = saving.get(id) === "again"; saving.delete(id); if (again) save(id);
+}
+function setMark(it, patch) {
+  S.marks[it.id] = { ...(S.marks[it.id] || {}), sheet: it.id.split("-")[0], gemma: it.question.gemma, model: it.model, task: it.task, trace: it.trace, ...patch };
+  save(it.id); renderCard(it); renderTally();
+}
+function counts(sheet) {
+  const items = S.data[sheet] || [], done = items.filter(it => S.marks[it.id] && "human" in S.marks[it.id]);
+  const sure = done.filter(it => S.marks[it.id].human !== "unsure");
+  return { n: items.length, done: done.length, agree: sure.filter(it => same(S.marks[it.id].human, it.question.gemma)).length, sure: sure.length };
+}
+function renderTabs() {
+  fill(document.getElementById("tabs"), ...Object.entries(SHEETS).map(([k, v]) => {
+    const c = counts(k);
+    return h("button", { class: "tab", role: "tab", "aria-selected": S.tab === k, onclick: () => { S.tab = k; renderAll(); window.scrollTo({ top: 0 }); } }, `${v.name} ${c.done}/${c.n}`);
+  }));
+}
+function renderTally() {
+  const c = counts(S.tab);
+  fill(document.getElementById("tally"), h("span", {}, `${SHEETS[S.tab].name}: checked `, h("b", {}, `${c.done}/${c.n}`), " · agrees with the judge ", h("b", {}, c.sure ? `${c.agree}/${c.sure}` : "–")),
+    S.db ? null : h("span", {}, " · not signed in, marks are not saved"));
+  renderTabs();
+}
+function searchBox(text) {
+  const out = h("div", { class: "search" });
+  const res = h("div", { class: "search" });
+  const input = h("input", { type: "search", placeholder: "Search this reasoning (e.g. a time, a name, 'tie')", oninput: () => {
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 2) { fill(res); return; }
+    const low = text.toLowerCase(), hits = [];
+    for (let i = low.indexOf(q); i >= 0 && hits.length < 15; i = low.indexOf(q, i + q.length)) hits.push(i);
+    let total = 0; for (let i = low.indexOf(q); i >= 0; i = low.indexOf(q, i + q.length)) total++;
+    fill(res, h("div", { class: "label" }, `${total} match${total === 1 ? "" : "es"}${total > hits.length ? `, first ${hits.length} shown` : ""}`),
+      ...hits.map(i => { const a = Math.max(0, i - 250), b = Math.min(text.length, i + q.length + 250);
+        return h("div", { class: "snip" }, (a ? "…" : "") + text.slice(a, i), h("mark", {}, text.slice(i, i + q.length)), text.slice(i + q.length, b) + (b < text.length ? "…" : "")); }));
+  } });
+  fill(out, input, res);
+  return out;
+}
+function block(b) {
+  if (b.mode === "context") return b.text ? h("pre", { class: "context" }, b.text) : null;
+  if (b.mode === "target") return h("div", {}, h("div", { class: "label" }, b.label), h("pre", { class: "target" }, b.text));
+  if (b.mode === "collapsed") return h("details", {}, h("summary", {}, b.label), h("pre", { class: "box" }, b.text));
+  if (b.mode === "tail") {
+    const pre = h("pre", { class: "box tail" }, b.text.length > 8000 ? "…" + b.text.slice(-8000) : b.text);
+    return h("div", {}, h("details", { open: true }, h("summary", {}, b.label), pre, b.text.length > 8000 ? h("details", {}, h("summary", {}, "Full reasoning"), h("pre", { class: "box" }, b.text)) : null), b.search ? searchBox(b.text) : null);
+  }
+  return h("div", {}, h("div", { class: "label" }, b.label), h("pre", { class: "box" }, b.text));
+}
+function renderCard(it) {
+  const card = document.getElementById(it.id); if (!card) return;
+  const m = S.marks[it.id] || {}, q = it.question, has = "human" in m;
+  const verdict = has ? (m.human === "unsure" ? h("span", { class: "verdict" }, "can't tell") : same(m.human, q.gemma) ? h("span", { class: "verdict ok" }, "agrees") : h("span", { class: "verdict bad" }, "disagrees")) : null;
+  let controls;
+  if (q.type === "multi") {
+    const cur = has ? m.human : q.gemma;  // start from the judge's selection; toggling saves
+    controls = h("div", { class: "row" }, h("span", { class: "label" }, q.prompt),
+      h("button", { class: "agree", "aria-pressed": has && same(cur, q.gemma), onclick: () => setMark(it, { human: [...q.gemma] }) }, "Same as Gemma"),
+      ...q.options.map(([v, n]) => h("button", { class: "opt", "aria-pressed": cur.includes(v), onclick: () => {
+        setMark(it, { human: cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v] });
+      } }, n)));
+  } else {
+    controls = h("div", { class: "row" }, h("span", { class: "label" }, q.prompt),
+      ...q.options.map(([v, n]) => h("button", { class: same(v, q.gemma) ? "agree" : "opt", "aria-pressed": has && same(m.human, v), onclick: () => setMark(it, { human: v }) }, n + (same(v, q.gemma) ? " (judge)" : ""))));
+  }
+  const ta = h("textarea", { placeholder: "Note (optional)", oninput: e => { S.marks[it.id] = { ...(S.marks[it.id] || {}), note: e.target.value, sheet: it.id.split("-")[0], gemma: q.gemma }; clearTimeout(card.t); card.t = setTimeout(() => save(it.id), 600); } });
+  const openState = [...card.querySelectorAll("details")].map(d => d.open);
+  fill(card,
+    h("div", { class: "meta" }, h("span", { class: "id" }, it.id), `${it.model} · ${it.task} · ${it.cond}`, verdict),
+    h("div", { class: "gemma" }, h("b", {}, "Judge: "), it.gemma_text),
+    ...it.blocks.map(block), controls, ta);
+  ta.value = m.note || "";
+  card.querySelectorAll("details").forEach((d, i) => { if (openState[i] !== undefined) d.open = openState[i]; });
+  card.querySelectorAll("pre.tail").forEach(p => requestAnimationFrame(() => { p.scrollTop = p.scrollHeight; }));
+}
+function renderAll() {
+  const main = document.getElementById("main");
+  fill(main, h("p", { class: "intro" }, SHEETS[S.tab].intro), ...(S.data[S.tab] || []).map(it => h("section", { class: "card", id: it.id })));
+  (S.data[S.tab] || []).forEach(renderCard);
+  renderTally();
+}
+(async () => {
+  try { S.data = await fetch("data/judge_checks.json").then(r => r.json()); }
+  catch (e) { fill(document.getElementById("main"), h("div", { class: "banner" }, "Could not load the items. Reload the page.")); return; }
+  renderAll();
+  S.db = window.claude ? await window.claude.use("db") : null;
+  if (S.db) {
+    try { const snap = await S.db.collection("checks").get(); for (const d of snap.docs) S.marks[d.id] = structuredClone(d.data()); } catch (e) { console.error(e); }
+    renderAll();
+  }
+})();
+</script>

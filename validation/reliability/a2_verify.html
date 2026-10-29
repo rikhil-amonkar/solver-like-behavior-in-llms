@@ -68,6 +68,7 @@ const h = (tag, attrs = {}, ...kids) => {
   const el = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k.startsWith("aria-")) el.setAttribute(k, String(!!v));  // aria-pressed/selected need "true"/"false"
     else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
   }
   for (const k of kids.flat()) if (k != null) el.append(k.nodeType ? k : document.createTextNode(String(k)));
