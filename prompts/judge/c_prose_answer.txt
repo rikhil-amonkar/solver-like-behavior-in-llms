@@ -6,7 +6,7 @@ DECISION VARIABLES are what an answer consists of:
 - Zebra puzzles: which value of each attribute goes in which house.
 - BlocksWorld: the plan (the sequence of actions).
 
-EXTENT of the prose answer. Use the reasoning's FINAL position if it changes its mind. Values the model only predicts the program will output still count as reached in prose.
+EXTENT of the prose answer. Use the reasoning's FINAL position if it changes its mind. Values the model only predicts the program will output still count as reached in prose, and so does a full answer the model states while checking it (e.g. "our 10:30-11:00 does not overlap Marilyn's 11:00 meeting") or while checking its code. Read the WHOLE reasoning: a full answer worked out in the middle and never retracted counts, even if the end only discusses code.
 - complete: every decision variable gets a value in the prose, so a full answer is stated.
 - partial: some decisions are made in prose (e.g. which friends to drop, one house, the first moves), but not a full answer.
 - none: no values of decision variables are committed in prose.

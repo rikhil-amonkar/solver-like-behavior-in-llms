@@ -34,7 +34,7 @@ PROMPTS = {"a": REPO / "prompts/judge/a_paragraphs.txt", "b": REPO / "prompts/ju
            "c": REPO / "prompts/judge/c_prose_answer.txt"}
 LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*\|\s*([01])\s*\|\s*([a-z,\s-]*)\s*$", re.M)
 PURPOSES = {"ans", "chp", "chg", "int"}
-REASONING_HEAD, REASONING_TAIL = 6000, 40000  # characters kept from a long reasoning for the B judge
+REASONING_HEAD, REASONING_TAIL = 50000, 350000  # characters kept from a very long reasoning (B, C); fits a 160k-token context
 
 
 def build_prompt(kind: str, item: dict, template: str) -> str:
@@ -128,7 +128,7 @@ def main():
         return
 
     from vllm import LLM, SamplingParams
-    max_len = args.max_model_len or (12288 if args.kind == "a" else 32768)
+    max_len = args.max_model_len or (12288 if args.kind == "a" else 163840)
     llm = LLM(model=args.model, max_model_len=max_len, gpu_memory_utilization=args.gpu_memory_utilization,
               max_num_seqs=args.max_num_seqs, quantization=None if args.quantization == "none" else args.quantization,
               kv_cache_dtype="fp8", enable_prefix_caching=True)
