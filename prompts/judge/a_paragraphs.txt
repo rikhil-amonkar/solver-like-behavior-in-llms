@@ -15,22 +15,16 @@ SOLVER-LIKE behavior is reasoning that establishes facts about the solutions of 
 
 For V paragraphs, set SEARCH to 1 if the paragraph rejects at least one candidate value (tries something and finds it fails), else 0. For N and P paragraphs SEARCH is 0.
 
-For V and P paragraphs, give the PURPOSE (one or more, comma-separated); for N give "-":
-- ans: derives the answer to the problem, including choosing among equally good solutions (tie-breaks).
-- chp: checks the problem: solves it to confirm a solution exists or is unique, typically to validate an encoding.
-- chg: checks the program: runs the model's own program by hand, predicts what it will output, or compares the program with an answer found in prose.
-- int: disambiguates by solving: chooses the reading of an ambiguous constraint by solving the problem under each reading. Merely deciding what a constraint means, without trying values, is N and gets no purpose.
-
 Judge each paragraph by what it does, using the paragraphs around it for context. A paragraph that mixes restating with solving is V or P. Short connective paragraphs ("Let's check.", "Now the code.") take N unless they themselves state a value.
 
 OUTPUT FORMAT. One line per paragraph, in order, for every paragraph number, and nothing else:
-<number>|<TYPE>|<SEARCH>|<PURPOSE>
+<number>|<TYPE>|<SEARCH>
 Example for a five-paragraph excerpt:
-1|N|0|-
-2|V|1|ans
-3|V|0|ans
-4|P|0|chp
-5|V|0|chg
+1|N|0
+2|V|1
+3|V|0
+4|P|0
+5|N|0
 
 PROBLEM GIVEN TO THE MODEL:
 {problem}

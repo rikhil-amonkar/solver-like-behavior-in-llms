@@ -2,12 +2,15 @@
 """
 Gemma judges for the SLB ontology (docs/SLB_ONTOLOGY.md), run offline with vLLM.
 
-- a: labels every paragraph of a reasoning segment (type N/V/P, search flag, purposes).
+- a: labels every paragraph of a reasoning segment (type N/V/P, search flag).
      Paragraphs are the same units the human labels (scripts/build_reliability_sets.py).
 - b: labels a program (hardcoded / partly_fixed / steered / independent) and the
      specification-change flag.
 - c: finds the answer reached in prose (A2 extent), rewrites it in the program's
      output format (for the C2 validator) and says whether it matches the output (C1).
+- cs: the C judge per segment: does this excerpt state a complete answer (and which), a
+     partial one, or none. scripts/assemble_ontology_labels.py takes the last complete
+     answer of a trace as its prose answer (from gemma_v3).
 
 Results are cached as JSONL (one line per item); re-running skips cached items, so
 changing a prompt needs a new --tag.
@@ -31,8 +34,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 PROMPTS = {"a": REPO / "prompts/judge/a_paragraphs.txt", "b": REPO / "prompts/judge/b_program.txt",
-           "c": REPO / "prompts/judge/c_prose_answer.txt"}
-LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*\|\s*([01])\s*\|\s*([a-z,\s-]*)\s*$", re.M)
+           "c": REPO / "prompts/judge/c_prose_answer.txt", "cs": REPO / "prompts/judge/c_segment.txt"}
+LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*\|\s*([01])\s*(?:\|\s*([a-z,\s-]*))?\s*$", re.M)  # purposes: gemma_v1/v2 only
 PURPOSES = {"ans", "chp", "chg", "int"}
 REASONING_HEAD, REASONING_TAIL = 50000, 350000  # characters kept from a very long reasoning (B, C); fits a 160k-token context
 
@@ -43,6 +46,9 @@ def build_prompt(kind: str, item: dict, template: str) -> str:
         return (template.replace("{problem}", item["problem"]).replace("{n}", str(len(item["paragraphs"])))
                 .replace("{segment}", str(item["segment_index"] + 1)).replace("{n_segments}", str(item["n_segments"]))
                 .replace("{paragraphs}", paras))
+    if kind == "cs":
+        return (template.replace("{problem}", item["problem"]).replace("{segment}", str(item["segment_index"] + 1))
+                .replace("{n_segments}", str(item["n_segments"])).replace("{text}", "\n\n".join(item["paragraphs"])))
     reasoning, note = item["reasoning"], ""
     if len(reasoning) > REASONING_HEAD + REASONING_TAIL:
         cut = len(reasoning) - REASONING_HEAD - REASONING_TAIL
@@ -60,11 +66,19 @@ def parse(kind: str, text: str, item: dict) -> dict:
         for n, t, s, p in LINE.findall(text):
             i = int(n) - 1
             if 0 <= i < len(item["paragraphs"]) and i not in labels:
-                purposes = sorted({x.strip() for x in p.split(",")} & PURPOSES) if t != "N" else []
+                purposes = sorted({x.strip() for x in (p or "").split(",")} & PURPOSES) if t != "N" else []
                 labels[i] = {"t": t, "s": t == "V" and s == "1", "p": purposes}
         missing = [i for i in range(len(item["paragraphs"])) if i not in labels]
         return {"paras": {str(i): v for i, v in labels.items()}, "missing": missing}
     start = text.find("{")
+    if kind == "cs":
+        try:
+            obj, _ = json.JSONDecoder().raw_decode(text, start)
+            extent = obj.get("extent")
+            ok = extent in {"complete", "partial", "none"}
+            return {"extent": extent if ok else None, "answer": obj.get("answer", "") if ok else "", "parse_error": not ok}
+        except (ValueError, json.JSONDecodeError):
+            return {"extent": None, "answer": "", "parse_error": True}
     if kind == "c":
         try:
             obj, _ = json.JSONDecoder().raw_decode(text, start)
@@ -85,7 +99,7 @@ def parse(kind: str, text: str, item: dict) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("kind", choices=["a", "b", "c"])
+    ap.add_argument("kind", choices=["a", "b", "c", "cs"])
     ap.add_argument("--items", required=True, help="segments.json (a) or programs.json (b)")
     ap.add_argument("--tag", required=True, help="Output suffix; use a new tag whenever the prompt changes")
     ap.add_argument("--model", default="google/gemma-4-31B-it")
@@ -103,7 +117,7 @@ def main():
         sys.path.insert(0, str(REPO / "src"))
         from ontology_items import build_items
         segments, traces = build_items()
-        items = segments if args.kind == "a" else [t for t in traces if t["reasoning"].strip()]
+        items = segments if args.kind in ("a", "cs") else [t for t in traces if t["reasoning"].strip()]
         if args.kind == "b":
             items = [t for t in items if t["program"].strip()]
         out_dir = REPO / "output/ontology"
@@ -128,7 +142,7 @@ def main():
         return
 
     from vllm import LLM, SamplingParams
-    max_len = args.max_model_len or (12288 if args.kind == "a" else 163840)
+    max_len = args.max_model_len or (12288 if args.kind in ("a", "cs") else 163840)
     llm = LLM(model=args.model, max_model_len=max_len, gpu_memory_utilization=args.gpu_memory_utilization,
               max_num_seqs=args.max_num_seqs, quantization=None if args.quantization == "none" else args.quantization,
               kv_cache_dtype="fp8", enable_prefix_caching=True)
@@ -141,11 +155,12 @@ def main():
         for it in wave:
             m = [{"role": "user", "content": build_prompt(args.kind, it, template)}]
             n_in = len(tok.apply_chat_template(m, tokenize=True, add_generation_prompt=True))
-            budget = 20 * len(it["paragraphs"]) + 200 if args.kind == "a" else 400 if args.kind == "b" else 1500
+            budget = {"a": 20 * len(it.get("paragraphs", [])) + 200, "b": 400, "c": 1500, "cs": 1500}[args.kind]
             if n_in + 50 > max_len:  # prompt too long even after truncation: record, do not guess
                 skipped = {"a": {"paras": {}, "missing": list(range(len(it.get("paragraphs", []))))},
                            "b": {"b": None, "spec": None, "evidence": "", "parse_error": True},
-                           "c": {"extent": None, "match": None, "prose_answer": "", "parse_error": True}}[args.kind]
+                           "c": {"extent": None, "match": None, "prose_answer": "", "parse_error": True},
+                           "cs": {"extent": None, "answer": "", "parse_error": True}}[args.kind]
                 with out.open("a", encoding="utf-8") as f:
                     f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": "", "finish_reason": "prompt_too_long", **skipped}) + "\n")
                 continue

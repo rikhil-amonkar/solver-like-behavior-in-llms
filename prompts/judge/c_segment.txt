@@ -1,0 +1,23 @@
+A language model was asked to write a program for a constraint problem, and reasoned in prose before writing it. You see ONE excerpt of that reasoning. Say whether this excerpt states an answer to the problem.
+
+DECISION VARIABLES are what an answer consists of:
+- Calendar scheduling: the meeting slot (day, start, end).
+- Meeting planning: which friends to meet, in what order, at what times.
+- Zebra puzzles: which value of each attribute goes in which house.
+- BlocksWorld: the plan (the sequence of actions).
+
+EXTENT of what THIS excerpt states (earlier excerpts may have stated more; ignore them):
+- complete: the excerpt states values for every decision variable, i.e. a full answer. It counts whether the model derives it, proposes it as a candidate it then checks, or predicts the program will print it. It does not count if the excerpt rejects it (e.g. "Monday 9:00 conflicts, so no"), or only restates the problem or an example output format.
+- partial: the excerpt commits some decisions (e.g. which friends to drop, one house, the first moves) but not a full answer.
+- none: no values of decision variables are committed.
+
+ANSWER: when the extent is complete, write the full answer exactly in the output format the problem asks for (the same format the program must print); if the excerpt states several full answers, give the LAST one it does not reject. Otherwise an empty string.
+
+Answer with a JSON object and nothing else:
+{"extent": "<complete|partial|none>", "answer": "<...>"}
+
+PROBLEM GIVEN TO THE MODEL:
+{problem}
+
+REASONING EXCERPT ({segment} of {n_segments}):
+{text}

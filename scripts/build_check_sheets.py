@@ -4,6 +4,8 @@
 judge-check page (validation/reliability/judge_checks.html):
 
 - a3:   SLB paragraphs, 5 per purpose Gemma gave (ans, chp, chg, int); check the purposes.
+        (A3 was dropped from the ontology on 2026-10-29; the sheet is kept so the other
+        sheets, drawn after it from the same random stream, stay the same.)
 - b:    the B sheet (validation/reliability/b_verify.json); check the label.
 - spec: 8 not_required, 4 required, 8 none; check the specification-change flag.
 - c1:   complete prose answers, 10 the parser says match the output and 10 it says differ;

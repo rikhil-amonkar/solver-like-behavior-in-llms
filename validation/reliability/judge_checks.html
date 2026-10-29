@@ -66,13 +66,12 @@ textarea { width: 100%; min-height: 38px; font: 13px var(--sans); background: va
 
 <script>
 const SHEETS = {
-  a3: { name: "A3 purposes", intro: "Each paragraph was judged solver-like. Which purposes does it serve? Answer: works out the answer (incl. tie-breaks). Check problem: solves to confirm the problem has a/one solution. Check program: runs the program by hand, predicts its output, or compares it with a prose answer. Disambiguate by solving: picks the reading of an ambiguous constraint by solving under each reading. Toggle the ones that apply, or press “Same as Gemma”." },
   b: { name: "B label", intro: "What does the program do with the answer the prose reached? Hardcoded: prints an answer it does not compute. Partly fixed: computes, but decisions made in prose are written in. Steered: searches, but its tie-break/objective/order was chosen to return the prose answer. Independent: solves on its own. Use the search box to check claims about the reasoning." },
   spec: { name: "Spec change", intro: "Does the program drop, relax or add a constraint, goal or action, compared with the problem? If so, does the problem require it (e.g. a constraint says the hand must end holding a block)?" },
   c1: { name: "C1 match", intro: "A script compared the answer reached in the prose with the program's output. Are they the same answer, formatting aside? (For BlocksWorld the output is the planner's plan.)" },
   c2: { name: "C2 correct", intro: "The task validator judged whether the prose answer is a correct solution. Is it? Use “Can't tell” if checking it by hand is impractical." },
 };
-const S = { data: {}, marks: {}, tab: "a3", db: null };
+const S = { data: {}, marks: {}, tab: "b", db: null };
 const fill = (el, ...kids) => el.replaceChildren(...kids.filter(k => k != null));
 const h = (tag, attrs = {}, ...kids) => {
   const el = document.createElement(tag);

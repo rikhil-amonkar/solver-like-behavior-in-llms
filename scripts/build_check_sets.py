@@ -31,6 +31,8 @@ def main():
     for kind, ids in [("c", [it["trace"] for it in json.load(open(REL / "a2_verify.json"))] + [it["trace"] for k in ("c1", "c2") for it in checks[k]]),
                       ("b", [it["trace"] for it in json.load(open(REL / "b_verify.json"))] + [it["trace"] for it in checks["spec"]])]:
         out[kind] = [tr_by_id[i] for i in dict.fromkeys(ids)]
+    c_traces = {t["id"] for t in out["c"]}
+    out["cs"] = [s for s in segments if s["trace"] in c_traces]  # per-segment C judge (gemma_v3)
     for kind, items in out.items():
         json.dump(items, open(REL / "checks" / f"{kind}.json", "w"))
         print(kind, len(items), "items")

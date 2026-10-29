@@ -6,7 +6,6 @@ Assemble per-trace SLB ontology labels (docs/SLB_ONTOLOGY.md) from the Gemma jud
 Per trace:
 - A1 (script over Gemma paragraph labels): "values" if any paragraph is V, "properties"
   if any is P, else none; with_search if any V paragraph rejects a candidate.
-- A3 (script): union of the purposes of SLB paragraphs.
 - Solver-like ratio (script): characters in SLB paragraphs / characters in all paragraphs.
 - A2 (Gemma C judge): extent of the prose answer.
 - B (script, then Gemma): "na" if there is no program, it failed, or printed nothing;
@@ -39,7 +38,6 @@ from execution.output_formatter import parse_output_by_task
 from general.io_utils import load_problems_json
 from validate_prose_answers import check as validate_prose
 
-PURPOSES = ["ans", "chp", "chg", "int"]
 
 
 def load_judge(kind, tag):
@@ -98,7 +96,7 @@ def main():
     for t in traces:
         # ---- A from paragraph labels ----
         chars = slb_chars = 0
-        types, purposes, search, n_missing, judged = set(), set(), False, 0, True
+        types, search, n_missing, judged = set(), False, 0, True
         for s in by_trace[t["id"]]:
             r = ja.get((s["id"], s["h"]))
             if r is None:
@@ -112,11 +110,10 @@ def main():
                 if lab["t"] != "N":
                     slb_chars += len(text)
                     types.add({"V": "values", "P": "properties"}[lab["t"]])
-                    purposes.update(lab["p"])
                     search = search or lab["s"]
         a1 = sorted(types) or ["none"]
         rec = dict(example_id=t["example_id"], a_judged=judged and bool(by_trace[t["id"]]),
-                   A1=a1, with_search=search, A3=[p for p in PURPOSES if p in purposes],
+                   A1=a1, with_search=search,
                    ratio=round(slb_chars / chars, 4) if chars else None, unlabelled_paragraphs=n_missing)
 
         # ---- A2, C from the C judge + scripts ----
@@ -162,7 +159,7 @@ def main():
         json.dump({"tag": args.tag, "ontology": "docs/SLB_ONTOLOGY.md", "examples": recs}, open(dest, "w"), indent=1)
 
     print("missing judgements:", dict(missing_judgements) or "none")
-    hdr = ["cell", "n", "ratio", "values", "props", "none", "search", "ans", "chp", "chg", "int",
+    hdr = ["cell", "n", "ratio", "values", "props", "none", "search",
            "A2 cmpl", "B hard", "B part", "B steer", "B ind", "B na", "spec!", "C1 no", "C2 no", "flags"]
     print("\t".join(hdr))
     for key in sorted(per_cell):
@@ -175,7 +172,7 @@ def main():
         print("\t".join([
             "/".join(key), str(n), f"{sum(ratios) / len(ratios):.2f}" if ratios else "-",
             pct(lambda x: "values" in x["A1"]), pct(lambda x: "properties" in x["A1"]), pct(lambda x: x["A1"] == ["none"]),
-            pct(lambda x: x["with_search"]), *[pct(lambda x, p=p: p in x["A3"]) for p in PURPOSES],
+            pct(lambda x: x["with_search"]),
             pct(lambda x: x["A2"] == "complete"),
             *[pct(lambda x, b=b: x["B"] == b) for b in ["hardcoded", "partly_fixed", "steered", "independent", "na"]],
             pct(lambda x: x["spec"] == "not_required"),

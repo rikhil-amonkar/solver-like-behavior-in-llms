@@ -7,7 +7,7 @@ Reference labels:
 - A2: validation/reliability/human/verify_a2/, plus two corrections confirmed by script and
   reading (e14, e16 are complete). Partial/none labels Harry could not fully verify count
   as given, so A2 agreement on them is an upper bound.
-- A3, B, spec, C1, C2: validation/reliability/human/checks/ (the judge-check page).
+- B, spec, C1, C2: validation/reliability/human/checks/ (the judge-check page).
 
 Judge labels for a tag come from the full run (output/ontology/judge_*_<tag>*.jsonl) or
 from the check-set run (validation/reliability/checks/judge_*_<tag>.jsonl). C1 and C2 are
@@ -115,7 +115,7 @@ def main():
     # Judge-check page sheets
     sheets = json.load(open(REL / "judge_checks.json"))
     cm = marks("checks")
-    for name in ("a3", "b", "spec", "c1", "c2"):
+    for name in ("b", "spec", "c1", "c2"):  # A3 dropped from the ontology on 2026-10-29
         pairs = []
         for it in sheets[name]:
             v = cm.get(it["id"])

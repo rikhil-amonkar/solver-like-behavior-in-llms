@@ -1,6 +1,6 @@
 # Solver-like behavior (SLB) ontology
 
-Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces (`docs/results/2026-10-22_ONTOLOGY_SWEEP.md`). Each node gets its own judge (an LLM or a script). This replaces the single sound/solver-like judge.
+Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces (`docs/results/2026-10-22_ONTOLOGY_SWEEP.md`). A3 (purpose: answer / check problem / check program / disambiguate) was dropped on 2026-10-29: the purposes were too niche to label reliably, and the judge over-assigned them. Each node gets its own judge (an LLM or a script). This replaces the single sound/solver-like judge.
 
 ## Unit and core definition
 
@@ -17,24 +17,18 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 
 **Solver-like behavior** is reasoning that establishes facts about the instance's solutions: which values satisfy the constraints (or fail them), or whether a solution exists, is unique, or is optimal. Committing to values is one case.
 
-**Not SLB:** restating the problem's data or constraints, designing the encoding or code, output format, parsing, and interpreting the constraints. The exception is an interpretation chosen by solving under each reading; that is SLB (A3 interpret).
+**Not SLB:** restating the problem's data or constraints, designing the encoding or code, output format, parsing, and interpreting the constraints. The exception is an interpretation chosen by solving under each reading; that is SLB (A1 values).
 
 ## A. Solving in prose (from the reasoning)
 
 **A1. What it establishes.** More than one can apply.
 - **Values:** assigns, tests or rules out values of decision variables. This includes pruning, e.g. computing free intervals or ruling out a friend's window. Flag **with search** if at least one candidate is rejected.
 - **Properties:** existence, infeasibility, uniqueness or optimality of solutions, argued without committing values (e.g. "no schedule can meet all four", capacity bounds, dominance arguments).
-- **None:** A2, A3 and B's inheritance labels don't apply.
+- **None:** A2 and B's inheritance labels don't apply.
 
 **A2. Extent** (only with A1 = values).
 - **Complete:** every decision variable gets a value, so a full answer is stated.
 - **Partial:** only some decisions are made (e.g. which friends to drop, the order of two blocks).
-
-**A3. Purpose.** More than one can apply.
-- **Answer:** derive the answer, including choosing among equal optima (tie-breaks, secondary objectives).
-- **Check the problem:** solve to confirm the instance is solvable or has a unique solution, typically to validate the encoding.
-- **Check the program:** run the program by hand, predict its output, or compare it with the prose answer. Flag **traced** if the code is actually stepped through.
-- **Interpret:** choose a reading of an ambiguous constraint by solving under each reading.
 
 **Span:** the tokens of every A segment. The solver-like ratio is these tokens divided by all reasoning tokens.
 
@@ -75,8 +69,8 @@ Gemma 4 31B (FP8, vLLM, temperature 0) where reading is needed; scripts everywhe
 
 | Node | Judge | How |
 |---|---|---|
-| A1 type, search flag, A3 purposes (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
-| A1, A3 per trace; solver-like ratio | script | union over paragraphs; ratio = characters in SLB paragraphs / all characters |
+| A1 type and search flag (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
+| A1 per trace; solver-like ratio | script | union over paragraphs; ratio = characters in SLB paragraphs / all characters |
 | A2 extent; prose answer in output format | Gemma C judge (`prompts/judge/c_prose_answer.txt`) | reads the reasoning and the program output |
 | C1 | script, Gemma fallback | parse prose answer and program output with the task parsers and compare; the C judge's yes/no only when either does not parse |
 | C2 | script | the task validators (VAL for BlocksWorld) on the prose answer (`scripts/validate_prose_answers.py`) |
