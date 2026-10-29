@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "V_rej",
+  "model": "gpt",
+  "sheet": "a1r3",
+  "task": "meeting",
+  "trace": "gpt/meeting/baseline/meeting_planning_example_789",
+  "updatedAt": "2026-10-29T21:35:51.830Z"
+}

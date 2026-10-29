@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "N",
+  "model": "deepseek",
+  "sheet": "a1r3",
+  "task": "blocksworld",
+  "trace": "deepseek/blocksworld/caution_a/blocksworld_p98_initial_constraint18",
+  "updatedAt": "2026-10-29T21:33:17.418Z"
+}

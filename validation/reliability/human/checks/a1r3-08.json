@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "V_rej",
+  "model": "qwen",
+  "sheet": "a1r3",
+  "task": "meeting",
+  "trace": "qwen/meeting/baseline/meeting_planning_example_901",
+  "updatedAt": "2026-10-29T21:34:38.644Z"
+}
