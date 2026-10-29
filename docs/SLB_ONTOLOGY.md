@@ -15,18 +15,17 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 | ZebraLogic | the house assignments |
 | BlocksWorld | the action sequence (plan) |
 
-**Solver-like behavior** is reasoning that establishes facts about the instance's solutions: which values satisfy the constraints (or fail them), or whether a solution exists, is unique, or is optimal. Committing to values is one case.
+**Solver-like behavior** is reasoning that does the solver's job on this instance: assigning, testing or ruling out values of its decision variables. (Until 2026-10-29 arguments that a solution exists, does not exist, is unique or is optimal, without committing values, counted too, as A1 properties. They were dropped: rare, and too hard to label reliably.)
 
 **Not SLB:** restating the problem's data or constraints, designing the encoding or code, output format, parsing, and interpreting the constraints. The exception is an interpretation chosen by solving under each reading; that is SLB (A1 values). Also not SLB (rules set 2026-10-29):
 - checking that the encoding behaves as intended on a hypothetical plan or assignment;
-- assuming or hedging about solvability ("we know a solution exists", "add an else branch in case there is none"); A1 properties needs an argument from the instance's constraints;
+- assuming or hedging about solvability ("we know a solution exists", "add an else branch in case there is none");
 - a one-off check of what a constraint means against a single example value that was not obtained by solving ("does 11:30 AM count as morning? It should"). Actively enumerating or deriving candidates and testing them against the constraints is A1 values.
 
 ## A. Solving in prose (from the reasoning)
 
-**A1. What it establishes.** More than one can apply, also within one paragraph: a paragraph is Values, Properties, both, or not SLB (both since 2026-10-29, e.g. ruling out values on the way to a uniqueness or bound argument). (The earlier with-search flag was dropped on 2026-10-29.)
+**A1. What it establishes.** Each paragraph is Values or not SLB; a trace is Values if any paragraph is. (The with-search flag and the Properties type were dropped on 2026-10-29.)
 - **Values:** assigns, tests or rules out values of decision variables. This includes pruning, e.g. computing free intervals or ruling out a friend's window.
-- **Properties:** a conclusion about the whole solution set (no solution, a solution exists, it is unique, or a bound on the optimum) together with its argument from the instance's data, without committing values (e.g. "Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both"). A conclusion stated without its argument (argued earlier, or not at all), an assumption that a solution exists, or a remark about the program's search is not Properties. If the argument also commits, tests or rules out values, the paragraph is both.
 - **None:** A2 and B's inheritance labels don't apply.
 
 **A2. Extent** (only with A1 = values).
