@@ -36,7 +36,7 @@ from validate_prose_answers import check as validate_prose
 
 A2_CORRECTIONS = {"e14": "complete", "e16": "complete"}  # docs/results/2026-10-22_ONTOLOGY_LABELS.md
 A1_CORRECTIONS = {"v016": "N"}  # Harry, 2026-10-29: assuming a solution exists is not SLB
-IN_PROMPT = {"gemma_v2": {"v010", "v011"}, "gemma_v3": {"v010", "v011"}, "gemma_v5": {"v010", "v011", "v016"}}  # used as negative examples in prompts/judge/a_paragraphs.txt
+IN_PROMPT = {"gemma_v2": {"v010", "v011"}, "gemma_v3": {"v010", "v011"}, "gemma_v5": {"v010", "v011", "v016"}, "gemma_v7": {"v010", "v011", "v016"}}  # used as negative examples in prompts/judge/a_paragraphs.txt
 
 
 def load_judge(kind, tag):
