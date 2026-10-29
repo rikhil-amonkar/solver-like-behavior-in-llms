@@ -149,6 +149,8 @@ def main():
     ap.add_argument("--split", default=None, help="Only judge items of this split (dev/test)")
     ap.add_argument("--shard", default="0/1", help="i/n: judge every n-th item starting at i")
     ap.add_argument("--wave-size", type=int, default=1024, help="Requests per vLLM call between cache flushes")
+    ap.add_argument("--thinking", type=int, default=0,
+                    help="Gemma thinking mode with this many extra tokens for the thought (0: off)")
     ap.add_argument("--condense-a-tag", default=None,
                     help="C judge: give only the paragraphs this A-judge tag labelled V or P (in order, gaps marked)")
     args = ap.parse_args()
@@ -185,7 +187,8 @@ def main():
         return
 
     from vllm import LLM, SamplingParams
-    max_len = args.max_model_len or (12288 if args.kind in ("a", "cs") else 163840)
+    max_len = args.max_model_len or ((12288 + args.thinking) if args.kind in ("a", "cs") else 163840)
+    chat_kw = {"enable_thinking": True} if args.thinking else {}
     llm = LLM(model=args.model, max_model_len=max_len, gpu_memory_utilization=args.gpu_memory_utilization,
               max_num_seqs=args.max_num_seqs, quantization=None if args.quantization == "none" else args.quantization,
               kv_cache_dtype="fp8", enable_prefix_caching=True)
@@ -197,8 +200,8 @@ def main():
         msgs, params, keep = [], [], []
         for it in wave:
             m = [{"role": "user", "content": build_prompt(args.kind, it, template)}]
-            n_in = len(tok.apply_chat_template(m, tokenize=True, add_generation_prompt=True))
-            budget = {"a": 20 * len(it.get("paragraphs", [])) + 200, "b": 400, "c": 1500, "cs": 1500}[args.kind]
+            n_in = len(tok.apply_chat_template(m, tokenize=True, add_generation_prompt=True, **chat_kw))
+            budget = {"a": 20 * len(it.get("paragraphs", [])) + 200, "b": 400, "c": 1500, "cs": 1500}[args.kind] + args.thinking
             if n_in + 50 > max_len:  # prompt too long even after truncation: record, do not guess
                 skipped = {"a": {"paras": {}, "missing": list(range(len(it.get("paragraphs", []))))},
                            "b": {"b": None, "spec": None, "evidence": "", "parse_error": True},
@@ -208,13 +211,18 @@ def main():
                     f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": "", "finish_reason": "prompt_too_long", **skipped}) + "\n")
                 continue
             msgs.append(m)
-            params.append(SamplingParams(temperature=0.0, max_tokens=min(budget, max_len - n_in)))
+            # with thinking, keep the channel markers so the thought can be split off before parsing
+            params.append(SamplingParams(temperature=0.0, max_tokens=min(budget, max_len - n_in), skip_special_tokens=not args.thinking))
             keep.append(it)
-        outputs = llm.chat(msgs, params, use_tqdm=False) if msgs else []
+        outputs = llm.chat(msgs, params, use_tqdm=False, chat_template_kwargs=chat_kw or None) if msgs else []
         with out.open("a", encoding="utf-8") as f:
             for it, o in zip(keep, outputs):
-                text = o.outputs[0].text
-                f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": text,
+                text, thought = o.outputs[0].text, None
+                if args.thinking:  # <|channel>thought\n ... <channel|> answer
+                    head, sep, tail = text.partition("<channel|>")
+                    thought, text = (head.replace("<|channel>thought", "", 1).strip(), tail) if sep else (head, "")
+                    text = re.sub(r"<[|][^>]*>|<[^>]*[|]>", "", text)
+                f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": text, **({"thought": thought} if args.thinking else {}),
                                     "finish_reason": o.outputs[0].finish_reason, **parse(args.kind, text, it)}) + "\n")
         n = min(w + args.wave_size, len(todo))
         rate = n / (time.time() - start)

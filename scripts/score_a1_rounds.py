@@ -29,7 +29,7 @@ V9_EXAMPLES = V2_EXAMPLES | {"v016", "a1r2-06", "a1r2-11", "a1r2-12", "a1r2-13",
                              "a1r3-03", "a1r3-04", "a1r3-08", "a1r3-14", "a1r3-15", "a1r3-17", "a1r3-18"}
 IN_PROMPT = {"gemma_v3": V2_EXAMPLES, "gemma_v5": V2_EXAMPLES | {"v016"},
              "gemma_v7": V2_EXAMPLES | {"v016", "a1r2-06", "a1r2-11", "a1r2-18", "a1r2-19"},
-             "gemma_v9": V9_EXAMPLES}
+             "gemma_v9": V9_EXAMPLES, "gemma_v9t": V9_EXAMPLES}
 
 
 def references():
