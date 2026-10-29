@@ -36,6 +36,7 @@ sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "scripts"))
 from ontology_items import build_items
 from execution.output_formatter import parse_output_by_task
+from general.io_utils import load_problems_json
 from validate_prose_answers import check as validate_prose
 
 PURPOSES = ["ans", "chp", "chg", "int"]
@@ -53,22 +54,30 @@ def load_judge(kind, tag):
 
 def plan_actions(text):
     """Normalized action tuples from a plan written as '(unstack a b)' lines or 'unstack a b'."""
+    text = "\n".join(l for l in text.splitlines() if not l.strip().startswith(";"))  # planner comments, e.g. "; cost = 4 (unit cost)"
     acts = re.findall(r"\(([^()]+)\)", text) or [l for l in text.splitlines() if l.strip()]
     return [tuple(a.lower().replace(",", " ").split()) for a in acts if a.strip() and not a.strip().startswith(";")]
+
+
+_PROBLEMS = {}
+
+
+def problem_data(task, eid):
+    """Problem dict the task parsers need (ZebraLogic needs its attribute list)."""
+    if task not in _PROBLEMS:
+        _PROBLEMS[task] = load_problems_json(task)
+    return _PROBLEMS[task].get(eid, {})
 
 
 def c1_script(trace, prose):
     """True/False if both answers parse and can be compared, else None."""
     task = trace["task"]
     if task == "blocksworld":
-        try:
-            plan = json.loads(trace["output"]).get("plan") or ""
-        except (ValueError, AttributeError):
-            return None
-        a, b = plan_actions(prose), plan_actions(plan)
+        a, b = plan_actions(prose), plan_actions(trace["plan"])
         return (a == b) if a and b else None
-    a = parse_output_by_task(prose, task)
-    b = parse_output_by_task(trace["raw_stdout"], task)
+    pd = problem_data(task, trace["example_id"])
+    a = parse_output_by_task(prose, task, pd)
+    b = parse_output_by_task(trace["raw_stdout"], task, pd)
     if a is None or b is None:
         return None
     return a == b

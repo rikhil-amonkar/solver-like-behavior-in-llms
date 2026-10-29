@@ -68,3 +68,15 @@ Columns: SLB ratio (mean); A1 values / properties / none; with search; A3 answer
 - **Prose answers are often wrong where the program is right.** GPT-OSS Meeting baseline: 32 of 84 complete prose answers fail the validator. Qwen BlocksWorld: 21 of 35 prose plans fail VAL.
 - **Qwen ZebraLogic has 39–44% B = n/a:** the programs crash or print nothing (execution errors), so B and C1 are undefined there.
 - **Few consistency flags** (5 traces in all), all in GPT-OSS BlocksWorld and Qwen ZebraLogic.
+
+## Spot checks by Harry and script checks (2026-10-29)
+
+**A1 (20 paragraph labels, `validation/reliability/a1_verify.*`, marks in `human/verify/`).** Harry agrees with Gemma's type on **18/20** and with the rejects flag on **5/5** Values paragraphs he checked. Both disagreements are Gemma calling encoding work solver-like: v010 (BlocksWorld; checking that a flag predicate enforces an ordering constraint for a hypothetical plan → V/chp, should be N) and v011 (ZebraLogic; hedging that the puzzle might be unsat while writing the unsat branch → P/chp, should be N).
+
+**A2 (20 traces: 8 complete, 6 partial, 6 none; `a2_verify.*`, marks in `human/verify_a2/`).** Harry could verify the 8 complete ones (all agree); the partial/none ones need the full trace, which is too long to read. Script checks (`scripts/check_a2_against_output.py`) against the program output:
+- All 8 complete: the extracted prose answer occurs in the reasoning, and the parser comparison with the program output agrees with Gemma's match (e00 after fixing a plan-parsing bug).
+- **2 of the 12 partial/none are wrong**, both should be complete: e16 (Qwen Calendar; the reasoning checks "our 10:30–11:00" against the busy times) and e14 (DeepSeek ZebraLogic; a full grid at ~31k characters of a 102k-character trace).
+- **Cause for e14: the B and C judges see only the first 6k and last 40k characters.** 1,276 traces (35%) are longer, mostly DeepSeek/Qwen Meeting and BlocksWorld. Gemma 4 has a 262k-token context, so B and C should get the full reasoning.
+- Across all traces, the program's answer appears written out in 302 of 1,137 partial/none traces, but this heuristic is noisy (Calendar slots and small ZebraLogic grids also appear when the model restates the problem), so it bounds rather than measures the error.
+
+**Fixes to the assembly (C1).** The ZebraLogic parser was called without the problem's attribute list and the BlocksWorld plan was read from a truncated record, so C1 for those tasks had fallen back to Gemma's yes/no; the planner's "; cost = n (unit cost)" comment was also parsed as an action. Now 1,930 C1 values come from the parser comparison and 20 from Gemma. BlocksWorld C1 mismatches rise (e.g. Qwen baseline 1/15 → 9/15): the planner's plan differs from the prose plan, though both may be valid.

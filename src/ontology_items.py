@@ -71,7 +71,7 @@ def build_items(root="output", cells=None):
             traces.append(dict(id=key, h=text_hash(reasoning, program, output), model=m, task=t, cond=c, example_id=eid,
                                problem=problem, reasoning=reasoning, program=program, output=output[:6000],
                                ran=bool(ce.get("ran")) and (t == "blocksworld" or ce.get("exit_code") == 0),
-                               raw_stdout=ce.get("stdout") or ""))
+                               raw_stdout=ce.get("stdout") or "", plan=ce.get("plan") or ""))
             segs = split_reasoning_by_tokens(reasoning, SEGMENT_TOKENS) if reasoning.strip() else []
             for j, seg in enumerate(segs):
                 paras = paragraphs(seg)

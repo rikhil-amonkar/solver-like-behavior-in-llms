@@ -1,7 +1,9 @@
 {
   "gemma": "V",
+  "gemmaSearch": false,
   "human": "V",
   "model": "gpt",
+  "searchOk": false,
   "task": "zebralogic",
-  "updatedAt": "2026-10-22T16:56:31.017Z"
+  "updatedAt": "2026-10-29T13:49:47.661Z"
 }
