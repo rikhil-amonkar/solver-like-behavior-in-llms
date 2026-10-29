@@ -71,7 +71,7 @@ Columns: SLB ratio (mean); A1 values / properties / none; with search; A3 answer
 
 ## Spot checks by Harry and script checks (2026-10-29)
 
-**A1 (20 paragraph labels, `validation/reliability/a1_verify.*`, marks in `human/verify/`).** Harry agrees with Gemma's type on **18/20** and with the rejects flag on **5/5** Values paragraphs he checked. Both disagreements are Gemma calling encoding work solver-like: v010 (BlocksWorld; checking that a flag predicate enforces an ordering constraint for a hypothetical plan → V/chp, should be N) and v011 (ZebraLogic; hedging that the puzzle might be unsat while writing the unsat branch → P/chp, should be N).
+**A1 (20 paragraph labels, `validation/reliability/a1_verify.*`, marks in `human/verify/`).** Harry agrees with Gemma's type on **18/20** and with the rejects flag on **4/5** Values paragraphs he checked (v008: the paragraph rejects a candidate, Gemma missed it). Both disagreements are Gemma calling encoding work solver-like: v010 (BlocksWorld; checking that a flag predicate enforces an ordering constraint for a hypothetical plan → V/chp, should be N) and v011 (ZebraLogic; hedging that the puzzle might be unsat while writing the unsat branch → P/chp, should be N).
 
 **A2 (20 traces: 8 complete, 6 partial, 6 none; `a2_verify.*`, marks in `human/verify_a2/`).** Harry could verify the 8 complete ones (all agree); the partial/none ones need the full trace, which is too long to read. Script checks (`scripts/check_a2_against_output.py`) against the program output:
 - All 8 complete: the extracted prose answer occurs in the reasoning, and the parser comparison with the program output agrees with Gemma's match (e00 after fixing a plan-parsing bug).
