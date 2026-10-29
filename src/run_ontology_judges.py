@@ -34,7 +34,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 PROMPTS = {"a": REPO / "prompts/judge/a_paragraphs.txt", "b": REPO / "prompts/judge/b_program.txt",
-           "c": REPO / "prompts/judge/c_prose_answer.txt", "cs": REPO / "prompts/judge/c_segment.txt"}
+           "c": REPO / "prompts/judge/c_prose_answer.txt", "cs": REPO / "prompts/judge/c_segment.txt",
+           "c_condensed": REPO / "prompts/judge/c_prose_answer_condensed.txt"}
 LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*\|\s*([01])\s*(?:\|\s*([a-z,\s-]*))?\s*$", re.M)  # purposes: gemma_v1/v2 only
 PURPOSES = {"ans", "chp", "chg", "int"}
 REASONING_HEAD, REASONING_TAIL = 50000, 350000  # characters kept from a very long reasoning (B, C); fits a 160k-token context
@@ -97,6 +98,44 @@ def parse(kind: str, text: str, item: dict) -> dict:
         return {"b": None, "spec": None, "evidence": "", "parse_error": True}
 
 
+def condense(traces, a_tag):
+    """Replace each trace's reasoning by its solver-like paragraphs (V or P per the A judge),
+    in order, with a marker where other paragraphs were left out. The hash changes with the
+    A labels, so a new A tag re-judges. Traces with any unjudged segment are dropped."""
+    import glob
+    import hashlib
+    sys.path.insert(0, str(REPO / "src"))
+    from ontology_items import build_items
+    ja = {}
+    for f in glob.glob(str(REPO / f"output/ontology/judge_a_{a_tag}*.jsonl")) + glob.glob(str(REPO / f"validation/reliability/checks/judge_a_{a_tag}.jsonl")):
+        for line in open(f):
+            r = json.loads(line)
+            ja[(r["id"], r.get("h"))] = r
+    segments, _ = build_items()
+    by_trace = {}
+    for s in segments:
+        by_trace.setdefault(s["trace"], []).append(s)
+    out = []
+    for t in traces:
+        segs = by_trace.get(t["id"], [])
+        if not segs or any((s["id"], s["h"]) not in ja for s in segs):
+            continue
+        parts, gap = [], False
+        for s in segs:
+            r = ja[(s["id"], s["h"])]
+            for i, p in enumerate(s["paragraphs"]):
+                if r["paras"].get(str(i), {"t": "N"})["t"] != "N":
+                    if gap and parts:
+                        parts.append("[...]")
+                    parts.append(p)
+                    gap = False
+                else:
+                    gap = True
+        text = "\n\n".join(parts) if parts else "(no solver-like paragraphs)"
+        out.append({**t, "reasoning": text, "h": hashlib.sha1((t["h"] + a_tag + text).encode()).hexdigest()[:10]})
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("kind", choices=["a", "b", "c", "cs"])
@@ -110,6 +149,8 @@ def main():
     ap.add_argument("--split", default=None, help="Only judge items of this split (dev/test)")
     ap.add_argument("--shard", default="0/1", help="i/n: judge every n-th item starting at i")
     ap.add_argument("--wave-size", type=int, default=1024, help="Requests per vLLM call between cache flushes")
+    ap.add_argument("--condense-a-tag", default=None,
+                    help="C judge: give only the paragraphs this A-judge tag labelled V or P (in order, gaps marked)")
     args = ap.parse_args()
     shard, n_shards = map(int, args.shard.split("/"))
 
@@ -130,6 +171,8 @@ def main():
         if args.split:
             items = [it for it in items if it.get("split") == args.split]
         out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
+    if args.condense_a_tag:
+        items = condense(items, args.condense_a_tag)
     # The cache is every shard's file: when traces change, items move between shards.
     key = lambda r: (r["id"], r.get("h"))
     done = set()
@@ -147,7 +190,7 @@ def main():
               max_num_seqs=args.max_num_seqs, quantization=None if args.quantization == "none" else args.quantization,
               kv_cache_dtype="fp8", enable_prefix_caching=True)
     tok = llm.get_tokenizer()
-    template = PROMPTS[args.kind].read_text(encoding="utf-8")
+    template = PROMPTS["c_condensed" if args.kind == "c" and args.condense_a_tag else args.kind].read_text(encoding="utf-8")
     start = time.time()
     for w in range(0, len(todo), args.wave_size):
         wave = todo[w:w + args.wave_size]

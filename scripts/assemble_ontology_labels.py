@@ -67,6 +67,31 @@ def problem_data(task, eid):
     return _PROBLEMS[task].get(eid, {})
 
 
+def answer_parses(task, eid, answer):
+    if not (answer or "").strip():
+        return False
+    if task == "blocksworld":
+        return bool(plan_actions(answer))
+    return parse_output_by_task(answer, task, problem_data(task, eid)) is not None
+
+
+def extent_from_segments(trace, seg_results):
+    """A2 and prose answer from the per-segment C judge (cs): complete if any segment states a
+    complete answer that parses (the prose answer is the last such one), else partial if any
+    segment commits some decisions, else none. Returns (extent, answer, segment index)."""
+    last, partial = None, False
+    for j, r in enumerate(seg_results):
+        if r is None:
+            continue
+        if r.get("extent") == "complete" and answer_parses(trace["task"], trace["example_id"], r.get("answer")):
+            last = (j, r["answer"])
+        elif r.get("extent") in ("complete", "partial"):
+            partial = True
+    if last:
+        return "complete", last[1], last[0]
+    return ("partial" if partial else "none"), "", None
+
+
 def c1_script(trace, prose):
     """True/False if both answers parse and can be compared, else None."""
     task = trace["task"]

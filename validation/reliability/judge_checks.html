@@ -66,12 +66,14 @@ textarea { width: 100%; min-height: 38px; font: 13px var(--sans); background: va
 
 <script>
 const SHEETS = {
+  a1r2: { name: "A1 (round 2)", intro: "No judge label is shown. For the highlighted paragraph: Values = assigns, tests or rules out values of the answer (incl. pruning); say whether it rejects a candidate. Properties = argues a solution exists, none does, or it is unique/optimal, without values. Not SLB = restating, encoding/code design (incl. checking the encoding against hypothetical values), format, parsing, interpreting a constraint, hedging about solvability." },
+  a2r2: { name: "A2 (round 2)", intro: "No judge label is shown. Does the reasoning reach an answer, using its final position? Complete = every decision variable gets a value (also when stated while checking it or predicting the program's output). Partial = some decisions only. None = no values committed. The search box is pre-filled with a value from the program's answer to help find a stated answer; use Can't tell if you can't decide." },
   b: { name: "B label", intro: "What does the program do with the answer the prose reached? Hardcoded: prints an answer it does not compute. Partly fixed: computes, but decisions made in prose are written in. Steered: searches, but its tie-break/objective/order was chosen to return the prose answer. Independent: solves on its own. Use the search box to check claims about the reasoning." },
   spec: { name: "Spec change", intro: "Does the program drop, relax or add a constraint, goal or action, compared with the problem? If so, does the problem require it (e.g. a constraint says the hand must end holding a block)?" },
   c1: { name: "C1 match", intro: "A script compared the answer reached in the prose with the program's output. Are they the same answer, formatting aside? (For BlocksWorld the output is the planner's plan.)" },
   c2: { name: "C2 correct", intro: "The task validator judged whether the prose answer is a correct solution. Is it? Use “Can't tell” if checking it by hand is impractical." },
 };
-const S = { data: {}, marks: {}, tab: "b", db: null };
+const S = { data: {}, marks: {}, tab: "a1r2", db: null };
 const fill = (el, ...kids) => el.replaceChildren(...kids.filter(k => k != null));
 const h = (tag, attrs = {}, ...kids) => {
   const el = document.createElement(tag);
@@ -99,7 +101,8 @@ function setMark(it, patch) {
 function counts(sheet) {
   const items = S.data[sheet] || [], done = items.filter(it => S.marks[it.id] && "human" in S.marks[it.id]);
   const sure = done.filter(it => S.marks[it.id].human !== "unsure");
-  return { n: items.length, done: done.length, agree: sure.filter(it => same(S.marks[it.id].human, it.question.gemma)).length, sure: sure.length };
+  const blind = items.length && items[0].blind;
+  return { n: items.length, done: done.length, blind, agree: sure.filter(it => same(S.marks[it.id].human, it.question.gemma)).length, sure: sure.length };
 }
 function renderTabs() {
   fill(document.getElementById("tabs"), ...Object.entries(SHEETS).map(([k, v]) => {
@@ -109,11 +112,11 @@ function renderTabs() {
 }
 function renderTally() {
   const c = counts(S.tab);
-  fill(document.getElementById("tally"), h("span", {}, `${SHEETS[S.tab].name}: checked `, h("b", {}, `${c.done}/${c.n}`), " · agrees with the judge ", h("b", {}, c.sure ? `${c.agree}/${c.sure}` : "–")),
+  fill(document.getElementById("tally"), h("span", {}, `${SHEETS[S.tab].name}: checked `, h("b", {}, `${c.done}/${c.n}`), c.blind ? " · blind (judge labels hidden)" : " · agrees with the judge ", c.blind ? null : h("b", {}, c.sure ? `${c.agree}/${c.sure}` : "–")),
     S.db ? null : h("span", {}, " · not signed in, marks are not saved"));
   renderTabs();
 }
-function searchBox(text) {
+function searchBox(text, query) {
   const out = h("div", { class: "search" });
   const res = h("div", { class: "search" });
   const input = h("input", { type: "search", placeholder: "Search this reasoning (e.g. a time, a name, 'tie')", oninput: () => {
@@ -127,6 +130,7 @@ function searchBox(text) {
         return h("div", { class: "snip" }, (a ? "…" : "") + text.slice(a, i), h("mark", {}, text.slice(i, i + q.length)), text.slice(i + q.length, b) + (b < text.length ? "…" : "")); }));
   } });
   fill(out, input, res);
+  if (query) { input.value = query; input.dispatchEvent(new Event("input")); }
   return out;
 }
 function block(b) {
@@ -135,14 +139,14 @@ function block(b) {
   if (b.mode === "collapsed") return h("details", {}, h("summary", {}, b.label), h("pre", { class: "box" }, b.text));
   if (b.mode === "tail") {
     const pre = h("pre", { class: "box tail" }, b.text.length > 8000 ? "…" + b.text.slice(-8000) : b.text);
-    return h("div", {}, h("details", { open: true }, h("summary", {}, b.label), pre, b.text.length > 8000 ? h("details", {}, h("summary", {}, "Full reasoning"), h("pre", { class: "box" }, b.text)) : null), b.search ? searchBox(b.text) : null);
+    return h("div", {}, h("details", { open: true }, h("summary", {}, b.label), pre, b.text.length > 8000 ? h("details", {}, h("summary", {}, "Full reasoning"), h("pre", { class: "box" }, b.text)) : null), b.search ? searchBox(b.text, b.query) : null);
   }
   return h("div", {}, h("div", { class: "label" }, b.label), h("pre", { class: "box" }, b.text));
 }
 function renderCard(it) {
   const card = document.getElementById(it.id); if (!card) return;
   const m = S.marks[it.id] || {}, q = it.question, has = "human" in m;
-  const verdict = has ? (m.human === "unsure" ? h("span", { class: "verdict" }, "can't tell") : same(m.human, q.gemma) ? h("span", { class: "verdict ok" }, "agrees") : h("span", { class: "verdict bad" }, "disagrees")) : null;
+  const verdict = !has ? null : it.blind ? h("span", { class: "verdict" }, "marked") : (m.human === "unsure" ? h("span", { class: "verdict" }, "can't tell") : same(m.human, q.gemma) ? h("span", { class: "verdict ok" }, "agrees") : h("span", { class: "verdict bad" }, "disagrees"));
   let controls;
   if (q.type === "multi") {
     const cur = has ? m.human : q.gemma;  // start from the judge's selection; toggling saves
@@ -153,13 +157,14 @@ function renderCard(it) {
       } }, n)));
   } else {
     controls = h("div", { class: "row" }, h("span", { class: "label" }, q.prompt),
-      ...q.options.map(([v, n]) => h("button", { class: same(v, q.gemma) ? "agree" : "opt", "aria-pressed": has && same(m.human, v), onclick: () => setMark(it, { human: v }) }, n + (same(v, q.gemma) ? " (judge)" : ""))));
+      ...q.options.map(([v, n]) => { const j = !it.blind && same(v, q.gemma);
+        return h("button", { class: j ? "agree" : "opt", "aria-pressed": has && same(m.human, v), onclick: () => setMark(it, { human: v }) }, n + (j ? " (judge)" : "")); }));
   }
   const ta = h("textarea", { placeholder: "Note (optional)", oninput: e => { S.marks[it.id] = { ...(S.marks[it.id] || {}), note: e.target.value, sheet: it.id.split("-")[0], gemma: q.gemma }; clearTimeout(card.t); card.t = setTimeout(() => save(it.id), 600); } });
   const openState = [...card.querySelectorAll("details")].map(d => d.open);
   fill(card,
     h("div", { class: "meta" }, h("span", { class: "id" }, it.id), `${it.model} · ${it.task} · ${it.cond}`, verdict),
-    h("div", { class: "gemma" }, h("b", {}, "Judge: "), it.gemma_text),
+    it.blind ? null : h("div", { class: "gemma" }, h("b", {}, "Judge: "), it.gemma_text),
     ...it.blocks.map(block), controls, ta);
   ta.value = m.note || "";
   card.querySelectorAll("details").forEach((d, i) => { if (openState[i] !== undefined) d.open = openState[i]; });

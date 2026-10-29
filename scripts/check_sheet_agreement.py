@@ -31,7 +31,7 @@ REL = REPO / "validation/reliability"
 sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "scripts"))
 from ontology_items import build_items
-from assemble_ontology_labels import c1_script
+from assemble_ontology_labels import c1_script, extent_from_segments
 from validate_prose_answers import check as validate_prose
 
 A2_CORRECTIONS = {"e14": "complete", "e16": "complete"}  # docs/results/2026-10-22_ONTOLOGY_LABELS.md
@@ -77,6 +77,22 @@ def main():
     seg = {s["id"]: s for s in segments}
     tr = {t["id"]: t for t in traces}
     ja, jb, jc = load_judge("a", args.tag), load_judge("b", args.tag), load_judge("c", args.tag)
+    # condensed C runs (--condense-a-tag) key items by a different hash: fall back to the id
+    jc_id = {k[0]: v for k, v in jc.items()}
+    jc = {(t["id"], t["h"]): jc.get((t["id"], t["h"])) or jc_id[t["id"]] for t in traces if (t["id"], t["h"]) in jc or t["id"] in jc_id}
+    jcs = load_judge("cs", args.tag)
+    if jcs:  # per-segment C judge: derive the trace-level C result from its segments
+        by_trace = {}
+        for s_ in segments:
+            by_trace.setdefault(s_["trace"], []).append(s_)
+        jc = {}
+        for t in traces:
+            segs = by_trace.get(t["id"], [])
+            res = [jcs.get((s_["id"], s_["h"])) for s_ in segs]
+            if segs and all(r is not None for r in res):
+                ext, ans, _ = extent_from_segments(t, res)
+                jc[(t["id"], t["h"])] = {"extent": ext, "prose_answer": ans}
+        print(f"(C results from the per-segment judge for {len(jc)} traces)")
     excluded = IN_PROMPT.get(args.tag, set())
     print(f"== judge {args.tag} vs Harry's check sheets ==")
 

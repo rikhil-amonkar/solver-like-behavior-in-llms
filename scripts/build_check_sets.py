@@ -26,9 +26,9 @@ def main():
     seg_by_id = {s["id"]: s for s in segments}
     tr_by_id = {t["id"]: t for t in traces}
     checks = json.load(open(REL / "judge_checks.json"))  # a3, b, spec, c1, c2
-    a = {it["segment"] for it in json.load(open(REL / "a1_verify.json"))} | {it["segment"] for it in checks["a3"]}
+    a = {it["segment"] for it in json.load(open(REL / "a1_verify.json"))} | {it["segment"] for k in ("a3", "a1r2") for it in checks.get(k, [])}
     out = {"a": [seg_by_id[s] for s in sorted(a)]}
-    for kind, ids in [("c", [it["trace"] for it in json.load(open(REL / "a2_verify.json"))] + [it["trace"] for k in ("c1", "c2") for it in checks[k]]),
+    for kind, ids in [("c", [it["trace"] for it in json.load(open(REL / "a2_verify.json"))] + [it["trace"] for k in ("c1", "c2", "a2r2") for it in checks.get(k, [])]),
                       ("b", [it["trace"] for it in json.load(open(REL / "b_verify.json"))] + [it["trace"] for it in checks["spec"]])]:
         out[kind] = [tr_by_id[i] for i in dict.fromkeys(ids)]
     c_traces = {t["id"] for t in out["c"]}
