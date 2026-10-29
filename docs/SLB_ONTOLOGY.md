@@ -24,9 +24,9 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 
 ## A. Solving in prose (from the reasoning)
 
-**A1. What it establishes.** More than one can apply. (The earlier with-search flag was dropped on 2026-10-29.)
+**A1. What it establishes.** More than one can apply, also within one paragraph: a paragraph is Values, Properties, both, or not SLB (both since 2026-10-29, e.g. ruling out values on the way to a uniqueness or bound argument). (The earlier with-search flag was dropped on 2026-10-29.)
 - **Values:** assigns, tests or rules out values of decision variables. This includes pruning, e.g. computing free intervals or ruling out a friend's window.
-- **Properties:** a conclusion about the whole solution set (no solution, a solution exists, it is unique, or a bound on the optimum) together with its argument from the instance's data, without committing values (e.g. "Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both"). A conclusion stated without its argument (argued earlier, or not at all), an assumption that a solution exists, or a remark about the program's search is not SLB; committing or ruling out values is Values.
+- **Properties:** a conclusion about the whole solution set (no solution, a solution exists, it is unique, or a bound on the optimum) together with its argument from the instance's data, without committing values (e.g. "Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both"). A conclusion stated without its argument (argued earlier, or not at all), an assumption that a solution exists, or a remark about the program's search is not Properties. If the argument also commits, tests or rules out values, the paragraph is both.
 - **None:** A2 and B's inheritance labels don't apply.
 
 **A2. Extent** (only with A1 = values).

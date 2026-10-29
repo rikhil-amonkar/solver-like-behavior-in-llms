@@ -6,15 +6,16 @@ DECISION VARIABLES are what an answer consists of:
 - Zebra puzzles: which value of each attribute goes in which house.
 - BlocksWorld: the plan (the sequence of actions).
 
-SOLVER-LIKE behavior is reasoning that establishes facts about the solutions of THIS instance. Give each paragraph one TYPE: V, P or N.
+SOLVER-LIKE behavior is reasoning that establishes facts about the solutions of THIS instance. Give each paragraph one TYPE: V, P, VP (both) or N.
 
-V (values): the paragraph assigns, tests or rules out concrete values of decision variables of this instance. Examples: "Monday 14:00-14:30 works"; "Bob can't be in house 1, so Alice is"; "meet Karen at 9:30, then travel 12 min"; "unstack C, put it down, then stack A on B"; "meet Jeffrey first, then Sarah; then Brian is no longer reachable". Ruling out or narrowing candidates counts: "Natalie is busy until 11:30, so no slot before 11:30 works"; ruling out a friend whose window is too short; propagating that two attributes share a house; computing free intervals in order to find a slot. A paragraph that commits or tests concrete values is V even if it also states a conclusion such as "so at most 8 friends".
+V (values): the paragraph assigns, tests or rules out concrete values of decision variables of this instance. Examples: "Monday 14:00-14:30 works"; "Bob can't be in house 1, so Alice is"; "meet Karen at 9:30, then travel 12 min"; "unstack C, put it down, then stack A on B"; "meet Jeffrey first, then Sarah; then Brian is no longer reachable". Ruling out or narrowing candidates counts: "Natalie is busy until 11:30, so no slot before 11:30 works"; ruling out a friend whose window is too short; propagating that two attributes share a house; computing free intervals in order to find a slot.
 
-P (properties) is narrow. A paragraph is P only if ALL of these hold:
+P (properties) is narrow. A paragraph has the properties type only if BOTH of these hold:
   1. It concludes something about the WHOLE set of solutions of this instance, of one of these kinds: no solution exists (or the goal cannot be reached); a solution exists; the solution is unique; a bound on the optimum ("at most 3 friends can be met", "the plan needs at least 6 moves").
   2. The paragraph itself contains the argument for it, a derivation from this instance's specific data or constraints ("Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both").
-  3. It does not commit, test or rule out concrete values (otherwise it is V).
-A paragraph that claims such a property but fails 1 or 2 is N, in particular:
+VP (both): the paragraph does both, e.g. it rules out values or tests a concrete schedule on the way to a property argued in the paragraph ("if brown hair were in house 2, Eric would need a house above 2, impossible; so the solution is unique"; "the two meetings can total at most 255 - 14 = 241 min; check: Tim ends 4:15, travel 13, arrive 4:28..."). Use P only when no concrete values are committed, tested or ruled out.
+
+A paragraph that claims such a property but fails 1 or 2 has no properties type (it is V if it also handles values, else N), in particular:
   - a property conclusion whose argument is in an earlier paragraph ("Thus the goal is unreachable.", "So max 8."). This applies ONLY to claims about the solution set: a paragraph that states or sums up concrete values ("so Ann, Bo and Cy, ending at 20:30, 6 friends") is V, even if they were derived earlier;
   - a conclusion with no argument ("all 9 can be met", "the solution is unique, good", "we found it unique");
   - assuming solvability, e.g. because the problem says a solution exists, or hedging ("it may be impossible, but we only need to encode it");
@@ -31,7 +32,7 @@ OUTPUT FORMAT. One line per paragraph, in order, for every paragraph number, and
 Example for a five-paragraph excerpt:
 1|N
 2|V
-3|V
+3|VP
 4|P
 5|N
 

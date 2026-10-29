@@ -50,6 +50,7 @@ def main():
                                  {"label": "", "text": s["paragraphs"][i - 1] if i else "", "mode": "context"},
                                  {"label": "Paragraph", "text": s["paragraphs"][i], "mode": "target"},
                                  {"label": "", "text": s["paragraphs"][i + 1] if i + 1 < len(s["paragraphs"]) else "", "mode": "context"}]})
+    json.dump([seg[sid] for sid in dict.fromkeys(sid for sid, _, _ in PICKS)], open(REL / "checks/pcheck_segments.json", "w"))  # judge input
     sheets = json.load(open(REL / "judge_checks.json"))
     sheets["pcheck"] = items
     json.dump(sheets, open(REL / "judge_checks.json", "w"))

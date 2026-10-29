@@ -134,7 +134,7 @@ def main():
                 chars += len(text)
                 if lab["t"] != "N":
                     slb_chars += len(text)
-                    types.add({"V": "values", "P": "properties"}[lab["t"]])
+                    types |= {{"V": "values", "P": "properties"}[c] for c in lab["t"]}  # "VP": both
         a1 = sorted(types) or ["none"]
         rec = dict(example_id=t["example_id"], a_judged=judged and bool(by_trace[t["id"]]),
                    A1=a1,

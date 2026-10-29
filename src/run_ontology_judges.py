@@ -36,7 +36,7 @@ REPO = Path(__file__).resolve().parent.parent
 PROMPTS = {"a": REPO / "prompts/judge/a_paragraphs.txt", "b": REPO / "prompts/judge/b_program.txt",
            "c": REPO / "prompts/judge/c_prose_answer.txt", "cs": REPO / "prompts/judge/c_segment.txt",
            "c_condensed": REPO / "prompts/judge/c_prose_answer_condensed.txt"}
-LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*(?:\|\s*([01])\s*)?(?:\|\s*([a-z,\s-]*))?\s*$", re.M)  # search flag: up to gemma_v7; purposes: gemma_v1/v2
+LINE = re.compile(r"^\s*(\d+)\s*\|\s*(VP|PV|[NVP])\s*(?:\|\s*([01])\s*)?(?:\|\s*([a-z,\s-]*))?\s*$", re.M)  # search flag: up to gemma_v7; purposes: gemma_v1/v2
 PURPOSES = {"ans", "chp", "chg", "int"}
 REASONING_HEAD, REASONING_TAIL = 50000, 350000  # characters kept from a very long reasoning (B, C); fits a 160k-token context
 
@@ -68,6 +68,7 @@ def parse(kind: str, text: str, item: dict) -> dict:
             i = int(n) - 1
             if 0 <= i < len(item["paragraphs"]) and i not in labels:
                 purposes = sorted({x.strip() for x in (p or "").split(",")} & PURPOSES) if t != "N" else []
+                t = "VP" if t == "PV" else t  # VP (both): gemma_v11 on
                 labels[i] = {"t": t, "s": t == "V" and s == "1", "p": purposes}
         missing = [i for i in range(len(item["paragraphs"])) if i not in labels]
         return {"paras": {str(i): v for i, v in labels.items()}, "missing": missing}
