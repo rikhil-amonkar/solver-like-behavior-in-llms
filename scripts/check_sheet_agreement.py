@@ -35,7 +35,8 @@ from assemble_ontology_labels import c1_script, extent_from_segments
 from validate_prose_answers import check as validate_prose
 
 A2_CORRECTIONS = {"e14": "complete", "e16": "complete"}  # docs/results/2026-10-22_ONTOLOGY_LABELS.md
-IN_PROMPT = {"gemma_v2": {"v010", "v011"}}  # used as negative examples in prompts/judge/a_paragraphs.txt
+A1_CORRECTIONS = {"v016": "N"}  # Harry, 2026-10-29: assuming a solution exists is not SLB
+IN_PROMPT = {"gemma_v2": {"v010", "v011"}, "gemma_v3": {"v010", "v011"}, "gemma_v5": {"v010", "v011", "v016"}}  # used as negative examples in prompts/judge/a_paragraphs.txt
 
 
 def load_judge(kind, tag):
@@ -110,7 +111,7 @@ def main():
             continue
         it = a1[k]
         lab = para_label(it["segment"], it["para"])
-        types.append((v["human"], lab["t"] if lab else None))
+        types.append((A1_CORRECTIONS.get(k, v["human"]), lab["t"] if lab else None))
         if "searchOk" in v and v["human"] == "V":
             gold = it["gemma"]["s"] if v["searchOk"] else not it["gemma"]["s"]
             flags.append((gold, (lab["s"] if lab and lab["t"] == "V" else (False if lab else None))))
@@ -131,6 +132,28 @@ def main():
     # Judge-check page sheets
     sheets = json.load(open(REL / "judge_checks.json"))
     cm = marks("checks")
+
+    # Round 2 (blind): A1 type and rejects flag, A2 extent
+    types, flags, ext = [], [], []
+    for it in sheets.get("a1r2", []):
+        v = cm.get(it["id"])
+        if not v or v.get("human") in (None, "unsure"):
+            continue
+        lab = para_label(it["segment"], it["para"])
+        gold = "V" if v["human"] == "V_rej" else v["human"]
+        types.append((gold, lab["t"] if lab else None))
+        if gold == "V" and lab and lab["t"] == "V":
+            flags.append((v["human"] == "V_rej", bool(lab["s"])))
+    for it in sheets.get("a2r2", []):
+        v = cm.get(it["id"])
+        if not v or v.get("human") in (None, "unsure"):
+            continue
+        t = tr[it["trace"]]
+        r = jc.get((t["id"], t["h"]))
+        ext.append((v["human"], r["extent"] if r else None))
+    report("A1 r2 type", types)
+    report("A1 r2 rejects", flags, "(paragraphs both call Values)")
+    report("A2 r2 extent", ext)
     for name in ("b", "spec", "c1", "c2"):  # A3 dropped from the ontology on 2026-10-29
         pairs = []
         for it in sheets[name]:

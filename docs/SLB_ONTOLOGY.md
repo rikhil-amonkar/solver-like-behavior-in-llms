@@ -17,7 +17,10 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 
 **Solver-like behavior** is reasoning that establishes facts about the instance's solutions: which values satisfy the constraints (or fail them), or whether a solution exists, is unique, or is optimal. Committing to values is one case.
 
-**Not SLB:** restating the problem's data or constraints, designing the encoding or code, output format, parsing, and interpreting the constraints. The exception is an interpretation chosen by solving under each reading; that is SLB (A1 values).
+**Not SLB:** restating the problem's data or constraints, designing the encoding or code, output format, parsing, and interpreting the constraints. The exception is an interpretation chosen by solving under each reading; that is SLB (A1 values). Also not SLB (rules set 2026-10-29):
+- checking that the encoding behaves as intended on a hypothetical plan or assignment;
+- assuming or hedging about solvability ("we know a solution exists", "add an else branch in case there is none"); A1 properties needs an argument from the instance's constraints;
+- a one-off check of what a constraint means against a single example value that was not obtained by solving ("does 11:30 AM count as morning? It should"). Actively enumerating or deriving candidates and testing them against the constraints is A1 values.
 
 ## A. Solving in prose (from the reasoning)
 
