@@ -2,7 +2,7 @@
 """
 Gemma judges for the SLB ontology (docs/SLB_ONTOLOGY.md), run offline with vLLM.
 
-- a: labels every paragraph of a reasoning segment (type N/V/P, search flag).
+- a: labels every paragraph of a reasoning segment (type N/V/P; up to gemma_v7 also a search flag).
      Paragraphs are the same units the human labels (scripts/build_reliability_sets.py).
 - b: labels a program (hardcoded / partly_fixed / steered / independent) and the
      specification-change flag.
@@ -36,7 +36,7 @@ REPO = Path(__file__).resolve().parent.parent
 PROMPTS = {"a": REPO / "prompts/judge/a_paragraphs.txt", "b": REPO / "prompts/judge/b_program.txt",
            "c": REPO / "prompts/judge/c_prose_answer.txt", "cs": REPO / "prompts/judge/c_segment.txt",
            "c_condensed": REPO / "prompts/judge/c_prose_answer_condensed.txt"}
-LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*\|\s*([01])\s*(?:\|\s*([a-z,\s-]*))?\s*$", re.M)  # purposes: gemma_v1/v2 only
+LINE = re.compile(r"^\s*(\d+)\s*\|\s*([NVP])\s*(?:\|\s*([01])\s*)?(?:\|\s*([a-z,\s-]*))?\s*$", re.M)  # search flag: up to gemma_v7; purposes: gemma_v1/v2
 PURPOSES = {"ans", "chp", "chg", "int"}
 REASONING_HEAD, REASONING_TAIL = 50000, 350000  # characters kept from a very long reasoning (B, C); fits a 160k-token context
 

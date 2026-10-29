@@ -24,9 +24,9 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 
 ## A. Solving in prose (from the reasoning)
 
-**A1. What it establishes.** More than one can apply.
-- **Values:** assigns, tests or rules out values of decision variables. This includes pruning, e.g. computing free intervals or ruling out a friend's window. Flag **with search** if at least one candidate is rejected.
-- **Properties:** existence, infeasibility, uniqueness or optimality of solutions, argued without committing values (e.g. "no schedule can meet all four", capacity bounds, dominance arguments).
+**A1. What it establishes.** More than one can apply. (The earlier with-search flag was dropped on 2026-10-29.)
+- **Values:** assigns, tests or rules out values of decision variables. This includes pruning, e.g. computing free intervals or ruling out a friend's window.
+- **Properties:** a conclusion about the whole solution set (no solution, a solution exists, it is unique, or a bound on the optimum) together with its argument from the instance's data, without committing values (e.g. "Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both"). A conclusion stated without its argument (argued earlier, or not at all), an assumption that a solution exists, or a remark about the program's search is not SLB; committing or ruling out values is Values.
 - **None:** A2 and B's inheritance labels don't apply.
 
 **A2. Extent** (only with A1 = values).
@@ -72,7 +72,7 @@ Gemma 4 31B (FP8, vLLM, temperature 0) where reading is needed; scripts everywhe
 
 | Node | Judge | How |
 |---|---|---|
-| A1 type and search flag (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
+| A1 type (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
 | A1 per trace; solver-like ratio | script | union over paragraphs; ratio = characters in SLB paragraphs / all characters |
 | A2 extent; prose answer in output format | Gemma C judge (`prompts/judge/c_prose_answer.txt`) | reads the reasoning and the program output |
 | C1 | script, Gemma fallback | parse prose answer and program output with the task parsers and compare; the C judge's yes/no only when either does not parse |
