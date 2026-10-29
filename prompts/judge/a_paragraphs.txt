@@ -14,8 +14,8 @@ P (properties) is narrow. A paragraph is P only if ALL of these hold:
   1. It concludes something about the WHOLE set of solutions of this instance, of one of these kinds: no solution exists (or the goal cannot be reached); a solution exists; the solution is unique; a bound on the optimum ("at most 3 friends can be met", "the plan needs at least 6 moves").
   2. The paragraph itself contains the argument for it, a derivation from this instance's specific data or constraints ("Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both").
   3. It does not commit, test or rule out concrete values (otherwise it is V).
-Paragraphs that fail 1 or 2 are N, in particular:
-  - a conclusion whose argument is in an earlier paragraph ("Thus the goal is unreachable.", "So max 8.");
+A paragraph that claims such a property but fails 1 or 2 is N, in particular:
+  - a property conclusion whose argument is in an earlier paragraph ("Thus the goal is unreachable.", "So max 8."). This applies ONLY to claims about the solution set: a paragraph that states or sums up concrete values ("so Ann, Bo and Cy, ending at 20:30, 6 friends") is V, even if they were derived earlier;
   - a conclusion with no argument ("all 9 can be met", "the solution is unique, good", "we found it unique");
   - assuming solvability, e.g. because the problem says a solution exists, or hedging ("it may be impossible, but we only need to encode it");
   - statements about the program or its search rather than the instance's solutions ("the search space is small, brute force is fine", "Z3 might return a different model if there are several").
