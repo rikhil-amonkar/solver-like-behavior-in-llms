@@ -41,7 +41,7 @@ IN_PROMPT = {"gemma_v2": {"v010", "v011"}, "gemma_v3": {"v010", "v011"}, "gemma_
 
 def load_judge(kind, tag):
     out = {}
-    files = glob.glob(str(REPO / f"output/ontology/judge_{kind}_{tag}*.jsonl")) + glob.glob(str(REL / f"checks/judge_{kind}_{tag}.jsonl"))
+    files = glob.glob(str(REPO / f"output/ontology/judge_{kind}_{tag}*.jsonl")) + glob.glob(str(REL / f"checks/judge_{kind}_{tag}.jsonl"))  # includes the round-3 pool
     for f in sorted(files):
         for line in open(f):
             r = json.loads(line)
@@ -133,27 +133,28 @@ def main():
     sheets = json.load(open(REL / "judge_checks.json"))
     cm = marks("checks")
 
-    # Round 2 (blind): A1 type and rejects flag, A2 extent
-    types, flags, ext = [], [], []
-    for it in sheets.get("a1r2", []):
-        v = cm.get(it["id"])
-        if not v or v.get("human") in (None, "unsure"):
-            continue
-        lab = para_label(it["segment"], it["para"])
-        gold = "V" if v["human"] == "V_rej" else v["human"]
-        types.append((gold, lab["t"] if lab else None))
-        if gold == "V" and lab and lab["t"] == "V":
-            flags.append((v["human"] == "V_rej", bool(lab["s"])))
-    for it in sheets.get("a2r2", []):
-        v = cm.get(it["id"])
-        if not v or v.get("human") in (None, "unsure"):
-            continue
-        t = tr[it["trace"]]
-        r = jc.get((t["id"], t["h"]))
-        ext.append((v["human"], r["extent"] if r else None))
-    report("A1 r2 type", types)
-    report("A1 r2 rejects", flags, "(paragraphs both call Values)")
-    report("A2 r2 extent", ext)
+    # Rounds 2 and 3 (blind): A1 type and rejects flag, A2 extent
+    for rnd in ("r2", "r3"):
+        types, flags, ext = [], [], []
+        for it in sheets.get(f"a1{rnd}", []):
+            v = cm.get(it["id"])
+            if not v or v.get("human") in (None, "unsure"):
+                continue
+            lab = para_label(it["segment"], it["para"])
+            gold = "V" if v["human"] == "V_rej" else v["human"]
+            types.append((gold, lab["t"] if lab else None))
+            if gold == "V" and lab and lab["t"] == "V":
+                flags.append((v["human"] == "V_rej", bool(lab["s"])))
+        for it in sheets.get(f"a2{rnd}", []):
+            v = cm.get(it["id"])
+            if not v or v.get("human") in (None, "unsure"):
+                continue
+            t = tr[it["trace"]]
+            r = jc.get((t["id"], t["h"]))
+            ext.append((v["human"], r["extent"] if r else None))
+        report(f"A1 {rnd} type", types)
+        report(f"A1 {rnd} rejects", flags, "(paragraphs both call Values)")
+        report(f"A2 {rnd} extent", ext)
     for name in ("b", "spec", "c1", "c2"):  # A3 dropped from the ontology on 2026-10-29
         pairs = []
         for it in sheets[name]:
