@@ -4,7 +4,8 @@ Sample Gemma A-judge paragraph labels for a human to verify (agree / correct the
 
 5 paragraphs per task x Gemma type (V, P, N) = 60, stratified across models, each with
 the paragraph before and after for context. BlocksWorld gets 10 per type because its
-labels look suspicious (high ratio and 'interpret' rate).
+labels look suspicious (high ratio and 'interpret' rate). The 75 are shuffled; the human
+check uses the first 20 (balanced across models, tasks and types), so the file keeps 20.
 
 Usage:
     python scripts/build_a1_verification.py --tag gemma_v1
@@ -67,6 +68,7 @@ def main():
                                   text=s["paragraphs"][i], after=s["paragraphs"][i + 1] if i + 1 < len(s["paragraphs"]) else "",
                                   gemma=lab))
     rng.shuffle(items)
+    items = items[:20]
     for n, it in enumerate(items):
         it["id"] = f"v{n:03d}"
     out = REPO / "validation/reliability/a1_verify.json"
