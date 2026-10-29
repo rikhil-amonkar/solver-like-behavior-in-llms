@@ -64,6 +64,7 @@ kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width
     <b class="V">Values</b>: assigns, tests or rules out values of the answer (slot; friends/order/times; house assignments; plan), incl. pruning.
     <b class="P">Properties</b>: argues a solution exists, none does, or it is unique/optimal, without values.
     <b>Not SLB</b>: restating, encoding/code design, format, parsing, interpreting a constraint (unless by solving).
+    For Values, also check Gemma's <b>rejects</b> flag: does the paragraph try a candidate value and find it fails?
     Keys: <kbd>j</kbd>/<kbd>k</kbd> move, <kbd>y</kbd> agree, <kbd>v</kbd>/<kbd>p</kbd>/<kbd>n</kbd> correct type.</p>
 </main>
 
@@ -95,6 +96,10 @@ function mark(it, human) {
   S.marks[it.id] = { ...(S.marks[it.id] || {}), human, gemma: it.gemma.t, task: it.task, model: it.model };
   save(it.id); renderCard(it); renderTally();
 }
+function markSearch(it, ok) {
+  S.marks[it.id] = { ...(S.marks[it.id] || {}), searchOk: ok, gemmaSearch: it.gemma.s, gemma: it.gemma.t, task: it.task, model: it.model };
+  save(it.id); renderCard(it); renderTally();
+}
 function renderTally() {
   const done = S.items.filter(it => S.marks[it.id]?.human);
   const by = t => { const xs = done.filter(it => it.gemma.t === t); const ok = xs.filter(it => S.marks[it.id].human === t).length; return xs.length ? `${ok}/${xs.length}` : "–"; };
@@ -105,6 +110,7 @@ function renderTally() {
     h("span", {}, "Gemma Values correct ", h("b", {}, by("V"))),
     h("span", {}, "Properties ", h("b", {}, by("P"))),
     h("span", {}, "Not SLB ", h("b", {}, by("N"))),
+    (() => { const xs = S.items.filter(it => S.marks[it.id]?.searchOk != null); return h("span", {}, "Rejects flag correct ", h("b", {}, xs.length ? `${xs.filter(it => S.marks[it.id].searchOk).length}/${xs.length}` : "–")); })(),
     S.db ? null : h("span", {}, "· not signed in, marks are not saved"));
 }
 function renderCard(it) {
@@ -122,6 +128,9 @@ function renderCard(it) {
       h("button", { class: "agree", "aria-pressed": m.human === g.t, onclick: () => mark(it, g.t) }, "Correct"),
       h("span", { class: "lbl" }, "or should be"),
       ...["V", "P", "N"].filter(t => t !== g.t).map(t => h("button", { "aria-pressed": m.human === t, onclick: () => mark(it, t) }, NAME[t]))),
+    g.t === "V" ? h("div", { class: "row" }, h("span", { class: "lbl" }, `Gemma says it ${g.s ? "rejects" : "does not reject"} a candidate value. That is`),
+      h("button", { class: "agree", "aria-pressed": m.searchOk === true, onclick: () => markSearch(it, true) }, "Correct"),
+      h("button", { "aria-pressed": m.searchOk === false, onclick: () => markSearch(it, false) }, "Wrong")) : null,
     h("textarea", { placeholder: "Note (optional)", oninput: e => { S.marks[it.id] = { ...(S.marks[it.id] || {}), note: e.target.value, gemma: g.t, task: it.task, model: it.model }; clearTimeout(card.t); card.t = setTimeout(() => save(it.id), 600); } }));
   card.querySelector("textarea").value = m.note || "";
   card.classList.toggle("focus", S.items[S.focus] === it);
