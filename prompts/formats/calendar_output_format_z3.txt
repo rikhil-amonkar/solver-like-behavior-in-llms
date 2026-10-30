@@ -1,0 +1,25 @@
+This problem is a calendar-scheduling task: find a single meeting time that fits every participant's availability.
+
+Write Z3-Python code that declares variables, encodes all constraints, solves with a Z3 solver, and prints the meeting time.
+
+Required imports:
+```python
+from z3 import *
+```
+
+Your code should:
+1. Define Z3 variables for the meeting (day and start time)
+2. Add domain constraints (work hours, meeting duration)
+3. Encode all participant constraints (busy times, preferences)
+4. Call `solver.check()` and retrieve the model
+5. Print the solution in the format below
+
+Print only a Python list of three strings — day, start time, end time.
+
+Rules: the day must be a full weekday name (e.g. "Monday"), each time must be in zero-padded 24-hour HH:MM format with no AM/PM suffix and no seconds, and the list should follow the exact form [day, start time, end time] with no extra strings.
+
+Here is an example:
+
+['Monday', '13:30', '14:00']
+
+SOLUTION CODE:

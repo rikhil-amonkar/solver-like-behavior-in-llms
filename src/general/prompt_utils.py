@@ -76,31 +76,40 @@ def build_full_prompt(
     return full_prompt
 
 
-def get_task_prompts(task: str) -> tuple[str, str]:
+# Native formal language of each task
+TASK_FL = {
+    "calendar": "python",
+    "meeting": "python",
+    "zebralogic": "z3",
+    "blocksworld": "pddl",
+}
+
+
+def get_task_prompts(task: str, fl: str = None) -> tuple[str, str]:
     """
     Get prompt file paths for a task.
 
     Args:
         task: Task name (calendar, meeting, zebralogic, blocksworld)
+        fl: Formal language ('python', 'z3', 'pddl'); None = the task's native one.
+            A non-native FL uses prompts/formats/<task>_output_format_<fl>.txt.
 
     Returns:
         Tuple of (universal_prefix_path, output_format_path)
 
     Raises:
-        ValueError: If task is unknown
+        ValueError: If task is unknown or has no format for the FL
     """
-    # Map tasks to their language and output format
-    task_config = {
-        "calendar": ("python", "prompts/formats/calendar_output_format.txt"),
-        "meeting": ("python", "prompts/formats/meeting_output_format.txt"),
-        "zebralogic": ("z3", "prompts/formats/zebralogic_output_format.txt"),
-        "blocksworld": ("pddl", "prompts/formats/blocksworld_output_format.txt"),
-    }
+    if task not in TASK_FL:
+        raise ValueError(f"Unknown task: {task}. Choose from: {list(TASK_FL.keys())}")
 
-    if task not in task_config:
-        raise ValueError(f"Unknown task: {task}. Choose from: {list(task_config.keys())}")
-
-    language, output_format_path = task_config[task]
+    language = fl or TASK_FL[task]
+    if language == TASK_FL[task]:
+        output_format_path = f"prompts/formats/{task}_output_format.txt"
+    else:
+        output_format_path = f"prompts/formats/{task}_output_format_{language}.txt"
+        if not (get_repo_root() / output_format_path).exists():
+            raise ValueError(f"No {language} format for {task}: {output_format_path}")
     universal_prefix_path = f"prompts/prefix/universal_csp_prefix_{language}.txt"
 
     return universal_prefix_path, output_format_path

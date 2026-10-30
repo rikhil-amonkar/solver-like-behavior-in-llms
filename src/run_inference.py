@@ -22,6 +22,8 @@ from general.prompt_utils import (
     load_prompt_template,
     get_task_prompts,
     build_full_prompt,
+    TASK_FL,
+    get_repo_root,
 )
 from general.cli import ProgressTracker
 from inference.model_caller import call_model, call_model_batch
@@ -37,6 +39,7 @@ def run_inference_pipeline(
     continue_run: bool = False,
     batch_size: int = None,
     output_root: str = None,
+    fl: str = None,
 ):
     """
     Run inference pipeline for a task and model.
@@ -50,9 +53,14 @@ def run_inference_pipeline(
         caution_variant: Cautionary suffix variant ('a' or 'b'), or None for baseline
         continue_run: Resume from last completed example in existing JSONL
         batch_size: Batch size for vLLM models (None = auto: 16 for qwen/gpt, 1 for deepseek)
-        output_root: Output root directory (None = <repo>/output)
+        output_root: Output root directory (None = <repo>/output, or output_crossfl for a non-native FL)
+        fl: Formal language ('python', 'z3'); None = the task's native one
     """
     condition = f"caution_{caution_variant}" if caution_variant else "baseline"
+    fl = fl or TASK_FL[task]
+    if fl != TASK_FL[task] and output_root is None:
+        # Keep cross-FL runs out of output/, which the judges and tables read
+        output_root = str(get_repo_root() / "output_crossfl")
 
     # Auto-select batch size if not specified
     if batch_size is None:
@@ -63,6 +71,7 @@ def run_inference_pipeline(
     print(f"Task: {task}")
     print(f"Model: {model}")
     print(f"Condition: {condition}")
+    print(f"Formal language: {fl}")
     print(f"Examples: {num_examples or 'all'}")
     print(f"Max tokens: {max_tokens or 'default'}")
     print(f"Batch size: {batch_size}")
@@ -83,7 +92,7 @@ def run_inference_pipeline(
 
     # Load prompts
     print("Loading prompts...")
-    universal_prefix_path, output_format_path = get_task_prompts(task)
+    universal_prefix_path, output_format_path = get_task_prompts(task, fl)
     universal_prefix = load_prompt_template(universal_prefix_path)
     output_format = load_prompt_template(output_format_path)
 
@@ -133,6 +142,7 @@ def run_inference_pipeline(
             "model": model,
             "model_full_name": get_model_full_name(model),
             "condition": condition,
+            "fl": fl,
             "cautionary_suffix_enabled": bool(caution_variant),
             "cautionary_suffix_variant": caution_variant,
             "timestamp": get_timestamp(),
@@ -378,6 +388,12 @@ Examples:
     )
 
     parser.add_argument(
+        "--fl",
+        choices=["python", "z3"],
+        default=None,
+        help="Formal language (default: the task's native one; a non-native one writes to output_crossfl/)"
+    )
+    parser.add_argument(
         "--output-root",
         default=None,
         help="Output root directory (default: output/). Use a scratch dir for test runs."
@@ -396,6 +412,7 @@ Examples:
             continue_run=args.continue_run,
             batch_size=args.batch_size,
             output_root=args.output_root,
+            fl=args.fl,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

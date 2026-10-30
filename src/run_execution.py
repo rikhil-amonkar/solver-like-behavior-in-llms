@@ -99,6 +99,7 @@ def run_execution_pipeline(
         "task": task,
         "model": model,
         "condition": condition,
+        "fl": inference_data["run_metadata"].get("fl", get_language_from_task(task)),
         "inference_json": make_path_relative(str(inference_json_path)),
         "timestamp": get_timestamp(),
         "num_examples": len(examples),
@@ -182,6 +183,12 @@ def run_execution_pipeline(
                             "error": "no code extracted",
                             "parsed_output": None,
                         }
+
+                    # Whether the program calls the solver (the FL is a cross-FL factor)
+                    if language != "pddl":
+                        code_result["z3_used"] = bool(extracted_code) and (
+                            "from z3 import" in extracted_code or "import z3" in extracted_code
+                        )
 
                     # Count tokens for reasoning and code
                     reasoning_tokens = count_tokens(reasoning_before_code or "")
