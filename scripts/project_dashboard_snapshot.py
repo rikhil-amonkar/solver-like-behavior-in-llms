@@ -102,13 +102,15 @@ def build_jobs():
          "gpus": "0, 1", "done": c_done, "total": 3600, "unit": "traces",
          "extra": "", "session": judge_session, "after": "a_judge",
          "finished": "DONE" in judge_log},
-        crossfl_job("crossfl_qwen", "Cross-FL: Qwen", "qwen", "2", "crossfl-qwen", None),
+        crossfl_job("crossfl_qwen", "Cross-FL: Qwen", "qwen", "2, 3", "crossfl-qwen", None),
         crossfl_job("crossfl_gpt", "Cross-FL: GPT-OSS", "gpt", "3", "crossfl-gpt", None),
         crossfl_job("crossfl_deepseek", "Cross-FL: DeepSeek (API)", "deepseek", "none (API)",
                     "crossfl-deepseek", None),
     ]
     for j, model in ((jobs[2], "qwen"), (jobs[3], "gpt")):
         j["finished"] = "DONE" in log_text(f"crossfl-{model}.log")
+        if model == "qwen":  # second queue on GPU 3 (scripts/run_crossfl_claim.sh) since 21:40
+            j["finished"] = j["finished"] and "DONE" in log_text("crossfl-qwen-gpu3.log")
         # waits for judge-switch to free its GPU
         j["queued"] = not tmux_alive(j["session"]) and tmux_alive("judge-switch") and j["done"] == 0
     jobs[4]["finished"] = all("DONE" in log_text(f) for f in ("crossfl-deepseek.log", "crossfl-deepseek-bw.log",

@@ -36,7 +36,9 @@ checked with VAL against the golden domain and problem, as the planner's plan is
 - `scripts/run_crossfl_gpu7.sh`: Qwen and GPT-OSS × four pairings × three conditions (`GPU=`,
   `MODELS=`; default GPU 7). Since 2026-10-30: Qwen on GPU 2 (tmux `crossfl-qwen`), GPT-OSS on
   GPU 3 (`crossfl-gpt`), started by `scripts/switch_judges_01_crossfl_23.sh` (tmux `judge-switch`),
-  which moves the judges to GPUs 0 and 1.
+  which moves the judges to GPUs 0 and 1. From 21:40, `scripts/run_crossfl_claim.sh` runs Qwen's
+  remaining pairings backwards on GPU 3 (tmux `crossfl-qwen-gpu3`); `run_inference.py` skips a run
+  whose `<cond>_inference.claim` names another worker, so the two queues never share a run.
 - `scripts/run_crossfl_deepseek.sh`: DeepSeek over the API (tmux `crossfl-deepseek`,
   `crossfl-deepseek-bw`, `crossfl-deepseek-meeting`; `PAIRS=` picks pairings).
 

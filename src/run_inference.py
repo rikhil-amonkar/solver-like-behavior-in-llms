@@ -6,6 +6,7 @@ Calls models with CSP prompts, extracts code, executes it, and saves results inc
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -112,6 +113,12 @@ def run_inference_pipeline(
     # Prepare output path
     output_path = get_output_path(model, task, "inference", condition, output_root)
     print(f"Output: {output_path}\n")
+    # A run can be claimed by one worker (a <cond>_inference.claim file naming it, matched against
+    # $RUN_CLAIM) so that two queues sharing a model's runs never write the same output.
+    claim = output_path.with_suffix(".claim")
+    if claim.exists() and claim.read_text().strip() != os.environ.get("RUN_CLAIM", ""):
+        print(f"{output_path.name} is claimed by {claim.read_text().strip()}; skipping")
+        sys.exit(3)
 
     # Handle continuation mode
     completed_ids = set()

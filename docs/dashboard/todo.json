@@ -38,10 +38,10 @@
  {
   "priority": 1,
   "area": "Experiments",
-  "item": "Cross-FL: Qwen and GPT-OSS runs on GPUs 2 and 3",
-  "detail": "Twenty-four runs (four pairings \u00d7 3 conditions \u00d7 2 models): Qwen on GPU 2, GPT-OSS on GPU 3. They start once judge shards 2 and 3 save their current batch (~19:15 UTC); the judges finish on GPUs 0 and 1.",
-  "status": "waiting",
-  "after": "Judge shards 2 and 3",
+  "item": "Cross-FL: Qwen runs on GPUs 2 and 3",
+  "detail": "GPT-OSS finished its 12 runs. Qwen's remaining runs are split: GPU 2 works forwards (Meeting-Z3, ...), GPU 3 backwards from BlocksWorld-Python; each run is claimed so the two never collide.",
+  "status": "in progress",
+  "after": "",
   "decider": ""
  },
  {
