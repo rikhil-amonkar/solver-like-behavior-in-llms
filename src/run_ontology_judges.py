@@ -99,7 +99,7 @@ def parse(kind: str, text: str, item: dict) -> dict:
         return {"b": None, "spec": None, "evidence": "", "parse_error": True}
 
 
-def condense(traces, a_tag):
+def condense(traces, a_tag, values_only=False):
     """Replace each trace's reasoning by its solver-like paragraphs (V or P per the A judge),
     in order, with a marker where other paragraphs were left out. The hash changes with the
     A labels, so a new A tag re-judges. Traces with any unjudged segment are dropped."""
@@ -125,7 +125,8 @@ def condense(traces, a_tag):
         for s in segs:
             r = ja[(s["id"], s["h"])]
             for i, p in enumerate(s["paragraphs"]):
-                if r["paras"].get(str(i), {"t": "N"})["t"] != "N":
+                t_ = r["paras"].get(str(i), {"t": "N"})["t"]
+                if ("V" in t_) if values_only else t_ != "N":
                     if gap and parts:
                         parts.append("[...]")
                     parts.append(p)
@@ -150,6 +151,8 @@ def main():
     ap.add_argument("--split", default=None, help="Only judge items of this split (dev/test)")
     ap.add_argument("--shard", default="0/1", help="i/n: judge every n-th item starting at i")
     ap.add_argument("--wave-size", type=int, default=1024, help="Requests per vLLM call between cache flushes")
+    ap.add_argument("--condense-values-only", action="store_true",
+                    help="Condense to Values paragraphs only (A1 properties dropped on 2026-10-29)")
     ap.add_argument("--thinking", type=int, default=0,
                     help="Gemma thinking mode with this many extra tokens for the thought (0: off)")
     ap.add_argument("--condense-a-tag", default=None,
@@ -175,7 +178,7 @@ def main():
             items = [it for it in items if it.get("split") == args.split]
         out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
     if args.condense_a_tag:
-        items = condense(items, args.condense_a_tag)
+        items = condense(items, args.condense_a_tag, args.condense_values_only)
     # The cache is every shard's file: when traces change, items move between shards.
     key = lambda r: (r["id"], r.get("h"))
     done = set()

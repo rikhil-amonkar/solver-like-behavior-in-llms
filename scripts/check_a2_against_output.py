@@ -118,6 +118,24 @@ def answer_in_text(task, answer, text, raw_answer=""):
     return None
 
 
+def snippet(t, c, before=700, after=900):
+    """The passage of the reasoning to read: around the last place the program's answer (or,
+    for complete, the extracted prose answer) starts to be written out; else the reasoning's end."""
+    text = t["reasoning"]
+    raw = (c.get("prose_answer") or "") if c.get("extent") == "complete" else (t["plan"] if t["task"] == "blocksworld" else t["raw_stdout"])
+    keys = []
+    if t["task"] == "blocksworld":
+        acts = plan_actions(raw or "")
+        keys = [" ".join(acts[0])] if acts else []
+    else:
+        keys = [m.group(0) for m in TIME.finditer(raw or "")][:1] or [w for w in re.findall(r"[A-Za-z]{4,}", raw or "")][:1]
+    low = " ".join(text.lower().replace("(", " ( ").replace(")", " ) ").split()) if t["task"] == "blocksworld" else text.lower()
+    pos = low.rfind(keys[0].lower()) if keys else -1
+    if pos < 0:
+        return "[end of reasoning] " + low[-(before + after):]
+    return low[max(0, pos - before): pos + after]
+
+
 def program_answer(t):
     if t["task"] == "blocksworld":
         return t["plan"], t["plan"]
@@ -149,7 +167,7 @@ def check(t, c):
 
 def load_c(tag):
     out = {}
-    for f in sorted(glob.glob(str(REPO / f"output/ontology/judge_c_{tag}*.jsonl"))):
+    for f in sorted(glob.glob(str(REPO / f"output/ontology/judge_c_{tag}*.jsonl")) + glob.glob(str(REPO / f"validation/reliability/checks/judge_c_{tag}.jsonl"))):
         for line in open(f):
             r = json.loads(line)
             out[(r["id"], r.get("h"))] = r
@@ -161,6 +179,8 @@ def main():
     ap.add_argument("--sheet", help="a2_verify.json: check its items")
     ap.add_argument("--all", action="store_true", help="check every trace and summarize")
     ap.add_argument("--tag", default="gemma_v1")
+    ap.add_argument("--traces", help="JSON list of trace ids (or items with a 'trace' field): check these, with snippets for reading")
+    ap.add_argument("--out", help="with --traces: write rows (with snippets) here")
     args = ap.parse_args()
     _, traces = build_items()
     by_id = {t["id"]: t for t in traces}
@@ -171,6 +191,21 @@ def main():
             c = jc.get((t["id"], t["h"])) or it["gemma"]
             r = check(t, c)
             print(it["id"], r)
+    if args.traces:
+        ids = [x if isinstance(x, str) else x.get("trace", x.get("id")) for x in json.load(open(args.traces))]
+        rows = []
+        for i in ids:
+            t = by_id[i]
+            c = jc.get((t["id"], t["h"])) or next((v for k, v in jc.items() if k[0] == t["id"]), None)  # condensed runs hash differently
+            if c is None:
+                continue
+            r = check(t, c)
+            r["prose_answer"] = c.get("prose_answer", "")
+            r["snippet"] = snippet(t, c)
+            rows.append(r)
+        json.dump(rows, open(args.out, "w"), indent=1)
+        for r in rows:
+            print(r["trace"], {k: r.get(k) for k in ("extent", "answer_in_prose", "grounded", "c1_parser")})
     if args.all:
         rows = [check(t, jc[(t["id"], t["h"])]) for t in traces if (t["id"], t["h"]) in jc]
         summ = collections.defaultdict(collections.Counter)
