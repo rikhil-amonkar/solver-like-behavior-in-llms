@@ -1,0 +1,9 @@
+{
+  "gemma": "steered",
+  "human": "steered",
+  "model": "gpt",
+  "sheet": "bex",
+  "task": "calendar",
+  "trace": "gpt/calendar/baseline/calendar_scheduling_example_778",
+  "updatedAt": "2026-10-30T00:47:05.953Z"
+}

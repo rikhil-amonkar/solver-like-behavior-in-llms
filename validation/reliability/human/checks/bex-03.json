@@ -1,0 +1,9 @@
+{
+  "gemma": "partly_fixed",
+  "human": "partly_fixed",
+  "model": "gpt",
+  "sheet": "bex",
+  "task": "zebralogic",
+  "trace": "gpt/zebralogic/caution_a/zebralogic_grid_lgp-test-2x4-5",
+  "updatedAt": "2026-10-30T00:44:28.474Z"
+}

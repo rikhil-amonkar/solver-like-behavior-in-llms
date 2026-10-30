@@ -1,0 +1,9 @@
+{
+  "gemma": "steered",
+  "human": "steered",
+  "model": "qwen",
+  "sheet": "bex",
+  "task": "calendar",
+  "trace": "qwen/calendar/baseline/calendar_scheduling_example_429",
+  "updatedAt": "2026-10-30T00:46:52.783Z"
+}

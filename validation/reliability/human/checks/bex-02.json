@@ -1,0 +1,9 @@
+{
+  "gemma": "hardcoded",
+  "human": "hardcoded",
+  "model": "gpt",
+  "sheet": "bex",
+  "task": "meeting",
+  "trace": "gpt/meeting/baseline/meeting_planning_example_144",
+  "updatedAt": "2026-10-30T00:39:50.619Z"
+}

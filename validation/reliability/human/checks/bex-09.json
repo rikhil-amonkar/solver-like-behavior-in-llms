@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "deepseek",
+  "sheet": "bex",
+  "task": "zebralogic",
+  "trace": "deepseek/zebralogic/caution_b/zebralogic_grid_lgp-test-2x6-9",
+  "updatedAt": "2026-10-30T00:47:18.658Z"
+}

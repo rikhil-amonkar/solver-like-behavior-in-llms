@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "gpt",
+  "sheet": "bex",
+  "task": "zebralogic",
+  "trace": "gpt/zebralogic/caution_b/zebralogic_grid_lgp-test-6x6-0",
+  "updatedAt": "2026-10-30T00:47:31.438Z"
+}

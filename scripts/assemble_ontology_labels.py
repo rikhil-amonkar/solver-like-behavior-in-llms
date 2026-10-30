@@ -169,7 +169,8 @@ def main():
                 missing_judgements["b"] += 1
             rec["B"], rec["b_source"] = (b["b"] if b else None), "gemma"
         b = jb.get((t["id"], t["h"]))
-        rec["spec"] = b["spec"] if (b and t["program"].strip()) else None
+        # spec: none / changed (older B tags: required counts as none, not_required as changed)
+        rec["spec"] = {"required": "none", "not_required": "changed"}.get(b["spec"], b["spec"]) if (b and t["program"].strip()) else None
 
         # ---- consistency flags ----
         flags = []
@@ -200,7 +201,7 @@ def main():
             pct(lambda x: "values" in x["A1"]), pct(lambda x: "properties" in x["A1"]), pct(lambda x: x["A1"] == ["none"]),
             pct(lambda x: x["A2"] == "complete"),
             *[pct(lambda x, b=b: x["B"] == b) for b in ["hardcoded", "partly_fixed", "steered", "independent", "na"]],
-            pct(lambda x: x["spec"] == "not_required"),
+            pct(lambda x: x["spec"] == "changed"),
             f"{c1.count(False)}/{len(c1)}", f"{c2.count(False)}/{len(c2)}", str(sum(bool(x["flags"]) for x in r))]))
 
 
