@@ -51,7 +51,7 @@ One label; **n/a** if the program doesn't run or prints nothing.
 - **C1:** does the answer reached in prose match the program's output?
 - **C2:** is the prose answer correct, using the same validator as the program?
 
-Otherwise n/a; a crash is not a mismatch.
+Otherwise n/a; a crash is not a mismatch. Both are scripts given the prose answer the A2 judge extracts, so they need no human agreement check; the extraction itself is checked with A2.
 
 ## How B looks in each formal language
 
@@ -74,7 +74,7 @@ Gemma 4 31B (FP8, vLLM, temperature 0) where reading is needed; scripts everywhe
 | A1 type (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
 | A1 per trace; solver-like ratio | script | union over paragraphs; ratio = characters in SLB paragraphs / all characters |
 | A2 extent; prose answer in output format | Gemma C judge (`prompts/judge/c_prose_answer.txt`) | reads the reasoning and the program output |
-| C1 | script, Gemma fallback | parse prose answer and program output with the task parsers and compare; the C judge's yes/no only when either does not parse |
+| C1 | script | parse prose answer and program output with the task parsers and compare; n/a (reported) when either does not parse |
 | C2 | script | the task validators (VAL for BlocksWorld) on the prose answer (`scripts/validate_prose_answers.py`) |
 | B = n/a | script | no program, failed run, or no output |
 | B label, specification change | Gemma B judge (`prompts/judge/b_program.txt`) | problem, reasoning (head + tail), program, output |

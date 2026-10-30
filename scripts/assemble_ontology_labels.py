@@ -10,7 +10,7 @@ Per trace:
   none exactly when A1 is none.
 - B (script, then Gemma): "na" if there is no program, it failed, or printed nothing;
   otherwise the Gemma B label. Spec change from the Gemma B judge.
-- C1 (script, Gemma fallback): when A2 is complete and the program ran, parse the prose
+- C1 (script only): when A2 is complete and the program ran, parse the prose
   answer and the program output with the task parsers and compare; if either does not
   parse, use the C judge's own yes/no. c1_source records which.
 - C2 (script): the task validator on the prose answer (scripts/validate_prose_answers.py).
@@ -152,9 +152,10 @@ def main():
         rec["C1"] = rec["c1_source"] = rec["C2"] = None
         if rec["A2"] == "complete" and prose.strip():
             if has_output:
+                # C1 is script-only (2026-10-30): an answer the parsers cannot read is n/a, counted
+                # as c1_source "unparsed" rather than falling back to Gemma's yes/no
                 v = c1_script(t, prose)
-                rec["C1"], rec["c1_source"] = (v, "script") if v is not None else (
-                    {"yes": True, "no": False}.get(c["match"]), "gemma")
+                rec["C1"], rec["c1_source"] = (v, "script") if v is not None else (None, "unparsed")
             try:
                 rec["C2"] = validate_prose(t["task"], t["example_id"], prose, cache)[0]
             except Exception:
