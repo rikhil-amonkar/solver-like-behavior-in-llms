@@ -51,3 +51,14 @@ Meeting only. First look at DeepSeek Calendar-Z3 (133 programs): no literal answ
 only rules out Monday; in one case the pin is wrong and the program misses the answer); Python
 loops that use Z3 only as a feasibility check. ZebraLogic-Python: 1 of 100 prints a literal grid;
 the rest search with permutations.
+
+## Meeting golden accuracy is a formatting artefact (checked 2026-10-30)
+DeepSeek Meeting-Z3 golden (exact-string) accuracy is .14/.12/.17 vs .29/.50/.37 native, but
+constraint-based accuracy (which already fails itineraries that meet fewer friends than the
+golden one) is similar. The prompt's rule gives `You meet [person] from [time] to [time].`
+while its example has `You meet Betty for 60 minutes from ...`; golden strings use the example's
+form. 39-48 of the correct Z3 itineraries per run follow the rule, so they cannot match. With
+` for N minutes` stripped from both sides: DeepSeek Z3 .30/.25/.27, native .30/.53/.38. The rest
+are equally good itineraries in another order or with other friends (Z3 returns any model).
+Native GPT-OSS Meeting has the same problem (85-90 of 100 omit the phrase; .02 -> .29/.46/.46).
+The paper uses constraint-based accuracy for Meeting, so its numbers are unaffected.
