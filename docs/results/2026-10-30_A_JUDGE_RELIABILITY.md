@@ -38,3 +38,29 @@ prose answer, written out in the reasoning?) plus Claude reading the passages th
   sketches then drops a schedule -> partial or none). 18/20.
 
 These A2 checks are script + second-model (Claude), not human, except the verified completes.
+
+## B (program label), gemma_b3t (thinking; specification-change flag dropped 2026-10-30)
+
+Harry cannot read whole traces, so B agreement is measured against Claude's labels (made blind to
+the judge, by reading each program and searching the reasoning for why an order or constraint was
+chosen) on the 20-trace round-2 sheet, balanced 5/5/5/5 by gemma_b2t predictions
+(`validation/reliability/claude_b_labels_br2.json`).
+
+gemma_b3t agrees on 17/20 (gemma_b2t also 17/20). Per label (precision / recall):
+hardcoded 5/5, 5/5; partly fixed 3/4, 3/4; steered 4/4, 4/5; independent 5/7, 5/6.
+Disagreements:
+- br2-10 (Claude steered, judge independent): the friends dict is ordered so the first DFS path
+  is the prose schedule ("we can control to find our manual schedule by ordering friends").
+- br2-13 (Claude independent, judge partly fixed): "would rather not meet on Tuesday" encoded as
+  a hard exclusion; Claude reads this as a preference interpretation, not prose solving.
+- br2-00 (Claude partly fixed, judge independent; borderline): stacking restricted to table
+  blocks because "a three-block stack sums to 6", a deduction replacing the sum constraint.
+
+Harry will separately check precision of hardcoded and partly fixed with the judge's evidence
+shown (as for the B examples, where he agreed 13/13).
+
+## C
+
+C1 and C2 are scripts on the prose answer extracted by the A2 judge (C1 parser comparison, no
+Gemma fallback; C2 the task validators), so they need no agreement check; the extracted answer
+is checked with A2 above.

@@ -42,7 +42,7 @@ One label; **n/a** if the program doesn't run or prints nothing.
 - **Steered:** searches, but its tie-break, objective, preference reading or iteration order is chosen so that the search returns the prose answer.
 - **Independent:** none of the above. With A1 = none this is a pure encoding; with A1 ≠ none the prose solving was wasted.
 
-**Specification-change flag:** the program drops, relaxes or adds constraints, goals or actions that the problem does not call for (e.g. drops preferences when no slot fits; adds a PDDL action that makes a contradictory goal reachable). Following an explicit instruction in the problem is not a change: in BlocksWorld p66 the additional constraint "complete the task by holding block4" replaces "block 4 on block 8" in the goal, exactly as the golden PDDL does. Some instances have no solution (10 of 100 in BlocksWorld) and are graded as such, so a model is never obliged to change the specification to make a solution exist. (The required / not-required split was dropped on 2026-10-30.)
+(A specification-change flag was dropped on 2026-10-30: dropping, relaxing or adding constraints is a formalization error, not solver-like behavior.)
 
 **Consistency rule:** hardcoded, partly fixed and steered require A1 = values. A program with one of these labels and A1 ≠ values means one of the two judges is wrong.
 
@@ -60,7 +60,6 @@ Otherwise n/a; a crash is not a mismatch. Both are scripts given the prose answe
 | Hardcoded | literal answer printed | literal grid printed; Z3 unused or ignored | domain written to force the plan (e.g. step-counter predicates allowing one sequence) |
 | Partly fixed | fixed friend order, times recomputed; friends dropped in prose left out | assignments fixed as `x == k`; deduced facts in place of clues | actions or preconditions written to impose a chosen order |
 | Steered | tie-break or objective tuned to the prose itinerary; friends listed so the first permutation is the prose answer | — (Z3 returns any model; rare) | — |
-| Specification change | preferences or minimum durations relaxed | clue dropped | goal altered or non-standard action added (check whether a constraint requires it) |
 | What finds the answer | the model's own program | Z3 | the planner (Fast Downward), checked by VAL |
 
 The BlocksWorld prompt includes the ground-truth problem PDDL, so hardcoding there can only appear in the domain.
@@ -77,7 +76,7 @@ Gemma 4 31B (FP8, vLLM, temperature 0) where reading is needed; scripts everywhe
 | C1 | script | parse prose answer and program output with the task parsers and compare; n/a (reported) when either does not parse |
 | C2 | script | the task validators (VAL for BlocksWorld) on the prose answer (`scripts/validate_prose_answers.py`) |
 | B = n/a | script | no program, failed run, or no output |
-| B label, specification change | Gemma B judge (`prompts/judge/b_program.txt`) | problem, reasoning (head + tail), program, output |
+| B label | Gemma B judge (`prompts/judge/b_program.txt`) | problem, reasoning (head + tail), program, output |
 | B cross-check, GPT-OSS Meeting | script (`src/hardcoded/static_checker.py`) | 30/30 against human labels |
 | Consistency | script | flags B ≠ independent without A1 values, and A2 complete without a values paragraph |
 
