@@ -28,7 +28,7 @@ output by task as before, records `fl` and a per-example `z3_used`. Evaluation i
 `scripts/run_crossfl_gpu7.sh` runs Qwen and GPT-OSS × both cells × three conditions on GPU 7.
 
 ## Open
-- DeepSeek: there is no `DEEPSEEK_API_KEY` on the server, so its cells are not run.
+- DeepSeek: `scripts/run_crossfl_deepseek.sh` (tmux `crossfl-deepseek`) waits for a key in `.env`, then runs the six cells in parallel.
 - Judging: the B (program) judge and `src/hardcoded/static_checker.py` were built for Python
   programs; a Z3 program can hardcode the answer through constraints such as
   `s.add(start == 810)`. Needs a definition and a reliability check before judging.
