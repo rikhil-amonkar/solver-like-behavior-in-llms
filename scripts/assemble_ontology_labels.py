@@ -108,10 +108,16 @@ def c1_script(trace, prose):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tag", default="gemma_v1")
+    ap.add_argument("--tag", default="gemma_v1", help="output name; also the judge tag unless given per kind")
+    ap.add_argument("--a-tag")
+    ap.add_argument("--b-tag")
+    ap.add_argument("--c-tag")
     args = ap.parse_args()
     segments, traces = build_items()
-    ja, jb, jc = load_judge("a", args.tag), load_judge("b", args.tag), load_judge("c", args.tag)
+    ja, jb, jc = (load_judge(k, getattr(args, f"{k}_tag") or args.tag) for k in ("a", "b", "c"))
+    # condensed C runs (--condense-a-tag) hash the condensed text: key them by the trace's own hash
+    h_of = {t["id"]: t["h"] for t in traces}
+    jc = {**{(i, h_of.get(i)): r for (i, _), r in jc.items()}, **jc}
     by_trace = collections.defaultdict(list)
     for s in segments:
         by_trace[s["trace"]].append(s)
