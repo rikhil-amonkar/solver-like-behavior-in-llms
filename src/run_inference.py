@@ -391,7 +391,7 @@ Examples:
         "--fl",
         choices=["python", "z3"],
         default=None,
-        help="Formal language (default: the task's native one; a non-native one writes to output_crossfl/)"
+        help="Formal language; blocksworld also takes python (default: the task's native one; a non-native one writes to output_crossfl/)"
     )
     parser.add_argument(
         "--output-root",

@@ -110,5 +110,19 @@
   "title": "Cross-FL experiment designed",
   "detail": "Calendar in Z3-Python and ZebraLogic in plain Python separate the dataset from the formal language. --fl flag added and smoke-tested.",
   "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "Cross-FL runs launched: every dataset in two FLs",
+  "detail": "Calendar and Meeting in Z3-Python, ZebraLogic and BlocksWorld in plain Python. DeepSeek running over the API; Qwen and GPT-OSS queued on GPU 7. BlocksWorld plans from Python programs are validated with VAL.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "FL compliance flagged on every run",
+  "detail": "Native runs: 3 of ~2,600 programs not in their FL (truncated Z3 sketches). Execution now records fl_compliance per program.",
+  "where": "docs/results/2026-10-30_FL_COMPLIANCE.md"
  }
 ]

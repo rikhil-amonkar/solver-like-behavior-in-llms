@@ -73,17 +73,17 @@ def log_text(name: str) -> str:
 
 
 def crossfl_job(job_id, name, model, gpus, session, after):
-    """Cross-FL inference for one model: Calendar in Z3-Python and ZebraLogic in Python, 3 conditions each."""
+    """Cross-FL inference for one model: Calendar and Meeting in Z3-Python, ZebraLogic and BlocksWorld in Python, 3 conditions each."""
     done = 0
     evaluated = 0
-    for task in ("calendar", "zebralogic"):
+    for task in ("calendar", "meeting", "zebralogic", "blocksworld"):
         for cond in ("baseline", "caution_a", "caution_b"):
             base = REPO / "output_crossfl" / model / task
             done += count_examples(base / f"{cond}_inference")
             evaluated += (base / f"{cond}_evaluation.json").exists()
     return {"id": job_id, "name": name, "stage": "Inference, then execution and evaluation",
-            "gpus": gpus, "done": done, "total": 600, "unit": "problems",
-            "extra": f"{evaluated}/6 runs evaluated", "session": session, "after": after}
+            "gpus": gpus, "done": done, "total": 1200, "unit": "problems",
+            "extra": f"{evaluated}/12 runs evaluated", "session": session, "after": after}
 
 
 def build_jobs():
@@ -106,10 +106,11 @@ def build_jobs():
     # Qwen and GPT-OSS share one queue on GPU 7: count both models
     gpt = crossfl_job("x", "", "gpt", "", "", None)
     jobs[2]["done"] += gpt["done"]
-    jobs[2]["total"] = 1200
+    jobs[2]["total"] = 2400
     q_eval, g_eval = int(jobs[2]["extra"].split("/")[0]), int(gpt["extra"].split("/")[0])
-    jobs[2]["extra"] = f"{q_eval + g_eval}/12 runs evaluated"
-    jobs[3]["finished"] = "DONE" in log_text("crossfl-deepseek.log")
+    jobs[2]["extra"] = f"{q_eval + g_eval}/24 runs evaluated"
+    jobs[3]["finished"] = all("DONE" in log_text(f) for f in ("crossfl-deepseek.log", "crossfl-deepseek-bw.log",
+                                                      "crossfl-deepseek-meeting.log"))
     jobs[2]["finished"] = "DONE" in log_text("crossfl.log")
     return jobs
 

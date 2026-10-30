@@ -30,7 +30,7 @@
   "priority": 1,
   "area": "Experiments",
   "item": "Cross-FL: DeepSeek runs",
-  "detail": "Six runs over the API; then execution and evaluation.",
+  "detail": "Twelve runs over the API (Calendar-Z3, Meeting-Z3, ZebraLogic-Python, BlocksWorld-Python \u00d7 3 conditions); then execution and evaluation.",
   "status": "in progress",
   "after": "",
   "decider": ""
@@ -39,28 +39,37 @@
   "priority": 1,
   "area": "Experiments",
   "item": "Cross-FL: Qwen and GPT-OSS runs on GPU 7",
-  "detail": "Twelve runs, queued behind the judge reruns.",
+  "detail": "Twenty-four runs (four pairings \u00d7 3 conditions \u00d7 2 models), queued behind the judge reruns.",
   "status": "waiting",
   "after": "A2/C judge",
   "decider": ""
  },
  {
-  "priority": 2,
+  "priority": 1,
   "area": "Experiments",
-  "item": "Define hardcoding for Z3 programs",
-  "detail": "The B judge and static checker were built for Python; a Z3 program can hardcode through constraints such as s.add(start == 810). Needs a definition and a reliability check before judging cross-FL.",
-  "status": "to do",
+  "item": "Test the imperative-FL hypothesis with BlocksWorld in Python",
+  "detail": "Hypothesis (Harry): an imperative FL causes more SLB. The program must print a plan; VAL checks it against the golden PDDL. No reference PDDL in the prompt (the native one gives the unconstrained problem PDDL). Meeting\u2192Z3 also added, so every dataset has two FLs.",
+  "status": "in progress",
   "after": "",
-  "decider": "Harry"
+  "decider": ""
  },
  {
   "priority": 2,
   "area": "Experiments",
-  "item": "Decide how to treat non-compliant cross-FL traces",
-  "detail": "z3_used shows Calendar-Z3 programs that skip the solver and ZebraLogic-Python programs that use it: drop or report.",
-  "status": "needs decision",
+  "item": "Characterise hardcoding in cross-FL programs before choosing a checker",
+  "detail": "Harry: look at the Z3 programs first. DeepSeek Calendar-Z3 so far: no literal answers; decisions pinned as constraints (e.g. s.add(day == 2) when only Monday is ruled out), and Python loops that use Z3 as a checker. The B judge (gemma_b5t) already covers Z3 but was checked on only 1 Z3 program by Harry.",
+  "status": "in progress",
   "after": "",
-  "decider": "Harry"
+  "decider": ""
+ },
+ {
+  "priority": 2,
+  "area": "Experiments",
+  "item": "Flag and report FL non-compliance",
+  "detail": "Decided: flag and report the rate (scripts/fl_compliance_report.py, also on native runs). Native: 3 of ~2,600 programs non-compliant, all truncated Z3 sketches; ~1-4% per run are not valid Python (prose extracted as code).",
+  "status": "done",
+  "after": "",
+  "decider": ""
  },
  {
   "priority": 2,

@@ -1,0 +1,14 @@
+This problem is a Blocksworld planning task: rearrange blocks from an initial configuration to a goal configuration using valid actions.
+
+Write a Python program that finds a plan: a sequence of actions that takes the blocks from the initial state to the goal state and respects every additional constraint mentioned in the problem.
+
+Print only the plan, one action per line, in the form (action block ...), using the actions pickup, putdown, stack and unstack and the block names from the problem in lowercase (block1, block2, ...). (stack X Y) puts the held block X on block Y; (unstack X Y) lifts block X off block Y. If no plan can satisfy the constraints, print only: No plan
+
+Here is an example:
+
+(unstack block2 block1)
+(putdown block2)
+(pickup block1)
+(stack block1 block2)
+
+SOLUTION CODE:

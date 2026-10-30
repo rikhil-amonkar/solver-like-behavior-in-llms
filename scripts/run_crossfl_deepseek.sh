@@ -1,6 +1,7 @@
 #!/bin/bash
-# Cross-FL runs for DeepSeek (API, no GPU): Calendar in Z3-Python and ZebraLogic in plain Python,
-# three conditions each, in parallel. Waits until .env has DEEPSEEK_API_KEY. max_tokens 131072
+# Cross-FL runs for DeepSeek (API, no GPU): Calendar and Meeting in Z3-Python, ZebraLogic and BlocksWorld in
+# plain Python, three conditions each, in parallel. PAIRS="task:fl ..." picks a subset.
+# Waits until .env has DEEPSEEK_API_KEY. max_tokens 131072
 # as in the native DeepSeek runs. Usage (inside tmux): bash scripts/run_crossfl_deepseek.sh
 set -u
 cd /local-ssd/hz466/solver-like-behavior-in-llms
@@ -18,7 +19,7 @@ run() {
   python src/run_evaluation.py --input $dir/${cond}_execution.json >> $log 2>&1
   echo "== deepseek $task $cond $(date)"; grep -E "accuracy|Errors" $log | tail -n 3
 }
-for pair in calendar:z3 zebralogic:python; do
+for pair in ${PAIRS:-calendar:z3 meeting:z3 zebralogic:python blocksworld:python}; do
   for cond in baseline caution_a caution_b; do run ${pair%%:*} ${pair##*:} $cond & done
 done
 wait

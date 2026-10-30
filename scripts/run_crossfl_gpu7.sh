@@ -1,11 +1,12 @@
 #!/bin/bash
-# Cross-FL runs: Calendar in Z3-Python and ZebraLogic in plain Python, so that dataset and formal
-# language are crossed (native: Calendar=Python, ZebraLogic=Z3). Qwen and GPT-OSS on GPU 7, all
-# three conditions, then execution and evaluation. Outputs go to output_crossfl/.
+# Cross-FL runs: Calendar and Meeting in Z3-Python, ZebraLogic and BlocksWorld in plain Python, so that
+# each dataset has two FLs (native: Calendar, Meeting=Python; ZebraLogic=Z3; BlocksWorld=PDDL).
+# Qwen and GPT-OSS on GPU 7, all three conditions, then execution and evaluation. Outputs go to output_crossfl/.
 # Settings match the native runs: Qwen max_tokens 131072 (default), GPT-OSS 384000 (clamped to
 # the context), default sampling.
 # Usage (inside tmux): bash scripts/run_crossfl_gpu7.sh
 # With WAIT_FOR=<tmux session>, first waits for that session to end. Resumable (--continue).
+# PAIRS="task:fl ..." picks a subset of the pairings.
 set -u
 cd /local-ssd/hz466/solver-like-behavior-in-llms
 source /local-ssd/hz466/vllm-test/env.sh
@@ -19,7 +20,7 @@ if [ -n "$(nvidia-smi -i 7 --query-compute-apps=pid --format=csv,noheader)" ]; t
 fi
 for model in qwen gpt; do
   extra=""; [ $model = gpt ] && extra="--max-tokens 384000"
-  for pair in calendar:z3 zebralogic:python; do
+  for pair in ${PAIRS:-calendar:z3 meeting:z3 zebralogic:python blocksworld:python}; do
     task=${pair%%:*}; fl=${pair##*:}
     for cond in baseline caution_a caution_b; do
       flag=""; [ $cond = caution_a ] && flag="--caution-a"; [ $cond = caution_b ] && flag="--caution-b"

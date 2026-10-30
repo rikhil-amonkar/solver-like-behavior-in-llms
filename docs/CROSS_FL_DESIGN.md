@@ -1,36 +1,53 @@
 # Cross-FL runs: separating dataset from formal language
 
 Each dataset was tied to one FL (Calendar, Meeting = Python; ZebraLogic = Z3-Python;
-BlocksWorld = PDDL), so differences in SLB could come from either. Two new cells cross them:
+BlocksWorld = PDDL), so differences in SLB could come from either. The cross-FL runs give every
+dataset a second FL:
 
-|            | Python (stdlib) | Z3-Python |
-|------------|-----------------|-----------|
-| Calendar   | native          | **new**   |
-| ZebraLogic | **new**         | native    |
+|             | Python (stdlib) | Z3-Python | PDDL   |
+|-------------|-----------------|-----------|--------|
+| Calendar    | native          | **new**   | -      |
+| Meeting     | native          | **new**   | -      |
+| ZebraLogic  | **new**         | native    | -      |
+| BlocksWorld | **new**         | -         | native |
 
-BlocksWorld stays PDDL-only; Meeting → Z3 is optional and not run.
+Hypothesis (Harry, 2026-10-30): an imperative FL (Python) causes more SLB than a declarative one
+(Z3, PDDL). BlocksWorld→Python tests it on a planning task, where Python must implement the search
+that the planner does for PDDL.
 
 ## Prompts
 The FL part of a prompt is the prefix (`prompts/prefix/universal_csp_prefix_<fl>.txt`) and, for
 Z3, the "Required imports / Your code should" block that the native ZebraLogic format has. The
-new formats follow that rule:
-- `prompts/formats/calendar_output_format_z3.txt`: native Calendar format plus a Z3 block
-  written like ZebraLogic's (variables, domain constraints, participant constraints,
-  `solver.check()`, print).
-- `prompts/formats/zebralogic_output_format_python.txt`: native ZebraLogic format with the Z3
-  block removed (the native Python formats give no coding steps).
-Native prompts are unchanged.
+native Python formats give no coding steps. New formats (native prompts are unchanged):
+- `calendar_output_format_z3.txt`, `meeting_output_format_z3.txt`: native format plus a Z3 block
+  written like ZebraLogic's.
+- `zebralogic_output_format_python.txt`: native format with the Z3 block removed.
+- `blocksworld_output_format_python.txt`: the program prints a plan, one `(action block ...)`
+  per line, or `No plan`. Unlike the native PDDL prompt, it does not include the reference
+  problem PDDL (which for 53 instances omits the constraint); the NL problem states the same
+  initial and goal states.
 
-## Running
+## Running and scoring
 `python src/run_inference.py --task calendar --fl z3 ...`; a non-native `--fl` writes to
-`output_crossfl/` (kept out of `output/`, which the judges and tables read). Execution parses
-output by task as before, records `fl` and a per-example `z3_used`. Evaluation is unchanged.
-`scripts/run_crossfl_gpu7.sh` runs Qwen and GPT-OSS × both cells × three conditions on GPU 7.
+`output_crossfl/` (kept out of `output/`, which the judges and tables read). Execution records
+`fl`, `z3_used` and `fl_compliance` per program. A Python BlocksWorld program's printed plan is
+checked with VAL against the golden domain and problem, as the planner's plan is for PDDL;
+`No plan` on an unsolvable instance counts as correct (as a proven-unsolvable planner run does).
+- `scripts/run_crossfl_gpu7.sh`: Qwen and GPT-OSS × four pairings × three conditions on GPU 7
+  (tmux `crossfl`, waits for the judge run).
+- `scripts/run_crossfl_deepseek.sh`: DeepSeek over the API (tmux `crossfl-deepseek`,
+  `crossfl-deepseek-bw`, `crossfl-deepseek-meeting`; `PAIRS=` picks pairings).
 
-## Open
-- DeepSeek: `scripts/run_crossfl_deepseek.sh` (tmux `crossfl-deepseek`) waits for a key in `.env`, then runs the six cells in parallel.
-- Judging: the B (program) judge and `src/hardcoded/static_checker.py` were built for Python
-  programs; a Z3 program can hardcode the answer through constraints such as
-  `s.add(start == 810)`. Needs a definition and a reliability check before judging.
-- Compliance: `z3_used` shows whether Calendar-Z3 programs call the solver and whether
-  ZebraLogic-Python programs avoid it; non-compliant traces need a rule (drop or report).
+## FL compliance (decided: flag and report)
+`scripts/fl_compliance_report.py` flags programs not written in the FL asked for (Python: only
+standard-library imports; Z3: imports z3 and calls `check()`), on native and cross-FL runs.
+Results: docs/results/2026-10-30_FL_COMPLIANCE.md.
+
+## Hardcoding (decided: look at the programs before choosing a checker)
+The B judge (gemma_b5t) prompt covers Python, Z3 and PDDL. Its reliability on Z3 rests on one
+program Harry labelled (bprec2-00) and three in Claude's blind set. The static checker covers
+Meeting only. First look at DeepSeek Calendar-Z3 (133 programs): no literal answers or
+`start == <answer>` pins; decisions pinned as constraints (`s.add(day == 2)` when the problem
+only rules out Monday; in one case the pin is wrong and the program misses the answer); Python
+loops that use Z3 only as a feasibility check. ZebraLogic-Python: 1 of 100 prints a literal grid;
+the rest search with permutations.
