@@ -4,10 +4,10 @@ Assemble per-trace SLB ontology labels (docs/SLB_ONTOLOGY.md) from the Gemma jud
 (src/run_ontology_judges.py --items all) plus deterministic script judges.
 
 Per trace:
-- A1 (script over Gemma paragraph labels): "values" if any paragraph is V, "properties"
-  if any is P, else none.
+- A1 (script over Gemma paragraph labels): "values" if any paragraph is V (or VP), else none.
 - Solver-like ratio (script): characters in SLB paragraphs / characters in all paragraphs.
-- A2 (Gemma C judge): extent of the prose answer.
+- A2 (Gemma C judge on the Values paragraphs): complete if it finds a full answer, else partial;
+  none exactly when A1 is none.
 - B (script, then Gemma): "na" if there is no program, it failed, or printed nothing;
   otherwise the Gemma B label. Spec change from the Gemma B judge.
 - C1 (script, Gemma fallback): when A2 is complete and the program ran, parse the prose
@@ -132,9 +132,9 @@ def main():
             for i, text in enumerate(s["paragraphs"]):
                 lab = r["paras"].get(str(i), {"t": "N", "s": False, "p": []})
                 chars += len(text)
-                if lab["t"] != "N":
+                if "V" in lab["t"]:  # V or VP; A1 properties dropped on 2026-10-29, so P alone is not SLB
                     slb_chars += len(text)
-                    types |= {{"V": "values", "P": "properties"}[c] for c in lab["t"]}  # "VP": both
+                    types.add("values")
         a1 = sorted(types) or ["none"]
         rec = dict(example_id=t["example_id"], a_judged=judged and bool(by_trace[t["id"]]),
                    A1=a1,
@@ -144,7 +144,9 @@ def main():
         c = jc.get((t["id"], t["h"]))
         if c is None and t["reasoning"].strip():
             missing_judgements["c"] += 1
-        rec["A2"] = c["extent"] if c else None
+        # A2 (2026-10-30): with any Values paragraph the extent is at least partial (a tentative
+        # schedule counts); "none" only when A1 is none
+        rec["A2"] = None if c is None and "values" in a1 else "none" if "values" not in a1 else ("complete" if c["extent"] == "complete" else "partial")
         prose = (c or {}).get("prose_answer") or ""
         has_output = t["ran"] and bool(t["raw_stdout"].strip() if t["task"] != "blocksworld" else t["output"])
         rec["C1"] = rec["c1_source"] = rec["C2"] = None

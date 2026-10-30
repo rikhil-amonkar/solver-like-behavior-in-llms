@@ -30,7 +30,7 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 
 **A2. Extent** (only with A1 = values).
 - **Complete:** every decision variable gets a value, so a full answer is stated.
-- **Partial:** only some decisions are made (e.g. which friends to drop, the order of two blocks).
+- **Partial:** only some decisions are made (e.g. which friends to drop, the order of two blocks). Any value solving short of a full answer is partial, including a tentative schedule that is later dropped: without solver-like behavior it would not be there. So A2 is complete or partial whenever A1 is values.
 
 **Span:** the tokens of every A segment. The solver-like ratio is these tokens divided by all reasoning tokens.
 
