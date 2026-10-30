@@ -3,17 +3,17 @@
     "task": "meeting",
     "model": "qwen",
     "condition": "baseline",
-    "execution_json": "output_rerun/qwen/meeting/baseline_execution.json",
+    "execution_json": "output/qwen/meeting/baseline_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-10-22T15:44:40Z",
+    "timestamp": "2026-10-30T18:48:54Z",
     "num_examples": 100
   },
   "summary": {
     "constraint_based_accuracy": 0.88,
     "constraint_correct": 88,
     "constraint_incorrect": 12,
-    "golden_solution_accuracy": 0.3,
-    "golden_matches": 30,
+    "golden_solution_accuracy": 0.31,
+    "golden_matches": 31,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 1,
@@ -512,7 +512,7 @@
     {
       "example_id": "meeting_planning_example_219",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at The Castro at 9:00AM.",

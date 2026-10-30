@@ -6,6 +6,7 @@ Validates code outputs against task constraints and computes accuracy.
 """
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -17,6 +18,16 @@ from evaluation.calendar_eval_python import evaluate_calendar_solution
 from evaluation.meeting_eval_python import evaluate_meeting_solution
 from evaluation.zebralogic_eval import evaluate_zebralogic_solution
 from evaluation.blocksworld_eval import evaluate_blocksworld_solution
+
+
+def normalize_for_golden(task: str, solution):
+    """Meeting: drop "for N minutes" from meet lines before the golden comparison. The prompt's
+    rule gives "You meet [person] from [time] to [time]." but its example (and the golden
+    itineraries) add "for N minutes", so either form is accepted."""
+    if task == "meeting" and isinstance(solution, list):
+        return [re.sub(r"^(You meet .+?) for \d+ minutes (from )", r"\1 \2", s) if isinstance(s, str) else s
+                for s in solution]
+    return solution
 
 
 def is_no_solution_indicator(stdout: str) -> bool:
@@ -286,7 +297,7 @@ def run_evaluation_pipeline(execution_json_path: str):
                     # Check if solution matches golden solution
                     matches_golden = False
                     if golden_solution is not None and parsed_output_for_comparison is not None:
-                        matches_golden = parsed_output_for_comparison == golden_solution
+                        matches_golden = normalize_for_golden(task, parsed_output_for_comparison) == normalize_for_golden(task, golden_solution)
 
                     # For zebralogic, correctness is based solely on golden match
                     # BUT preserve execution errors and other error classifications

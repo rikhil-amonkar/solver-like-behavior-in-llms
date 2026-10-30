@@ -62,3 +62,7 @@ form. 39-48 of the correct Z3 itineraries per run follow the rule, so they canno
 are equally good itineraries in another order or with other friends (Z3 returns any model).
 Native GPT-OSS Meeting has the same problem (85-90 of 100 omit the phrase; .02 -> .29/.46/.46).
 The paper uses constraint-based accuracy for Meeting, so its numbers are unaffected.
+Fixed (Harry, 2026-10-30): `normalize_for_golden` in `src/run_evaluation.py` drops ` for N minutes`
+from Meeting meet lines on both sides before the golden comparison. All Meeting runs (native
+and cross-FL) were rescored; only `matches_expected` and golden accuracy changed. Golden now:
+DeepSeek .30/.53/.38, Qwen .31/.32/.32, GPT-OSS .29/.46/.46, DeepSeek Z3 .30/.25/.27.

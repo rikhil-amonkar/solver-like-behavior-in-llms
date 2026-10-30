@@ -5,15 +5,15 @@
     "condition": "caution_b",
     "execution_json": "output/qwen/meeting/caution_b_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-10-22T15:44:51Z",
+    "timestamp": "2026-10-30T18:48:54Z",
     "num_examples": 100
   },
   "summary": {
     "constraint_based_accuracy": 0.93,
     "constraint_correct": 93,
     "constraint_incorrect": 7,
-    "golden_solution_accuracy": 0.29,
-    "golden_matches": 29,
+    "golden_solution_accuracy": 0.32,
+    "golden_matches": 32,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 1,
@@ -336,7 +336,7 @@
     {
       "example_id": "meeting_planning_example_577",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Haight-Ashbury at 9:00AM.",
@@ -2547,7 +2547,7 @@
     {
       "example_id": "meeting_planning_example_98",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Alamo Square at 9:00AM.",
@@ -3321,7 +3321,7 @@
     {
       "example_id": "meeting_planning_example_118",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",

@@ -5,15 +5,15 @@
     "condition": "caution_a",
     "execution_json": "output/gpt/meeting/caution_a_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-10-21T21:19:51Z",
+    "timestamp": "2026-10-30T18:48:53Z",
     "num_examples": 100
   },
   "summary": {
     "constraint_based_accuracy": 0.74,
     "constraint_correct": 74,
     "constraint_incorrect": 26,
-    "golden_solution_accuracy": 0.01,
-    "golden_matches": 1,
+    "golden_solution_accuracy": 0.46,
+    "golden_matches": 46,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 0,
@@ -35,7 +35,7 @@
     {
       "example_id": "meeting_planning_example_389",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Haight-Ashbury at 9:00AM.",
@@ -186,7 +186,7 @@
     {
       "example_id": "meeting_planning_example_350",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -219,7 +219,7 @@
     {
       "example_id": "meeting_planning_example_867",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Haight-Ashbury at 9:00AM.",
@@ -272,7 +272,7 @@
     {
       "example_id": "meeting_planning_example_423",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Presidio at 9:00AM.",
@@ -501,7 +501,7 @@
     {
       "example_id": "meeting_planning_example_789",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -540,7 +540,7 @@
     {
       "example_id": "meeting_planning_example_219",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at The Castro at 9:00AM.",
@@ -565,7 +565,7 @@
     {
       "example_id": "meeting_planning_example_604",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Fisherman's Wharf at 9:00AM.",
@@ -703,7 +703,7 @@
     {
       "example_id": "meeting_planning_example_433",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Nob Hill at 9:00AM.",
@@ -772,7 +772,7 @@
     {
       "example_id": "meeting_planning_example_224",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Fisherman's Wharf at 9:00AM.",
@@ -801,7 +801,7 @@
     {
       "example_id": "meeting_planning_example_813",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Marina District at 9:00AM.",
@@ -908,7 +908,7 @@
     {
       "example_id": "meeting_planning_example_258",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -966,7 +966,7 @@
     {
       "example_id": "meeting_planning_example_263",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -993,7 +993,7 @@
     {
       "example_id": "meeting_planning_example_312",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Richmond District at 9:00AM.",
@@ -1061,7 +1061,7 @@
     {
       "example_id": "meeting_planning_example_215",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -1193,7 +1193,7 @@
     {
       "example_id": "meeting_planning_example_934",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Nob Hill at 9:00AM.",
@@ -1316,7 +1316,7 @@
     {
       "example_id": "meeting_planning_example_286",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -1377,7 +1377,7 @@
     {
       "example_id": "meeting_planning_example_612",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Alamo Square at 9:00AM.",
@@ -1533,7 +1533,7 @@
     {
       "example_id": "meeting_planning_example_73",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
@@ -1550,7 +1550,7 @@
     {
       "example_id": "meeting_planning_example_835",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Pacific Heights at 9:00AM.",
@@ -1628,7 +1628,7 @@
     {
       "example_id": "meeting_planning_example_502",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -1690,7 +1690,7 @@
     {
       "example_id": "meeting_planning_example_372",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Sunset District at 9:00AM.",
@@ -1916,7 +1916,7 @@
     {
       "example_id": "meeting_planning_example_144",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at The Castro at 9:00AM.",
@@ -2086,7 +2086,7 @@
     {
       "example_id": "meeting_planning_example_268",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -2134,7 +2134,7 @@
     {
       "example_id": "meeting_planning_example_385",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Nob Hill at 9:00AM.",
@@ -2209,7 +2209,7 @@
     {
       "example_id": "meeting_planning_example_546",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -2272,7 +2272,7 @@
     {
       "example_id": "meeting_planning_example_609",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Chinatown at 9:00AM.",
@@ -2313,7 +2313,7 @@
     {
       "example_id": "meeting_planning_example_908",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -2364,7 +2364,7 @@
     {
       "example_id": "meeting_planning_example_335",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Pacific Heights at 9:00AM.",
@@ -2448,7 +2448,7 @@
     {
       "example_id": "meeting_planning_example_432",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -2479,7 +2479,7 @@
     {
       "example_id": "meeting_planning_example_309",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -2545,7 +2545,7 @@
     {
       "example_id": "meeting_planning_example_479",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -2867,7 +2867,7 @@
     {
       "example_id": "meeting_planning_example_391",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Sunset District at 9:00AM.",
@@ -2898,7 +2898,7 @@
     {
       "example_id": "meeting_planning_example_143",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at North Beach at 9:00AM.",
@@ -2923,7 +2923,7 @@
     {
       "example_id": "meeting_planning_example_352",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -2992,7 +2992,7 @@
     {
       "example_id": "meeting_planning_example_952",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -3149,7 +3149,7 @@
     {
       "example_id": "meeting_planning_example_180",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at North Beach at 9:00AM.",
@@ -3172,7 +3172,7 @@
     {
       "example_id": "meeting_planning_example_174",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Nob Hill at 9:00AM.",
@@ -3197,7 +3197,7 @@
     {
       "example_id": "meeting_planning_example_976",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -3240,7 +3240,7 @@
     {
       "example_id": "meeting_planning_example_885",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
@@ -3373,7 +3373,7 @@
     {
       "example_id": "meeting_planning_example_25",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -3392,7 +3392,7 @@
     {
       "example_id": "meeting_planning_example_118",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -3485,7 +3485,7 @@
     {
       "example_id": "meeting_planning_example_115",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Richmond District at 9:00AM.",
@@ -3534,7 +3534,7 @@
     {
       "example_id": "meeting_planning_example_125",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -3580,7 +3580,7 @@
     {
       "example_id": "meeting_planning_example_974",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Sunset District at 9:00AM.",
@@ -3662,7 +3662,7 @@
     {
       "example_id": "meeting_planning_example_209",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Sunset District at 9:00AM.",
