@@ -1,0 +1,114 @@
+[
+ {
+  "date": "2026-10-21",
+  "area": "Setup",
+  "title": "Took over the repo and the paper",
+  "detail": "Cloned rikhil-amonkar/solver-like-behavior-in-llms, read the code and the submitted paper.",
+  "where": "README.md"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Evaluation",
+  "title": "Meeting Planning is actually checked",
+  "detail": "The old evaluator accepted any non-empty list. It now replays each itinerary against travel times, availability windows and minimum durations, and must meet as many friends as the gold plan. GPT-OSS Meeting baseline fell from 0.93 to 0.66.",
+  "where": "src/evaluation/meeting_eval_python.py"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Evaluation",
+  "title": "BlocksWorld validated against the gold PDDL",
+  "detail": "The evaluator received an empty problem, so plan_exists and the gold PDDL were never used. Now Fast Downward plans the model's PDDL and VAL checks the plan under the gold domain and problem.",
+  "where": "src/evaluation/blocksworld_eval.py"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Evaluation",
+  "title": "The executed program is the final answer's",
+  "detail": "Qwen ran a draft from inside its thinking in 16-25% of examples; code after the end-of-thinking marker now wins.",
+  "where": "src/execution/code_extractor.py"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Results",
+  "title": "All 36 runs re-scored; RQ3 reworded",
+  "detail": "Correlation of ratio change with accuracy change moved from -0.07 to -0.42, driven by GPT-OSS Meeting. Paper table and RQ3 text updated.",
+  "where": "docs/results/2026-10-21_RESCORED_RESULTS.md"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Judging",
+  "title": "First open-judge check (Gemma 4 31B)",
+  "detail": "20 blind chunks: Harry agreed with Gemini 14/20 and with Gemma 13/20, far below the paper's 95%. Led to rethinking the judge.",
+  "where": "validation/gemma_judge/"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Judging",
+  "title": "Batch judge order bug fixed",
+  "detail": "Vertex batch outputs were matched to examples by position, but come back shuffled. Gemini chunk labels re-keyed: 1,926 of 3,600 traces fully repaired, 1,313 partly, 361 not.",
+  "where": "scripts/rekey_chunking.py"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Judging",
+  "title": "Rule-based hardcoding checker (RQ4)",
+  "detail": "Matches human labels on 30/30 programs. GPT-OSS Meeting hardcoded programs: 52/93 baseline, 13/93 Caut A, 6/89 Caut B. RQ4 added to the paper.",
+  "where": "docs/results/2026-10-22_HARDCODING_STATIC_CHECK.md"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Judging",
+  "title": "Gemma re-judge with the old prompt (stopped)",
+  "detail": "Fixed Gemma looping on long segments (6k to 2k tokens: loops 83% to 7%). Stopped at 48% to refine how judging works.",
+  "where": "src/run_chunking_local.py"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Inference",
+  "title": "Three Qwen runs redone on vLLM",
+  "detail": "Calendar baseline/Caut A and Meeting baseline had been generated with a different engine and temperature. A code-extractor bug (lines starting with 'wait') was also fixed. Qwen Meeting is now 0.88/0.85/0.93.",
+  "where": "docs/results/2026-10-22_QWEN_RERUN.md"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Ontology",
+  "title": "Solver-like behavior ontology adopted",
+  "detail": "Replaces the single sound/solver-like label with per-node judges: A (solving in prose), B (what the program does with it), C (agreement). Refined after a sweep of 107 traces. Paper Section 3 and Figure 2.",
+  "where": "docs/SLB_ONTOLOGY.md"
+ },
+ {
+  "date": "2026-10-29",
+  "area": "Ontology",
+  "title": "A judge tuned against Harry's labels",
+  "detail": "Prompt versions v2 to v12 over three blind rounds of 70 paragraphs. Chosen gemma_v11t: 66/70, Values precision and recall 20/22. A2 checks 20/20 and 19/20.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Ontology",
+  "title": "B judge chosen and run on everything",
+  "detail": "gemma_b5t: 19/20 against Claude's blind labels; Harry confirmed 20/20 on held-out programs. Full B run over 3,591 programs finished at 15:05 UTC.",
+  "where": "prompts/judge/b_program.txt"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Ontology",
+  "title": "Ontology frozen",
+  "detail": "Values only: properties, the with-search flag, A3 purpose and the specification-change flag were dropped.",
+  "where": "docs/SLB_ONTOLOGY.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Paper",
+  "title": "Paper rewritten around the ontology",
+  "detail": "Ontology definitions with examples, per-node judges and reliability in Metrics and a new appendix, models run with vLLM at 131k tokens.",
+  "where": "solver-like-paper/acl_latex.tex"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "Cross-FL experiment designed",
+  "detail": "Calendar in Z3-Python and ZebraLogic in plain Python separate the dataset from the formal language. --fl flag added and smoke-tested.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ }
+]

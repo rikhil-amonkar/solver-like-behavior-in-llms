@@ -75,3 +75,6 @@ output/judge_segments_*.json
 output_rerun/
 output_rerun_parts/
 output_backup/
+
+# Dashboard snapshots
+output/dashboard/

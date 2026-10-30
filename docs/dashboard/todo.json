@@ -1,0 +1,119 @@
+[
+ {
+  "priority": 1,
+  "area": "Ontology",
+  "item": "Finish the A judge rerun with the v11 prompt",
+  "detail": "The first full A run accidentally used the v12 prompt and must be redone before results are final.",
+  "status": "in progress",
+  "after": "",
+  "decider": ""
+ },
+ {
+  "priority": 1,
+  "area": "Ontology",
+  "item": "Run the A2/C judge (gemma_v11c)",
+  "detail": "Reads only the Values paragraphs from the A rerun.",
+  "status": "waiting",
+  "after": "A judge rerun",
+  "decider": ""
+ },
+ {
+  "priority": 1,
+  "area": "Ontology",
+  "item": "Assemble per-trace ontology labels",
+  "detail": "scripts/assemble_ontology_labels.py with the v11t, b5t and v11c tags, replacing the v12 assembly.",
+  "status": "to do",
+  "after": "A2/C judge",
+  "decider": ""
+ },
+ {
+  "priority": 1,
+  "area": "Experiments",
+  "item": "Cross-FL: DeepSeek runs",
+  "detail": "Six runs over the API; then execution and evaluation.",
+  "status": "in progress",
+  "after": "",
+  "decider": ""
+ },
+ {
+  "priority": 1,
+  "area": "Experiments",
+  "item": "Cross-FL: Qwen and GPT-OSS runs on GPU 7",
+  "detail": "Twelve runs, queued behind the judge reruns.",
+  "status": "waiting",
+  "after": "A2/C judge",
+  "decider": ""
+ },
+ {
+  "priority": 2,
+  "area": "Experiments",
+  "item": "Define hardcoding for Z3 programs",
+  "detail": "The B judge and static checker were built for Python; a Z3 program can hardcode through constraints such as s.add(start == 810). Needs a definition and a reliability check before judging cross-FL.",
+  "status": "to do",
+  "after": "",
+  "decider": "Harry"
+ },
+ {
+  "priority": 2,
+  "area": "Experiments",
+  "item": "Decide how to treat non-compliant cross-FL traces",
+  "detail": "z3_used shows Calendar-Z3 programs that skip the solver and ZebraLogic-Python programs that use it: drop or report.",
+  "status": "needs decision",
+  "after": "",
+  "decider": "Harry"
+ },
+ {
+  "priority": 2,
+  "area": "Paper",
+  "item": "Replace the Ratio and #Tokens rows",
+  "detail": "Table 1 still shows the old Gemini judgments; use the ontology's solver-like ratio once labels are assembled.",
+  "status": "to do",
+  "after": "Assemble labels",
+  "decider": ""
+ },
+ {
+  "priority": 2,
+  "area": "Ontology",
+  "item": "Check DeepSeek and Qwen BlocksWorld A labels",
+  "detail": "v1 labels looked inflated (ratio 0.16-0.20 against about 0.05 in the sweep); confirm with v11t.",
+  "status": "to do",
+  "after": "A judge rerun",
+  "decider": ""
+ },
+ {
+  "priority": 3,
+  "area": "Paper",
+  "item": "Fix the conclusion's unsupported claims",
+  "detail": "'Ablating solver-like reasoning improves accuracy up to 14%' and 'grows with model capability' have no supporting results.",
+  "status": "to do",
+  "after": "",
+  "decider": "Harry"
+ },
+ {
+  "priority": 3,
+  "area": "Paper",
+  "item": "Match the prompt listings and Figure 2 to the code",
+  "detail": "Listings place the cautionary text before {PROBLEM} (the code appends it after SOLUTION CODE:); Figure 2's hardcoded example uses an output format the prompt does not ask for.",
+  "status": "to do",
+  "after": "",
+  "decider": ""
+ },
+ {
+  "priority": 3,
+  "area": "Paper",
+  "item": "Note the BlocksWorld dataset caveats",
+  "detail": "53 of 100 prompts give the unconstrained reference PDDL; one unsolvable instance cannot be proven unsolvable.",
+  "status": "to do",
+  "after": "",
+  "decider": ""
+ },
+ {
+  "priority": 3,
+  "area": "Repo",
+  "item": "Push the branch and open a pull request",
+  "detail": "68 commits on fix/evaluation are local only.",
+  "status": "needs decision",
+  "after": "",
+  "decider": "Harry"
+ }
+]
