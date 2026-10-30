@@ -122,7 +122,7 @@
   "date": "2026-10-30",
   "area": "Experiments",
   "title": "FL compliance flagged on every run",
-  "detail": "Native runs: 3 of ~2,600 programs not in their FL (truncated Z3 sketches). Execution now records fl_compliance per program.",
+  "detail": "Decided with Harry: flag and report the rate, also on native runs. Native: 3 of ~2,600 programs not in their FL (truncated Z3 sketches). Execution now records fl_compliance per program.",
   "where": "docs/results/2026-10-30_FL_COMPLIANCE.md"
  }
 ]

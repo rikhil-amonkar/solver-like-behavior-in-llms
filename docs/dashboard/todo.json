@@ -64,15 +64,6 @@
  },
  {
   "priority": 2,
-  "area": "Experiments",
-  "item": "Flag and report FL non-compliance",
-  "detail": "Decided: flag and report the rate (scripts/fl_compliance_report.py, also on native runs). Native: 3 of ~2,600 programs non-compliant, all truncated Z3 sketches; ~1-4% per run are not valid Python (prose extracted as code).",
-  "status": "done",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 2,
   "area": "Paper",
   "item": "Replace the Ratio and #Tokens rows",
   "detail": "Table 1 still shows the old Gemini judgments; use the ontology's solver-like ratio once labels are assembled.",
@@ -93,10 +84,10 @@
   "priority": 3,
   "area": "Paper",
   "item": "Fix the conclusion's unsupported claims",
-  "detail": "'Ablating solver-like reasoning improves accuracy up to 14%' and 'grows with model capability' have no supporting results.",
-  "status": "to do",
-  "after": "",
-  "decider": "Harry"
+  "detail": "'Ablating solver-like reasoning improves accuracy up to 14%' and 'grows with model capability' have no supporting results. Part of the paper rehaul after all experiments are done; until then paper work covers Sections 3 and 4 only.",
+  "status": "later",
+  "after": "All experiments",
+  "decider": ""
  },
  {
   "priority": 3,
