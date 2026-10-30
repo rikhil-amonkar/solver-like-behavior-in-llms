@@ -12,7 +12,7 @@ Per trace:
   otherwise the Gemma B label.
 - C1 (script only): when A2 is complete and the program ran, parse the prose
   answer and the program output with the task parsers and compare; if either does not
-  parse, use the C judge's own yes/no. c1_source records which.
+  parse, C1 is n/a with c1_source "unparsed".
 - C2 (script): the task validator on the prose answer (scripts/validate_prose_answers.py).
 - Flags (script): B hardcoded/partly_fixed/steered without A1 values; A2 complete without
   any V paragraph; paragraphs the A judge did not label (counted as not SLB).

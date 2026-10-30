@@ -16,9 +16,18 @@ are applied (`scripts/score_a1_rounds.py`, CORRECTIONS). Gemma 4 31B-it, FP8, te
 | gemma_v10t (thinking) | 58 | 43/44 | 17/18 | 17/18 |
 | **gemma_v11t (thinking)** | **58** | **43/44** | 16/16 | 16/18 |
 
-With the 10 Properties-check paragraphs added (70), v11t gets 66/70 (Values precision and recall
-20/22); a Values-only prompt (gemma_v12t) was worse (63/70, recall 16/22). Chosen: **gemma_v11t**,
-reading V and VP as Values and P as not SLB. Thinking mode: `--thinking 8192`.
+With the 10 Properties-check paragraphs added (70), scored as the final ontology does (Values = V
+or VP, vs not; `scripts/score_a1_rounds.py` "binary"), v11t gets 66/70 (49/52 not paraphrased in its
+prompt; Values precision and recall 20/22); a Values-only prompt (gemma_v12t) was worse (63/70,
+recall 16/22). Chosen: **gemma_v11t**, reading V and VP as Values and P as not SLB. Thinking mode:
+`--thinking 8192`.
+
+**The first full A run used the wrong prompt.** It was launched as `gemma_v11t` after the prompt
+file had been overwritten with v12 (commit 74fb5f4), and its labels are V/N only. Scored with
+`python scripts/score_a1_rounds.py full:gemma_v12t` it gets 62/70 (46/52), Values recall 16/22,
+like v12. Its outputs were renamed `gemma_v12t` / `gemma_v12c`, the v11 prompt restored, and the
+runner now stores a prompt hash per record and refuses to mix prompts under one tag. The A and
+A2 full runs must be redone with v11.
 
 ## A2 (extent), judged from v11t's Values paragraphs (gemma_v11c, `--condense-values-only`)
 
@@ -38,6 +47,15 @@ prose answer, written out in the reasoning?) plus Claude reading the passages th
   sketches then drops a schedule -> partial or none). 18/20.
 
 These A2 checks are script + second-model (Claude), not human, except the verified completes.
+
+## Summary (2026-10-30)
+
+| Node | Checked by | Result |
+|---|---|---|
+| A1 | Harry (70 paragraphs) | gemma_v11t 66/70; precision and recall of Values 20/22 |
+| A2 | Harry's verified completes + script + Claude | 20/20 (round 1), 19/20 (round 3, under the final rule that any value solving is at least partial; the miss is an A1 error) |
+| B | Claude, blind (20) | gemma_b5t 19/20, optimistic; Harry's held-out precision set bprec2 pending |
+| C1, C2 | scripts | no agreement check needed |
 
 ## B (program label), gemma_b3t (thinking; specification-change flag dropped 2026-10-30)
 

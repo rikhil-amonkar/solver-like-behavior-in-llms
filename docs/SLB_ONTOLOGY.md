@@ -1,5 +1,7 @@
 # Solver-like behavior (SLB) ontology
 
+**Status (2026-10-30): final.** The nodes below are frozen; the judges and their measured reliability are in the last two sections. Still open: Harry's precision check of the B judge (set bprec2), and the full runs with the chosen judges (see Judges).
+
 Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces (`docs/results/2026-10-22_ONTOLOGY_SWEEP.md`). A3 (purpose: answer / check problem / check program / disambiguate) was dropped on 2026-10-29: the purposes were too niche to label reliably, and the judge over-assigned them. Each node gets its own judge (an LLM or a script). This replaces the single sound/solver-like judge.
 
 ## Unit and core definition
@@ -66,21 +68,32 @@ The BlocksWorld prompt includes the ground-truth problem PDDL, so hardcoding the
 
 ## Judges
 
-Gemma 4 31B (FP8, vLLM, temperature 0) where reading is needed; scripts everywhere else. Run with `src/run_ontology_judges.py --items all`, assembled per trace by `scripts/assemble_ontology_labels.py` into `output/<model>/<task>/<cond>_ontology_<tag>.json`.
+Gemma 4 31B-it (FP8, vLLM, temperature 0, thinking mode) where reading is needed; scripts everywhere else. Run with `src/run_ontology_judges.py --items all`, assembled per trace by `scripts/assemble_ontology_labels.py --a-tag … --b-tag … --c-tag …` into `output/<model>/<task>/<cond>_ontology_<tag>.json`. Every judged record carries the prompt's hash (`ph`), and a tag refuses to mix prompts.
 
-| Node | Judge | How |
+| Node | Judge (tag) | How |
 |---|---|---|
-| A1 type (per paragraph) | Gemma A judge (`prompts/judge/a_paragraphs.txt`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`), one line per paragraph |
-| A1 per trace; solver-like ratio | script | union over paragraphs; ratio = characters in SLB paragraphs / all characters |
-| A2 extent; prose answer in output format | Gemma C judge (`prompts/judge/c_prose_answer.txt`) | reads the reasoning and the program output |
-| C1 | script | parse prose answer and program output with the task parsers and compare; n/a (reported) when either does not parse |
+| A1 per paragraph | Gemma A judge, `gemma_v11t` (`prompts/judge/a_paragraphs.txt`, `--thinking 8192`) | labels every numbered paragraph of each 2k-token segment (`src/ontology_items.py`) V, P, VP or N; V and VP count as Values, P as not SLB (the prompt predates dropping properties; the values-only prompt v12 was less accurate) |
+| A1 per trace; solver-like ratio | script | Values if any paragraph is; ratio = characters in Values paragraphs / all characters |
+| A2 extent; prose answer | Gemma C judge, `gemma_v11c` (`prompts/judge/c_prose_answer_condensed.txt`, `--condense-a-tag gemma_v11t --condense-values-only`) | reads only the Values paragraphs and the program output; complete if it finds a full answer, else partial; none exactly when A1 is none (script) |
+| C1 | script | parse the prose answer and the program output with the task parsers and compare; n/a ("unparsed", counted) when either does not parse |
 | C2 | script | the task validators (VAL for BlocksWorld) on the prose answer (`scripts/validate_prose_answers.py`) |
 | B = n/a | script | no program, failed run, or no output |
-| B label | Gemma B judge (`prompts/judge/b_program.txt`) | problem, reasoning (head + tail), program, output |
+| B label | Gemma B judge, `gemma_b5t` (`prompts/judge/b_program.txt`, `--thinking 16384`) | problem, reasoning (head + tail), program, output |
 | B cross-check, GPT-OSS Meeting | script (`src/hardcoded/static_checker.py`) | 30/30 against human labels |
-| Consistency | script | flags B ≠ independent without A1 values, and A2 complete without a values paragraph |
+| Consistency | script | flags B ≠ independent without A1 values, and A2 complete without a Values paragraph |
 
-**Reliability.** Each judge is to be reported with its agreement against human labels on the reliability sets (`validation/reliability/`, `scripts/judge_agreement.py`). Not measured yet (as of 2026-10-22); the labelling page is ready.
+**Full runs.** The first full A run (2026-10-30, launched as `gemma_v11t`) read the prompt file after it had been overwritten by v12, so it is stored as `gemma_v12t` (with `gemma_v12c`, and assembled files `*_ontology_v12run_a12_c12.json`); it must be redone with v11 before results are final. The full B run with `gemma_b5t` is in progress (`scripts/run_full_b5t.sh`).
+
+## Reliability
+
+Details and per-item disagreements: `docs/results/2026-10-30_A_JUDGE_RELIABILITY.md`. Reference labels live in `validation/reliability/`.
+
+| Node | Checked by | Result |
+|---|---|---|
+| A1 (paragraph Values vs not) | Harry, 70 paragraphs over 3 rounds + a properties check, rulings agreed in chat applied (`scripts/score_a1_rounds.py`) | gemma_v11t 66/70 (49/52 on items not paraphrased in the prompt); Values precision 20/22, recall 20/22. The v12 prompt used by the first full run: 62/70 (46/52), recall 16/22 |
+| A2 (extent) | Harry's verified completes + script grounding + Claude reading the passages (traces are too long for a person) | round 1: 20/20; round 3: 19/20 (the miss follows from an A1 error) |
+| B (program label) | Claude, blind, 20 traces balanced by predicted label | gemma_b5t 19/20 (optimistic: its prompt examples came from these traces); Harry's precision check of hardcoded and partly fixed on 20 fresh traces (bprec2) pending |
+| B n/a, C1, C2, consistency | scripts | deterministic; C's input (the extracted prose answer) is checked with A2 |
 
 ## Outside the ontology
 

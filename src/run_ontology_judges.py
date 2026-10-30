@@ -26,6 +26,7 @@ Usage (vllm-env, one GPU each):
 """
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -180,11 +181,19 @@ def main():
         out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
     if args.condense_a_tag:
         items = condense(items, args.condense_a_tag, args.condense_values_only)
+    template = PROMPTS["c_condensed" if args.kind == "c" and args.condense_a_tag else args.kind].read_text(encoding="utf-8")
+    # every record carries the prompt's hash, so a tag can never mix prompts (the first full A run,
+    # tagged gemma_v11t, silently used the v12 prompt file)
+    ph = hashlib.sha1(template.encode()).hexdigest()[:10]
     # The cache is every shard's file: when traces change, items move between shards.
     key = lambda r: (r["id"], r.get("h"))
     done = set()
     for f in out.parent.glob(f"judge_{args.kind}_{args.tag}*.jsonl"):
-        done |= {key(json.loads(l)) for l in f.open()}
+        recs = [json.loads(l) for l in f.open()]
+        other = {r["ph"] for r in recs if r.get("ph", ph) != ph}
+        if other:
+            sys.exit(f"{f} was judged with another prompt ({', '.join(other)}, now {ph}); use a new tag")
+        done |= {key(r) for r in recs}
     pending = [it for it in items if key(it) not in done]
     todo = [it for i, it in enumerate(pending) if i % n_shards == shard]
     print(f"{len(items)} items, {len(items) - len(pending)} cached, {len(todo)} to judge in this shard -> {out}", flush=True)
@@ -198,7 +207,6 @@ def main():
               max_num_seqs=args.max_num_seqs, quantization=None if args.quantization == "none" else args.quantization,
               kv_cache_dtype="fp8", enable_prefix_caching=True)
     tok = llm.get_tokenizer()
-    template = PROMPTS["c_condensed" if args.kind == "c" and args.condense_a_tag else args.kind].read_text(encoding="utf-8")
     start = time.time()
     for w in range(0, len(todo), args.wave_size):
         wave = todo[w:w + args.wave_size]
@@ -213,7 +221,7 @@ def main():
                            "c": {"extent": None, "match": None, "prose_answer": "", "parse_error": True},
                            "cs": {"extent": None, "answer": "", "parse_error": True}}[args.kind]
                 with out.open("a", encoding="utf-8") as f:
-                    f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": "", "finish_reason": "prompt_too_long", **skipped}) + "\n")
+                    f.write(json.dumps({"id": it["id"], "h": it.get("h"), "ph": ph, "response": "", "finish_reason": "prompt_too_long", **skipped}) + "\n")
                 continue
             msgs.append(m)
             # with thinking, keep the channel markers so the thought can be split off before parsing
@@ -227,7 +235,7 @@ def main():
                     head, sep, tail = text.partition("<channel|>")
                     thought, text = (head.replace("<|channel>thought", "", 1).strip(), tail) if sep else (head, "")
                     text = re.sub(r"<[|][^>]*>|<[^>]*[|]>", "", text)
-                f.write(json.dumps({"id": it["id"], "h": it.get("h"), "response": text, **({"thought": thought} if args.thinking else {}),
+                f.write(json.dumps({"id": it["id"], "h": it.get("h"), "ph": ph, "response": text, **({"thought": thought} if args.thinking else {}),
                                     "finish_reason": o.outputs[0].finish_reason, **parse(args.kind, text, it)}) + "\n")
         n = min(w + args.wave_size, len(todo))
         rate = n / (time.time() - start)

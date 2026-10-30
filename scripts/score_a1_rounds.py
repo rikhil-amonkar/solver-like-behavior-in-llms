@@ -9,8 +9,11 @@ Reference corrections agreed with Harry are applied (CORRECTIONS). Items whose c
 version's prompt paraphrases as an example are reported separately (IN_PROMPT), since
 agreement on them is not a fair test.
 
+Since properties were dropped (2026-10-29), the headline score is binary: Values (V or VP) vs not.
+
 Usage:
     python scripts/score_a1_rounds.py gemma_v5 gemma_v7 gemma_v9
+    python scripts/score_a1_rounds.py full:gemma_v11t   # labels from the full run (output/ontology)
 """
 import glob
 import json
@@ -62,8 +65,13 @@ def references():
 
 
 def judge(tag):
+    """Check-set runs (validation/reliability/checks), or with "full:" the full run's labels."""
     out = {}
-    for f in glob.glob(str(REL / f"checks/judge_a_{tag}.jsonl")) + glob.glob(str(REPO / f"output/ontology/judge_a_{tag}*.jsonl")):
+    if tag.startswith("full:"):
+        files = glob.glob(str(REPO / f"output/ontology/judge_a_{tag[5:]}*.jsonl"))
+    else:
+        files = glob.glob(str(REL / f"checks/judge_a_{tag}.jsonl"))
+    for f in files:
         for line in open(f):
             r = json.loads(line)
             out[r["id"]] = r
@@ -74,7 +82,7 @@ def main():
     refs = references()
     for tag in sys.argv[1:]:
         j = judge(tag)
-        ex = IN_PROMPT.get(tag, set())
+        ex = IN_PROMPT.get(tag.removeprefix("full:"), set())
         rows = []
         for k, seg, i, gold in refs:
             r = j.get(seg)
@@ -86,7 +94,8 @@ def main():
             for rnd, pre in [("r1", "v"), ("r2", "a1r2"), ("r3", "a1r3"), ("pcheck", "pcheck")]:
                 part = [x for x in sub if x[0].startswith(pre)]
                 print(f"  {name:<14}{rnd}: {sum(g == p for _, g, p in part)}/{len(part)}", end="")
-            print(f"   total {sum(g == p for _, g, p in sub)}/{len(sub)}")
+            print(f"   total {sum(g == p for _, g, p in sub)}/{len(sub)}"
+                  f"   binary (Values vs not) {sum(('V' in g) == ('V' in p) for _, g, p in sub)}/{len(sub)}")
         for c, name in (("V", "values"), ("P", "properties")):
             tp = sum(1 for _, g, p in rows if c in g and c in p)
             print(f"  {name}: precision {tp}/{sum(1 for _, _, p in rows if c in p)}, recall {tp}/{sum(1 for _, g, _ in rows if c in g)}")
