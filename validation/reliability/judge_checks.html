@@ -66,6 +66,8 @@ textarea { width: 100%; min-height: 38px; font: 13px var(--sans); background: va
 
 <script>
 const SHEETS = {
+  br2: { name: "B (round 2)", intro: "No judge label is shown. What does the program do with the answer the prose reached? Hardcoded = prints an answer it does not compute. Partly fixed = computes, but some decisions made in prose are written into the code (a fixed order or assignment, a deduced constraint even if redundant, options ruled out in prose left out). Steered = searches, but an order, tie-break or objective is chosen so the search returns the prose answer. Independent = none of these. The program output is shown under the program." },
+  specr2: { name: "Spec change (round 2)", intro: "No judge label is shown. Does the program drop, relax or add a constraint, goal or action that the problem does not call for? Following an explicit instruction in the problem (e.g. an additional constraint that replaces part of the goal) is no change, and so is faithfully encoding a problem that has no solution." },
   bex: { name: "B examples", intro: "A few cases per B label and for the specification-change flag, picked to check the B ontology itself. Gemma's label and evidence are shown with a short note from Claude; boundary cases are marked. B labels: Hardcoded = prints an answer it does not compute. Partly fixed = computes, but some decisions made in prose are written into the code. Steered = searches, but an order, tie-break or objective is chosen so the search returns the prose answer. Independent = none of these. Do you agree with each label? If a case does not fit the definitions, a note on why helps." },
   pcheck: { name: "Properties check", intro: "These are Claude's candidates for Properties under the strict definition: the paragraph concludes something about the whole solution set (no solution, a solution exists, it is unique, or a bound on the best answer), gives the argument itself from this instance's data, and commits no values. The last three are boundary cases where the argument rules out values on the way. Is each one Properties? If not, say whether it is Values or Not SLB, and a note on why helps." },
   a1r3: { name: "A1 (round 3)", intro: "No judge label is shown. For the highlighted paragraph: Values = assigns, tests or rules out values of the answer (incl. pruning, or trying an order that fails); say whether it rejects a candidate. Properties = argues from the constraints that a solution exists, none does, or it is unique/optimal, without values. Not SLB = restating, encoding/code design, checking the program or encoding against the problem data or hypothetical values, format, parsing, interpreting a constraint (incl. a one-off check of one example value), assuming or hedging about solvability, remarks on search-space size." },
@@ -76,7 +78,7 @@ const SHEETS = {
   c1: { name: "C1 match", intro: "A script compared the answer reached in the prose with the program's output. Are they the same answer, formatting aside? (For BlocksWorld the output is the planner's plan.)" },
   c2: { name: "C2 correct", intro: "The task validator judged whether the prose answer is a correct solution. Is it? Use “Can't tell” if checking it by hand is impractical." },
 };
-const S = { data: {}, marks: {}, tab: "bex", db: null };
+const S = { data: {}, marks: {}, tab: "br2", db: null };
 const fill = (el, ...kids) => el.replaceChildren(...kids.filter(k => k != null));
 const h = (tag, attrs = {}, ...kids) => {
   const el = document.createElement(tag);

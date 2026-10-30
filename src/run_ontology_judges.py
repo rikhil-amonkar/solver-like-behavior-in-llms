@@ -93,7 +93,7 @@ def parse(kind: str, text: str, item: dict) -> dict:
     try:
         obj, _ = json.JSONDecoder().raw_decode(text, start)
         label, spec = obj.get("label"), obj.get("spec")
-        ok = label in {"hardcoded", "partly_fixed", "steered", "independent"} and spec in {"none", "required", "not_required"}
+        ok = label in {"hardcoded", "partly_fixed", "steered", "independent"} and spec in {"none", "changed", "required", "not_required"}  # none/changed from gemma_b2t on
         return {"b": label if ok else None, "spec": spec if ok else None, "evidence": obj.get("evidence", ""), "parse_error": not ok}
     except (ValueError, json.JSONDecodeError):
         return {"b": None, "spec": None, "evidence": "", "parse_error": True}
