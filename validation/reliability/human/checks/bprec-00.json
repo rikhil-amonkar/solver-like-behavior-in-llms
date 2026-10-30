@@ -1,0 +1,9 @@
+{
+  "gemma": "partly_fixed",
+  "human": "independent",
+  "model": "gpt",
+  "sheet": "bprec",
+  "task": "blocksworld",
+  "trace": "gpt/blocksworld/caution_b/blocksworld_p19_state_constraint15",
+  "updatedAt": "2026-10-30T03:28:11.196Z"
+}

@@ -64,3 +64,15 @@ shown (as for the B examples, where he agreed 13/13).
 C1 and C2 are scripts on the prose answer extracted by the A2 judge (C1 parser comparison, no
 Gemma fallback; C2 the task validators), so they need no agreement check; the extracted answer
 is checked with A2 above.
+
+### B prompt revisions (2026-10-30)
+
+Harry's precision marks on the first set (bprec-00, 02, 03 are independent: a restriction read off
+the goal, a conflict resolved as the problem instructs, an added action) showed the judge counting
+choices made by READING the problem as inherited. The prompt now says only decisions the prose had
+to SOLVE for count, with examples on both sides (gemma_b4t, then gemma_b5t, thinking 16384).
+Claude relabelled br2-02 and br2-07 (stray day word read as a preference) as independent under this
+rule. Against Claude's labels on the 20 round-2 traces: b3t 15/20, b4t 17/20, **b5t 19/20**
+(only br2-07 differs: judge steered). The b5t prompt examples were written from these traces, so
+19/20 is optimistic; Harry's fresh precision set (bprec2, 10 hardcoded + 10 partly fixed by b5t,
+no overlap) is the held-out check. b5t still calls bprec-00 partly fixed.

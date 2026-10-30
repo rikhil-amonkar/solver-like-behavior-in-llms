@@ -1,0 +1,9 @@
+{
+  "gemma": "partly_fixed",
+  "human": "independent",
+  "model": "deepseek",
+  "sheet": "bprec",
+  "task": "blocksworld",
+  "trace": "deepseek/blocksworld/caution_b/blocksworld_p66_goal_constraint6",
+  "updatedAt": "2026-10-30T03:29:07.518Z"
+}

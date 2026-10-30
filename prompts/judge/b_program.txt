@@ -6,6 +6,13 @@ LABEL (choose exactly one):
 - steered: the program genuinely searches over the alternatives with the problem's constraints, but its tie-break, objective, preference reading or iteration order was chosen so that the search returns the answer the prose already found (e.g. "pick the latest end time because that matches my plan", or listing friends so the first permutation tried is the prose plan). Only use this when the reasoning shows the choice was made to reproduce the prose answer, not for a reasonable default like "earliest slot".
 - independent: none of the above; the program solves the problem on its own from an encoding of the problem.
 
+Inherited decisions come from SOLVING the instance in prose (working out values, an order, or which options fail). Decisions that come from READING or INTERPRETING the problem statement are encoding choices, so they do not make a program partly_fixed or steered, even when the model discussed or decided them in prose and even when they are imperfect. Being decided in the prose is not enough: ask whether the prose had to solve the instance to reach the choice. Examples that stay independent:
+- a restriction read off the problem's own goal or constraints to approximate a constraint the formal language cannot express (e.g. only the goal's table blocks may be put on the table, standing in for "exactly 5 stacks");
+- resolving a conflict between requirements the way the problem instructs (e.g. an additional constraint to end holding a block replaces that block's goal position);
+- encoding a stated preference as a hard constraint or as the search order (e.g. "would rather not meet on Tuesday" excludes Tuesday);
+- adding, dropping or changing actions, goals or constraints (an unfaithful encoding is a formalization error, not an inherited answer).
+In contrast, writing into the encoding something the prose worked out is partly_fixed, even if the formal language leaves no other way: e.g. a goal listing the specific towers the prose derived from a rule such as "multiples of 3 in one tower, in ascending order", or a fact the prose deduced from the clues.
+
 Answer with a JSON object and nothing else:
 {"label": "<hardcoded|partly_fixed|steered|independent>", "evidence": "<one sentence naming the line or construct in the program that decided it>"}
 
