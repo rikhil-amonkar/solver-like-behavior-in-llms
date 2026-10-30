@@ -1,24 +1,25 @@
 #!/bin/bash
 # Cross-FL runs: Calendar and Meeting in Z3-Python, ZebraLogic and BlocksWorld in plain Python, so that
 # each dataset has two FLs (native: Calendar, Meeting=Python; ZebraLogic=Z3; BlocksWorld=PDDL).
-# Qwen and GPT-OSS on GPU 7, all three conditions, then execution and evaluation. Outputs go to output_crossfl/.
+# Qwen and GPT-OSS on GPU 7 (GPU=, MODELS= override), all three conditions, then execution and evaluation. Outputs go to output_crossfl/.
 # Settings match the native runs: Qwen max_tokens 131072 (default), GPT-OSS 384000 (clamped to
 # the context), default sampling.
 # Usage (inside tmux): bash scripts/run_crossfl_gpu7.sh
 # With WAIT_FOR=<tmux session>, first waits for that session to end. Resumable (--continue).
-# PAIRS="task:fl ..." picks a subset of the pairings.
+# PAIRS="task:fl ..." picks a subset of the pairings. GPU=2 MODELS=qwen runs Qwen alone on GPU 2.
 set -u
 cd /local-ssd/hz466/solver-like-behavior-in-llms
 source /local-ssd/hz466/vllm-test/env.sh
-export CUDA_VISIBLE_DEVICES=7
+GPU=${GPU:-7}
+export CUDA_VISIBLE_DEVICES=$GPU
 if [ -n "${WAIT_FOR:-}" ]; then
   while tmux has-session -t "$WAIT_FOR" 2>/dev/null; do sleep 60; done
   echo "$WAIT_FOR ended $(date)"; sleep 60
 fi
-if [ -n "$(nvidia-smi -i 7 --query-compute-apps=pid --format=csv,noheader)" ]; then
-  echo "GPU 7 is busy; not starting"; nvidia-smi; exit 1
+if [ -n "$(nvidia-smi -i $GPU --query-compute-apps=pid --format=csv,noheader)" ]; then
+  echo "GPU $GPU is busy; not starting"; nvidia-smi; exit 1
 fi
-for model in qwen gpt; do
+for model in ${MODELS:-qwen gpt}; do
   extra=""; [ $model = gpt ] && extra="--max-tokens 384000"
   for pair in ${PAIRS:-calendar:z3 meeting:z3 zebralogic:python blocksworld:python}; do
     task=${pair%%:*}; fl=${pair##*:}

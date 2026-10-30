@@ -33,8 +33,10 @@ native Python formats give no coding steps. New formats (native prompts are unch
 `fl`, `z3_used` and `fl_compliance` per program. A Python BlocksWorld program's printed plan is
 checked with VAL against the golden domain and problem, as the planner's plan is for PDDL;
 `No plan` on an unsolvable instance counts as correct (as a proven-unsolvable planner run does).
-- `scripts/run_crossfl_gpu7.sh`: Qwen and GPT-OSS × four pairings × three conditions on GPU 7
-  (tmux `crossfl`, waits for the judge run).
+- `scripts/run_crossfl_gpu7.sh`: Qwen and GPT-OSS × four pairings × three conditions (`GPU=`,
+  `MODELS=`; default GPU 7). Since 2026-10-30: Qwen on GPU 2 (tmux `crossfl-qwen`), GPT-OSS on
+  GPU 3 (`crossfl-gpt`), started by `scripts/switch_judges_01_crossfl_23.sh` (tmux `judge-switch`),
+  which moves the judges to GPUs 0 and 1.
 - `scripts/run_crossfl_deepseek.sh`: DeepSeek over the API (tmux `crossfl-deepseek`,
   `crossfl-deepseek-bw`, `crossfl-deepseek-meeting`; `PAIRS=` picks pairings).
 

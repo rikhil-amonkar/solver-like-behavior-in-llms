@@ -89,29 +89,30 @@ def crossfl_job(job_id, name, model, gpus, session, after):
 def build_jobs():
     a_done = count_lines("output/ontology/judge_a_gemma_v11t.shard*.jsonl")
     c_done = count_lines("output/ontology/judge_c_gemma_v11c.shard*.jsonl")
-    full_log = log_text("full-v11.log")
+    # full-v11 ran the judges on GPUs 0-3; since 2026-10-30 19:00 judge-switch finishes them on 0, 1
+    # and hands GPUs 2, 3 to cross-FL (scripts/switch_judges_01_crossfl_23.sh)
+    judge_log = log_text("full-v11.log") + log_text("judge-switch.log")
+    judge_session = "full-v11" if tmux_alive("full-v11") else "judge-switch"
     jobs = [
         {"id": "a_judge", "name": "A judge rerun (gemma_v11t)", "stage": "Paragraph labels, all traces",
-         "gpus": "0, 1, 2, 3", "done": a_done, "total": 29237, "unit": "segments",
-         "extra": "", "session": "full-v11", "after": None,
-         "finished": "A done" in full_log},
+         "gpus": "0, 1", "done": a_done, "total": 29237, "unit": "segments",
+         "extra": "", "session": judge_session, "after": None,
+         "finished": "A done" in judge_log},
         {"id": "c_judge", "name": "A2/C judge (gemma_v11c)", "stage": "Prose answer per trace",
-         "gpus": "0, 1, 2, 3", "done": c_done, "total": 3600, "unit": "traces",
-         "extra": "", "session": "full-v11", "after": "a_judge",
-         "finished": "DONE" in full_log},
-        crossfl_job("crossfl_gpu7", "Cross-FL: Qwen + GPT-OSS", "qwen", "7", "crossfl", "c_judge"),
+         "gpus": "0, 1", "done": c_done, "total": 3600, "unit": "traces",
+         "extra": "", "session": judge_session, "after": "a_judge",
+         "finished": "DONE" in judge_log},
+        crossfl_job("crossfl_qwen", "Cross-FL: Qwen", "qwen", "2", "crossfl-qwen", None),
+        crossfl_job("crossfl_gpt", "Cross-FL: GPT-OSS", "gpt", "3", "crossfl-gpt", None),
         crossfl_job("crossfl_deepseek", "Cross-FL: DeepSeek (API)", "deepseek", "none (API)",
                     "crossfl-deepseek", None),
     ]
-    # Qwen and GPT-OSS share one queue on GPU 7: count both models
-    gpt = crossfl_job("x", "", "gpt", "", "", None)
-    jobs[2]["done"] += gpt["done"]
-    jobs[2]["total"] = 2400
-    q_eval, g_eval = int(jobs[2]["extra"].split("/")[0]), int(gpt["extra"].split("/")[0])
-    jobs[2]["extra"] = f"{q_eval + g_eval}/24 runs evaluated"
-    jobs[3]["finished"] = all("DONE" in log_text(f) for f in ("crossfl-deepseek.log", "crossfl-deepseek-bw.log",
+    for j, model in ((jobs[2], "qwen"), (jobs[3], "gpt")):
+        j["finished"] = "DONE" in log_text(f"crossfl-{model}.log")
+        # waits for judge-switch to free its GPU
+        j["queued"] = not tmux_alive(j["session"]) and tmux_alive("judge-switch") and j["done"] == 0
+    jobs[4]["finished"] = all("DONE" in log_text(f) for f in ("crossfl-deepseek.log", "crossfl-deepseek-bw.log",
                                                       "crossfl-deepseek-meeting.log"))
-    jobs[2]["finished"] = "DONE" in log_text("crossfl.log")
     return jobs
 
 
@@ -153,7 +154,7 @@ def main(out_dir: Path):
         alive = tmux_alive(j["session"])
         if j.get("finished") or j["done"] >= j["total"]:
             j["status"] = "done"
-        elif j["after"] and by_id[j["after"]]["status"] != "done":
+        elif j.pop("queued", False) or (j["after"] and by_id[j["after"]]["status"] != "done"):
             j["status"] = "queued"
         elif j["done"] > 0 or (alive and not j["after"]):
             j["status"] = "running" if alive else "stopped"
@@ -181,6 +182,7 @@ def main(out_dir: Path):
         started = tmux_created(j["session"]) if alive else None
         j["session_started"] = started.strftime("%Y-%m-%dT%H:%MZ") if started else None
         j.pop("finished", None)
+        j.pop("queued", None)
         j["after_name"] = by_id[j["after"]]["name"] if j["after"] else ""
         j.pop("after", None)
         j["snapshot_at"] = stamp
