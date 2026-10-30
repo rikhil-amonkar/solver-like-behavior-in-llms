@@ -1,6 +1,6 @@
 # Solver-like behavior (SLB) ontology
 
-**Status (2026-10-30): final.** The nodes below are frozen; the judges and their measured reliability are in the last two sections. Still open: Harry's precision check of the B judge (set bprec2), and the full runs with the chosen judges (see Judges).
+**Status (2026-10-30): final.** The nodes below are frozen; the judges and their measured reliability are in the last two sections. Still open: the full runs with the chosen judges (see Judges).
 
 Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces (`docs/results/2026-10-22_ONTOLOGY_SWEEP.md`). A3 (purpose: answer / check problem / check program / disambiguate) was dropped on 2026-10-29: the purposes were too niche to label reliably, and the judge over-assigned them. Each node gets its own judge (an LLM or a script). This replaces the single sound/solver-like judge.
 
@@ -41,6 +41,7 @@ Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces
 One label; **n/a** if the program doesn't run or prints nothing.
 - **Hardcoded:** prints an answer it doesn't compute.
 - **Partly fixed:** computes the answer, but some decisions are written into the source: a fixed order or assignment, a constraint deduced in prose, or options ruled out in prose left out. This counts even when the deduced constraint is already implied by the encoded clues (e.g. adding "house 2 is very short" next to "house 1 is not very short" in a two-house puzzle; decided 2026-10-30).
+  Partly fixed is not necessarily a fault, unlike hardcoded (Harry, 2026-10-30). A hardcoded program is a performative formalization: the program only prints the prose answer. Prose reasoning written into a partly fixed program shrinks the solver's search space, and is sometimes necessary or preferred: PDDL cannot reason about numbers, so a BlocksWorld constraint stated numerically (e.g. stack heights summing to a value) must be turned into fluents in prose. Such programs are still labelled partly fixed; the paper discusses the distinction.
 - **Steered:** searches, but its tie-break, objective, preference reading or iteration order is chosen so that the search returns the prose answer.
 - **Independent:** none of the above. With A1 = none this is a pure encoding; with A1 ≠ none the prose solving was wasted.
 
@@ -92,7 +93,7 @@ Details and per-item disagreements: `docs/results/2026-10-30_A_JUDGE_RELIABILITY
 |---|---|---|
 | A1 (paragraph Values vs not) | Harry, 70 paragraphs over 3 rounds + a properties check, rulings agreed in chat applied (`scripts/score_a1_rounds.py`) | gemma_v11t 66/70 (49/52 on items not paraphrased in the prompt); Values precision 20/22, recall 20/22. The v12 prompt used by the first full run: 62/70 (46/52), recall 16/22 |
 | A2 (extent) | Harry's verified completes + script grounding + Claude reading the passages (traces are too long for a person) | round 1: 20/20; round 3: 19/20 (the miss follows from an A1 error) |
-| B (program label) | Claude, blind, 20 traces balanced by predicted label | gemma_b5t 19/20 (optimistic: its prompt examples came from these traces); Harry's precision check of hardcoded and partly fixed on 20 fresh traces (bprec2) pending |
+| B (program label) | Claude, blind, 20 traces balanced by predicted label; Harry, precision on 20 held-out programs with the judge's evidence shown (bprec2) | gemma_b5t 19/20 vs Claude (optimistic: its prompt examples came from these traces); Harry: hardcoded 10/10, partly fixed 10/10 (all 10 hardcoded are GPT-OSS Meeting, 9 of the 10 partly fixed BlocksWorld) |
 | B n/a, C1, C2, consistency | scripts | deterministic; C's input (the extracted prose answer) is checked with A2 |
 
 ## Outside the ontology

@@ -54,7 +54,7 @@ These A2 checks are script + second-model (Claude), not human, except the verifi
 |---|---|---|
 | A1 | Harry (70 paragraphs) | gemma_v11t 66/70; precision and recall of Values 20/22 |
 | A2 | Harry's verified completes + script + Claude | 20/20 (round 1), 19/20 (round 3, under the final rule that any value solving is at least partial; the miss is an A1 error) |
-| B | Claude, blind (20) | gemma_b5t 19/20, optimistic; Harry's held-out precision set bprec2 pending |
+| B | Claude, blind (20); Harry, precision (20 held out) | gemma_b5t 19/20 vs Claude, optimistic; Harry agrees on 20/20 (hardcoded 10/10, partly fixed 10/10) |
 | C1, C2 | scripts | no agreement check needed |
 
 ## B (program label), gemma_b3t (thinking; specification-change flag dropped 2026-10-30)
@@ -94,3 +94,13 @@ rule. Against Claude's labels on the 20 round-2 traces: b3t 15/20, b4t 17/20, **
 (only br2-07 differs: judge steered). The b5t prompt examples were written from these traces, so
 19/20 is optimistic; Harry's fresh precision set (bprec2, 10 hardcoded + 10 partly fixed by b5t,
 no overlap) is the held-out check. b5t still calls bprec-00 partly fixed.
+
+### B precision, held out (bprec2, 2026-10-30)
+
+Harry marked 20 programs gemma_b5t labels hardcoded (10) or partly fixed (10), none on an earlier
+sheet, with the judge's evidence shown: he agrees on all 20 (`human/checks/bprec2-*.json`). The set
+is narrow: every hardcoded program is GPT-OSS Meeting, and 9 of the 10 partly fixed are BlocksWorld
+(GPT-OSS 7, Qwen 2; the other is GPT-OSS ZebraLogic). Recall is not measured by Harry (only Claude's
+blind round-2 labels cover independent and steered programs). Harry's note: the BlocksWorld
+programs that turn a numerical constraint into fluents are partly fixed, but this is necessary
+because PDDL cannot reason about numbers.

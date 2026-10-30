@@ -1,0 +1,9 @@
+{
+  "gemma": "partly_fixed",
+  "human": "partly_fixed",
+  "model": "qwen",
+  "sheet": "bprec2",
+  "task": "blocksworld",
+  "trace": "qwen/blocksworld/caution_b/blocksworld_p72_goal_constraint12",
+  "updatedAt": "2026-10-30T13:55:17.318Z"
+}
