@@ -138,5 +138,12 @@
   "title": "Cross-FL runs done for DeepSeek and GPT-OSS",
   "detail": "12 runs each (four new pairings x 3 conditions). Accuracy close to the native FL; Meeting-Z3's lower golden accuracy was a prompt-format artefact, now normalised.",
   "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "Native ontology labels assembled from the final judges",
+  "detail": "A gemma_v11t, B gemma_b5t, A2/C gemma_v11c over all 3,600 traces, no judgement missing. BlocksWorld ratios fell to 0.01-0.06; B hardcoded is almost all GPT-OSS Meeting baseline (40).",
+  "where": "docs/results/2026-10-31_ONTOLOGY_LABELS_V11_B5T.md"
  }
 ]

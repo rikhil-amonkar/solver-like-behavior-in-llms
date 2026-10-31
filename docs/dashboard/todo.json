@@ -1,15 +1,6 @@
 [
  {
   "priority": 1,
-  "area": "Ontology",
-  "item": "Assemble per-trace ontology labels",
-  "detail": "scripts/assemble_ontology_labels.py with the v11t, b5t and v11c tags, replacing the v12 assembly.",
-  "status": "to do",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 1,
   "area": "Experiments",
   "item": "Cross-FL: Qwen runs",
   "detail": "GPT-OSS and DeepSeek finished all 12 runs each. Qwen's remaining runs run on GPUs 0, 2 and 3 (three queues; claim files keep them apart).",
@@ -50,14 +41,14 @@
   "item": "Replace the Ratio and #Tokens rows",
   "detail": "Table 1 still shows the old Gemini judgments; use the ontology's solver-like ratio once labels are assembled.",
   "status": "to do",
-  "after": "Assemble labels",
+  "after": "",
   "decider": ""
  },
  {
   "priority": 2,
   "area": "Ontology",
   "item": "Check DeepSeek and Qwen BlocksWorld A labels",
-  "detail": "v1 labels looked inflated (ratio 0.16-0.20 against about 0.05 in the sweep); confirm with v11t.",
+  "detail": "Under the final judges the BlocksWorld ratio is 0.01-0.06 (was 0.16-0.20 under gemma_v1), in line with the sweep estimate; a spot check of these labels would confirm it.",
   "status": "to do",
   "after": "",
   "decider": ""
