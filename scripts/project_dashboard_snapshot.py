@@ -125,15 +125,18 @@ def build_jobs():
             ("c", "gemma_v11c", "Cross-FL A2/C judge (gemma_v11c)", "Prose answer per trace", "traces", 3600, "DONE")):
         seen = [int(n) for n in re.findall(r"^(\d+) items,", "".join(log_text(f.name) for f in
                 (REPO / "logs").glob(f"crossfl-judge-{kind}*.log")), re.M)]
-        gpus = sorted(set(re.findall(r"== %s on GPUs ([\d ]+)" % kind, xlog)))
+        gpus = re.findall(r"== %s on GPUs ([\d ]+)" % kind, xlog)  # the latest round's GPUs
         jobs.append({"id": f"crossfl_judge_{kind}", "name": name, "stage": stage,
-                     "gpus": ", ".join(gpus[-1].split()) if gpus else "0-3, as free",
+                     "gpus": ", ".join(gpus[-1].split()) if gpus else "1, 2, 3",
                      "done": count_lines(f"output_crossfl/ontology/judge_{kind}_{tag}*.jsonl"),
                      "total": max(seen) if seen else total, "unit": unit,
                      "extra": "", "session": "crossfl-judges",
                      "after": {"a": None, "b": "crossfl_judge_a", "c": "crossfl_judge_b"}[kind],
                      "finished": marker in xlog})
     return jobs
+
+
+KEEP_FREE = {0}  # the flex GPU left idle while the project uses 1-3 (Harry, 2026-10-31)
 
 
 def gpu_rows():
@@ -150,7 +153,8 @@ def gpu_rows():
     for line in out.strip().splitlines():
         idx, uuid, used, total, util = [x.strip() for x in line.split(",")]
         users = busy.get(uuid, set())
-        use = "this project" if "hz466" in users else ("another user" if users else "free")
+        use = "this project" if "hz466" in users else ("another user" if users else
+                                                       "kept free" if int(idx) in KEEP_FREE else "free")
         rows.append({"gpu": int(idx), "use": use, "util_pct": int(util),
                      "mem_gib": round(int(used) / 1024, 1), "mem_total_gib": round(int(total) / 1024)})
     return rows

@@ -2,7 +2,7 @@
 # Ontology judges on the cross-FL runs (output_crossfl/, results in output_crossfl/ontology/):
 # A (gemma_v11t), then B (gemma_b5t), then A2/C (gemma_v11c), with the same prompts and settings as
 # the native runs, then assembly into <cond>_ontology_gemma_v11_b5t.json.
-# Uses whichever of GPUs 0-3 have no process (at most four flex GPUs). While Qwen's cross-FL
+# Uses whichever of GPUS (default 1-3; GPU 0 is left free) have no process. While Qwen's cross-FL
 # queues (tmux crossfl-qwen*) still run, A is judged in rounds: each round rebuilds the items
 # (new Qwen runs join) and, when another GPU frees up, the shards are stopped right after a wave
 # is cached and restarted over more GPUs. Judged items are cached, so nothing is judged twice.
@@ -11,7 +11,7 @@ set -u
 cd /local-ssd/hz466/solver-like-behavior-in-llms
 source /local-ssd/hz466/vllm-test/env.sh
 ROOT=output_crossfl
-GPUS=${GPUS:-0 1 2 3}  # GPUs this run may use (since 2026-10-31 13:40: GPUS=1)
+GPUS=${GPUS:-1 2 3}  # GPUs this run may use; GPU 0 stays free (at least one flex GPU idle, Harry 2026-10-31)
 free_gpus() { for g in $GPUS; do [ -z "$(nvidia-smi -i $g --query-compute-apps=pid --format=csv,noheader)" ] && echo -n "$g "; done; }
 qwen_running() { tmux ls 2>/dev/null | grep -q "^crossfl-qwen"; }
 run_kind() {  # kind tag log-prefix extra-args...; shards over the free GPUs; returns 1 if restarted for more GPUs

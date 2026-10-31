@@ -3,7 +3,7 @@
   "priority": 1,
   "area": "Experiments",
   "item": "Judge the cross-FL runs (A, B, A2/C)",
-  "detail": "A (gemma_v11t) done on 2026-10-31: all 18,865 segments. B (gemma_b5t) is running on GPU 1 (the run is limited to GPU 1), then A2/C (gemma_v11c); the labels are then assembled into output_crossfl/<model>/<task>/<cond>_ontology_gemma_v11_b5t.json and the FL-compliance report regenerated.",
+  "detail": "A (gemma_v11t) done on 2026-10-31: all 18,865 segments. B (gemma_b5t) is running on GPUs 1, 2 and 3 (GPU 0 is kept free: one flex GPU always idle), then A2/C (gemma_v11c); the labels are then assembled into output_crossfl/<model>/<task>/<cond>_ontology_gemma_v11_b5t.json and the FL-compliance report regenerated.",
   "status": "in progress",
   "after": "",
   "decider": ""
