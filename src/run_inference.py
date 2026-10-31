@@ -18,6 +18,7 @@ from general.io_utils import (
     get_output_path,
     get_timestamp,
     IncrementalJSONWriter,
+    load_json_file,
 )
 from general.prompt_utils import (
     load_prompt_template,
@@ -28,6 +29,7 @@ from general.prompt_utils import (
 )
 from general.cli import ProgressTracker
 from inference.model_caller import call_model, call_model_batch
+from deter.batching import make_groups, build_batch_prompt
 
 
 def run_inference_pipeline(
@@ -41,6 +43,8 @@ def run_inference_pipeline(
     batch_size: int = None,
     output_root: str = None,
     fl: str = None,
+    batch_k: int = None,
+    placeholder: bool = False,
 ):
     """
     Run inference pipeline for a task and model.
@@ -56,9 +60,18 @@ def run_inference_pipeline(
         batch_size: Batch size for vLLM models (None = auto: 16 for qwen/gpt, 1 for deepseek)
         output_root: Output root directory (None = <repo>/output, or output_crossfl for a non-native FL)
         fl: Formal language ('python', 'z3'); None = the task's native one
+        batch_k: Put this many problems in each prompt, one program per problem (docs/DETERRENCE_DESIGN.md)
+        placeholder: Replace the problem's values with placeholders (data/placeholders/)
     """
     condition = f"caution_{caution_variant}" if caution_variant else "baseline"
+    if batch_k:
+        condition = f"batch_k{batch_k}"
+    elif placeholder:
+        condition = "placeholder"
     fl = fl or TASK_FL[task]
+    if (batch_k or placeholder) and output_root is None:
+        # Deterrence methods: kept out of output/ and output_crossfl/
+        output_root = str(get_repo_root() / ("output_deter" if fl == TASK_FL[task] else "output_deter_crossfl"))
     if fl != TASK_FL[task] and output_root is None:
         # Keep cross-FL runs out of output/, which the judges and tables read
         output_root = str(get_repo_root() / "output_crossfl")
@@ -110,6 +123,27 @@ def run_inference_pipeline(
 
     print("Prompts loaded")
 
+    # Deterrence methods: a record per group of K problems, or per placeholder problem
+    prompt_overrides, record_extras = {}, {}
+    if placeholder:
+        converted = load_json_file(str(get_repo_root() / "data" / "placeholders" / f"{task}_placeholders.json"))
+        note = load_prompt_template(f"prompts/deter/placeholder_note_{task}.txt").strip()
+        problems = {eid: {**problems[eid], "problem": f"{note}\n\n{converted[eid]['problem']}"} for eid in example_ids}
+    if batch_k:
+        lang = "z3" if fl == "z3" else "python"
+        batch_prefix = load_prompt_template(f"prompts/deter/batch_prefix_{lang}.txt")
+        batch_suffix = load_prompt_template("prompts/deter/batch_suffix.txt")
+        groups = make_groups(example_ids, batch_k)
+        group_problems = {}
+        for g, members in enumerate(groups):
+            gid = f"group_k{batch_k}_{g:02d}"
+            texts = [problems[eid]["problem"] for eid in members]
+            group_problems[gid] = {"problem": "\n\n".join(texts)}
+            prompt_overrides[gid] = build_batch_prompt(batch_prefix, texts, output_format, batch_suffix)
+            record_extras[gid] = {"member_ids": members, "batch_k": batch_k}
+        problems, example_ids = group_problems, list(group_problems)
+        print(f"{len(example_ids)} groups of up to {batch_k} problems")
+
     # Prepare output path
     output_path = get_output_path(model, task, "inference", condition, output_root)
     print(f"Output: {output_path}\n")
@@ -152,6 +186,8 @@ def run_inference_pipeline(
             "fl": fl,
             "cautionary_suffix_enabled": bool(caution_variant),
             "cautionary_suffix_variant": caution_variant,
+            "batch_k": batch_k,
+            "placeholder": placeholder,
             "timestamp": get_timestamp(),
             "num_examples": len(example_ids) + len(completed_ids),
             "max_tokens": max_tokens,
@@ -178,7 +214,7 @@ def run_inference_pipeline(
                         batch_problem_texts.append(problem_text)
 
                         # Build prompt (pass problem_data for PDDL tasks with groundtruth info)
-                        full_prompt = build_full_prompt(
+                        full_prompt = prompt_overrides.get(example_id) or build_full_prompt(
                             universal_prefix,
                             problem_text,
                             output_format,
@@ -207,6 +243,7 @@ def run_inference_pipeline(
                                 "problem_text": batch_problem_texts[idx],
                                 "reasoning_trace": reasoning_trace,
                                 "model_metadata": model_metadata,
+                                **record_extras.get(example_id, {}),
                             }
 
                             # Write immediately
@@ -222,6 +259,7 @@ def run_inference_pipeline(
                             error_result = {
                                 "example_id": example_id,
                                 "problem_text": batch_problem_texts[idx],
+                                **record_extras.get(example_id, {}),
                                 "reasoning_trace": "",
                                 "model_metadata": {
                                     "error": str(e),
@@ -242,6 +280,7 @@ def run_inference_pipeline(
                         error_result = {
                             "example_id": example_id,
                             "problem_text": problems[example_id].get("problem", ""),
+                            **record_extras.get(example_id, {}),
                             "reasoning_trace": "",
                             "model_metadata": {
                                 "error": f"Batch processing error: {str(e)}",
@@ -405,6 +444,18 @@ Examples:
         default=None,
         help="Output root directory (default: output/). Use a scratch dir for test runs."
     )
+    deter_group = parser.add_mutually_exclusive_group()
+    deter_group.add_argument(
+        "--batch-k",
+        type=int,
+        default=None,
+        help="Deterrence: K problems per prompt, one program each (writes to output_deter/; --n counts problems)"
+    )
+    deter_group.add_argument(
+        "--placeholder",
+        action="store_true",
+        help="Deterrence: values replaced by placeholders, given to the program as VALUES (calendar, meeting)"
+    )
 
     args = parser.parse_args()
 
@@ -420,6 +471,8 @@ Examples:
             batch_size=args.batch_size,
             output_root=args.output_root,
             fl=args.fl,
+            batch_k=args.batch_k,
+            placeholder=args.placeholder,
         )
     except KeyboardInterrupt:
         print("\n\nInterrupted by user")

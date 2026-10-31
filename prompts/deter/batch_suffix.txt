@@ -1,0 +1,1 @@
+Answer all {K} problems above. Give {K} ```python code blocks, one per problem, in the order of the problems. The first line of each block must be the comment `# Problem i`, where i is the problem's number. Each program must solve only its own problem and print only that problem's answer, in the format specified above. Do not combine problems into one program.
