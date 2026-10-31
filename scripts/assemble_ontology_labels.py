@@ -36,7 +36,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 from ontology_items import build_items
 from execution.output_formatter import parse_output_by_task
 from general.io_utils import load_problems_json
-from validate_prose_answers import check as validate_prose
+from validate_prose_answers import check as validate_prose, prose_plan
 
 
 
@@ -96,8 +96,10 @@ def c1_script(trace, prose):
     """True/False if both answers parse and can be compared, else None."""
     task = trace["task"]
     if task == "blocksworld":
-        a, b = plan_actions(prose), plan_actions(trace["plan"])
-        return (a == b) if a and b else None
+        # a prose answer that is no plan (e.g. a goal-state description) is n/a; "no plan exists"
+        # matches a program whose planner found none
+        a = prose_plan(prose)
+        return None if a is None else a == (prose_plan(trace["plan"]) or [])
     pd = problem_data(task, trace["example_id"])
     a = parse_output_by_task(prose, task, pd)
     b = parse_output_by_task(trace["raw_stdout"], task, pd)

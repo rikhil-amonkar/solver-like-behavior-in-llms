@@ -29,7 +29,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -157,7 +157,7 @@
    "A2": "complete",
    "C1": null,
    "c1_source": null,
-   "C2": false,
+   "C2": null,
    "B": "na",
    "b_source": "script",
    "flags": []
@@ -605,7 +605,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -1101,7 +1101,7 @@
    "A2": "complete",
    "C1": null,
    "c1_source": null,
-   "C2": false,
+   "C2": null,
    "B": "na",
    "b_source": "script",
    "flags": []
@@ -1309,7 +1309,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []

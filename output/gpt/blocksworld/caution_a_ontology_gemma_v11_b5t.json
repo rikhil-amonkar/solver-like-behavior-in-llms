@@ -1007,7 +1007,7 @@
    "A2": "complete",
    "C1": null,
    "c1_source": "unparsed",
-   "C2": true,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -1023,7 +1023,7 @@
    "A2": "complete",
    "C1": null,
    "c1_source": "unparsed",
-   "C2": false,
+   "C2": null,
    "B": "partly_fixed",
    "b_source": "gemma",
    "flags": []
@@ -1295,7 +1295,7 @@
    "A2": "complete",
    "C1": null,
    "c1_source": "unparsed",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []

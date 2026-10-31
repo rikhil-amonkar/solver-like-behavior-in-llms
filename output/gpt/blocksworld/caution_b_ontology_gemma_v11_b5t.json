@@ -203,9 +203,9 @@
    "ratio": 0.2839,
    "unlabelled_paragraphs": 0,
    "A2": "complete",
-   "C1": false,
-   "c1_source": "script",
-   "C2": false,
+   "C1": null,
+   "c1_source": "unparsed",
+   "C2": null,
    "B": "partly_fixed",
    "b_source": "gemma",
    "flags": []

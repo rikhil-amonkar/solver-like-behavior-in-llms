@@ -301,7 +301,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -317,7 +317,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -333,7 +333,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -685,7 +685,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -765,7 +765,7 @@
    "A2": "complete",
    "C1": true,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -989,7 +989,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []
@@ -1421,7 +1421,7 @@
    "A2": "complete",
    "C1": false,
    "c1_source": "script",
-   "C2": false,
+   "C2": null,
    "B": "independent",
    "b_source": "gemma",
    "flags": []

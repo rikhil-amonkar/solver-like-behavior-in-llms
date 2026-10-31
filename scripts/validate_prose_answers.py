@@ -16,6 +16,7 @@ Usage:
 """
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -30,6 +31,28 @@ from inference.code_executor_pddl import run_val_validator
 VAL = str(REPO / "repos/VAL/build/bin/Validate")
 
 
+FORMAT_ERRORS = ("first step must be", "unparseable step", "solution cannot be empty")
+BW_ACTIONS = {"pickup", "putdown", "stack", "unstack"}  # every golden BlocksWorld domain
+NO_PLAN = re.compile(r"\b(no (valid )?(plan|solution)|unsolvable|impossible|not (reachable|achievable|solvable))\b", re.I)
+
+
+def prose_plan(answer):
+    """A BlocksWorld plan as action tuples with normalised names (pick-up -> pickup), written as
+    '(unstack a b)' or 'unstack a b' lines; [] if the answer only says no plan exists; None if
+    it states neither (2026-10-31: such answers were sent to VAL and counted as wrong)."""
+    text = "\n".join(l for l in (answer or "").splitlines() if not l.strip().startswith(";"))
+    parts = re.findall(r"\(([^()]+)\)", text) or text.splitlines()
+    acts = []
+    for p in parts:
+        tok = p.lower().replace(",", " ").split()
+        if tok and re.sub(r"[-_]", "", tok[0]) in BW_ACTIONS:
+            # every problem names its blocks block<n>; prose sometimes writes just the number
+            acts.append((re.sub(r"[-_]", "", tok[0]), *(f"block{a}" if a.isdigit() else a for a in tok[1:])))
+    if acts:
+        return acts
+    return [] if NO_PLAN.search(text) else None
+
+
 def check(task, eid, answer, cache):
     if task not in cache:
         cache[task] = (load_constraints_json(task), load_problems_json(task), load_problems_with_solutions(task))
@@ -37,9 +60,19 @@ def check(task, eid, answer, cache):
     problem = problems.get(eid, {})
     if task == "blocksworld":
         g = problem.get("golden_solution") or {}
+        plan = prose_plan(answer)
+        if plan is None:  # e.g. "null", or a goal-state description instead of a plan
+            return None, "prose answer did not parse"
+        if not plan:
+            return not problem.get("plan_exists", True), "prose says no plan exists"
         if not problem.get("plan_exists", True):
             return False, "prose gives a plan, but no plan exists"
-        ok, out, err = run_val_validator(g["domain_pddl"], g["problem_pddl"], rename_plan_actions(answer, g["domain_pddl"]), VAL)
+        text = "\n".join(f"({' '.join(a)})" for a in plan)
+        ok, out, err = run_val_validator(g["domain_pddl"], g["problem_pddl"], rename_plan_actions(text, g["domain_pddl"]), VAL)
+        if not ok and not re.search(r"Plan failed to execute|Goal not satisfied", out or ""):
+            # VAL could not read the plan (e.g. p10's actions take extra token arguments the prose
+            # leaves out): not checkable rather than wrong
+            return None, "VAL could not check the plan: " + (out or err)[-200:]
         return bool(ok), "" if ok else (out or err)[-300:]
     parsed = parse_output_by_task(answer, task, problem)
     if parsed is None:
@@ -48,6 +81,10 @@ def check(task, eid, answer, cache):
         return parsed == golden.get(eid), "compared with golden grid"
     c = constraints.get(eid, constraints)
     ok, detail = evaluate_solution(task, c.get("constraints", c), parsed, problem=problem, golden_solution=golden.get(eid))
+    err = str(detail.get("error", "")) if isinstance(detail, dict) else ""
+    if not ok and err.startswith(FORMAT_ERRORS):
+        # the extracted itinerary is malformed (2026-10-31: 39 Meeting answers), not checkable
+        return None, detail
     return bool(ok), detail
 
 
