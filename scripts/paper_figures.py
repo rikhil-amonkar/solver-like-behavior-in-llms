@@ -157,7 +157,7 @@ def fig_c(rows, dest):
 
 def table(st, dest):
     lines = [r"\begin{tabular}{lll|r|rrrrr|rrrrr|rr}", r"\toprule",
-             r"Model & Task & Cond. & Acc. & Val. & Cmpl. & Part. & Ratio & SLB tok. & B1 & B2 & B3 & B4 & n/a & C1 no & C2 no \\",
+             r"Model & Task & Cond. & Acc. & SLB & Cmpl. & Part. & Ratio & SLB tok. & B1 & B2 & B3 & B4 & n/a & C1 no & C2 no \\",
              r"\midrule"]
     for mi, (m, mname) in enumerate(MODELS):
         for ti, (t, tname) in enumerate(TASKS):
