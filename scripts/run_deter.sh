@@ -18,7 +18,7 @@ if [ -n "$(nvidia-smi -i "$GPU" --query-compute-apps=pid --format=csv,noheader)"
 fi
 name="deter-$MODEL-$(basename "$ROOT")"
 mkdir -p logs
-cmds="source /local-ssd/hz466/vllm-test/env.sh && export CUDA_VISIBLE_DEVICES=$GPU"
+cmds="echo CELLS: $CELLS; source /local-ssd/hz466/vllm-test/env.sh && export CUDA_VISIBLE_DEVICES=$GPU"
 for cell in $CELLS; do
   IFS=: read -r task fl method <<< "$cell"
   if [ "$method" = ph ]; then flag="--placeholder"; cond=placeholder; else flag="--batch-k ${method#k}"; cond="batch_$method"; fi

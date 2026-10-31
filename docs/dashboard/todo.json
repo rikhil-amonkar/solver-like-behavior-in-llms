@@ -2,9 +2,9 @@
  {
   "priority": 1,
   "area": "Experiments",
-  "item": "Implement the method that deters SLB (Section 6)",
-  "detail": "Harry: the method from the preliminary studies, as the second part of Section 6 after the cautionary prompts. Placeholder (todo) in the paper.",
-  "status": "to do",
+  "item": "Deter SLB: batched problems and placeholders (Section 6)",
+  "detail": "Two candidate methods from Harry's preliminary studies: K problems per prompt with one program each (K sweep 2/5/10), and values replaced by placeholders that the program gets at run time. Qwen + GPT-OSS; BlocksWorld-PDDL dropped (little SLB). Code done; pilot (20 problems, Calendar + Meeting Python) running; then judge changes (per-problem A1 for batches), full runs. docs/DETERRENCE_DESIGN.md",
+  "status": "in progress",
   "after": "",
   "decider": ""
  },

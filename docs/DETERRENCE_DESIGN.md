@@ -9,6 +9,10 @@ not cost accuracy ("whatever works works").
 - Placeholders: the model **never sees the values**; the program gets them at run time.
 - Models: Qwen and GPT-OSS (no DeepSeek: its API model drifted, see CROSS_FL_DESIGN.md).
 - K sweep {2, 5, 10}; K = 5 is the main setting.
+- BlocksWorld in PDDL is dropped: it has little SLB to deter (ratio 0.04, 51% of traces with
+  values; Python > Z3 and Python > PDDL on the same problems, H2). BlocksWorld stays in via Python.
+  Batching therefore covers 7 cells (Calendar, Meeting, ZebraLogic × Python/Z3; BlocksWorld ×
+  Python); Python cells first if compute is short.
 - A symbolic decision made in prose (e.g. "meet Person2 before Person3", "slot T3-T4") counts as
   solver-like: A1 *values*, and B2/B3 if the program inherits it.
 
@@ -25,7 +29,8 @@ not cost accuracy ("whatever works works").
   only when there are exactly K), and writes one execution record per problem with a `batch`
   field, so `run_evaluation.py` scores it unchanged. The shared reasoning is the text before the
   answer's first program.
-- PDDL (BlocksWorld native) is not supported yet: its prompt carries per-problem PDDL.
+- PDDL (BlocksWorld native) is not supported (dropped, see Decisions); its prompt carries each
+  instance's own reference problem PDDL, so a batch would need one per problem section.
 
 ## Method 2: placeholders (`--placeholder`, condition `placeholder`)
 - `scripts/build_placeholders.py` → `data/placeholders/<task>_placeholders.json` for Calendar and
@@ -42,7 +47,8 @@ not cost accuracy ("whatever works works").
 
 ## Running
 `GPU=<free> MODEL=<qwen|gpt> N=<problems> ROOT=<root> CELLS="task:fl:k5 task:fl:ph ..." scripts/run_deter.sh`
-runs inference, execution and evaluation per cell in tmux `deter-<model>-<root>`.
+runs inference, execution and evaluation per cell in tmux `deter-<model>-<root>`. The project
+dashboard shows these sessions (`deter_job` in scripts/project_dashboard_snapshot.py).
 Outputs: `output_deter/` (native FL), `output_deter_crossfl/` (second FL), `output_deter_pilot/`.
 
 ## Pilot (2026-10-31)
