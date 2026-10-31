@@ -138,3 +138,29 @@ Disagreements (Harry / judge), with Claude's reading of the context:
 **Rulings (Harry, 2026-10-31):** the judge is right on a1x-01 (N) and a1x-25 (V); a1x-13 stays N (Harry's
 label). Final: **39/40** (Wilson [0.87, 0.99]); every dataset 10/10 except Calendar-Z3 9/10; Values
 precision 19/20, recall 19/19. The rulings are in RULINGS in `scripts/build_crossfl_check_sheets.py`.
+
+### B cross-FL: Claude's check of the judge's evidence (2026-10-31, before Harry's marks)
+
+Harry asked Claude to verify each `bx` label's evidence (the claim against the program, the problem and
+the prose; programs re-run with the env venv, with minimal fixes where they crash, and with the
+questioned tie-break removed). Notes per card: `validation/reliability/claude_bx_notes.json`, shown on
+the page under the judge's evidence (`build_crossfl_check_sheets.py notes`). Claude agrees on 16/20:
+- bx-04 (steered → independent): the shortest plan is unique, and re-runs with other action orders print
+  the same plan.
+- bx-05 (partly fixed → independent): names left in the problem's listing order because the names loop
+  is missing; the prose never placed a name. An encoding bug.
+- bx-13 (independent → n/a): the extracted program is just `from z3 import *`; the extractor took the
+  inline quote of the prompt's required import as the final block.
+- bx-18 (independent → partly fixed, weak): it assumes all three friends are met after the prose shows
+  it is feasible, the same pattern as bx-02, which the judge called partly fixed; the two need one ruling.
+Confirmed with re-runs: bx-00 (without minimize(start): 12:30 instead of 11:30) and bx-10 (without the
+maximize calls: 10:00 instead of 16:00), so both tie-breaks decide the answer.
+
+Side findings, not label questions:
+- 6/20 programs crash (bx-00, 02, 07, 10, 16, 17), mostly simple Z3 API mistakes.
+- Code extraction: 9 Qwen cross-FL programs are 2 lines or fewer (Meeting 8, Calendar 1); at least
+  bx-13 has a complete final program that was missed.
+- BlocksWorld scoring: an empty plan counts as "planner did not find a plan" even when the goal already
+  holds (bx-06, p42, everything on the table).
+- bx-09 and bx-15 read "end holding block X" as contradicting the goal and print "No plan"; the reference
+  says a plan exists.

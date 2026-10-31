@@ -15,6 +15,7 @@ Tabs in validation/reliability/judge_checks.json:
 
 Steps:
     python scripts/build_crossfl_check_sheets.py sheets   # vllm env (tiktoken)
+    python scripts/build_crossfl_check_sheets.py notes    # Claude's check of each B label (claude_bx_notes.json) onto the cards
     python scripts/build_crossfl_check_sheets.py score    # after the marks are in human/checks/
 """
 import argparse
@@ -117,6 +118,16 @@ def sheets():
     print("bx", len(bx), Counter((it["task"], it["question"]["gemma"]) for it in bx))
 
 
+def notes():
+    """Attach Claude's verification of each judge claim (validation/reliability/claude_bx_notes.json) to the bx cards."""
+    out = json.load(open(REL / "judge_checks.json"))
+    cn = json.load(open(REL / "claude_bx_notes.json"))
+    for it in out["bx"]:
+        it["claude_text"] = cn[it["id"]]["note"]
+    json.dump(out, open(REL / "judge_checks.json", "w"))
+    print("Claude agrees with the judge on", sum(v["agree"] for v in cn.values()), "of", len(cn))
+
+
 def wilson(k, n, z=1.96):
     if not n:
         return (float("nan"),) * 2
@@ -152,8 +163,8 @@ def score():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["sheets", "score"])
-    sheets() if ap.parse_args().step == "sheets" else score()
+    ap.add_argument("step", choices=["sheets", "notes", "score"])
+    {"sheets": sheets, "notes": notes, "score": score}[ap.parse_args().step]()
 
 
 if __name__ == "__main__":
