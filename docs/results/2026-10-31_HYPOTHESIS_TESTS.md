@@ -110,3 +110,11 @@ more (−.06 to −.21). So the prompts dent SLB but most traces still solve in 
   cross-FL rows rely on the judges transferring to Z3 Calendar and Meeting and to Python ZebraLogic
   and BlocksWorld.
 - DeepSeek cross-FL excluded (above), so H2 rests on two models.
+
+## Paper version (2026-10-31, later)
+Harry: the hypotheses as reworded above, with model folded into H2 (FL, dataset and model) and the
+cautionary prompts moved out of H3 into a separate Section 6 on deterring SLB. Section 5 uses
+the baseline prompt only (2,000 traces), so its numbers differ slightly from the all-condition
+tables above: `scripts/paper_figures_hypotheses.py` makes one figure per hypothesis and writes the
+quoted numbers to `output/paper/hypothesis_numbers.json`. Baseline-only H1.3: ratio +0.005 per 10
+points [-0.013, +0.022]; H2 ΔR²: FL .123, dataset .057, model .008 (full .27).
