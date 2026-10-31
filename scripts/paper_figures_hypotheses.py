@@ -5,7 +5,7 @@ Section 5 figures, one per hypothesis, from the per-trace rows of the native and
 DeepSeek's cross-FL runs are excluded (API drift; docs/CROSS_FL_DESIGN.md).
 
 - figures/h1_prevalence.pdf   H1: traces with SLB, solver-like ratio, SLB tokens (baseline)
-- figures/h2_kinds.pdf        H2: inheriting programs per dataset and FL; program accuracy by prose correctness
+- figures/h2_kinds.pdf        H2: inheriting programs per dataset and FL (one column)
 - figures/h3_accuracy.pdf     H3: within-problem effect of SLB on accuracy
 - figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset; variance explained by each factor
 - figures/caution.pdf         Section 6: baseline vs cautionary prompts
@@ -122,36 +122,20 @@ def fig_h11(rows, dest, nums):
 
 
 def fig_h12(rows, dest, nums):
-    fig, (a, b) = plt.subplots(1, 2, figsize=(6.3, 1.9), gridspec_kw={"width_ratios": [1.6, 1], "wspace": 0.25})
+    # One column, inheriting programs only; accuracy by prose correctness is quoted in the text (nums["h12"]).
+    fig, a = plt.subplots(figsize=(3.1, 1.9))
     bottom = np.zeros(len(COMBOS))
     for k in INHERIT:
         h = np.array([sum(r["B"] == k for r in rows if (r["task"], r["fl"]) == c) for c in COMBOS])
         a.bar(range(len(COMBOS)), h, 0.6, bottom=bottom, color=B_COLORS[k], label=B_NAMES[k], edgecolor="white", linewidth=0.6)
         bottom += h
-    a.set_xticks(range(len(COMBOS)), [combo_label(*c, short=True) for c in COMBOS], fontsize=6)
+    a.set_xticks(range(len(COMBOS)), [combo_label(*c, short=True) for c in COMBOS], fontsize=5.8)
     a.set_ylabel("Programs (of 200–300)", fontsize=6.5)
-    a.legend(frameon=False, fontsize=6, handlelength=1.0, loc="upper left")
+    a.legend(frameon=False, fontsize=6, handlelength=1.0, loc="upper right")
     style(a)
-    a.set_title("(a) Programs that inherit the prose answer", fontsize=7, loc="left")
-    kinds = list(INHERIT) + ["independent"]
-    w = 0.38
-    for j, (ok, name, col) in enumerate(((False, "prose answer wrong", "#eb6834"), (True, "prose answer correct", "#9e9d98"))):
-        for i, k in enumerate(kinds):
-            g = [r for r in rows if r["B"] == k and r["C2"] is ok]
-            if not g:
-                continue
-            v = 100 * np.mean([r["correct"] for r in g])
-            b.bar(i + (j - 0.5) * w, v, w * 0.9, color=col, label=name if i == 0 else None)
-            b.text(i + (j - 0.5) * w, v + 2, f"{len(g)}", ha="center", va="bottom", fontsize=5, color=MUTED)
-    b.set_xticks(range(len(kinds)), [B_NAMES[k].replace(" ", "\n", 1) for k in kinds], fontsize=5.8)
-    b.set_ylim(0, 115)
-    b.set_yticks([0, 25, 50, 75, 100])
-    b.set_ylabel("Program correct (%)", fontsize=6.5)
-    b.legend(frameon=False, fontsize=6, handlelength=1.0, loc="upper center", bbox_to_anchor=(0.5, -0.28), ncol=2)
-    style(b)
-    b.set_title("(b) Program accuracy by prose correctness", fontsize=7, loc="left")
     fig.savefig(dest, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
+    kinds = list(INHERIT) + ["independent"]
     v = [r for r in rows if r["values"]]
     ran = [r for r in rows if r["B"] != "na"]
     nums["h12"] = dict(
