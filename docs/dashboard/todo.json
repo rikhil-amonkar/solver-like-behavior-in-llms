@@ -11,20 +11,11 @@
  {
   "priority": 1,
   "area": "Judging",
-  "item": "Further judge validation",
-  "detail": "Proposed: human spot checks on cross-FL traces (A1 on BlocksWorld-Python and Meeting-Z3, B on Z3/Python programs), B recall on programs labelled independent, a second annotator on A1 for a human-human ceiling, and a sensitivity analysis of the H2 contrasts to judge error.",
-  "status": "needs decision",
+  "item": "Label the cross-FL judge checks",
+  "detail": "Harry chose the cross-FL spot checks first. On the labelling page (https://claude.ai/artifact/4JET2M9Ar6JNvMAqmQrCuH): \"A1 (second FL)\", 40 blind paragraphs, 10 per dataset in its second FL; \"B (second FL)\", 20 programs, 10 the judge says inherit (precision) and 10 it calls independent although the prose reached a complete answer (recall), 9 of them Z3. Score with scripts/build_crossfl_check_sheets.py score. Still proposed: a second annotator on A1, a second judge model, and a sensitivity analysis of H2 to judge error.",
+  "status": "needs labels",
   "after": "",
   "decider": "Harry"
- },
- {
-  "priority": 2,
-  "area": "Judging",
-  "item": "Spot-check the B judge on Z3 programs",
-  "detail": "B's reliability on Z3 rests on one human-labelled program (bprec2-00). The cross-FL runs add Calendar- and Meeting-Z3 programs; label a small set against gemma_b5t.",
-  "status": "to do",
-  "after": "",
-  "decider": ""
  },
  {
   "priority": 2,

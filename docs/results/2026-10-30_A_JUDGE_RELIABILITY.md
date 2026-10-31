@@ -104,3 +104,16 @@ is narrow: every hardcoded program is GPT-OSS Meeting, and 9 of the 10 partly fi
 blind round-2 labels cover independent and steered programs). Harry's note: the BlocksWorld
 programs that turn a numerical constraint into fluents are partly fixed, but this is necessary
 because PDDL cannot reason about numbers.
+
+## Cross-FL spot checks (2026-10-31, waiting for Harry's labels)
+
+Every check above used native-FL traces, but H2 compares FLs. Two tabs on the labelling page
+(https://claude.ai/artifact/4JET2M9Ar6JNvMAqmQrCuH), built by `scripts/build_crossfl_check_sheets.py sheets`
+from the cross-FL runs of Qwen and GPT-OSS (DeepSeek's are excluded):
+- `a1x`: 40 baseline paragraphs, blind, 10 per dataset in its second FL (Calendar and Meeting in Z3,
+  ZebraLogic and BlocksWorld in Python), 5 the judge (gemma_v11t) calls Values and 5 not, one per trace.
+- `bx`: 20 programs with gemma_b5t's label and evidence: 10 inheriting (hardcoded 3, all BlocksWorld-Python,
+  the only cross-FL hardcoded programs; partly fixed 4; steered 3) for precision, and 10 independent from
+  traces whose prose reached a complete answer, shown beside the program, for recall. 9 of the 20 are Z3
+  (Calendar 5, Meeting 4), which also covers the open Z3 spot check for B.
+Score with `scripts/build_crossfl_check_sheets.py score` once the marks are pulled into `human/checks/`.
