@@ -4,12 +4,13 @@ Section 5 figures, one per hypothesis, from the per-trace rows of the native and
 (output/paper/ontology_traces_<tag>[_output_crossfl].json, written by paper_ontology_stats.py).
 DeepSeek's cross-FL runs are excluded (API drift; docs/CROSS_FL_DESIGN.md).
 
-- figures/h11_prevalence.pdf  H1.1: traces with SLB, solver-like ratio, SLB tokens (baseline)
-- figures/h12_kinds.pdf       H1.2: inheriting programs per dataset and FL; program accuracy by prose correctness
-- figures/h13_accuracy.pdf    H1.3: within-problem effect of SLB on accuracy
-- figures/h2_fl_dataset.pdf   H2:   ratio by FL per dataset; variance explained by each factor
-- figures/h3_caution.pdf      Section 6: baseline vs cautionary prompts
-H1 and H2 (Section 5) use the baseline prompt only; the cautionary prompts are Section 6.
+- figures/h1_prevalence.pdf   H1: traces with SLB, solver-like ratio, SLB tokens (baseline)
+- figures/h2_kinds.pdf        H2: inheriting programs per dataset and FL; program accuracy by prose correctness
+- figures/h3_accuracy.pdf     H3: within-problem effect of SLB on accuracy
+- figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset; variance explained by each factor
+- figures/caution.pdf         Section 6: baseline vs cautionary prompts
+H1-H4 (Section 5) use the baseline prompt only; the cautionary prompts are Section 6.
+The paper treats a dataset's two FLs alike, so no FL is marked as native; Python comes first in every dataset.
 Also writes output/paper/hypothesis_numbers.json with the numbers quoted in the text.
 Palette: the validated slots of paper_figures.py.
 
@@ -36,7 +37,7 @@ from hypothesis_tests import load, boot, by_example, ols, dummies, INHERIT  # no
 MODELS = [("deepseek", "DeepSeek"), ("gpt", "GPT-OSS"), ("qwen", "Qwen")]
 MODEL_COLORS = {"deepseek": "#2a78d6", "gpt": "#eb6834", "qwen": "#1baf7a"}
 COMBOS = [("calendar", "python"), ("calendar", "z3"), ("meeting", "python"), ("meeting", "z3"),
-          ("zebralogic", "z3"), ("zebralogic", "python"), ("blocksworld", "pddl"), ("blocksworld", "python")]
+          ("zebralogic", "python"), ("zebralogic", "z3"), ("blocksworld", "python"), ("blocksworld", "pddl")]
 TASK_NAMES = {"calendar": "Calendar", "meeting": "Meeting", "zebralogic": "ZebraLogic", "blocksworld": "BlocksWorld"}
 FL_NAMES = {"python": "Python", "z3": "Z3", "pddl": "PDDL"}
 NATIVE = {"calendar": "python", "meeting": "python", "zebralogic": "z3", "blocksworld": "pddl"}
@@ -70,7 +71,7 @@ SHORT = {"calendar": "Cal.", "meeting": "Meet.", "zebralogic": "Zebra", "blocksw
 
 
 def combo_label(t, fl, short=False):
-    return f"{(SHORT if short else TASK_NAMES)[t]}\n{FL_NAMES[fl]}" + ("" if NATIVE[t] == fl else "*")
+    return f"{(SHORT if short else TASK_NAMES)[t]}\n{FL_NAMES[fl]}"
 
 
 def fig_h11(rows, dest, nums):
@@ -227,8 +228,8 @@ def fig_h2(rows, dest, nums):
                         lw=1.2, capsize=0, elinewidth=0.6, label=name)
         ds = [mean_ci([r["ratio"] or 0 for r in rows if r["task"] == t and r["model"] == "deepseek"])]
         ax.errorbar([0 if NATIVE[t] == fls[0] else 1], [ds[0][0]], yerr=[ds[0][1]], color=MODEL_COLORS["deepseek"],
-                    marker="o", ms=3, ls="none", elinewidth=0.6, label="DeepSeek (native only)")
-        ax.set_xticks([0, 1], [FL_NAMES[fl] + ("" if fl == NATIVE[t] else "*") for fl in fls])
+                    marker="o", ms=3, ls="none", elinewidth=0.6, label="DeepSeek (one FL)")
+        ax.set_xticks([0, 1], [FL_NAMES[fl] for fl in fls])
         ax.set_xlim(-0.4, 1.4)
         ax.set_ylim(0, 0.5)
         if i:
@@ -316,11 +317,11 @@ def main():
     fig_dir = Path(args.paper) / "figures"
     base = [r for r in rows if r["cond"] == "baseline"]
     nums = {"traces": len(rows), "baseline_traces": len(base)}
-    fig_h11(base, fig_dir / "h11_prevalence.pdf", nums)
-    fig_h12(base, fig_dir / "h12_kinds.pdf", nums)
-    fig_h13(base, fig_dir / "h13_accuracy.pdf", nums)
-    fig_h2(base, fig_dir / "h2_fl_dataset.pdf", nums)
-    fig_h3(rows, fig_dir / "h3_caution.pdf", nums)
+    fig_h11(base, fig_dir / "h1_prevalence.pdf", nums)
+    fig_h12(base, fig_dir / "h2_kinds.pdf", nums)
+    fig_h13(base, fig_dir / "h3_accuracy.pdf", nums)
+    fig_h2(base, fig_dir / "h4_fl_dataset.pdf", nums)
+    fig_h3(rows, fig_dir / "caution.pdf", nums)
     out = REPO / "output/paper/hypothesis_numbers.json"
     json.dump(nums, open(out, "w"), indent=1, default=lambda x: float(x) if isinstance(x, np.floating) else str(x))
     print(json.dumps(nums, indent=1, default=lambda x: round(float(x), 4) if isinstance(x, np.floating) else str(x)))
