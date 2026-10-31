@@ -27,7 +27,7 @@ from matplotlib.patches import Patch
 REPO = Path(__file__).resolve().parent.parent
 MODELS = [("deepseek", "DeepSeek"), ("gpt", "GPT-OSS"), ("qwen", "Qwen")]
 TASKS = [("calendar", "Calendar"), ("meeting", "Meeting"), ("zebralogic", "ZebraLogic"), ("blocksworld", "BlocksWorld")]
-CONDS = [("baseline", "Base"), ("caution_a", "A"), ("caution_b", "B")]
+CONDS = [("baseline", "0"), ("caution_a", "A"), ("caution_b", "B")]
 INK, MUTED, GRID = "#0b0b0b", "#52514e", "#dddcd7"
 A_COMPLETE, A_PARTIAL = "#6250d6", "#c4bdf2"
 B_COLORS = {"hardcoded": "#2a78d6", "partly_fixed": "#eb6834", "steered": "#1baf7a"}
