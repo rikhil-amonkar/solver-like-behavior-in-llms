@@ -75,7 +75,7 @@ python src/run_chunking.py \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
-Local models (Qwen, GPT-OSS) run with vLLM. `scripts/run_inference_gpu7.sh` starts `run_inference.py` on GPU 7 in a detached tmux session with a log in `logs/`; pass `--output-root output_test` for test runs so the stored results in `output/` are not overwritten.
+Local models (Qwen, GPT-OSS) run with vLLM. `GPU=<free GPU> scripts/run_inference_tmux.sh` starts `run_inference.py` on that GPU in a detached tmux session (it refuses a GPU that has a process on it) with a log in `logs/`; pass `--output-root output_test` for test runs so the stored results in `output/` are not overwritten.
 
 ### 3. View Results
 

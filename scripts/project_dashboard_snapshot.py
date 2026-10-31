@@ -22,7 +22,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-OUR_GPUS = {0, 1, 2, 3, 7}  # GPUs this project is allowed to use (GPU 7 + up to 4 flex)
 
 
 def count_lines(pattern: str) -> int:
@@ -134,8 +133,7 @@ def gpu_rows():
         users = busy.get(uuid, set())
         use = "this project" if "hz466" in users else ("another user" if users else "free")
         rows.append({"gpu": int(idx), "use": use, "util_pct": int(util),
-                     "mem_gib": round(int(used) / 1024, 1), "mem_total_gib": round(int(total) / 1024),
-                     "allowed": int(idx) in OUR_GPUS})
+                     "mem_gib": round(int(used) / 1024, 1), "mem_total_gib": round(int(total) / 1024)})
     return rows
 
 

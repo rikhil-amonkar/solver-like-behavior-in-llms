@@ -9,7 +9,7 @@ writes {condition}_chunking_{tag}.json next to the Gemini {condition}_chunking.j
 The run is resumable: every finished segment is appended to a JSONL cache, so
 restarting the command skips work that is already done.
 
-Usage (GPU 7, vllm-env):
+Usage (one free GPU, vllm-env; set CUDA_VISIBLE_DEVICES):
     python src/run_chunking_local.py --tag gemma
     python src/run_chunking_local.py --tag gemma --inputs output/qwen/calendar/baseline_execution.json
 """

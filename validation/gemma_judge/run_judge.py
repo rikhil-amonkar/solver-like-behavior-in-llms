@@ -6,7 +6,7 @@ Each chunk is sent the same way the Gemini judge received a trace segment:
 one user message = judge prompt + "\\n\\n" + text. The judge's chunk labels are
 collapsed to one label per input by character-weighted majority.
 
-Usage (GPU 7, vllm-env):
+Usage (one free GPU, vllm-env; set CUDA_VISIBLE_DEVICES):
     python validation/gemma_judge/run_judge.py \
         --model google/gemma-4-31B-it \
         --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt \
