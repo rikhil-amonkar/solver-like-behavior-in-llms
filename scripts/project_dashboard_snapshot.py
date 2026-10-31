@@ -133,7 +133,31 @@ def build_jobs():
                      "extra": "", "session": "crossfl-judges",
                      "after": {"a": None, "b": "crossfl_judge_a", "c": "crossfl_judge_b"}[kind],
                      "finished": marker in xlog})
+    jobs += [rejudge_job("rejudge_native", "Re-judge changed traces: native", "rejudge-native"),
+             rejudge_job("rejudge_crossfl", "Re-judge changed traces: cross-FL", "rejudge-crossfl")]
     return jobs
+
+
+def rejudge_job(job_id, name, session):
+    """scripts/rejudge_changed.sh: judges A, B, C on the traces whose text changed, then assembly; one GPU."""
+    log = log_text(f"{session}.log")
+    phases = re.findall(r"^== ([ABC]) ", log, re.M)
+    sizes = re.findall(r"^\d+ items, \d+ cached, (\d+) to judge", log, re.M)
+    judged = re.findall(r"^(\d+)/\d+ judged,", log.split("== ")[-1], re.M) if phases else []
+    finished = "DONE" in log
+    done = 4 if finished else max(len(phases) - 1, 0)
+    if finished:
+        stage = "Judges A, B, C and assembly done"
+    elif phases:
+        n = sizes[-1] if len(sizes) == len(phases) else "?"
+        stage = f"Judge {phases[-1]}: {judged[-1] if judged else 0}/{n} traces this step"
+    else:
+        stage = "Starting"
+    gpu = re.search(r"GPU=(\d)", subprocess.run(["tmux", "list-panes", "-t", session, "-F", "#{pane_start_command}"],
+                                               capture_output=True, text=True).stdout)
+    return {"id": job_id, "name": name, "stage": stage, "gpus": gpu.group(1) if gpu else "",
+            "done": done, "total": 4, "unit": "steps", "extra": "A, B, C judges, then assembly",
+            "session": session, "after": None, "finished": finished}
 
 
 KEEP_FREE = {0}  # the flex GPU left idle while the project uses 1-3 (Harry, 2026-10-31)
