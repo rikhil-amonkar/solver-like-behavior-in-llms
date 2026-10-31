@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "human": "V",
+  "model": "gpt",
+  "sheet": "a1x",
+  "task": "blocksworld",
+  "trace": "gpt/blocksworld/baseline/blocksworld_p38_action_constraint22",
+  "updatedAt": "2026-10-31T21:50:29.745Z"
+}

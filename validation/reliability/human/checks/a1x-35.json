@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "human": "V",
+  "model": "gpt",
+  "sheet": "a1x",
+  "task": "calendar",
+  "trace": "gpt/calendar/baseline/calendar_scheduling_example_707",
+  "updatedAt": "2026-10-31T21:51:30.233Z"
+}

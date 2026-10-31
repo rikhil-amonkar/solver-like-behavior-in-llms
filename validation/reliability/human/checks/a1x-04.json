@@ -1,0 +1,9 @@
+{
+  "gemma": "N",
+  "human": "N",
+  "model": "qwen",
+  "sheet": "a1x",
+  "task": "calendar",
+  "trace": "qwen/calendar/baseline/calendar_scheduling_example_1",
+  "updatedAt": "2026-10-31T21:46:15.267Z"
+}

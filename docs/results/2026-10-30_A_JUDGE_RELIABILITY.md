@@ -105,7 +105,7 @@ blind round-2 labels cover independent and steered programs). Harry's note: the 
 programs that turn a numerical constraint into fluents are partly fixed, but this is necessary
 because PDDL cannot reason about numbers.
 
-## Cross-FL spot checks (2026-10-31, waiting for Harry's labels)
+## Cross-FL spot checks (2026-10-31)
 
 Every check above used native-FL traces, but H2 compares FLs. Two tabs on the labelling page
 (https://claude.ai/artifact/4JET2M9Ar6JNvMAqmQrCuH), built by `scripts/build_crossfl_check_sheets.py sheets`
@@ -117,3 +117,20 @@ from the cross-FL runs of Qwen and GPT-OSS (DeepSeek's are excluded):
   traces whose prose reached a complete answer, shown beside the program, for recall. 9 of the 20 are Z3
   (Calendar 5, Meeting 4), which also covers the open Z3 spot check for B.
 Score with `scripts/build_crossfl_check_sheets.py score` once the marks are pulled into `human/checks/`.
+
+### A1 cross-FL result (Harry, 40/40 marked)
+
+gemma_v11t agrees on **37/40** (93%, Wilson [0.80, 0.97]), in line with the native 66/70: BlocksWorld-Python
+10/10, Meeting-Z3 10/10, Calendar-Z3 9/10, ZebraLogic-Python 8/10; Values precision 18/20, recall 18/19.
+Disagreements (Harry / judge), with Claude's reading of the context:
+- a1x-01 (Qwen ZebraLogic-Python, V / N): one of a run of "Another subtlety" paragraphs checking that the
+  program's loops cover every placement ("If Arnold at Ford house ... Arnold > BMW still possible"). Under
+  the rule that checking the program against hypothetical values is not SLB, the judge is right; the
+  paragraph also cites "our solution", a prose answer derived earlier, but derives no new values.
+- a1x-13 (Qwen Calendar-Z3, N / V): mostly interpreting a soft preference ("avoid Monday" vs "earliest"),
+  which is not SLB, but it ends by choosing between two candidate answers found earlier (Monday 10:00 vs
+  Tuesday 9:30: "So choose Tuesday"). A genuine boundary: interpretation vs committing the answer.
+- a1x-25 (Qwen ZebraLogic-Python, N / V): a line from a hand-run of arc consistency and MRV on the instance
+  (the paragraphs before it prune domains and fail a branch: "H0 Peter branch fails", "H1 roses"); it lists
+  the remaining value domains. Claude reads it as Values (the prose is running the search), so the judge is
+  right; it reads like program design (MRV) out of context.

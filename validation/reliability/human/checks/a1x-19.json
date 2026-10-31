@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "human": "V",
+  "model": "gpt",
+  "sheet": "a1x",
+  "task": "zebralogic",
+  "trace": "gpt/zebralogic/baseline/zebralogic_grid_lgp-test-4x5-35",
+  "updatedAt": "2026-10-31T21:48:53.849Z"
+}

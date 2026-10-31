@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "human": "V",
+  "model": "qwen",
+  "sheet": "a1x",
+  "task": "zebralogic",
+  "trace": "qwen/zebralogic/baseline/zebralogic_grid_lgp-test-3x4-14",
+  "updatedAt": "2026-10-31T21:48:25.919Z"
+}

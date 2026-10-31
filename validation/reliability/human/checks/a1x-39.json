@@ -1,0 +1,9 @@
+{
+  "gemma": "N",
+  "human": "N",
+  "model": "qwen",
+  "sheet": "a1x",
+  "task": "blocksworld",
+  "trace": "qwen/blocksworld/baseline/blocksworld_p08_baseline_constraint8",
+  "updatedAt": "2026-10-31T21:51:46.861Z"
+}
