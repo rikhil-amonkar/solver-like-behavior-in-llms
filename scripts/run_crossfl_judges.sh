@@ -6,12 +6,13 @@
 # queues (tmux crossfl-qwen*) still run, A is judged in rounds: each round rebuilds the items
 # (new Qwen runs join) and, when another GPU frees up, the shards are stopped right after a wave
 # is cached and restarted over more GPUs. Judged items are cached, so nothing is judged twice.
-# Usage (inside tmux): bash scripts/run_crossfl_judges.sh
+# Usage (inside tmux): [GPUS="1"] bash scripts/run_crossfl_judges.sh
 set -u
 cd /local-ssd/hz466/solver-like-behavior-in-llms
 source /local-ssd/hz466/vllm-test/env.sh
 ROOT=output_crossfl
-free_gpus() { for g in 0 1 2 3; do [ -z "$(nvidia-smi -i $g --query-compute-apps=pid --format=csv,noheader)" ] && echo -n "$g "; done; }
+GPUS=${GPUS:-0 1 2 3}  # GPUs this run may use (since 2026-10-31 13:40: GPUS=1)
+free_gpus() { for g in $GPUS; do [ -z "$(nvidia-smi -i $g --query-compute-apps=pid --format=csv,noheader)" ] && echo -n "$g "; done; }
 qwen_running() { tmux ls 2>/dev/null | grep -q "^crossfl-qwen"; }
 run_kind() {  # kind tag log-prefix extra-args...; shards over the free GPUs; returns 1 if restarted for more GPUs
   local kind=$1 tag=$2 pre=$3; shift 3
