@@ -1,12 +1,12 @@
 [
  {
   "priority": 1,
-  "area": "Experiments",
-  "item": "Judge the cross-FL runs (A, B, A2/C)",
-  "detail": "A (gemma_v11t) done on 2026-10-31: all 18,865 segments. B (gemma_b5t) is running on GPUs 1, 2 and 3 (GPU 0 is kept free: one flex GPU always idle), then A2/C (gemma_v11c); the labels are then assembled into output_crossfl/<model>/<task>/<cond>_ontology_gemma_v11_b5t.json and the FL-compliance report regenerated.",
-  "status": "in progress",
+  "area": "Analysis",
+  "item": "Agree on the hypothesis wording",
+  "detail": "Tests of H1.1-H3 on all runs are in docs/results/2026-10-31_HYPOTHESIS_TESTS.md. H1.1, H1.2, H1.3 supported; H2 (FL, not dataset) and H3 (caution cannot deter) only partly. Suggested rewording and a possible H4 (SLB is model-general) are in that file.",
+  "status": "needs decision",
   "after": "",
-  "decider": ""
+  "decider": "Harry"
  },
  {
   "priority": 2,
@@ -14,16 +14,7 @@
   "item": "Spot-check the B judge on Z3 programs",
   "detail": "B's reliability on Z3 rests on one human-labelled program (bprec2-00). The cross-FL runs add Calendar- and Meeting-Z3 programs; label a small set against gemma_b5t.",
   "status": "to do",
-  "after": "Judge the cross-FL runs",
-  "decider": ""
- },
- {
-  "priority": 1,
-  "area": "Experiments",
-  "item": "Test the imperative-FL hypothesis with BlocksWorld in Python",
-  "detail": "Hypothesis (Harry): an imperative FL causes more SLB. The program must print a plan; VAL checks it against the golden PDDL. No reference PDDL in the prompt (the native one gives the unconstrained problem PDDL). Meeting\u2192Z3 also added, so every dataset has two FLs.",
-  "status": "waiting",
-  "after": "Judge the cross-FL runs",
+  "after": "",
   "decider": ""
  },
  {

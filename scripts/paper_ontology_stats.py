@@ -24,16 +24,20 @@ sys.path.insert(0, str(REPO / "scripts"))
 from ontology_items import build_items, MODELS, TASKS, CONDS
 from assemble_ontology_labels import load_judge
 
+FL = {"output": {"calendar": "python", "meeting": "python", "zebralogic": "z3", "blocksworld": "pddl"},
+      "output_crossfl": {"calendar": "z3", "meeting": "z3", "zebralogic": "python", "blocksworld": "python"}}
+
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="gemma_v11_b5t")
     ap.add_argument("--a-tag", default="gemma_v11t")
+    ap.add_argument("--root", default="output", help="output or output_crossfl")
     args = ap.parse_args()
     enc = tiktoken.get_encoding("cl100k_base")
     ntok = lambda s: len(enc.encode(s, disallowed_special=()))
-    segments, _ = build_items()
-    ja = load_judge("a", args.a_tag)
+    segments, _ = build_items(args.root)
+    ja = load_judge("a", args.a_tag, args.root)
     tok = collections.defaultdict(lambda: [0, 0])  # trace -> [reasoning tokens, solver-like tokens]
     for s in segments:
         r = ja.get((s["id"], s["h"]))
@@ -46,17 +50,17 @@ def main():
     for m in MODELS:
         for t in TASKS:
             for c in CONDS:
-                lab = json.load(open(REPO / f"output/{m}/{t}/{c}_ontology_{args.tag}.json"))["examples"]
-                ev = {e["example_id"]: e for e in json.load(open(REPO / f"output/{m}/{t}/{c}_evaluation.json"))["examples"]}
+                lab = json.load(open(REPO / f"{args.root}/{m}/{t}/{c}_ontology_{args.tag}.json"))["examples"]
+                ev = {e["example_id"]: e for e in json.load(open(REPO / f"{args.root}/{m}/{t}/{c}_evaluation.json"))["examples"]}
                 for r in lab:
                     e = ev.get(r["example_id"], {})
                     rt, st = tok.get(f"{m}/{t}/{c}/{r['example_id']}", [0, 0])
-                    rows.append(dict(model=m, task=t, cond=c, example_id=r["example_id"],
+                    rows.append(dict(model=m, task=t, cond=c, fl=FL[args.root][t], example_id=r["example_id"],
                                      values="values" in r["A1"], ratio=r["ratio"], A2=r["A2"], B=r["B"],
                                      C1=r["C1"], c1_source=r["c1_source"], C2=r["C2"],
                                      correct=e.get("correct") in (True, "True"), outcome=e.get("classification"),
                                      reasoning_tokens=rt, slb_tokens=st))
-    out = REPO / f"output/paper/ontology_traces_{args.tag}.json"
+    out = REPO / f"output/paper/ontology_traces_{args.tag}{'' if args.root == 'output' else '_' + args.root}.json"
     out.parent.mkdir(exist_ok=True)
     json.dump(rows, open(out, "w"), indent=0)
     print("wrote", out, len(rows))

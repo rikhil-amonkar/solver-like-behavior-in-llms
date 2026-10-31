@@ -159,5 +159,26 @@
   "title": "Cross-FL A judge done",
   "detail": "gemma_v11t on all 18,865 cross-FL segments, none missing.",
   "where": "output_crossfl/ontology/"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Experiments",
+  "title": "Cross-FL runs judged",
+  "detail": "A, B and A2/C judges ran on all cross-FL runs (GPUs 1-3, GPU 0 kept free) and were assembled into output_crossfl/*_ontology_gemma_v11_b5t.json; FL-compliance report regenerated.",
+  "where": "output_crossfl/"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Experiments",
+  "title": "DeepSeek cross-FL runs excluded (API drift)",
+  "detail": "Re-running 20 native prompts today gives traces 4-5x shorter than in August with the same settings, so the API model changed. Harry: exclude DeepSeek from all cross-FL analyses.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Analysis",
+  "title": "Hypotheses H1-H3 tested on all runs",
+  "detail": "SLB is common (ratio ~.20, ~70% of traces >= .10), mostly complete prose solutions the program ignores, and does not change accuracy. Python has more SLB than Z3/PDDL in all four datasets, but the effect is large only for BlocksWorld and Meeting. Cautionary prompts cut the ratio by about a quarter without removing SLB.",
+  "where": "docs/results/2026-10-31_HYPOTHESIS_TESTS.md"
  }
 ]

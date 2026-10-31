@@ -77,3 +77,12 @@ Fixed (Harry, 2026-10-30): `normalize_for_golden` in `src/run_evaluation.py` dro
 from Meeting meet lines on both sides before the golden comparison. All Meeting runs (native
 and cross-FL) were rescored; only `matches_expected` and golden accuracy changed. Golden now:
 DeepSeek .30/.53/.38, Qwen .31/.32/.32, GPT-OSS .29/.46/.46, DeepSeek Z3 .30/.25/.27.
+
+## DeepSeek cross-FL runs excluded (API drift, checked 2026-10-31)
+DeepSeek's cross-FL traces are 4-6x shorter than its native ones on every dataset (median characters
+Calendar 47.6k → 10.8k, Meeting 190k → 44k, ZebraLogic 60k → 10k, BlocksWorld 128k → 36k), while
+Qwen's and GPT-OSS's are not. Re-running 10 native Calendar and 10 native ZebraLogic prompts with the
+same settings (`deepseek-v4-flash`, medium effort, 131072 max tokens) gives the same drop (median 35k
+→ 8k and 63k → 14k characters; shorter on 20/20), so the model behind the API changed between 2026-08
+and 2026-10. Harry decided to exclude DeepSeek from all cross-FL analyses; `scripts/hypothesis_tests.py`
+drops those rows. The outputs stay in `output_crossfl/deepseek/`.
