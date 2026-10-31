@@ -201,5 +201,12 @@
   "title": "B judge checked in the second FLs: 18/20; judge reliability closed",
   "detail": "Harry checked 20 second-FL programs (9 in Z3) with the judge's evidence and Claude's verification of it: all 10 independent labels confirmed (recall), 8 of 10 inheriting labels. Table 1 in the paper now has held-out second-FL rows for A1 (39/40) and B (18/20). No further reliability checks are planned.",
   "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Evaluation",
+  "title": "Code extraction and empty-plan scoring fixed; affected runs rescored and re-judged",
+  "detail": "The extractor now reads the final answer on its own (fences in the thinking had hidden it; 43 programs change), and a Python BlocksWorld program that prints nothing is scored as the empty plan. 68 records re-run, 40 now correct, none worse; the changed traces were re-judged and the paper's numbers updated (e.g. H3 ratio effect +0.007 per 10 points).",
+  "where": "docs/results/2026-10-31_EXTRACTION_EMPTY_PLAN_FIX.md"
  }
 ]
