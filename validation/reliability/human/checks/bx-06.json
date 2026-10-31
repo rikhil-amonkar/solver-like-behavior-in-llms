@@ -1,0 +1,9 @@
+{
+  "gemma": "hardcoded",
+  "human": "hardcoded",
+  "model": "gpt",
+  "sheet": "bx",
+  "task": "blocksworld",
+  "trace": "gpt/blocksworld/baseline/blocksworld_p42_baseline_constraint42",
+  "updatedAt": "2026-10-31T22:31:32.332Z"
+}

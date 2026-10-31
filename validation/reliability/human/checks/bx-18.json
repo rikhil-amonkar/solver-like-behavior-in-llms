@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "gpt",
+  "sheet": "bx",
+  "task": "meeting",
+  "trace": "gpt/meeting/caution_a/meeting_planning_example_286",
+  "updatedAt": "2026-10-31T22:33:45.984Z"
+}

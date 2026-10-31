@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "qwen",
+  "sheet": "bx",
+  "task": "calendar",
+  "trace": "qwen/calendar/caution_b/calendar_scheduling_example_325",
+  "updatedAt": "2026-10-31T22:32:21.017Z"
+}

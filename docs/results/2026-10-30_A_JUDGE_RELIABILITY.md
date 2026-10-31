@@ -164,3 +164,14 @@ Side findings, not label questions:
   holds (bx-06, p42, everything on the table).
 - bx-09 and bx-15 read "end holding block X" as contradicting the goal and print "No plan"; the reference
   says a plan exists.
+
+### B cross-FL result (Harry, 20/20 marked)
+
+gemma_b5t agrees with Harry on **18/20** (Wilson [0.70, 0.97]): all 10 independent labels (recall check),
+8 of the 10 inheriting labels (hardcoded 3/3, partly fixed 3/4, steered 2/3). The two misses are the
+ones Claude flagged: bx-04 (steered; the shortest plan is unique) and bx-05 (partly fixed; a missing loop).
+Harry kept bx-13 and bx-18 independent.
+
+**Judge reliability is closed (Harry, 2026-10-31).** No further checks (second annotator, second judge
+model, H2 sensitivity) will be run. Paper: Section 4 and Table 1 report the second-FL rows; the appendix
+gives the details.

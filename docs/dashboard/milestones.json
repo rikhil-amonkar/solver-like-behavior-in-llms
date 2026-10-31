@@ -194,5 +194,12 @@
   "title": "A1 judge checked in the second FLs: 39/40",
   "detail": "Harry labelled 40 blind paragraphs, 10 per dataset in its second FL (Calendar and Meeting in Z3, ZebraLogic and BlocksWorld in Python). gemma_v11t agrees on 39/40 after two rulings for the judge; the one miss is a Calendar-Z3 boundary case.",
   "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "B judge checked in the second FLs: 18/20; judge reliability closed",
+  "detail": "Harry checked 20 second-FL programs (9 in Z3) with the judge's evidence and Claude's verification of it: all 10 independent labels confirmed (recall), 8 of 10 inheriting labels. Table 1 in the paper now has held-out second-FL rows for A1 (39/40) and B (18/20). No further reliability checks are planned.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
  }
 ]

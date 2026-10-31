@@ -1,0 +1,9 @@
+{
+  "gemma": "partly_fixed",
+  "human": "partly_fixed",
+  "model": "gpt",
+  "sheet": "bx",
+  "task": "meeting",
+  "trace": "gpt/meeting/baseline/meeting_planning_example_432",
+  "updatedAt": "2026-10-31T22:32:31.995Z"
+}
