@@ -30,8 +30,10 @@ run_kind() {  # kind tag log-prefix extra-args...; shards over the free GPUs; re
     local now=$(cat logs/$pre*.log | grep -c " judged,")
     if [ $now -gt $waves ]; then  # a wave was just cached: restart now if more GPUs are free
       waves=$now
-      if [ -n "$(free_gpus)" ]; then
-        echo "more GPUs free ($(free_gpus)); restarting $kind $(date)"
+      # only GPUs outside this round count: a shard that finished its share frees its own GPU
+      local more=$(for g in $(free_gpus); do [[ " ${G[*]} " == *" $g "* ]] || echo -n "$g "; done)
+      if [ -n "$more" ]; then
+        echo "more GPUs free ($more); restarting $kind $(date)"
         for p in ${pids[@]}; do kill $p $(pgrep -P $p) 2>/dev/null; done; wait; sleep 30; return 1
       fi
     fi
