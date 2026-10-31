@@ -552,14 +552,14 @@
    "A1": [
     "values"
    ],
-   "ratio": 0.186,
+   "ratio": 0.1957,
    "unlabelled_paragraphs": 0,
    "A2": "partial",
    "C1": null,
    "c1_source": null,
    "C2": null,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {
@@ -726,16 +726,16 @@
    "example_id": "zebralogic_grid_lgp-test-3x4-4",
    "a_judged": true,
    "A1": [
-    "none"
+    "values"
    ],
-   "ratio": 0.0,
+   "ratio": 0.0861,
    "unlabelled_paragraphs": 0,
-   "A2": "none",
+   "A2": "partial",
    "C1": null,
    "c1_source": null,
    "C2": null,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {
@@ -1158,16 +1158,16 @@
    "example_id": "zebralogic_grid_lgp-test-6x3-14",
    "a_judged": true,
    "A1": [
-    "none"
+    "values"
    ],
-   "ratio": 0.0,
+   "ratio": 0.191,
    "unlabelled_paragraphs": 0,
-   "A2": "none",
+   "A2": "partial",
    "C1": null,
    "c1_source": null,
    "C2": null,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {

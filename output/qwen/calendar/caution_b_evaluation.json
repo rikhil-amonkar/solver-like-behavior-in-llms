@@ -5,19 +5,19 @@
     "condition": "caution_b",
     "execution_json": "output/qwen/calendar/caution_b_execution.json",
     "constraints_json": "data/constraints/calendar_constraints.json",
-    "timestamp": "2026-10-21T21:20:37Z",
+    "timestamp": "2026-10-31T22:41:06Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.95,
-    "constraint_correct": 95,
-    "constraint_incorrect": 5,
-    "golden_solution_accuracy": 0.61,
-    "golden_matches": 61,
+    "constraint_based_accuracy": 0.96,
+    "constraint_correct": 96,
+    "constraint_incorrect": 4,
+    "golden_solution_accuracy": 0.62,
+    "golden_matches": 62,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 0,
-      "execution_error": 2,
+      "execution_error": 1,
       "no_output": 0,
       "no_solution": 0,
       "parse_error": 0,
@@ -507,20 +507,20 @@
     },
     {
       "example_id": "calendar_scheduling_example_867",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Thursday",
+        "16:00",
+        "16:30"
+      ],
       "expected_solution": [
         "Thursday",
         "16:00",
         "16:30"
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_aka0rfr0/solution.py\", line 6\n    busy = {\n           ^\nSyntaxError: '{' was never closed\n"
-      }
+      "validation": {}
     },
     {
       "example_id": "calendar_scheduling_example_626",

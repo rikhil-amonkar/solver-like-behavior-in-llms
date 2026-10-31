@@ -5,7 +5,7 @@
     "condition": "baseline",
     "execution_json": "output/gpt/zebralogic/baseline_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-10-21T21:19:51Z",
+    "timestamp": "2026-10-31T22:41:05Z",
     "num_examples": 100
   },
   "summary": {
@@ -7339,7 +7339,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_u6cda7fo/solution_z3.py\", line 11\n    We'll also ensure to import from z3 import *.\n      ^\nSyntaxError: unterminated string literal (detected at line 11)\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_51szuzxb/solution_z3.py\", line 44, in <module>\n    And(i < houses - 1, occ[i + 1] == teacher_idx)))\n                        ~~~^^^^^^^\nIndexErro"
       }
     },
     {

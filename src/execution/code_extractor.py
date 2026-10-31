@@ -52,7 +52,10 @@ def split_reasoning_and_code(reasoning_trace: str) -> Tuple[str, Optional[str]]:
     answer_start = find_answer_start(reasoning_trace)
     selected_block = None
     if answer_start >= 0:
-        answer_blocks = [b for b in code_blocks if b["start"] >= answer_start]
+        # Scan the answer on its own: unbalanced fences in the thinking can pair out of phase
+        # and swallow the answer's opening fence
+        answer_blocks = [{**b, "start": b["start"] + answer_start, "end": b["end"] + answer_start}
+                         for b in extract_all_code_blocks(reasoning_trace[answer_start:])]
         selected_block = select_best_code_block(answer_blocks, reasoning_trace)
 
     # Otherwise select the best code block (first, longest, or most complete)

@@ -63,7 +63,7 @@ def evaluate_blocksworld_solution(
     exit_code = execution_result.get("planner_exit_code")
     planner_output = (execution_result.get("stderr") or execution_result.get("stdout") or "")[-500:]
 
-    if not execution_result.get("plan_found") or not plan:
+    if not execution_result.get("plan_found") or plan is None:  # "" is the empty plan
         if exit_code in FD_TIMEOUT_CODES:
             return False, {
                 "error": "planner timed out on the model's PDDL",

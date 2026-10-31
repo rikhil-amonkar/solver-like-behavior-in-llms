@@ -24,14 +24,14 @@
    "A1": [
     "values"
    ],
-   "ratio": 0.407,
+   "ratio": 0.376,
    "unlabelled_paragraphs": 0,
    "A2": "complete",
-   "C1": null,
-   "c1_source": null,
+   "C1": false,
+   "c1_source": "script",
    "C2": null,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {
@@ -1128,14 +1128,14 @@
    "A1": [
     "values"
    ],
-   "ratio": 0.0526,
+   "ratio": 0.0551,
    "unlabelled_paragraphs": 0,
    "A2": "complete",
    "C1": null,
-   "c1_source": null,
+   "c1_source": "unparsed",
    "C2": null,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {
@@ -1272,14 +1272,14 @@
    "A1": [
     "values"
    ],
-   "ratio": 0.3169,
+   "ratio": 0.2508,
    "unlabelled_paragraphs": 0,
    "A2": "complete",
-   "C1": null,
-   "c1_source": null,
+   "C1": false,
+   "c1_source": "script",
    "C2": true,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {

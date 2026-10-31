@@ -5,20 +5,20 @@
     "condition": "caution_a",
     "execution_json": "output/qwen/zebralogic/caution_a_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-10-21T21:20:26Z",
+    "timestamp": "2026-10-31T22:41:09Z",
     "num_examples": 100
   },
   "summary": {
     "constraint_based_accuracy": null,
     "constraint_correct": null,
     "constraint_incorrect": null,
-    "golden_solution_accuracy": 0.56,
-    "golden_matches": 56,
+    "golden_solution_accuracy": 0.59,
+    "golden_matches": 59,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 0,
-      "execution_error": 42,
-      "no_output": 2,
+      "execution_error": 41,
+      "no_output": 0,
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
@@ -2427,10 +2427,69 @@
     },
     {
       "example_id": "zebralogic_grid_lgp-test-6x5-31",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": {
+        "header": [
+          "House",
+          "Name",
+          "Food",
+          "Color",
+          "Mother",
+          "HouseStyle"
+        ],
+        "rows": [
+          [
+            "1",
+            "Eric",
+            "grilled cheese",
+            "white",
+            "Kailyn",
+            "victorian"
+          ],
+          [
+            "2",
+            "Carol",
+            "pizza",
+            "yellow",
+            "Holly",
+            "mediterranean"
+          ],
+          [
+            "3",
+            "Alice",
+            "stew",
+            "blue",
+            "Penny",
+            "ranch"
+          ],
+          [
+            "4",
+            "Arnold",
+            "spaghetti",
+            "red",
+            "Aniya",
+            "modern"
+          ],
+          [
+            "5",
+            "Peter",
+            "soup",
+            "green",
+            "Janelle",
+            "colonial"
+          ],
+          [
+            "6",
+            "Bob",
+            "stir fry",
+            "purple",
+            "Sarah",
+            "craftsman"
+          ]
+        ]
+      },
       "expected_solution": {
         "header": [
           "House",
@@ -2491,11 +2550,7 @@
           ]
         ]
       },
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/z3_exec_1io8wubn/solution_z3.py\", line 17\n    But `Distinct(*name_pos.values())` with 6 args. Good.\n        ^\nSyntaxError: invalid syntax\n"
-      }
+      "validation": {}
     },
     {
       "example_id": "zebralogic_grid_lgp-test-3x3-9",
@@ -3132,10 +3187,41 @@
     },
     {
       "example_id": "zebralogic_grid_lgp-test-3x4-4",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "no_output",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": {
+        "header": [
+          "House",
+          "Name",
+          "Vacation",
+          "Education",
+          "Animal"
+        ],
+        "rows": [
+          [
+            "1",
+            "Peter",
+            "beach",
+            "bachelor",
+            "cat"
+          ],
+          [
+            "2",
+            "Eric",
+            "mountain",
+            "associate",
+            "bird"
+          ],
+          [
+            "3",
+            "Arnold",
+            "city",
+            "high school",
+            "horse"
+          ]
+        ]
+      },
       "expected_solution": {
         "header": [
           "House",
@@ -3168,9 +3254,7 @@
           ]
         ]
       },
-      "validation": {
-        "error": "empty stdout"
-      }
+      "validation": {}
     },
     {
       "example_id": "zebralogic_grid_lgp-test-5x5-20",
@@ -5080,10 +5164,55 @@
     },
     {
       "example_id": "zebralogic_grid_lgp-test-6x3-14",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "no_output",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": {
+        "header": [
+          "House",
+          "Name",
+          "Drink",
+          "Occupation"
+        ],
+        "rows": [
+          [
+            "1",
+            "Bob",
+            "water",
+            "artist"
+          ],
+          [
+            "2",
+            "Peter",
+            "tea",
+            "teacher"
+          ],
+          [
+            "3",
+            "Eric",
+            "coffee",
+            "nurse"
+          ],
+          [
+            "4",
+            "Alice",
+            "root beer",
+            "doctor"
+          ],
+          [
+            "5",
+            "Arnold",
+            "boba tea",
+            "lawyer"
+          ],
+          [
+            "6",
+            "Carol",
+            "milk",
+            "engineer"
+          ]
+        ]
+      },
       "expected_solution": {
         "header": [
           "House",
@@ -5130,9 +5259,7 @@
           ]
         ]
       },
-      "validation": {
-        "error": "empty stdout"
-      }
+      "validation": {}
     },
     {
       "example_id": "zebralogic_grid_lgp-test-4x6-10",

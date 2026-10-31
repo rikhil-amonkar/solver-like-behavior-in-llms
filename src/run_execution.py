@@ -67,19 +67,119 @@ def python_plan_result(code_result: dict) -> dict:
 
     The plan is every line of the form (action block ...), lowercased; "No plan" alone counts as
     the program concluding there is none (the analogue of the planner proving unsolvability).
+    A program that exits cleanly and prints nothing gives the empty plan, which is valid when the
+    goal already holds in the initial state.
     """
     ok = code_result.get("exit_code") == 0
     stdout = (code_result.get("stdout") or "").strip()
     actions = [line.strip().lower() for line in stdout.splitlines() if PLAN_ACTION.match(line.strip())]
     no_plan = ok and stdout.lower().rstrip(".") == "no plan"
+    empty = ok and not stdout
     return {
         "syntax_valid": ok,
-        "plan": "\n".join(actions) if ok and actions else None,
-        "plan_found": bool(ok and actions),
+        "plan": "\n".join(actions) if ok and actions else ("" if empty else None),
+        "plan_found": bool(ok and (actions or empty)),
         "planner_exit_code": 0 if ok else None,
         "plan_proven_unsolvable": no_plan,
         "parsed_output": None,
     }
+
+
+def execute_example(example: dict, task: str, fl: str, language: str, problems: dict, code_timeout: float) -> dict:
+    """Extract the program from one inference record, run it, and return its execution record."""
+    example_id = example["example_id"]
+    reasoning_trace = example.get("reasoning_trace", "")
+    problem_data = problems.get(example_id, {})
+
+    # Split reasoning and extract code
+    reasoning_before_code, extracted_code = split_reasoning_and_code(
+        reasoning_trace
+    )
+
+    # Clean and validate extracted code
+    if extracted_code:
+        extracted_code = clean_extracted_code(extracted_code)
+
+        # Validate code looks reasonable (not strict syntax check)
+        if not validate_code_extraction(extracted_code, language):
+            print(f"\n  ⚠ Warning: Extracted code for {example_id} may be malformed")
+
+    # Execute code if present
+    if extracted_code and extracted_code.strip():
+        # For zebralogic, pass problem data for header extraction
+        extra_kwargs = {}
+        if task == "zebralogic":
+            extra_kwargs["problem_data"] = problem_data
+
+        code_result = execute_code_by_language(
+            extracted_code,
+            language=language,
+            timeout_sec=code_timeout,
+            **extra_kwargs
+        )
+
+        # Parse output if execution succeeded
+        # For PDDL, check 'ran' instead of 'exit_code'
+        if language == "pddl":
+            # PDDL returns different structure: ran, syntax_valid, plan_found, val_valid
+            if code_result.get("ran") and code_result.get("stdout"):
+                parsed_output = parse_output_by_task(
+                    code_result["stdout"],
+                    task,
+                    problem_data
+                )
+                code_result["parsed_output"] = parsed_output
+            else:
+                code_result["parsed_output"] = None
+        elif task == "blocksworld":
+            # Python program for BlocksWorld: its printed plan stands in for the planner's
+            code_result.update(python_plan_result(code_result))
+        else:
+            # Python/Z3 standard execution
+            if code_result.get("exit_code") == 0 and code_result.get("stdout"):
+                parsed_output = parse_output_by_task(
+                    code_result["stdout"],
+                    task,
+                    problem_data
+                )
+                code_result["parsed_output"] = parsed_output
+            else:
+                code_result["parsed_output"] = None
+
+    else:
+        # No code extracted
+        code_result = {
+            "ran": False,
+            "exit_code": None,
+            "stdout": "",
+            "stderr": "",
+            "timed_out": False,
+            "timeout_sec": code_timeout,
+            "error": "no code extracted",
+            "parsed_output": None,
+        }
+
+    # Whether the program is written in the FL it was asked for
+    if fl != "pddl":
+        code_result["z3_used"] = bool(extracted_code) and (
+            "from z3 import" in extracted_code or "import z3" in extracted_code
+        )
+        code_result["fl_compliance"] = fl_compliance(extracted_code or "", fl)
+
+    # Count tokens for reasoning and code
+    reasoning_tokens = count_tokens(reasoning_before_code or "")
+    code_tokens = count_tokens(extracted_code or "")
+
+    # Build execution result
+    execution_result = {
+        "example_id": example_id,
+        "reasoning_before_code": reasoning_before_code,
+        "reasoning_before_code_tokens": reasoning_tokens,
+        "extracted_code": extracted_code,
+        "extracted_code_tokens": code_tokens,
+        "code_execution": code_result,
+    }
+    return execution_result
 
 
 def run_execution_pipeline(
@@ -144,98 +244,8 @@ def run_execution_pipeline(
             for example in examples:
                 try:
                     example_id = example["example_id"]
-                    reasoning_trace = example.get("reasoning_trace", "")
-                    problem_data = problems.get(example_id, {})
-
-                    # Split reasoning and extract code
-                    reasoning_before_code, extracted_code = split_reasoning_and_code(
-                        reasoning_trace
-                    )
-
-                    # Clean and validate extracted code
-                    if extracted_code:
-                        extracted_code = clean_extracted_code(extracted_code)
-
-                        # Validate code looks reasonable (not strict syntax check)
-                        if not validate_code_extraction(extracted_code, language):
-                            print(f"\n  ⚠ Warning: Extracted code for {example_id} may be malformed")
-
-                    # Execute code if present
-                    if extracted_code and extracted_code.strip():
-                        # For zebralogic, pass problem data for header extraction
-                        extra_kwargs = {}
-                        if task == "zebralogic":
-                            extra_kwargs["problem_data"] = problem_data
-
-                        code_result = execute_code_by_language(
-                            extracted_code,
-                            language=language,
-                            timeout_sec=code_timeout,
-                            **extra_kwargs
-                        )
-
-                        # Parse output if execution succeeded
-                        # For PDDL, check 'ran' instead of 'exit_code'
-                        if language == "pddl":
-                            # PDDL returns different structure: ran, syntax_valid, plan_found, val_valid
-                            if code_result.get("ran") and code_result.get("stdout"):
-                                parsed_output = parse_output_by_task(
-                                    code_result["stdout"],
-                                    task,
-                                    problem_data
-                                )
-                                code_result["parsed_output"] = parsed_output
-                            else:
-                                code_result["parsed_output"] = None
-                        elif task == "blocksworld":
-                            # Python program for BlocksWorld: its printed plan stands in for the planner's
-                            code_result.update(python_plan_result(code_result))
-                        else:
-                            # Python/Z3 standard execution
-                            if code_result.get("exit_code") == 0 and code_result.get("stdout"):
-                                parsed_output = parse_output_by_task(
-                                    code_result["stdout"],
-                                    task,
-                                    problem_data
-                                )
-                                code_result["parsed_output"] = parsed_output
-                            else:
-                                code_result["parsed_output"] = None
-
-                    else:
-                        # No code extracted
-                        code_result = {
-                            "ran": False,
-                            "exit_code": None,
-                            "stdout": "",
-                            "stderr": "",
-                            "timed_out": False,
-                            "timeout_sec": code_timeout,
-                            "error": "no code extracted",
-                            "parsed_output": None,
-                        }
-
-                    # Whether the program is written in the FL it was asked for
-                    if fl != "pddl":
-                        code_result["z3_used"] = bool(extracted_code) and (
-                            "from z3 import" in extracted_code or "import z3" in extracted_code
-                        )
-                        code_result["fl_compliance"] = fl_compliance(extracted_code or "", fl)
-
-                    # Count tokens for reasoning and code
-                    reasoning_tokens = count_tokens(reasoning_before_code or "")
-                    code_tokens = count_tokens(extracted_code or "")
-
-                    # Build execution result
-                    execution_result = {
-                        "example_id": example_id,
-                        "reasoning_before_code": reasoning_before_code,
-                        "reasoning_before_code_tokens": reasoning_tokens,
-                        "extracted_code": extracted_code,
-                        "extracted_code_tokens": code_tokens,
-                        "code_execution": code_result,
-                    }
-
+                    execution_result = execute_example(example, task, fl, language, problems, code_timeout)
+                    code_result = execution_result["code_execution"]
                     writer.write_example(execution_result)
 
                     # Count success based on language type

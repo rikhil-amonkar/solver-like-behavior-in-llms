@@ -1528,14 +1528,14 @@
    "A1": [
     "values"
    ],
-   "ratio": 0.2394,
+   "ratio": 0.1821,
    "unlabelled_paragraphs": 0,
    "A2": "complete",
-   "C1": null,
-   "c1_source": null,
+   "C1": true,
+   "c1_source": "script",
    "C2": true,
-   "B": "na",
-   "b_source": "script",
+   "B": "independent",
+   "b_source": "gemma",
    "flags": []
   },
   {
