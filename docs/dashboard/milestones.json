@@ -187,5 +187,12 @@
   "title": "Sections 4-6 drafted around the hypotheses",
   "detail": "Methods covers both FLs and the vanilla prompt, with a judge reliability table; Section 5 tests H1.1-H1.3 and H2 (FL, dataset, model) on baseline traces, one figure each; Section 6 covers deterring SLB (cautionary prompts; method to come).",
   "where": "solver-like-paper/acl_latex.tex"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "A1 judge checked in the second FLs: 39/40",
+  "detail": "Harry labelled 40 blind paragraphs, 10 per dataset in its second FL (Calendar and Meeting in Z3, ZebraLogic and BlocksWorld in Python). gemma_v11t agrees on 39/40 after two rulings for the judge; the one miss is a Calendar-Z3 boundary case.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
  }
 ]

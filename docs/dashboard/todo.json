@@ -11,8 +11,8 @@
  {
   "priority": 1,
   "area": "Judging",
-  "item": "Label the cross-FL judge checks",
-  "detail": "Harry chose the cross-FL spot checks first. On the labelling page (https://claude.ai/artifact/4JET2M9Ar6JNvMAqmQrCuH): \"A1 (second FL)\", 40 blind paragraphs, 10 per dataset in its second FL; \"B (second FL)\", 20 programs, 10 the judge says inherit (precision) and 10 it calls independent although the prose reached a complete answer (recall), 9 of them Z3. Score with scripts/build_crossfl_check_sheets.py score. Still proposed: a second annotator on A1, a second judge model, and a sensitivity analysis of H2 to judge error.",
+  "item": "Label the cross-FL B check",
+  "detail": "A1 in the second FL is done: the judge agrees with Harry on 39/40 after rulings. Left: the \"B (second FL)\" tab on the labelling page (https://claude.ai/artifact/4JET2M9Ar6JNvMAqmQrCuH), 20 programs, 9 of them Z3: 10 the judge says reuse the prose answer (precision) and 10 it calls independent although the prose reached a complete answer (recall). Then a cross-FL row in the Section 4 reliability table. Still proposed: a second annotator on A1, a second judge model, and how sensitive H2 is to judge error.",
   "status": "needs labels",
   "after": "",
   "decider": "Harry"

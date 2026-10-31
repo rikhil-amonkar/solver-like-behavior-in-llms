@@ -31,6 +31,9 @@ REL = REPO / "validation/reliability"
 ROOT = "output_crossfl"
 MODELS = ("qwen", "gpt")
 FL = {"calendar": "Z3", "meeting": "Z3", "zebralogic": "Python", "blocksworld": "Python"}
+# Rulings agreed with Harry after scoring (2026-10-31): the judge is right on these.
+RULINGS = {"a1x-01": "N",   # checking the program's loops against hypothetical placements is not SLB
+           "a1x-25": "V"}   # a pruned-domain list inside a hand-run of propagation on the instance
 A1_OPTS = [["V", "Values"], ["N", "Not SLB"], ["unsure", "Can't tell"]]
 
 
@@ -128,10 +131,12 @@ def score():
     items = json.load(open(REL / "judge_checks.json"))
     marks = {Path(f).stem: json.load(open(f)) for f in glob.glob(str(REL / "human/checks/*x-*.json"))}
     for tab in ("a1x", "bx"):
-        rows = [(it, marks[it["id"]]["human"]) for it in items[tab] if it["id"] in marks and "human" in marks[it["id"]]]
+        rows = [(it, RULINGS.get(it["id"], marks[it["id"]]["human"])) for it in items[tab]
+                if it["id"] in marks and "human" in marks[it["id"]]]
         sure = [(it, h) for it, h in rows if h != "unsure"]
         agree = [(it, h) for it, h in sure if h == it["question"]["gemma"]]
         lo, hi = wilson(len(agree), len(sure))
+        print(f"{tab}: (rulings applied: {', '.join(k for k in RULINGS if k.startswith(tab + '-')) or 'none'})")
         print(f"{tab}: marked {len(rows)}/{len(items[tab])}, can't tell {len(rows) - len(sure)}, "
               f"agree {len(agree)}/{len(sure)} [{lo:.2f}, {hi:.2f}]")
         for key in sorted({it["task"] for it, _ in sure}) + sorted({it["question"]["gemma"] for it, _ in sure}):

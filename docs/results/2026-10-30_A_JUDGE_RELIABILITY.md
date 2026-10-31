@@ -134,3 +134,7 @@ Disagreements (Harry / judge), with Claude's reading of the context:
   (the paragraphs before it prune domains and fail a branch: "H0 Peter branch fails", "H1 roses"); it lists
   the remaining value domains. Claude reads it as Values (the prose is running the search), so the judge is
   right; it reads like program design (MRV) out of context.
+
+**Rulings (Harry, 2026-10-31):** the judge is right on a1x-01 (N) and a1x-25 (V); a1x-13 stays N (Harry's
+label). Final: **39/40** (Wilson [0.87, 0.99]); every dataset 10/10 except Calendar-Z3 9/10; Values
+precision 19/20, recall 19/19. The rulings are in RULINGS in `scripts/build_crossfl_check_sheets.py`.
