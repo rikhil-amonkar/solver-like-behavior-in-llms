@@ -1,12 +1,13 @@
 """Replace the concrete values of a Calendar or Meeting Planning problem with placeholders.
 
 The model sees only the placeholder text. The program gets the values at run time: the executor
-defines a dict VALUES (placeholder name -> value) before the program's own code
-(values_preamble). Placeholder kinds:
+defines a dict VALUES (placeholder name -> value), and for Meeting a dict TRAVEL, before the
+program's own code (values_preamble). VALUES holds only placeholder names, so a program that
+selects keys by prefix (k.startswith("T")) gets what it expects. Placeholder kinds:
   Calendar: Person<i> (participant), Day<i> (weekday), T<i> (clock time, "H:MM" 24-hour),
             D1 (meeting duration, minutes)
   Meeting:  Person<i> (friend), L<i> (location), T<i> (clock time, "H:MMAM"/"H:MMPM"),
-            D<i> (minimum meeting length, minutes), TRAVEL[a][b] (minutes from L<a> to L<b>)
+            D<i> (minimum meeting length, minutes); TRAVEL[a][b] (minutes from L<a> to L<b>)
 Each distinct value gets one placeholder. T and D numbers are shuffled (seeded by the problem id),
 so their order says nothing about the values; Person, Day and L are numbered by first appearance.
 
@@ -103,21 +104,21 @@ def convert_meeting(problem: str, seed: str) -> dict:
 
     values = {v: k for k, v in {**loc_map, **friend_map, **time_map}.items()}
     values.update({ph: int(s) for s, ph in dur_map.items()})
-    values["TRAVEL"] = {}
+    travel_minutes = {}
     for a, b, minutes in travel:
-        values["TRAVEL"].setdefault(loc_map[a], {})[loc_map[b]] = int(minutes)
+        travel_minutes.setdefault(loc_map[a], {})[loc_map[b]] = int(minutes)
 
     surfaces = {v: k for k, v in {**loc_map, **friend_map, **time_map, **dur_map}.items()}
     surfaces["__travel_text__"] = travel_text
     surfaces["__travel_block__"] = travel_block
-    return {"problem": text, "values": values, "surfaces": surfaces}
+    return {"problem": text, "values": values, "travel": travel_minutes, "surfaces": surfaces}
 
 
 CONVERTERS = {"calendar": convert_calendar, "meeting": convert_meeting}
 
 
 def convert(task: str, problem: str, seed: str) -> dict:
-    """Return {"problem": placeholder text, "values": VALUES dict, "surfaces": for restore()}."""
+    """Return {"problem": placeholder text, "values": VALUES dict, ["travel": TRAVEL dict,] "surfaces": for restore()}."""
     return CONVERTERS[task](problem, seed)
 
 
@@ -138,13 +139,22 @@ def leaked_values(task: str, converted: dict) -> list:
         converted["problem"].split("Travel distances (in minutes):")[1]
     leaks = []
     for name, value in converted["values"].items():
-        if name != "TRAVEL" and re.search(r"\b" + re.escape(str(value)) + r"\b", text):
+        if re.search(r"\b" + re.escape(str(value)) + r"\b", text):
             leaks.append(f"{name}={value}")
     leaks += [d for d in WEEKDAYS if _word(d).search(text)]
     leaks += re.findall(r"(?<![A-Za-z\d])\d+(?![\d])", re.sub(r"\b(?:Person|Day|T|L|D)\d+\b", "", text))
     return leaks
 
 
-def values_preamble(values: dict) -> str:
-    """Python source that defines VALUES, prepended to the program before it runs."""
-    return f"VALUES = {values!r}\n\n"
+def values_preamble(converted: dict) -> str:
+    """Python source that defines VALUES (and TRAVEL), prepended to the program before it runs."""
+    travel = f"TRAVEL = {converted['travel']!r}\n" if "travel" in converted else ""
+    return f"VALUES = {converted['values']!r}\n{travel}\n"
+
+
+PLACEHOLDER = re.compile(r"\b(?:Person|Day|T|L|D)\d+\b")
+
+
+def restore_output(stdout: str, values: dict) -> str:
+    """Replace placeholder names a program printed (e.g. "You meet Person1") with their values."""
+    return PLACEHOLDER.sub(lambda m: str(values.get(m.group(0), m.group(0))), stdout)

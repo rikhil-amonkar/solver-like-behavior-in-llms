@@ -7,7 +7,9 @@ Execution for the deterrence runs (docs/DETERRENCE_DESIGN.md), writing the same 
   `# Problem i` for each, and every member's record carries the group's shared reasoning and a
   "batch" field (group, position, k, unlabelled_blocks).
 - placeholder: the program is extracted as usual and run with `VALUES = {...}` (the problem's
-  real values, data/placeholders/) prepended; extracted_code stays the model's own code.
+  real values, data/placeholders/; for Meeting also `TRAVEL = {...}`) prepended; extracted_code
+  stays the model's own code. Placeholder names in its output are mapped back to their values
+  before parsing (code_execution.stdout_restored records when that happened).
 
 Usage: python src/run_execution_deter.py --input output_deter/qwen/calendar/batch_k5_inference.json
 """
@@ -32,10 +34,10 @@ from inference.code_executor import execute_code_by_language, get_language_from_
 from general.fl_compliance import fl_compliance
 from run_execution import python_plan_result, count_tokens
 from deter.batching import split_programs
-from deter.placeholders import values_preamble
+from deter.placeholders import values_preamble, restore_output
 
 
-def run_program(code, task, fl, language, problem_data, timeout, preamble=""):
+def run_program(code, task, fl, language, problem_data, timeout, preamble="", values=None):
     if not (code and code.strip()):
         return {"ran": False, "exit_code": None, "stdout": "", "stderr": "", "timed_out": False,
                 "timeout_sec": timeout, "error": "no code extracted", "parsed_output": None}
@@ -44,7 +46,12 @@ def run_program(code, task, fl, language, problem_data, timeout, preamble=""):
     if task == "blocksworld":
         result.update(python_plan_result(result))
     elif result.get("exit_code") == 0 and result.get("stdout"):
-        result["parsed_output"] = parse_output_by_task(result["stdout"], task, problem_data)
+        stdout = result["stdout"]
+        if values is not None:
+            # A program may print placeholder names; the answer is the same once they are mapped back
+            stdout = restore_output(stdout, values)
+            result["stdout_restored"] = stdout if stdout != result["stdout"] else None
+        result["parsed_output"] = parse_output_by_task(stdout, task, problem_data)
     else:
         result["parsed_output"] = None
     result["z3_used"] = "from z3 import" in code or "import z3" in code
@@ -75,14 +82,15 @@ def member_records(example, condition, task, fl, language, problems, placeholder
         eid = example["example_id"]
         reasoning, code = split_reasoning_and_code(trace)
         code = clean_extracted_code(code) if code else None
-        preamble = values_preamble(placeholders[eid]["values"])
+        preamble = values_preamble(placeholders[eid])
         yield {
             "example_id": eid,
             "reasoning_before_code": reasoning,
             "reasoning_before_code_tokens": count_tokens(reasoning or ""),
             "extracted_code": code,
             "extracted_code_tokens": count_tokens(code or ""),
-            "code_execution": run_program(code, task, fl, language, problems[eid], timeout, preamble),
+            "code_execution": run_program(code, task, fl, language, problems[eid], timeout, preamble,
+                                          placeholders[eid]["values"]),
         }
 
 
