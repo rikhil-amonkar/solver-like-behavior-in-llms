@@ -1,9 +1,18 @@
 [
  {
   "priority": 1,
-  "area": "Analysis",
-  "item": "Agree on the hypothesis wording",
-  "detail": "Tests of H1.1-H3 on all runs are in docs/results/2026-10-31_HYPOTHESIS_TESTS.md. H1.1, H1.2, H1.3 supported; H2 (FL, not dataset) and H3 (caution cannot deter) only partly. Suggested rewording and a possible H4 (SLB is model-general) are in that file.",
+  "area": "Experiments",
+  "item": "Implement the method that deters SLB (Section 6)",
+  "detail": "Harry: the method from the preliminary studies, as the second part of Section 6 after the cautionary prompts. Placeholder (todo) in the paper.",
+  "status": "to do",
+  "after": "",
+  "decider": ""
+ },
+ {
+  "priority": 1,
+  "area": "Judging",
+  "item": "Further judge validation",
+  "detail": "Proposed: human spot checks on cross-FL traces (A1 on BlocksWorld-Python and Meeting-Z3, B on Z3/Python programs), B recall on programs labelled independent, a second annotator on A1 for a human-human ceiling, and a sensitivity analysis of the H2 contrasts to judge error.",
   "status": "needs decision",
   "after": "",
   "decider": "Harry"
