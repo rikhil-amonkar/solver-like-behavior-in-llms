@@ -145,5 +145,19 @@
   "title": "Native ontology labels assembled from the final judges",
   "detail": "A gemma_v11t, B gemma_b5t, A2/C gemma_v11c over all 3,600 traces, no judgement missing. BlocksWorld ratios fell to 0.01-0.06; B hardcoded is almost all GPT-OSS Meeting baseline (40).",
   "where": "docs/results/2026-10-31_ONTOLOGY_LABELS_V11_B5T.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Experiments",
+  "title": "Cross-FL runs complete for all three models",
+  "detail": "36 runs (Calendar and Meeting in Z3, ZebraLogic and BlocksWorld in Python; DeepSeek, GPT-OSS, Qwen; 3 conditions), executed and scored. Every dataset now has two FLs.",
+  "where": "output_crossfl/"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "Cross-FL A judge done",
+  "detail": "gemma_v11t on all 18,865 cross-FL segments, none missing.",
+  "where": "output_crossfl/ontology/"
  }
 ]

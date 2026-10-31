@@ -2,19 +2,19 @@
  {
   "priority": 1,
   "area": "Experiments",
-  "item": "Cross-FL: Qwen runs",
-  "detail": "GPT-OSS and DeepSeek finished all 12 runs each. Qwen's remaining runs run on GPUs 0, 2 and 3 (three queues; claim files keep them apart).",
+  "item": "Judge the cross-FL runs (A, B, A2/C)",
+  "detail": "A (gemma_v11t) done on 2026-10-31: all 18,865 segments. B (gemma_b5t) is running on GPU 1 (the run is limited to GPU 1), then A2/C (gemma_v11c); the labels are then assembled into output_crossfl/<model>/<task>/<cond>_ontology_gemma_v11_b5t.json and the FL-compliance report regenerated.",
   "status": "in progress",
   "after": "",
   "decider": ""
  },
  {
-  "priority": 1,
-  "area": "Experiments",
-  "item": "Judge the cross-FL runs (A, B, A2/C)",
-  "detail": "Same judges and prompts as the native runs (gemma_v11t, gemma_b5t, gemma_v11c), results in output_crossfl/ontology/, then assembled into <cond>_ontology_gemma_v11_b5t.json. Starts on GPU 1 and takes GPUs 0, 2, 3 as Qwen frees them; Qwen's runs join as they finish.",
-  "status": "in progress",
-  "after": "",
+  "priority": 2,
+  "area": "Judging",
+  "item": "Spot-check the B judge on Z3 programs",
+  "detail": "B's reliability on Z3 rests on one human-labelled program (bprec2-00). The cross-FL runs add Calendar- and Meeting-Z3 programs; label a small set against gemma_b5t.",
+  "status": "to do",
+  "after": "Judge the cross-FL runs",
   "decider": ""
  },
  {
@@ -22,8 +22,8 @@
   "area": "Experiments",
   "item": "Test the imperative-FL hypothesis with BlocksWorld in Python",
   "detail": "Hypothesis (Harry): an imperative FL causes more SLB. The program must print a plan; VAL checks it against the golden PDDL. No reference PDDL in the prompt (the native one gives the unconstrained problem PDDL). Meeting\u2192Z3 also added, so every dataset has two FLs.",
-  "status": "in progress",
-  "after": "",
+  "status": "waiting",
+  "after": "Judge the cross-FL runs",
   "decider": ""
  },
  {
