@@ -15,6 +15,7 @@ Usage: python scripts/project_dashboard_snapshot.py [OUT_DIR]   (default output/
 
 import glob
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -114,6 +115,24 @@ def build_jobs():
         j["queued"] = not tmux_alive(j["session"]) and tmux_alive("judge-switch") and j["done"] == 0
     jobs[4]["finished"] = all("DONE" in log_text(f) for f in ("crossfl-deepseek.log", "crossfl-deepseek-bw.log",
                                                       "crossfl-deepseek-meeting.log"))
+    jobs[2]["gpus"] = "0, 2, 3"
+    # Judges on the cross-FL runs (scripts/run_crossfl_judges.sh): GPUs 0-3 as they free up; the
+    # totals grow as Qwen's runs finish, so each is read from the judge logs ("N items, ...")
+    xlog = log_text("crossfl-judges.log")
+    for kind, tag, name, stage, unit, total, marker in (
+            ("a", "gemma_v11t", "Cross-FL A judge (gemma_v11t)", "Paragraph labels", "segments", 13000, "A done"),
+            ("b", "gemma_b5t", "Cross-FL B judge (gemma_b5t)", "Program labels", "traces", 3600, "B done"),
+            ("c", "gemma_v11c", "Cross-FL A2/C judge (gemma_v11c)", "Prose answer per trace", "traces", 3600, "DONE")):
+        seen = [int(n) for n in re.findall(r"^(\d+) items,", "".join(log_text(f.name) for f in
+                (REPO / "logs").glob(f"crossfl-judge-{kind}*.log")), re.M)]
+        gpus = sorted(set(re.findall(r"== %s on GPUs ([\d ]+)" % kind, xlog)))
+        jobs.append({"id": f"crossfl_judge_{kind}", "name": name, "stage": stage,
+                     "gpus": ", ".join(gpus[-1].split()) if gpus else "0-3, as free",
+                     "done": count_lines(f"output_crossfl/ontology/judge_{kind}_{tag}*.jsonl"),
+                     "total": max(seen) if seen else total, "unit": unit,
+                     "extra": "", "session": "crossfl-judges",
+                     "after": {"a": None, "b": "crossfl_judge_a", "c": "crossfl_judge_b"}[kind],
+                     "finished": marker in xlog})
     return jobs
 
 

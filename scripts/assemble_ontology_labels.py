@@ -17,7 +17,7 @@ Per trace:
 - Flags (script): B hardcoded/partly_fixed/steered without A1 values; A2 complete without
   any V paragraph; paragraphs the A judge did not label (counted as not SLB).
 
-Writes output/<model>/<task>/<cond>_ontology_<tag>.json and prints a summary table.
+Writes <root>/<model>/<task>/<cond>_ontology_<tag>.json and prints a summary table.
 
 Usage (env venv):
     python scripts/assemble_ontology_labels.py --tag gemma_v1
@@ -40,10 +40,10 @@ from validate_prose_answers import check as validate_prose
 
 
 
-def load_judge(kind, tag):
+def load_judge(kind, tag, root="output"):
     """Latest result per (id, hash) over all shards."""
     out = {}
-    for f in sorted((REPO / "output/ontology").glob(f"judge_{kind}_{tag}*.jsonl")):
+    for f in sorted((REPO / root / "ontology").glob(f"judge_{kind}_{tag}*.jsonl")):
         for line in f.open():
             r = json.loads(line)
             out[(r["id"], r.get("h"))] = r
@@ -112,9 +112,10 @@ def main():
     ap.add_argument("--a-tag")
     ap.add_argument("--b-tag")
     ap.add_argument("--c-tag")
+    ap.add_argument("--root", default="output", help="output, or output_crossfl for the cross-FL runs")
     args = ap.parse_args()
-    segments, traces = build_items()
-    ja, jb, jc = (load_judge(k, getattr(args, f"{k}_tag") or args.tag) for k in ("a", "b", "c"))
+    segments, traces = build_items(args.root)
+    ja, jb, jc = (load_judge(k, getattr(args, f"{k}_tag") or args.tag, args.root) for k in ("a", "b", "c"))
     # condensed C runs (--condense-a-tag) hash the condensed text: key them by the trace's own hash
     h_of = {t["id"]: t["h"] for t in traces}
     jc = {**{(i, h_of.get(i)): r for (i, _), r in jc.items()}, **jc}
@@ -186,7 +187,7 @@ def main():
         per_cell[(t["model"], t["task"], t["cond"])].append(rec)
 
     for (m, task, cond), recs in per_cell.items():
-        dest = REPO / f"output/{m}/{task}/{cond}_ontology_{args.tag}.json"
+        dest = REPO / args.root / m / task / f"{cond}_ontology_{args.tag}.json"
         json.dump({"tag": args.tag, "ontology": "docs/SLB_ONTOLOGY.md", "examples": recs}, open(dest, "w"), indent=1)
 
     print("missing judgements:", dict(missing_judgements) or "none")

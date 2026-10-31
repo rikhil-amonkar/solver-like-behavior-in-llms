@@ -16,7 +16,8 @@ Results are cached as JSONL (one line per item); re-running skips cached items, 
 changing a prompt needs a new --tag.
 
 With --items all, items are built from every stored run (src/ontology_items.py) and
-results go to output/ontology/judge_<kind>_<tag>[.shard<i>].jsonl. Cache keys are the item
+results go to <root>/ontology/judge_<kind>_<tag>[.shard<i>].jsonl (--root: output, or
+output_crossfl for the cross-FL runs). Cache keys are the item
 id plus a hash of its text, so re-run traces are judged again. --shard i/n splits the
 items across processes (one per GPU).
 
@@ -101,7 +102,7 @@ def parse(kind: str, text: str, item: dict) -> dict:
         return {"b": None, "spec": None, "evidence": "", "parse_error": True}
 
 
-def condense(traces, a_tag, values_only=False):
+def condense(traces, a_tag, values_only=False, root="output"):
     """Replace each trace's reasoning by its solver-like paragraphs (V or P per the A judge),
     in order, with a marker where other paragraphs were left out. The hash changes with the
     A labels, so a new A tag re-judges. Traces with any unjudged segment are dropped."""
@@ -110,11 +111,11 @@ def condense(traces, a_tag, values_only=False):
     sys.path.insert(0, str(REPO / "src"))
     from ontology_items import build_items
     ja = {}
-    for f in glob.glob(str(REPO / f"output/ontology/judge_a_{a_tag}*.jsonl")) + glob.glob(str(REPO / f"validation/reliability/checks/judge_a_{a_tag}.jsonl")):
+    for f in glob.glob(str(REPO / root / f"ontology/judge_a_{a_tag}*.jsonl")) + glob.glob(str(REPO / f"validation/reliability/checks/judge_a_{a_tag}.jsonl")):
         for line in open(f):
             r = json.loads(line)
             ja[(r["id"], r.get("h"))] = r
-    segments, _ = build_items()
+    segments, _ = build_items(root)
     by_trace = {}
     for s in segments:
         by_trace.setdefault(s["trace"], []).append(s)
@@ -157,6 +158,8 @@ def main():
                     help="Condense to Values paragraphs only (A1 properties dropped on 2026-10-29)")
     ap.add_argument("--thinking", type=int, default=0,
                     help="Gemma thinking mode with this many extra tokens for the thought (0: off)")
+    ap.add_argument("--root", default="output",
+                    help="With --items all: runs to judge (output, or output_crossfl); results go to <root>/ontology")
     ap.add_argument("--condense-a-tag", default=None,
                     help="C judge: give only the paragraphs this A-judge tag labelled V or P (in order, gaps marked)")
     args = ap.parse_args()
@@ -165,11 +168,11 @@ def main():
     if args.items == "all":
         sys.path.insert(0, str(REPO / "src"))
         from ontology_items import build_items
-        segments, traces = build_items()
+        segments, traces = build_items(args.root)
         items = segments if args.kind in ("a", "cs") else [t for t in traces if t["reasoning"].strip()]
         if args.kind == "b":
             items = [t for t in items if t["program"].strip()]
-        out_dir = REPO / "output/ontology"
+        out_dir = REPO / args.root / "ontology"
         out_dir.mkdir(parents=True, exist_ok=True)
         suffix = f".shard{shard}" if n_shards > 1 else ""
         out = out_dir / f"judge_{args.kind}_{args.tag}{suffix}.jsonl"
@@ -180,7 +183,7 @@ def main():
             items = [it for it in items if it.get("split") == args.split]
         out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
     if args.condense_a_tag:
-        items = condense(items, args.condense_a_tag, args.condense_values_only)
+        items = condense(items, args.condense_a_tag, args.condense_values_only, args.root)
     template = PROMPTS["c_condensed" if args.kind == "c" and args.condense_a_tag else args.kind].read_text(encoding="utf-8")
     # every record carries the prompt's hash, so a tag can never mix prompts (the first full A run,
     # tagged gemma_v11t, silently used the v12 prompt file)

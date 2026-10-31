@@ -124,5 +124,19 @@
   "title": "FL compliance flagged on every run",
   "detail": "Decided with Harry: flag and report the rate, also on native runs. Native: 3 of ~2,600 programs not in their FL (truncated Z3 sketches). Execution now records fl_compliance per program.",
   "where": "docs/results/2026-10-30_FL_COMPLIANCE.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Judging",
+  "title": "Native runs fully judged",
+  "detail": "A (gemma_v11t, 29,237 segments), B (gemma_b5t, 3,591 programs) and A2/C (gemma_v11c, 3,600 traces) cover every native trace; nothing missing or stale.",
+  "where": "output/ontology/"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "Cross-FL runs done for DeepSeek and GPT-OSS",
+  "detail": "12 runs each (four new pairings x 3 conditions). Accuracy close to the native FL; Meeting-Z3's lower golden accuracy was a prompt-format artefact, now normalised.",
+  "where": "docs/CROSS_FL_DESIGN.md"
  }
 ]

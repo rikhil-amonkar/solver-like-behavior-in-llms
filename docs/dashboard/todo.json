@@ -2,35 +2,17 @@
  {
   "priority": 1,
   "area": "Ontology",
-  "item": "Finish the A judge rerun with the v11 prompt",
-  "detail": "The first full A run accidentally used the v12 prompt and must be redone before results are final.",
-  "status": "in progress",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 1,
-  "area": "Ontology",
-  "item": "Run the A2/C judge (gemma_v11c)",
-  "detail": "Reads only the Values paragraphs from the A rerun.",
-  "status": "waiting",
-  "after": "A judge rerun",
-  "decider": ""
- },
- {
-  "priority": 1,
-  "area": "Ontology",
   "item": "Assemble per-trace ontology labels",
   "detail": "scripts/assemble_ontology_labels.py with the v11t, b5t and v11c tags, replacing the v12 assembly.",
   "status": "to do",
-  "after": "A2/C judge",
+  "after": "",
   "decider": ""
  },
  {
   "priority": 1,
   "area": "Experiments",
-  "item": "Cross-FL: DeepSeek runs",
-  "detail": "Twelve runs over the API (Calendar-Z3, Meeting-Z3, ZebraLogic-Python, BlocksWorld-Python \u00d7 3 conditions); then execution and evaluation.",
+  "item": "Cross-FL: Qwen runs",
+  "detail": "GPT-OSS and DeepSeek finished all 12 runs each. Qwen's remaining runs run on GPUs 0, 2 and 3 (three queues; claim files keep them apart).",
   "status": "in progress",
   "after": "",
   "decider": ""
@@ -38,8 +20,8 @@
  {
   "priority": 1,
   "area": "Experiments",
-  "item": "Cross-FL: Qwen runs on GPUs 2 and 3",
-  "detail": "GPT-OSS finished its 12 runs. Qwen's remaining runs are split: GPU 2 works forwards (Meeting-Z3, ...), GPU 3 backwards from BlocksWorld-Python; each run is claimed so the two never collide.",
+  "item": "Judge the cross-FL runs (A, B, A2/C)",
+  "detail": "Same judges and prompts as the native runs (gemma_v11t, gemma_b5t, gemma_v11c), results in output_crossfl/ontology/, then assembled into <cond>_ontology_gemma_v11_b5t.json. Starts on GPU 1 and takes GPUs 0, 2, 3 as Qwen frees them; Qwen's runs join as they finish.",
   "status": "in progress",
   "after": "",
   "decider": ""
@@ -77,7 +59,7 @@
   "item": "Check DeepSeek and Qwen BlocksWorld A labels",
   "detail": "v1 labels looked inflated (ratio 0.16-0.20 against about 0.05 in the sweep); confirm with v11t.",
   "status": "to do",
-  "after": "A judge rerun",
+  "after": "",
   "decider": ""
  },
  {

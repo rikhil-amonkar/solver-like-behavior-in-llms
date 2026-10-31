@@ -42,6 +42,13 @@ checked with VAL against the golden domain and problem, as the planner's plan is
 - `scripts/run_crossfl_deepseek.sh`: DeepSeek over the API (tmux `crossfl-deepseek`,
   `crossfl-deepseek-bw`, `crossfl-deepseek-meeting`; `PAIRS=` picks pairings).
 
+## Judging
+`scripts/run_crossfl_judges.sh` (tmux `crossfl-judges`) runs the native judges unchanged on the
+cross-FL runs: A gemma_v11t, B gemma_b5t, A2/C gemma_v11c (`run_ontology_judges.py --root
+output_crossfl`, results in `output_crossfl/ontology/`), then `assemble_ontology_labels.py --root
+output_crossfl --tag gemma_v11_b5t`. It uses the free GPUs among 0-3 and re-plans as Qwen's
+queues finish (new runs join, more GPUs).
+
 ## FL compliance (decided: flag and report)
 `scripts/fl_compliance_report.py` flags programs not written in the FL asked for (Python: only
 standard-library imports; Z3: imports z3 and calls `check()`), on native and cross-FL runs.

@@ -50,7 +50,10 @@ def text_hash(*parts):
 
 def load(root, model, task, cond, kind):
     path = REPO / root / model / task / f"{cond}_{kind}.json"
-    return {e["example_id"]: e for e in json.load(open(path))["examples"]} if path.exists() else {}
+    try:  # a run being written right now is skipped until its file is complete
+        return {e["example_id"]: e for e in json.load(open(path))["examples"]} if path.exists() else {}
+    except json.JSONDecodeError:
+        return {}
 
 
 def build_items(root="output", cells=None):
