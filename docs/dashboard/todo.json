@@ -1,14 +1,5 @@
 [
  {
-  "priority": 1,
-  "area": "Experiments",
-  "item": "Deter SLB: batched problems and placeholders (Section 6)",
-  "detail": "Two candidate methods from Harry's preliminary studies: K problems per prompt with one program each (K sweep 2/5/10), and values replaced by placeholders that the program gets at run time. Qwen + GPT-OSS; BlocksWorld-PDDL dropped (little SLB). Code done; pilot (20 problems, Calendar + Meeting Python) running; then judge changes (per-problem A1 for batches), full runs. docs/DETERRENCE_DESIGN.md",
-  "status": "in progress",
-  "after": "",
-  "decider": ""
- },
- {
   "priority": 2,
   "area": "Experiments",
   "item": "Characterise hardcoding in cross-FL programs before choosing a checker",

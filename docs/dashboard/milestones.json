@@ -208,5 +208,12 @@
   "title": "Code extraction and empty-plan scoring fixed; affected runs rescored and re-judged",
   "detail": "The extractor now reads the final answer on its own (fences in the thinking had hidden it; 43 programs change), and a Python BlocksWorld program that prints nothing is scored as the empty plan. 68 records re-run, 40 now correct, none worse; the changed traces were re-judged and the paper's numbers updated (e.g. H3 ratio effect +0.007 per 10 points).",
   "where": "docs/results/2026-10-31_EXTRACTION_EMPTY_PLAN_FIX.md"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Experiments",
+  "title": "Placeholders deter SLB (Section 6)",
+  "detail": "Two methods run in full for Qwen and GPT-OSS (no PDDL). Placeholders (values hidden, given to the program at run time) cut solver-like tokens by 97% and the share of traces with SLB from 94% to 15%, with accuracy +2.6 points (n.s.). Batching (K=5) cuts SLB tokens per problem by 62% but all reasoning as much, and costs 5.9 accuracy points. Paper Section 6, Figure 6 and a practical recommendation written.",
+  "where": "docs/results/2026-11-01_DETERRENCE_FULL.md"
  }
 ]
