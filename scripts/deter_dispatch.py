@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Start the deterrence jobs (docs/DETERRENCE_DESIGN.md) on free GPUs as they become available,
 following the GPU policy in CLAUDE.md:
-  - a GPU is free only if no process at all is on it (and no job of ours was just started on it);
+  - a GPU is free only if no process at all is on it, and no live tmux session (ours or one started
+    by hand) was started for it (CUDA_VISIBLE_DEVICES=<n> or GPU=<n> in its command), since a
+    vLLM job shows no GPU process while it loads;
   - at most MAX_MINE GPUs are ours (hz466 processes, plus GPUs this dispatcher reserved);
   - at least one flex GPU stays idle after every launch (GPU 0 is taken last).
 Each job is one tmux session (scripts/run_deter.sh for inference cells, or an A-judge run) and
@@ -13,6 +15,7 @@ Run in tmux: tmux new -d -s deter-dispatch 'python scripts/deter_dispatch.py 2>&
 
 import getpass
 import json
+import re
 import subprocess
 import time
 from datetime import datetime, timezone
@@ -82,6 +85,12 @@ def gpu_owners():
     return owners
 
 
+def tmux_gpus():
+    """GPUs named in the start command of any live tmux session."""
+    out = sh("tmux list-panes -a -F '#{pane_start_command}'")
+    return {int(g) for g in re.findall(r"(?:CUDA_VISIBLE_DEVICES|\bGPU)=(\d)\b", out)}
+
+
 def session_of(job):
     return f"deter-{job['name']}"
 
@@ -112,7 +121,7 @@ def main():
                 j["status"], j["ended"] = "done", now()
                 print(f"{now()} done {j['name']} (GPU {j['gpu']})", flush=True)
         owners = gpu_owners()
-        reserved = {j["gpu"] for j in jobs.values() if j["status"] == "running"}
+        reserved = {j["gpu"] for j in jobs.values() if j["status"] == "running"} | tmux_gpus()
         for j in jobs.values():
             if j["status"] != "pending":
                 continue
