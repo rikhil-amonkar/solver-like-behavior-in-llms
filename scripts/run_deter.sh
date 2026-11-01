@@ -7,6 +7,7 @@
 #
 # CELLS: space-separated task:fl:method, method = k<K> or ph (default: the pilot's four cells).
 # ROOT: output root (default output_deter; use output_deter_crossfl for second-FL cells).
+# NAME: tmux session name (default deter-<model>-<root>).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 : "${GPU:?set GPU}" "${MODEL:?set MODEL}"
@@ -16,7 +17,7 @@ CELLS=${CELLS:-"calendar:python:k5 meeting:python:k5 calendar:python:ph meeting:
 if [ -n "$(nvidia-smi -i "$GPU" --query-compute-apps=pid --format=csv,noheader)" ]; then
   echo "GPU $GPU is busy; not starting"; exit 1
 fi
-name="deter-$MODEL-$(basename "$ROOT")"
+name=${NAME:-"deter-$MODEL-$(basename "$ROOT")"}
 mkdir -p logs
 cmds="echo CELLS: $CELLS; source /local-ssd/hz466/vllm-test/env.sh && export CUDA_VISIBLE_DEVICES=$GPU"
 for cell in $CELLS; do
