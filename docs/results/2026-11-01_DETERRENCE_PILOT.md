@@ -21,7 +21,8 @@ per group (so trivially near 1), and chars and tokens are divided by 5.
 | GPT-OSS Calendar, placeholders v3 | 0.01 / 0.31 | 0.10 / 0.95 | 43 / 1,248 | 1,280 / 1,122 | 1.00 / 0.90 |
 | GPT-OSS Meeting, placeholders v3 | 0.02 / 0.48 | 0.05 / 0.95 | 71 / 6,375 | 1,526 / 3,385 | 0.80 / 0.65 |
 | Qwen Calendar, placeholders v2 | 0.01 / 0.21 | 0.45 / 1.00 | 576 / 4,238 | 24,306 / 4,563 | 0.95 / 0.90 |
-| Qwen, placeholders v3 | pending | | | | |
+| Qwen Calendar, placeholders v3 | 0.01 / 0.21 | 0.45 / 1.00 | 1,055 / 4,238 | 19,631 / 4,563 | 0.95 / 0.90 |
+| Qwen Meeting, placeholders v3 | 0.00 / 0.36 | 0.10 / 1.00 | 43 / 41,398 | 30,017 / 29,605 | 1.00 / 0.85 |
 
 ## Findings
 - **Placeholders all but remove SLB** in every cell and version: ratio 0.00-0.02 against
@@ -39,7 +40,10 @@ per group (so trivially near 1), and chars and tokens are divided by 5.
     out the structure in placeholder names.
 - **Qwen reasons 5x longer with placeholders (v2)**, guarding against swapped or wrapping
   intervals because the note says T numbers are unordered. v3 adds that intervals are as written
-  and lie within one day; its pilot is pending.
+  and lie within one day. With v3, Qwen Calendar still reasons 4x longer (19.6k vs 4.6k tokens per
+  problem) while Meeting is unchanged (30.0k vs 29.6k). In a read of the longest Calendar traces the
+  extra text is about program robustness (end times of 24:00, zero-length or out-of-hours busy
+  intervals, chronological order of T numbers), not about solving: its ratio is 0.01.
 - **Batching cuts SLB per problem but not its share.** Value-establishing text per problem falls
   by 32-42% (Calendar) and 79-91% (Meeting), but so does the rest of the reasoning: designing one
   encoding serves five problems, while each problem is still worked out in prose. The ratio rises
