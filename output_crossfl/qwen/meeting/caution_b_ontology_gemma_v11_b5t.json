@@ -1,0 +1,1606 @@
+{
+ "tag": "gemma_v11_b5t",
+ "ontology": "docs/SLB_ONTOLOGY.md",
+ "examples": [
+  {
+   "example_id": "meeting_planning_example_389",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1175,
+   "unlabelled_paragraphs": 28,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_912",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0123,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_446",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0286,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_444",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1189,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_350",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1191,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_867",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0029,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_423",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0601,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_715",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3098,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_577",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2415,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_728",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3116,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_831",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0336,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_789",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3105,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_219",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2214,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_604",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1702,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_52",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1893,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_137",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1384,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_911",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0226,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_433",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1398,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_203",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1923,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_224",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1811,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_813",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0418,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_170",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1406,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_892",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.048,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_258",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0814,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_700",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2052,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_263",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1109,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_312",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1793,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_488",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1626,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_215",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1741,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_624",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0791,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_978",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2517,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_934",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0178,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_575",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0868,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": "unparsed",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_356",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1053,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_286",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3133,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_210",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1274,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_612",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1367,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_901",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0169,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_956",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2205,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_73",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1383,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_835",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1931,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_482",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1252,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_502",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1403,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_225",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1844,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_372",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1314,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_701",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2323,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_962",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1955,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_88",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1352,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_454",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.333,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": false,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_272",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1444,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_592",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1458,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_144",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0771,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_900",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0463,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_872",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0254,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_695",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0438,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_268",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2242,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_6",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0936,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_385",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.186,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_862",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1549,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_546",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1256,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_91",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2877,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_609",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0988,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": false,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_908",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1786,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_335",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1177,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_607",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0313,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_432",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1654,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": "unparsed",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_309",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0772,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_322",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0382,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_479",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1279,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_98",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1109,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_222",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0797,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_629",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1041,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_468",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1695,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_828",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0214,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_800",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1505,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_940",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2797,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_391",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1492,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_143",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0829,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_352",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1829,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_409",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1205,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": false,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_952",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1523,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_870",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1635,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_884",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1717,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_180",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1933,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_174",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.089,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_976",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1332,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_885",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0083,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_937",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0176,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_403",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2812,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_25",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2352,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_118",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0912,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_402",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.296,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_368",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0555,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_115",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1113,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_66",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0985,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_125",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1042,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_131",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1573,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_974",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0246,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_763",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.4404,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "meeting_planning_example_209",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1118,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": false,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  }
+ ]
+}

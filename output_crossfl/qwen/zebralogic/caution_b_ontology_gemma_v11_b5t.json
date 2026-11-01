@@ -1,0 +1,1606 @@
+{
+ "tag": "gemma_v11_b5t",
+ "ontology": "docs/SLB_ONTOLOGY.md",
+ "examples": [
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x3-25",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0495,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x6-14",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1477,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x3-36",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0871,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x6-9",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.086,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x4-3",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2129,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x3-24",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0569,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-31",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1894,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x5-22",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2652,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-26",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1559,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x2-6",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1576,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x4-20",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1015,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-15",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0729,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x6-18",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.332,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x3-5",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0816,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x2-24",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2533,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x3-28",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1254,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x4-8",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.11,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x6-37",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1293,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x2-30",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0626,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x5-8",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2588,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x2-29",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0192,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x6-11",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.15,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x2-39",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0638,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-5",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1222,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x5-34",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.274,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x4-29",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.083,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x2-19",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1144,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x6-7",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1794,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x5-31",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1244,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x3-3",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0882,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x5-38",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2161,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x5-24",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x5-1",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1363,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x5-17",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0678,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x5-31",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.355,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x3-9",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1196,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x2-10",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1232,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x5-26",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1565,
+   "unlabelled_paragraphs": 41,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x4-5",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0982,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x2-8",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0972,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x6-30",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1051,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x6-32",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1439,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x2-19",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.144,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x2-32",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1847,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x3-38",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2562,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x4-4",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0703,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x5-20",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1043,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x4-39",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0959,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x2-13",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0822,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x3-4",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1049,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x4-24",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x2-34",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0604,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x4-37",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1679,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-8",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.29,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x2-30",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1435,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x3-27",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0907,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x4-39",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.137,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x4-3",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.133,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x3-32",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1362,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x6-34",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0536,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": false,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x3-26",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0719,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-4",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0875,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x6-19",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1851,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x6-0",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3424,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x4-22",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1102,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x3-7",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1577,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x6-32",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0842,
+   "unlabelled_paragraphs": 12,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x6-17",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2796,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x2-31",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0574,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x3-29",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1015,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x5-35",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1538,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-36",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2118,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x3-14",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0927,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x6-10",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0569,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x4-14",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0686,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x5-37",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1673,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x4-17",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.303,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x5-18",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0939,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x4-10",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0988,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x6-14",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0982,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x3-15",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0908,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x2-39",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0927,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x6-36",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1239,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x2-10",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x4-28",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1109,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x3-17",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0716,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x2-38",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0833,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x3-33",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.101,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x5-24",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2372,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x6-29",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1511,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x6-4",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.365,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x4-15",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.043,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-4x4-18",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1335,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x6-32",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3433,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x4-38",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2305,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-3x6-1",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2072,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x2-39",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1715,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-2x5-4",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.255,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-5x2-25",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1174,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "zebralogic_grid_lgp-test-6x5-3",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1784,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": "unparsed",
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  }
+ ]
+}

@@ -82,3 +82,6 @@ output_deter_old/
 
 # Dashboard snapshots
 output/dashboard/
+
+# Worker claim files (run_crossfl_claim.sh / run_inference.py queue locks)
+*.claim

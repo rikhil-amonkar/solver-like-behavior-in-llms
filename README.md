@@ -157,7 +157,7 @@ output/         native runs: per-run JSONs and assembled ontology labels; output
 output_crossfl/, output_deter/, output_deter_crossfl/, output_deter_pilot/   see above
 ```
 
-The raw judge outputs (`*/ontology/`), judge caches, logs, `repos/` and the scratch roots (`output_test/`, `output_rerun*/`, `output_backup/`) are not tracked in git.
+The raw judge outputs (`*/ontology/`), worker `.claim` files, judge caches, logs, `repos/` and the scratch roots (`output_test/`, `output_rerun*/`, `output_backup/`) are not tracked in git.
 
 ---
 

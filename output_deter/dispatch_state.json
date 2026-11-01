@@ -1,0 +1,92 @@
+{
+ "judge-pilot": {
+  "status": "done",
+  "gpu": 3,
+  "started": "2026-11-01 01:54:13",
+  "ended": "2026-11-01 02:12:45"
+ },
+ "gpt-py": {
+  "status": "done",
+  "gpu": 2,
+  "started": "2026-11-01 00:16:16",
+  "ended": "2026-11-01 00:39:38"
+ },
+ "qwen-py-k5": {
+  "status": "done",
+  "gpu": 1,
+  "started": "2026-11-01 00:16:17",
+  "ended": "2026-11-01 01:58:19"
+ },
+ "qwen-py-ph": {
+  "status": "done",
+  "gpu": 4,
+  "started": "2026-11-01 00:52:13",
+  "ended": "2026-11-01 07:12:03"
+ },
+ "gpt-py-ph": {
+  "status": "done",
+  "gpu": 2,
+  "started": "2026-11-01 01:03:34",
+  "ended": "2026-11-01 01:15:55"
+ },
+ "gpt-xpy": {
+  "status": "done",
+  "gpu": 2,
+  "started": "2026-11-01 00:39:45",
+  "ended": "2026-11-01 01:03:32"
+ },
+ "qwen-xpy": {
+  "status": "done",
+  "gpu": 2,
+  "started": "2026-11-01 01:15:58",
+  "ended": "2026-11-01 03:14:47"
+ },
+ "gpt-z3": {
+  "status": "done",
+  "gpu": 1,
+  "started": "2026-11-01 01:58:21",
+  "ended": "2026-11-01 02:23:05"
+ },
+ "gpt-z3n": {
+  "status": "done",
+  "gpu": 3,
+  "started": "2026-11-01 02:12:48",
+  "ended": "2026-11-01 02:17:55"
+ },
+ "qwen-z3-k5": {
+  "status": "done",
+  "gpu": 3,
+  "started": "2026-11-01 02:17:58",
+  "ended": "2026-11-01 04:31:15"
+ },
+ "qwen-z3-ph": {
+  "status": "done",
+  "gpu": 1,
+  "started": "2026-11-01 02:23:08",
+  "ended": "2026-11-01 12:13:17"
+ },
+ "qwen-z3n": {
+  "status": "done",
+  "gpu": 2,
+  "started": "2026-11-01 03:14:50",
+  "ended": "2026-11-01 03:52:01"
+ },
+ "gpt-ksweep": {
+  "status": "done",
+  "gpu": 2,
+  "started": "2026-11-01 03:52:03",
+  "ended": "2026-11-01 04:15:47"
+ },
+ "judge-native": {
+  "status": "done",
+  "gpu": 4,
+  "started": "2026-11-01 07:12:04",
+  "ended": "2026-11-01 09:40:08"
+ },
+ "judge-crossfl": {
+  "status": "done",
+  "gpu": 4,
+  "started": "2026-11-01 12:13:18",
+  "ended": "2026-11-01 13:02:29"
+ }
+}
