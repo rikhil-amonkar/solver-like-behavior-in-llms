@@ -80,9 +80,11 @@ def combo_label(t, fl, short=False):
 def fig_h11(rows, dest, nums, split_b=False):
     # split_b: each SLB bar is stacked by the program's B label, B1-B3 from the axis up in greys, B4 in the
     # model's colour, and programs with no output (B = na) hatched on top; the bar height is still % SLB.
+    # It drops the SLB-token panel (the per-model token counts are quoted in the text) to save space.
     base = [r for r in rows if r["cond"] == "baseline"]
-    fig, axes = plt.subplots(3, 1, figsize=(6.3, 4.2 if split_b else 3.6), sharex=True,
-                             gridspec_kw={"hspace": 0.25, "height_ratios": [1.7, 1, 1] if split_b else [1, 1, 1]})
+    n_panels = 2 if split_b else 3
+    fig, axes = plt.subplots(n_panels, 1, figsize=(6.3, 3.0 if split_b else 3.6), sharex=True,
+                             gridspec_kw={"hspace": 0.25, "height_ratios": [1.7, 1] if split_b else [1, 1, 1]})
     w = 0.26
     metrics = [("Traces with SLB (%)", lambda g: (100 * np.mean([r["values"] for r in g]), 0)),
                ("Solver-like ratio", lambda g: mean_ci([r["ratio"] or 0 for r in g])),
@@ -111,14 +113,15 @@ def fig_h11(rows, dest, nums, split_b=False):
                 ax.bar(x, v, w * 0.9, color=MODEL_COLORS[m], yerr=ci or None, error_kw=dict(lw=0.5, capsize=0, ecolor=INK))
         ax.set_ylabel(name, fontsize=6.5)
         style(ax)
-    axes[2].set_yscale("log")
-    axes[2].set_ylim(10, 30000)
+    if not split_b:
+        axes[2].set_yscale("log")
+        axes[2].set_ylim(10, 30000)
     axes[0].set_ylim(0, 105)
     for i in range(len(COMBOS)):
         if i % 2:
             for ax in axes:
                 ax.axvspan(i - 0.5, i + 0.5, color="#f3f2ee", zorder=-1, lw=0)
-    axes[2].set_xticks(range(len(COMBOS)), [combo_label(*c) for c in COMBOS])
+    axes[-1].set_xticks(range(len(COMBOS)), [combo_label(*c) for c in COMBOS])
     handles = [Patch(color=MODEL_COLORS[m], label=n) for m, n in MODELS]
     if split_b:
         plt.rcParams["hatch.linewidth"] = 0.5
@@ -207,6 +210,10 @@ def fig_h13(rows, dest, nums):
     plt.close(fig)
     nums["h13"] = {name: (e, lo, hi) for name, e, lo, hi in res}
     nums["h13"]["prose correct (C2)"] = lpm([r for r in rows if r["C2"] is not None], lambda r: float(r["C2"]), run)
+    # "Any SLB" among programs that ran: the gap with no-SLB traces comes from programs that fail to run
+    nums["h13"]["Any SLB (program ran)"] = lpm([r for r in rows if r["B"] not in ("na", None)], lambda r: float(r["values"]), run)
+    nums["h13"]["execution_error_rate"] = {k: float(np.mean([r["outcome"] == "execution_error" for r in rows if r["values"] == v]))
+                                           for k, v in (("slb", True), ("none", False))}
 
 
 def r2_drops(rows):
