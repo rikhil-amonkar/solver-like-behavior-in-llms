@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "gpt",
+  "sheet": "bx",
+  "task": "blocksworld",
+  "trace": "gpt/blocksworld/baseline/blocksworld_p79_baseline_constraint79",
+  "updatedAt": "2026-10-31T22:32:25.290Z"
+}

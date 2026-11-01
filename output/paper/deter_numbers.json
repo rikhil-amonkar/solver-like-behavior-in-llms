@@ -1,0 +1,470 @@
+{
+ "caution_a": {
+  "pooled": {
+   "slb": [
+    -23.197057792542992,
+    -28.709558385928112,
+    -16.856985336120246
+   ],
+   "ratio": [
+    -0.0530064,
+    -0.061339593750000004,
+    -0.04588720625000001
+   ],
+   "accuracy": [
+    0.65,
+    -1.25,
+    2.5512499999999987
+   ],
+   "values": [
+    -4.25,
+    -5.8999999999999995,
+    -2.7987500000000014
+   ],
+   "tokens": [
+    7.18150554592798,
+    3.0734101863825707,
+    11.603469146335984
+   ],
+   "base_slb": 2969.743,
+   "new_slb": 2280.85,
+   "base_ratio": 0.20119035,
+   "new_ratio": 0.14818394999999998,
+   "base_acc": 0.749,
+   "new_acc": 0.7555,
+   "base_values": 0.8495,
+   "new_values": 0.807,
+   "n": 2000
+  },
+  "deepseek": {
+   "slb": -11.62469846755372,
+   "ratio": -0.039686000000000006,
+   "accuracy": 1.7500000000000002,
+   "values": 1.25,
+   "tokens": 19.260176540547768,
+   "base_slb": 6122.89,
+   "new_slb": 5411.1225,
+   "base_ratio": 0.19060025000000003,
+   "new_ratio": 0.15091425,
+   "base_acc": 0.8875,
+   "new_acc": 0.905,
+   "base_values": 0.955,
+   "new_values": 0.9675,
+   "n": 400
+  },
+  "gpt": {
+   "slb": -44.832699528832116,
+   "ratio": -0.06396575,
+   "accuracy": 0.8750000000000001,
+   "values": -10.125,
+   "tokens": -15.438281749533667,
+   "base_slb": 574.90125,
+   "new_slb": 317.1575,
+   "base_ratio": 0.21836525,
+   "new_ratio": 0.1543995,
+   "base_acc": 0.6925,
+   "new_acc": 0.70125,
+   "base_values": 0.69375,
+   "new_values": 0.5925,
+   "n": 800
+  },
+  "qwen": {
+   "slb": -29.26614856278476,
+   "ratio": -0.04870725,
+   "accuracy": -0.125,
+   "values": -1.125,
+   "tokens": -0.5042212064700013,
+   "base_slb": 3788.01125,
+   "new_slb": 2679.40625,
+   "base_ratio": 0.1893105,
+   "new_ratio": 0.14060325,
+   "base_acc": 0.73625,
+   "new_acc": 0.735,
+   "base_values": 0.9525,
+   "new_values": 0.94125,
+   "n": 800
+  },
+  "cells": [
+   "deepseek/blocksworld/pddl",
+   "deepseek/calendar/python",
+   "deepseek/meeting/python",
+   "deepseek/zebralogic/z3",
+   "gpt/blocksworld/pddl",
+   "gpt/blocksworld/python",
+   "gpt/calendar/python",
+   "gpt/calendar/z3",
+   "gpt/meeting/python",
+   "gpt/meeting/z3",
+   "gpt/zebralogic/python",
+   "gpt/zebralogic/z3",
+   "qwen/blocksworld/pddl",
+   "qwen/blocksworld/python",
+   "qwen/calendar/python",
+   "qwen/calendar/z3",
+   "qwen/meeting/python",
+   "qwen/meeting/z3",
+   "qwen/zebralogic/python",
+   "qwen/zebralogic/z3"
+  ],
+  "on_placeholder_cells": {
+   "slb": -32.28964916930446,
+   "ratio": -0.0676445,
+   "accuracy": 1.0,
+   "values": -6.25,
+   "tokens": -1.6535164511537914,
+   "base_slb": 2820.3775,
+   "new_slb": 1909.6875,
+   "base_ratio": 0.250781,
+   "new_ratio": 0.18313650000000004,
+   "base_acc": 0.745,
+   "new_acc": 0.755,
+   "base_values": 0.9425,
+   "new_values": 0.88,
+   "n": 800
+  }
+ },
+ "caution_b": {
+  "pooled": {
+   "slb": [
+    -14.930517556569717,
+    -19.40282430042748,
+    -10.49144777388472
+   ],
+   "ratio": [
+    -0.0577846,
+    -0.06450169624999999,
+    -0.05082516249999999
+   ],
+   "accuracy": [
+    -0.44999999999999996,
+    -2.4,
+    1.401249999999999
+   ],
+   "values": [
+    -8.75,
+    -10.4,
+    -7.1
+   ],
+   "tokens": [
+    0.1854033958807788,
+    -3.6219695730108588,
+    3.7151546033951326
+   ],
+   "base_slb": 2969.743,
+   "new_slb": 2526.345,
+   "base_ratio": 0.20119035,
+   "new_ratio": 0.14340575,
+   "base_acc": 0.749,
+   "new_acc": 0.7445,
+   "base_values": 0.8495,
+   "new_values": 0.762,
+   "n": 2000
+  },
+  "deepseek": {
+   "slb": -8.822263669607011,
+   "ratio": -0.025318249999999997,
+   "accuracy": 0.5,
+   "values": -3.75,
+   "tokens": 2.372010172706629,
+   "base_slb": 6122.89,
+   "new_slb": 5582.7125,
+   "base_ratio": 0.19060025000000003,
+   "new_ratio": 0.16528199999999998,
+   "base_acc": 0.8875,
+   "new_acc": 0.8925,
+   "base_values": 0.955,
+   "new_values": 0.9175,
+   "n": 400
+  },
+  "gpt": {
+   "slb": -56.27618656247486,
+   "ratio": -0.08872875000000001,
+   "accuracy": -0.125,
+   "values": -19.0,
+   "tokens": -23.311262477607684,
+   "base_slb": 574.90125,
+   "new_slb": 251.36875,
+   "base_ratio": 0.21836525,
+   "new_ratio": 0.1296365,
+   "base_acc": 0.6925,
+   "new_acc": 0.69125,
+   "base_values": 0.69375,
+   "new_values": 0.50375,
+   "n": 800
+  },
+  "qwen": {
+   "slb": -13.592191681056919,
+   "ratio": -0.043073625,
+   "accuracy": -1.25,
+   "values": -1.0,
+   "tokens": 1.1921318011161253,
+   "base_slb": 3788.01125,
+   "new_slb": 3273.1375,
+   "base_ratio": 0.1893105,
+   "new_ratio": 0.146236875,
+   "base_acc": 0.73625,
+   "new_acc": 0.72375,
+   "base_values": 0.9525,
+   "new_values": 0.9425,
+   "n": 800
+  },
+  "cells": [
+   "deepseek/blocksworld/pddl",
+   "deepseek/calendar/python",
+   "deepseek/meeting/python",
+   "deepseek/zebralogic/z3",
+   "gpt/blocksworld/pddl",
+   "gpt/blocksworld/python",
+   "gpt/calendar/python",
+   "gpt/calendar/z3",
+   "gpt/meeting/python",
+   "gpt/meeting/z3",
+   "gpt/zebralogic/python",
+   "gpt/zebralogic/z3",
+   "qwen/blocksworld/pddl",
+   "qwen/blocksworld/python",
+   "qwen/calendar/python",
+   "qwen/calendar/z3",
+   "qwen/meeting/python",
+   "qwen/meeting/z3",
+   "qwen/zebralogic/python",
+   "qwen/zebralogic/z3"
+  ],
+  "on_placeholder_cells": {
+   "slb": -17.913027600028723,
+   "ratio": -0.08199012499999998,
+   "accuracy": -0.125,
+   "values": -12.25,
+   "tokens": -0.12835781639831678,
+   "base_slb": 2820.3775,
+   "new_slb": 2315.1625,
+   "base_ratio": 0.250781,
+   "new_ratio": 0.168790875,
+   "base_acc": 0.745,
+   "new_acc": 0.74375,
+   "base_values": 0.9425,
+   "new_values": 0.82,
+   "n": 800
+  }
+ },
+ "batch_k5": {
+  "pooled": {
+   "slb": [
+    -62.51703019334053,
+    -68.24652349154377,
+    -55.02210933555395
+   ],
+   "ratio": [
+    -0.021973489130653202,
+    -0.04494756881212069,
+    0.0010133911674473806
+   ],
+   "accuracy": [
+    -5.857142857142858,
+    -10.98076923076923,
+    -0.4959473150962518
+   ],
+   "values": [
+    -5.571428571428571,
+    -9.927142927599132,
+    -1.5544364508393296
+   ],
+   "tokens": [
+    -60.67101773170551,
+    -64.15383397110884,
+    -56.155379348999844
+   ],
+   "base_slb": 2426.362857142857,
+   "new_slb": 909.4728571428572,
+   "base_ratio": 0.22920835714285714,
+   "new_ratio": 0.20723486801220392,
+   "base_acc": 0.7285714285714285,
+   "new_acc": 0.67,
+   "base_values": 0.8914285714285715,
+   "new_values": 0.8357142857142857,
+   "n": 1400
+  },
+  "gpt": {
+   "slb": -76.46578221291117,
+   "ratio": -0.08518877945293227,
+   "accuracy": -5.571428571428571,
+   "values": -11.142857142857142,
+   "tokens": -68.23134716250058,
+   "base_slb": 653.9414285714286,
+   "new_slb": 153.9,
+   "base_ratio": 0.24764185714285714,
+   "new_ratio": 0.16245307768992487,
+   "base_acc": 0.7171428571428572,
+   "new_acc": 0.6614285714285715,
+   "base_values": 0.7828571428571428,
+   "new_values": 0.6714285714285714,
+   "n": 700
+  },
+  "qwen": {
+   "slb": -60.344575929971576,
+   "ratio": 0.04124180119162587,
+   "accuracy": -6.142857142857143,
+   "values": 0.0,
+   "tokens": -59.69606436672217,
+   "base_slb": 4198.784285714286,
+   "new_slb": 1665.0457142857142,
+   "base_ratio": 0.21077485714285712,
+   "new_ratio": 0.252016658334483,
+   "base_acc": 0.74,
+   "new_acc": 0.6785714285714286,
+   "base_values": 1.0,
+   "new_values": 1.0,
+   "n": 700
+  },
+  "cells": [
+   "gpt/blocksworld/python",
+   "gpt/calendar/python",
+   "gpt/calendar/z3",
+   "gpt/meeting/python",
+   "gpt/meeting/z3",
+   "gpt/zebralogic/python",
+   "gpt/zebralogic/z3",
+   "qwen/blocksworld/python",
+   "qwen/calendar/python",
+   "qwen/calendar/z3",
+   "qwen/meeting/python",
+   "qwen/meeting/z3",
+   "qwen/zebralogic/python",
+   "qwen/zebralogic/z3"
+  ]
+ },
+ "placeholder": {
+  "pooled": {
+   "slb": [
+    -97.21912226288856,
+    -98.22025009600542,
+    -95.93761963042294
+   ],
+   "ratio": [
+    -0.24596041777599006,
+    -0.25642636019475074,
+    -0.23508377138699618
+   ],
+   "accuracy": [
+    2.625,
+    -0.5,
+    5.875
+   ],
+   "values": [
+    -79.125,
+    -81.875,
+    -76.0
+   ],
+   "tokens": [
+    44.94592751686235,
+    33.201198924192326,
+    58.33670264085228
+   ],
+   "base_slb": 2820.3775,
+   "new_slb": 78.43125,
+   "base_ratio": 0.250781,
+   "new_ratio": 0.004820582224009917,
+   "base_acc": 0.745,
+   "new_acc": 0.77125,
+   "base_values": 0.9425,
+   "new_values": 0.15125,
+   "n": 800
+  },
+  "gpt": {
+   "slb": -99.42769691364035,
+   "ratio": -0.28297449078875714,
+   "accuracy": 3.5000000000000004,
+   "values": -85.75,
+   "tokens": -31.01713775348086,
+   "base_slb": 821.68,
+   "new_slb": 4.7025,
+   "base_ratio": 0.28663675,
+   "new_ratio": 0.00366225921124284,
+   "base_acc": 0.745,
+   "new_acc": 0.78,
+   "base_values": 0.885,
+   "new_values": 0.0275,
+   "n": 400
+  },
+  "qwen": {
+   "slb": -96.84254758433933,
+   "ratio": -0.208946344763223,
+   "accuracy": 1.7500000000000002,
+   "values": -72.5,
+   "tokens": 54.12780121531136,
+   "base_slb": 4819.075,
+   "new_slb": 152.16,
+   "base_ratio": 0.21492525,
+   "new_ratio": 0.005978905236776993,
+   "base_acc": 0.745,
+   "new_acc": 0.7625,
+   "base_values": 1.0,
+   "new_values": 0.275,
+   "n": 400
+  },
+  "cells": [
+   "gpt/calendar/python",
+   "gpt/calendar/z3",
+   "gpt/meeting/python",
+   "gpt/meeting/z3",
+   "qwen/calendar/python",
+   "qwen/calendar/z3",
+   "qwen/meeting/python",
+   "qwen/meeting/z3"
+  ]
+ },
+ "k_sweep": {
+  "batch_k10": {
+   "slb": -90.98002807843847,
+   "ratio": -0.1811191284343132,
+   "accuracy": 3.0,
+   "values": -38.5,
+   "tokens": -86.6019870974507,
+   "base_slb": 1104.05,
+   "new_slb": 99.585,
+   "base_ratio": 0.370358,
+   "new_ratio": 0.18923887156568678,
+   "base_acc": 0.82,
+   "new_acc": 0.85,
+   "base_values": 0.985,
+   "new_values": 0.6,
+   "n": 200
+  },
+  "batch_k2": {
+   "slb": -55.951723200941984,
+   "ratio": -0.0635440896395709,
+   "accuracy": 2.0,
+   "values": -13.5,
+   "tokens": -45.36268460726346,
+   "base_slb": 1104.05,
+   "new_slb": 486.315,
+   "base_ratio": 0.370358,
+   "new_ratio": 0.30681391036042915,
+   "base_acc": 0.82,
+   "new_acc": 0.84,
+   "base_values": 0.985,
+   "new_values": 0.85,
+   "n": 200
+  },
+  "batch_k5": {
+   "slb": -77.50192473166976,
+   "ratio": -0.10654612212006036,
+   "accuracy": 6.0,
+   "values": -28.499999999999996,
+   "tokens": -71.08818489682011,
+   "base_slb": 1104.05,
+   "new_slb": 248.39,
+   "base_ratio": 0.370358,
+   "new_ratio": 0.26381187787993965,
+   "base_acc": 0.82,
+   "new_acc": 0.88,
+   "base_values": 0.985,
+   "new_values": 0.7,
+   "n": 200
+  }
+ },
+ "k_sweep_cells": [
+  "gpt/native/calendar",
+  "gpt/native/meeting"
+ ]
+}

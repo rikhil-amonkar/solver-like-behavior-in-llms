@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "gemmaSearch": false,
+  "human": "V",
+  "model": "qwen",
+  "searchOk": true,
+  "task": "blocksworld",
+  "updatedAt": "2026-10-29T13:51:24.832Z"
+}

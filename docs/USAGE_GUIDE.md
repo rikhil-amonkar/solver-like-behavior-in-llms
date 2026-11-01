@@ -46,11 +46,12 @@ MAX_JUDGE_TOKENS=65536
 python src/run_inference.py --task calendar --model deepseek --n 5
 
 # Evaluate results
-python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
 
 # Analyze reasoning (optional)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
@@ -61,11 +62,12 @@ python src/run_chunking.py \
 python src/run_inference.py --task calendar --model deepseek
 
 # Evaluation
-python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
 
 # Chunking
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 ```
 
@@ -129,10 +131,12 @@ python src/run_evaluation.py --input INFERENCE_JSON
 **Examples**:
 ```bash
 # Baseline evaluation
-python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
 
 # Caution A evaluation
-python src/run_evaluation.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_execution.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_a_execution.json
 ```
 
 **What gets validated**:
@@ -166,12 +170,12 @@ python src/run_chunking.py --input INFERENCE_JSON --judge-prompt PROMPT_FILE
 ```bash
 # Batch mode (fast, requires GCS)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt
 
 # Sequential mode (slower, no GCS needed)
 python src/run_chunking.py \
-  --input output/deepseek/calendar/baseline_inference.json \
+  --input output/deepseek/calendar/baseline_execution.json \
   --judge-prompt prompts/judge/llm_as_judge_for_chunking.txt \
   --sequential
 ```
@@ -185,15 +189,18 @@ python src/run_chunking.py \
 ```bash
 # 1. Run baseline
 python src/run_inference.py --task calendar --model deepseek --n 100
-python src/run_evaluation.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_execution.py --input output/deepseek/calendar/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/baseline_execution.json
 
 # 2. Run with caution-a
 python src/run_inference.py --task calendar --model deepseek --n 100 --caution-a
-python src/run_evaluation.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_execution.py --input output/deepseek/calendar/caution_a_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_a_execution.json
 
 # 3. Run with caution-b
 python src/run_inference.py --task calendar --model deepseek --n 100 --caution-b
-python src/run_evaluation.py --input output/deepseek/calendar/caution_b_inference.json
+python src/run_execution.py --input output/deepseek/calendar/caution_b_inference.json
+python src/run_evaluation.py --input output/deepseek/calendar/caution_b_execution.json
 
 # 4. Compare accuracy
 grep "constraint_based_accuracy" output/deepseek/calendar/*_evaluation.json
@@ -204,15 +211,18 @@ grep "constraint_based_accuracy" output/deepseek/calendar/*_evaluation.json
 ```bash
 # DeepSeek
 python src/run_inference.py --task meeting --model deepseek
-python src/run_evaluation.py --input output/deepseek/meeting/baseline_inference.json
+python src/run_execution.py --input output/deepseek/meeting/baseline_inference.json
+python src/run_evaluation.py --input output/deepseek/meeting/baseline_execution.json
 
 # Qwen (requires local GPU)
 python src/run_inference.py --task meeting --model qwen
-python src/run_evaluation.py --input output/qwen/meeting/baseline_inference.json
+python src/run_execution.py --input output/qwen/meeting/baseline_inference.json
+python src/run_evaluation.py --input output/qwen/meeting/baseline_execution.json
 
 # GPT-OSS (requires local GPU)
 python src/run_inference.py --task meeting --model gpt
-python src/run_evaluation.py --input output/gpt/meeting/baseline_inference.json
+python src/run_execution.py --input output/gpt/meeting/baseline_inference.json
+python src/run_evaluation.py --input output/gpt/meeting/baseline_execution.json
 ```
 
 ### Full Experimental Suite
@@ -231,15 +241,18 @@ for model in $MODELS; do
   for task in $TASKS; do
     # Baseline
     python src/run_inference.py --task $task --model $model
-    python src/run_evaluation.py --input output/$model/$task/baseline_inference.json
+    python src/run_execution.py --input output/$model/$task/baseline_inference.json
+    python src/run_evaluation.py --input output/$model/$task/baseline_execution.json
 
     # Caution A
     python src/run_inference.py --task $task --model $model --caution-a
-    python src/run_evaluation.py --input output/$model/$task/caution_a_inference.json
+    python src/run_execution.py --input output/$model/$task/caution_a_inference.json
+    python src/run_evaluation.py --input output/$model/$task/caution_a_execution.json
 
     # Caution B
     python src/run_inference.py --task $task --model $model --caution-b
-    python src/run_evaluation.py --input output/$model/$task/caution_b_inference.json
+    python src/run_execution.py --input output/$model/$task/caution_b_inference.json
+    python src/run_evaluation.py --input output/$model/$task/caution_b_execution.json
   done
 done
 

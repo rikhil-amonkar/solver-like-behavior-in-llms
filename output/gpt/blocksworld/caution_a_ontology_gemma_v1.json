@@ -1,0 +1,1981 @@
+{
+ "tag": "gemma_v1",
+ "ontology": "docs/SLB_ONTOLOGY.md",
+ "examples": [
+  {
+   "example_id": "blocksworld_p86_initial_constraint6",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "chp",
+    "int"
+   ],
+   "ratio": 0.3181,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p45_action_constraint29",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.048,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p23_action_constraint7",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p14_state_constraint12",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.057,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p30_baseline_constraint30",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p22_baseline_constraint22",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p17_baseline_constraint17",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p52_action_constraint36",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p43_action_constraint27",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p96_initial_constraint16",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p62_goal_constraint2",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.1379,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": false,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p39_action_constraint23",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p74_goal_constraint14",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.3786,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p71_baseline_constraint71",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p25_action_constraint9",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p24_action_constraint8",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p40_action_constraint24",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p15_baseline_constraint15",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p19_baseline_constraint19",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p92_baseline_constraint92",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p77_goal_constraint17",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p18_state_constraint14",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.3077,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p66_goal_constraint6",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p10_baseline_constraint10",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p89_initial_constraint9",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "int"
+   ],
+   "ratio": 0.4624,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p06_state_constraint6",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p70_baseline_constraint70",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p16_baseline_constraint16",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p77_baseline_constraint77",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p73_goal_constraint13",
+   "a_judged": true,
+   "A1": [
+    "properties",
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.3221,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p31_baseline_constraint31",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p10_action_constraint2",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p57_action_constraint41",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p03_state_constraint3",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.2407,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p47_baseline_constraint47",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p20_state_constraint16",
+   "a_judged": true,
+   "A1": [
+    "properties",
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.5193,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p56_action_constraint40",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.1295,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p99_initial_constraint19",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "chp",
+    "int"
+   ],
+   "ratio": 0.242,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p46_baseline_constraint46",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p09_state_constraint8",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.2092,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p100_initial_constraint20",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p57_baseline_constraint57",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p41_action_constraint25",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "int"
+   ],
+   "ratio": 0.1802,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p51_baseline_constraint51",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p48_baseline_constraint48",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p27_baseline_constraint27",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.0282,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p28_action_constraint12",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": [
+    "B_without_values"
+   ]
+  },
+  {
+   "example_id": "blocksworld_p80_baseline_constraint80",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p100_baseline_constraint100",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p48_action_constraint32",
+   "a_judged": true,
+   "A1": [
+    "properties",
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.1942,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p56_baseline_constraint56",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p37_action_constraint21",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p64_goal_constraint4",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.2352,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p35_baseline_constraint35",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.479,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p52_baseline_constraint52",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p09_baseline_constraint9",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p34_action_constraint18",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.1009,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p70_goal_constraint10",
+   "a_judged": true,
+   "A1": [
+    "properties",
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.3645,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p18_baseline_constraint18",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.2397,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p34_baseline_constraint34",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p65_goal_constraint5",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "int"
+   ],
+   "ratio": 0.3611,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p98_initial_constraint18",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.2812,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p42_action_constraint26",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.3066,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": "gemma",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p75_goal_constraint15",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.1001,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": "gemma",
+   "C2": false,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p81_initial_constraint1",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "int"
+   ],
+   "ratio": 0.1549,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p79_baseline_constraint79",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.2375,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p53_baseline_constraint53",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p96_baseline_constraint96",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p07_baseline_constraint7",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p05_baseline_constraint5",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p07_state_constraint7",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": true,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.3228,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p45_baseline_constraint45",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p51_action_constraint35",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p49_baseline_constraint49",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p82_baseline_constraint82",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p82_initial_constraint2",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p42_baseline_constraint42",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p26_action_constraint10",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": [
+    "B_without_values"
+   ]
+  },
+  {
+   "example_id": "blocksworld_p37_baseline_constraint37",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p41_baseline_constraint41",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p38_action_constraint22",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.0733,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p28_baseline_constraint28",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p90_baseline_constraint90",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p67_goal_constraint7",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "int"
+   ],
+   "ratio": 0.3626,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "not_required",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p89_baseline_constraint89",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p95_baseline_constraint95",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p08_baseline_constraint8",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p84_baseline_constraint84",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p88_initial_constraint8",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.579,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p72_goal_constraint12",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "chp"
+   ],
+   "ratio": 0.3258,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p97_initial_constraint17",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p19_state_constraint15",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.3657,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "partly_fixed",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p81_baseline_constraint81",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p01_baseline_constraint1",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "ans"
+   ],
+   "ratio": 0.1236,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p61_baseline_constraint61",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p01_state_constraint1",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p46_action_constraint30",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "with_search": false,
+   "A3": [
+    "chp",
+    "int"
+   ],
+   "ratio": 0.1768,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p21_action_constraint5",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p84_initial_constraint4",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  },
+  {
+   "example_id": "blocksworld_p11_baseline_constraint11",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "with_search": false,
+   "A3": [],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "spec": "none",
+   "flags": []
+  }
+ ]
+}

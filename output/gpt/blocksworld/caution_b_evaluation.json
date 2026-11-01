@@ -5,23 +5,26 @@
     "condition": "caution_b",
     "execution_json": "output/gpt/blocksworld/caution_b_execution.json",
     "constraints_json": "data/constraints/blocksworld_constraints.json",
-    "timestamp": "2026-08-27T23:42:08Z",
+    "timestamp": "2026-10-21T21:20:13Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.47,
-    "constraint_correct": 47,
-    "constraint_incorrect": 53,
+    "constraint_based_accuracy": 0.45,
+    "constraint_correct": 45,
+    "constraint_incorrect": 55,
     "error_breakdown": {
       "no_code_extracted": 0,
       "execution_error": 33,
       "no_output": 0,
       "no_solution": 0,
       "parse_error": 0,
-      "constraint_violation": 2,
-      "pddl_error": 3,
-      "planning_failure": 15,
-      "incorrect_plan_exists": 0,
+      "constraint_violation": 0,
+      "suboptimal": 0,
+      "pddl_error": 7,
+      "planning_failure": 4,
+      "solver_timeout": 1,
+      "invalid_plan": 8,
+      "incorrect_plan_exists": 2,
       "evaluation_error": 0
     }
   },
@@ -37,33 +40,26 @@
     },
     {
       "example_id": "blocksworld_p45_action_constraint29",
-      "correct": false,
-      "classification": "pddl_error",
-      "validation": {
-        "error": "PDDL semantic or syntax error",
-        "error_type": "pddl_error",
-        "planner_output": "\nproblem: syntax error in line 2, ')':\n'define' expected\n"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p23_action_constraint7",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "pddl_error",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "planner rejected the model's PDDL",
+        "error_type": "pddl_error",
+        "planner_exit_code": 31,
+        "planner_output": "FO     translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_94sbkm1g/domain.pddl /tmp/fd_planner_94sbkm1g/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #2\n\t->Parsing action #2\n\t->Parsing action 'pickup-block1'\n\t->Parsing precondition\n\t->Parsing condition\nExpected logical operator or predicate name\nGot: equal\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.11s\n"
       }
     },
     {
       "example_id": "blocksworld_p14_state_constraint12",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p30_baseline_constraint30",
@@ -119,10 +115,12 @@
     {
       "example_id": "blocksworld_p39_action_constraint23",
       "correct": false,
-      "classification": "constraint_violation",
+      "classification": "pddl_error",
       "validation": {
-        "error": "VAL validation failed - plan is not valid",
-        "val_output": "Problem in domain definition!\n"
+        "error": "planner rejected the model's PDDL",
+        "error_type": "pddl_error",
+        "planner_exit_code": 31,
+        "planner_output": "None\nINFO     translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_w58kjaki/domain.pddl /tmp/fd_planner_w58kjaki/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #5\n\t->Parsing action #5\n\t->Parsing action 'pickup-block1'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: block1\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.10s\n"
       }
     },
     {
@@ -139,25 +137,35 @@
     },
     {
       "example_id": "blocksworld_p25_action_constraint9",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_y0m_rltn/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_y0m_rltn/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p24_action_constraint8",
       "correct": false,
       "classification": "pddl_error",
       "validation": {
-        "error": "PDDL semantic or syntax error",
+        "error": "planner rejected the model's PDDL",
         "error_type": "pddl_error",
-        "planner_output": "\nproblem: syntax error in line 2, ')':\n'define' expected\n"
+        "planner_exit_code": 31,
+        "planner_output": "imit: None\nINFO     translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_nbi0twdc/domain.pddl /tmp/fd_planner_nbi0twdc/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #5\n\t->Parsing action #5\n\t->Parsing action 'pickup5'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: block5\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.10s\n"
       }
     },
     {
       "example_id": "blocksworld_p40_action_constraint24",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "planning_failure",
+      "validation": {
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": " state(s).\n[t=0.056000s, 12452 KB] Dead ends: 3092 state(s).\n[t=0.056000s, 12452 KB] Number of registered states: 9648\n[t=0.056000s, 12452 KB] Int hash set load factor: 9648/16384 = 0.588867\n[t=0.056000s, 12452 KB] Int hash set resizes: 14\n[t=0.056000s, 12452 KB] Search time: 0.052000s\n[t=0.056000s, 12452 KB] Total time: 0.056000s\nTask is provably unsolvable.\nPeak memory: 12452 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.18s\n"
+      }
     },
     {
       "example_id": "blocksworld_p15_baseline_constraint15",
@@ -200,9 +208,14 @@
     },
     {
       "example_id": "blocksworld_p66_goal_constraint6",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "planning_failure",
+      "validation": {
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": "B] Generated 0 state(s).\n[t=0.002000s, 11736 KB] Dead ends: 1 state(s).\n[t=0.002000s, 11736 KB] Number of registered states: 1\n[t=0.002000s, 11736 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002000s, 11736 KB] Int hash set resizes: 0\n[t=0.002000s, 11736 KB] Search time: 0.000000s\n[t=0.002000s, 11736 KB] Total time: 0.002000s\nTask is provably unsolvable.\nPeak memory: 11736 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.13s\n"
+      }
     },
     {
       "example_id": "blocksworld_p10_baseline_constraint10",
@@ -212,18 +225,23 @@
     },
     {
       "example_id": "blocksworld_p89_initial_constraint9",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_u2cnvk50/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_u2cnvk50/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p06_state_constraint6",
       "correct": false,
       "classification": "planning_failure",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
+        "error": "planner did not find a plan (but plan should exist)",
         "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "planner_exit_code": 11,
+        "planner_output": "B] Generated 0 state(s).\n[t=0.002001s, 11736 KB] Dead ends: 1 state(s).\n[t=0.002001s, 11736 KB] Number of registered states: 1\n[t=0.002001s, 11736 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002001s, 11736 KB] Int hash set resizes: 0\n[t=0.002001s, 11736 KB] Search time: 0.000000s\n[t=0.002001s, 11736 KB] Total time: 0.002001s\nTask is provably unsolvable.\nPeak memory: 11736 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.14s\n"
       }
     },
     {
@@ -252,9 +270,13 @@
     },
     {
       "example_id": "blocksworld_p73_goal_constraint13",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_uru7ttbc/plan.txt\n;Plan executed successfully - checking goal\nGoal not satisfied\nPlan invalid\n\n\nFailed plans:\n /tmp/val_validation_uru7ttbc/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p31_baseline_constraint31",
@@ -265,31 +287,27 @@
     {
       "example_id": "blocksworld_p10_action_constraint2",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_ws3c5_83/plan.txt\n;\nErrors: 0, warnings: 14\n"
       }
     },
     {
       "example_id": "blocksworld_p57_action_constraint41",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p03_state_constraint3",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "solver_timeout",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "planner timed out on the model's PDDL",
+        "error_type": "solver_timeout",
+        "planner_output": "evaluated, 1522 expanded\n[t=0.030999s, 12528 KB] New best heuristic value for landmark_sum_heuristic: 4\n[t=0.030999s, 12528 KB] g=39, 1570 evaluated, 1569 expanded\n[t=0.030999s, 12528 KB] New best heuristic value for landmark_sum_heuristic: 3\n[t=0.030999s, 12528 KB] g=40, 1571 evaluated, 1570 expanded\nPeak memory: 341372 KB\ncaught signal 24 -- exiting\nTime limit has been reached.\nRemove intermediate file output.sas\nsearch exit code: 23\n\nDriver aborting after search\nINFO     Planner time: 29.15s\n"
       }
     },
     {
@@ -303,23 +321,15 @@
     },
     {
       "example_id": "blocksworld_p20_state_constraint16",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p56_action_constraint40",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p99_initial_constraint19",
@@ -341,13 +351,9 @@
     },
     {
       "example_id": "blocksworld_p09_state_constraint8",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p100_initial_constraint20",
@@ -391,11 +397,12 @@
     {
       "example_id": "blocksworld_p28_action_constraint12",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "pddl_error",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "planner rejected the model's PDDL",
+        "error_type": "pddl_error",
+        "planner_exit_code": 31,
+        "planner_output": "  translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_7uyj3d8_/domain.pddl /tmp/fd_planner_7uyj3d8_/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #1\n\t->Parsing action #1\n\t->Parsing action 'pickup'\n\t->Parsing effect\n\t->Parsing effect\n\t->Parsing condition\nExpected logical operator or predicate name\nGot: equal\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.10s\n"
       }
     },
     {
@@ -433,9 +440,14 @@
     },
     {
       "example_id": "blocksworld_p37_action_constraint21",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "pddl_error",
+      "validation": {
+        "error": "planner rejected the model's PDDL",
+        "error_type": "pddl_error",
+        "planner_exit_code": 31,
+        "planner_output": "None\nINFO     translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_a2xl2q1k/domain.pddl /tmp/fd_planner_a2xl2q1k/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #2\n\t->Parsing action #2\n\t->Parsing action 'pickup-block2'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: block2\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.10s\n"
+      }
     },
     {
       "example_id": "blocksworld_p64_goal_constraint4",
@@ -473,21 +485,22 @@
     {
       "example_id": "blocksworld_p34_action_constraint18",
       "correct": false,
-      "classification": "pddl_error",
+      "classification": "planning_failure",
       "validation": {
-        "error": "PDDL semantic or syntax error",
-        "error_type": "pddl_error",
-        "planner_output": "\nproblem: syntax error in line 2, ')':\n'define' expected\n"
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": "nerated 54 state(s).\n[t=0.016000s, 12700 KB] Dead ends: 14 state(s).\n[t=0.016000s, 12700 KB] Number of registered states: 33\n[t=0.016000s, 12700 KB] Int hash set load factor: 33/64 = 0.515625\n[t=0.016000s, 12700 KB] Int hash set resizes: 6\n[t=0.016000s, 12700 KB] Search time: 0.001000s\n[t=0.016000s, 12700 KB] Total time: 0.016000s\nTask is provably unsolvable.\nPeak memory: 12700 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.18s\n"
       }
     },
     {
       "example_id": "blocksworld_p70_goal_constraint10",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_f5qgwgne/plan.txt\n;Plan executed successfully - checking goal\nGoal not satisfied\nPlan invalid\n\n\nFailed plans:\n /tmp/val_validation_f5qgwgne/plan.txt \n"
       }
     },
     {
@@ -522,20 +535,19 @@
     },
     {
       "example_id": "blocksworld_p42_action_constraint26",
-      "correct": false,
-      "classification": "constraint_violation",
-      "validation": {
-        "error": "domain missing required actions",
-        "missing": [
-          "putdown"
-        ]
-      }
-    },
-    {
-      "example_id": "blocksworld_p75_goal_constraint15",
       "correct": true,
       "classification": "correct",
       "validation": {}
+    },
+    {
+      "example_id": "blocksworld_p75_goal_constraint15",
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_23rylk46/plan.txt\n;Plan executed successfully - checking goal\nGoal not satisfied\nPlan invalid\n\n\nFailed plans:\n /tmp/val_validation_23rylk46/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p81_initial_constraint1",
@@ -581,9 +593,12 @@
     },
     {
       "example_id": "blocksworld_p07_state_constraint7",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "incorrect_plan_exists",
+      "validation": {
+        "error": "Found a plan, but no plan should exist for this problem",
+        "error_type": "incorrect_plan_exists"
+      }
     },
     {
       "example_id": "blocksworld_p45_baseline_constraint45",
@@ -599,9 +614,13 @@
     },
     {
       "example_id": "blocksworld_p49_baseline_constraint49",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_k7e270yi/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_k7e270yi/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p82_baseline_constraint82",
@@ -611,25 +630,30 @@
     },
     {
       "example_id": "blocksworld_p82_initial_constraint2",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
-    },
-    {
-      "example_id": "blocksworld_p42_baseline_constraint42",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_731x4ud4/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_731x4ud4/plan.txt \n"
       }
     },
     {
-      "example_id": "blocksworld_p26_action_constraint10",
+      "example_id": "blocksworld_p42_baseline_constraint42",
       "correct": true,
       "classification": "correct",
       "validation": {}
+    },
+    {
+      "example_id": "blocksworld_p26_action_constraint10",
+      "correct": false,
+      "classification": "pddl_error",
+      "validation": {
+        "error": "planner rejected the model's PDDL",
+        "error_type": "pddl_error",
+        "planner_exit_code": 31,
+        "planner_output": "limit: None\nINFO     translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_q_w_86ei/domain.pddl /tmp/fd_planner_q_w_86ei/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #1\n\t->Parsing action #1\n\t->Parsing action 'pickup'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: block2\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.10s\n"
+      }
     },
     {
       "example_id": "blocksworld_p37_baseline_constraint37",
@@ -648,9 +672,14 @@
     },
     {
       "example_id": "blocksworld_p38_action_constraint22",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "pddl_error",
+      "validation": {
+        "error": "planner rejected the model's PDDL",
+        "error_type": "pddl_error",
+        "planner_exit_code": 31,
+        "planner_output": "INFO     translator command line string: /local-ssd/hz466/vllm-env/bin/python -m fast_downward.translate /tmp/fd_planner_u426iwkl/domain.pddl /tmp/fd_planner_u426iwkl/problem.pddl --sas-file output.sas\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #1\n\t->Parsing action #1\n\t->Parsing action 'pickup'\n\t->Parsing effect\n\t->Parsing effect\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: block1\ntranslate exit code: 31\n\nDriver aborting after translate\nINFO     Planner time: 0.10s\n"
+      }
     },
     {
       "example_id": "blocksworld_p28_baseline_constraint28",
@@ -733,11 +762,10 @@
     {
       "example_id": "blocksworld_p19_state_constraint15",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "incorrect_plan_exists",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "Found a plan, but no plan should exist for this problem",
+        "error_type": "incorrect_plan_exists"
       }
     },
     {
@@ -751,13 +779,9 @@
     },
     {
       "example_id": "blocksworld_p01_baseline_constraint1",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p61_baseline_constraint61",
@@ -770,13 +794,9 @@
     },
     {
       "example_id": "blocksworld_p01_state_constraint1",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p46_action_constraint30",

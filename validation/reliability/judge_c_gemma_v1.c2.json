@@ -1,0 +1,242 @@
+{
+ "p000": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p001": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p002": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p003": {
+  "c2": false,
+  "detail": "{\"error\": \"wrong travel time\", \"step\": 4, \"text\": \"You travel to North Beach in 7 minutes and arrive at 4:22PM.\", \"expected\": 10, \"got\": 7}"
+ },
+ "p004": {
+  "c2": false,
+  "detail": "{\"error\": \"wrong travel time\", \"step\": 3, \"text\": \"You travel to Union Square in 9 minutes and arrive at 9:31AM.\", \"expected\": 7, \"got\": 9}"
+ },
+ "p005": {
+  "c2": null,
+  "detail": "prose answer did not parse"
+ },
+ "p006": {
+  "c2": true,
+  "detail": "{\"num_met\": 5}"
+ },
+ "p007": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p008": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p009": {
+  "c2": true,
+  "detail": "{\"num_met\": 3}"
+ },
+ "p010": {
+  "c2": true,
+  "detail": "{\"num_met\": 3}"
+ },
+ "p011": {
+  "c2": false,
+  "detail": "{\"error\": \"wrong travel time\", \"step\": 4, \"text\": \"You travel to Nob Hill in 13 minutes and arrive at 11:28AM.\", \"expected\": 15, \"got\": 13}"
+ },
+ "p012": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p013": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p014": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p015": {
+  "c2": true,
+  "detail": "{\"num_met\": 3}"
+ },
+ "p016": {
+  "c2": false,
+  "detail": "compared with golden grid"
+ },
+ "p017": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p018": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p019": {
+  "c2": true,
+  "detail": "{\"num_met\": 3}"
+ },
+ "p020": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p021": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p022": {
+  "c2": true,
+  "detail": "{\"num_met\": 5}"
+ },
+ "p023": {
+  "c2": true,
+  "detail": "compared with golden grid"
+ },
+ "p024": {
+  "c2": true,
+  "detail": "{\"num_met\": 2}"
+ },
+ "p025": {
+  "c2": true,
+  "detail": "{\"num_met\": 1}"
+ },
+ "p026": {
+  "c2": true,
+  "detail": "compared with golden grid"
+ },
+ "p027": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p028": {
+  "c2": true,
+  "detail": "compared with golden grid"
+ },
+ "p029": {
+  "c2": true,
+  "detail": "{\"num_met\": 2}"
+ },
+ "p030": {
+  "c2": false,
+  "detail": "{\"error\": \"wrong travel time\", \"step\": 6, \"text\": \"You travel to Pacific Heights in 15 minutes and arrive at 11:00AM.\", \"expected\": 16, \"got\": 15}"
+ },
+ "p031": {
+  "c2": true,
+  "detail": "compared with golden grid"
+ },
+ "p032": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p033": {
+  "c2": true,
+  "detail": "{\"num_met\": 4}"
+ },
+ "p034": {
+  "c2": false,
+  "detail": "Checking plan: /tmp/val_validation_trdvp_i6/plan.txt\n\nErrors: 0, warnings: 1\n"
+ },
+ "p035": {
+  "c2": true,
+  "detail": "compared with golden grid"
+ },
+ "p036": {
+  "c2": true,
+  "detail": "{\"num_met\": 2}"
+ },
+ "p037": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p038": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p039": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p040": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p041": {
+  "c2": true,
+  "detail": "{\"num_met\": 1}"
+ },
+ "p042": {
+  "c2": false,
+  "detail": "Checking plan: /tmp/val_validation_phkqz1r2/plan.txt\n\nErrors: 0, warnings: 1\n"
+ },
+ "p043": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p044": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p045": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p046": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p047": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p048": {
+  "c2": true,
+  "detail": "{}"
+ },
+ "p049": {
+  "c2": true,
+  "detail": "{\"num_met\": 3}"
+ },
+ "p050": {
+  "c2": true,
+  "detail": "{\"num_met\": 2}"
+ },
+ "p051": {
+  "c2": false,
+  "detail": "{\"error\": \"wrong travel time\", \"step\": 5, \"text\": \"You travel to Nob Hill in 10 minutes and arrive at 10:25AM.\", \"expected\": 11, \"got\": 10}"
+ },
+ "p052": {
+  "c2": true,
+  "detail": "compared with golden grid"
+ },
+ "p053": {
+  "c2": true,
+  "detail": "{\"num_met\": 3}"
+ },
+ "p054": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p055": {
+  "c2": null,
+  "detail": "extent not complete"
+ },
+ "p056": {
+  "c2": true,
+  "detail": "{\"num_met\": 8}"
+ },
+ "p057": {
+  "c2": false,
+  "detail": "{\"error\": \"meeting shorter than minimum duration\", \"step\": 2, \"text\": \"You meet Richard from 9:17AM to 9:21AM.\", \"required\": 120, \"got\": 4}"
+ },
+ "p058": {
+  "c2": false,
+  "detail": "{\"error\": \"overlaps disallowed range\", \"range\": {\"day\": \"Wednesday\", \"start\": 0, \"end\": 12}}"
+ },
+ "p059": {
+  "c2": true,
+  "detail": "{\"num_met\": 2}"
+ }
+}

@@ -1,0 +1,9 @@
+{
+  "gemma": "steered",
+  "human": "independent",
+  "model": "qwen",
+  "sheet": "bx",
+  "task": "blocksworld",
+  "trace": "qwen/blocksworld/caution_a/blocksworld_p28_baseline_constraint28",
+  "updatedAt": "2026-10-31T22:30:51.742Z"
+}

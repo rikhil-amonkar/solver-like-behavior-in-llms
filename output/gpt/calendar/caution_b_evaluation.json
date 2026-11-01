@@ -5,7 +5,7 @@
     "condition": "caution_b",
     "execution_json": "output/gpt/calendar/caution_b_execution.json",
     "constraints_json": "data/constraints/calendar_constraints.json",
-    "timestamp": "2026-08-25T19:13:00Z",
+    "timestamp": "2026-10-21T21:19:41Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,8 +22,11 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 1,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -59,8 +62,8 @@
       ],
       "validation": {
         "error": "execution failed",
-        "exit_code": null,
-        "stderr": ""
+        "exit_code": 1,
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_p6ejdswl/solution.py\", line 78, in <module>\n    main()\n  File \"/tmp/code_exec_p6ejdswl/solution.py\", line 44, in main\n    data = json.load(sys"
       }
     },
     {

@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "V_rej",
+  "model": "deepseek",
+  "sheet": "a1r2",
+  "task": "zebralogic",
+  "trace": "deepseek/zebralogic/caution_b/zebralogic_grid_lgp-test-6x3-8",
+  "updatedAt": "2026-10-29T19:31:31.253Z"
+}

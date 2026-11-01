@@ -1,0 +1,247 @@
+[
+ {
+  "date": "2026-10-21",
+  "area": "Setup",
+  "title": "Took over the repo and the paper",
+  "detail": "Cloned rikhil-amonkar/solver-like-behavior-in-llms, read the code and the submitted paper.",
+  "where": "README.md"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Evaluation",
+  "title": "Meeting Planning is actually checked",
+  "detail": "The old evaluator accepted any non-empty list. It now replays each itinerary against travel times, availability windows and minimum durations, and must meet as many friends as the gold plan. GPT-OSS Meeting baseline fell from 0.93 to 0.66.",
+  "where": "src/evaluation/meeting_eval_python.py"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Evaluation",
+  "title": "BlocksWorld validated against the gold PDDL",
+  "detail": "The evaluator received an empty problem, so plan_exists and the gold PDDL were never used. Now Fast Downward plans the model's PDDL and VAL checks the plan under the gold domain and problem.",
+  "where": "src/evaluation/blocksworld_eval.py"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Evaluation",
+  "title": "The executed program is the final answer's",
+  "detail": "Qwen ran a draft from inside its thinking in 16-25% of examples; code after the end-of-thinking marker now wins.",
+  "where": "src/execution/code_extractor.py"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Results",
+  "title": "All 36 runs re-scored; RQ3 reworded",
+  "detail": "Correlation of ratio change with accuracy change moved from -0.07 to -0.42, driven by GPT-OSS Meeting. Paper table and RQ3 text updated.",
+  "where": "docs/results/2026-10-21_RESCORED_RESULTS.md"
+ },
+ {
+  "date": "2026-10-21",
+  "area": "Judging",
+  "title": "First open-judge check (Gemma 4 31B)",
+  "detail": "20 blind chunks: Harry agreed with Gemini 14/20 and with Gemma 13/20, far below the paper's 95%. Led to rethinking the judge.",
+  "where": "validation/gemma_judge/"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Judging",
+  "title": "Batch judge order bug fixed",
+  "detail": "Vertex batch outputs were matched to examples by position, but come back shuffled. Gemini chunk labels re-keyed: 1,926 of 3,600 traces fully repaired, 1,313 partly, 361 not.",
+  "where": "scripts/rekey_chunking.py"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Judging",
+  "title": "Rule-based hardcoding checker (RQ4)",
+  "detail": "Matches human labels on 30/30 programs. GPT-OSS Meeting hardcoded programs: 52/93 baseline, 13/93 Caut A, 6/89 Caut B. RQ4 added to the paper.",
+  "where": "docs/results/2026-10-22_HARDCODING_STATIC_CHECK.md"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Judging",
+  "title": "Gemma re-judge with the old prompt (stopped)",
+  "detail": "Fixed Gemma looping on long segments (6k to 2k tokens: loops 83% to 7%). Stopped at 48% to refine how judging works.",
+  "where": "src/run_chunking_local.py"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Inference",
+  "title": "Three Qwen runs redone on vLLM",
+  "detail": "Calendar baseline/Caut A and Meeting baseline had been generated with a different engine and temperature. A code-extractor bug (lines starting with 'wait') was also fixed. Qwen Meeting is now 0.88/0.85/0.93.",
+  "where": "docs/results/2026-10-22_QWEN_RERUN.md"
+ },
+ {
+  "date": "2026-10-22",
+  "area": "Ontology",
+  "title": "Solver-like behavior ontology adopted",
+  "detail": "Replaces the single sound/solver-like label with per-node judges: A (solving in prose), B (what the program does with it), C (agreement). Refined after a sweep of 107 traces. Paper Section 3 and Figure 2.",
+  "where": "docs/SLB_ONTOLOGY.md"
+ },
+ {
+  "date": "2026-10-29",
+  "area": "Ontology",
+  "title": "A judge tuned against Harry's labels",
+  "detail": "Prompt versions v2 to v12 over three blind rounds of 70 paragraphs. Chosen gemma_v11t: 66/70, Values precision and recall 20/22. A2 checks 20/20 and 19/20.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Ontology",
+  "title": "B judge chosen and run on everything",
+  "detail": "gemma_b5t: 19/20 against Claude's blind labels; Harry confirmed 20/20 on held-out programs. Full B run over 3,591 programs finished at 15:05 UTC.",
+  "where": "prompts/judge/b_program.txt"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Ontology",
+  "title": "Ontology frozen",
+  "detail": "Values only: properties, the with-search flag, A3 purpose and the specification-change flag were dropped.",
+  "where": "docs/SLB_ONTOLOGY.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Paper",
+  "title": "Paper rewritten around the ontology",
+  "detail": "Ontology definitions with examples, per-node judges and reliability in Metrics and a new appendix, models run with vLLM at 131k tokens.",
+  "where": "solver-like-paper/acl_latex.tex"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "Cross-FL experiment designed",
+  "detail": "Calendar in Z3-Python and ZebraLogic in plain Python separate the dataset from the formal language. --fl flag added and smoke-tested.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "Cross-FL runs launched: every dataset in two FLs",
+  "detail": "Calendar and Meeting in Z3-Python, ZebraLogic and BlocksWorld in plain Python. DeepSeek running over the API; Qwen and GPT-OSS queued on GPU 7. BlocksWorld plans from Python programs are validated with VAL.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "FL compliance flagged on every run",
+  "detail": "Decided with Harry: flag and report the rate, also on native runs. Native: 3 of ~2,600 programs not in their FL (truncated Z3 sketches). Execution now records fl_compliance per program.",
+  "where": "docs/results/2026-10-30_FL_COMPLIANCE.md"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Judging",
+  "title": "Native runs fully judged",
+  "detail": "A (gemma_v11t, 29,237 segments), B (gemma_b5t, 3,591 programs) and A2/C (gemma_v11c, 3,600 traces) cover every native trace; nothing missing or stale.",
+  "where": "output/ontology/"
+ },
+ {
+  "date": "2026-10-30",
+  "area": "Experiments",
+  "title": "Cross-FL runs done for DeepSeek and GPT-OSS",
+  "detail": "12 runs each (four new pairings x 3 conditions). Accuracy close to the native FL; Meeting-Z3's lower golden accuracy was a prompt-format artefact, now normalised.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "Native ontology labels assembled from the final judges",
+  "detail": "A gemma_v11t, B gemma_b5t, A2/C gemma_v11c over all 3,600 traces, no judgement missing. BlocksWorld ratios fell to 0.01-0.06; B hardcoded is almost all GPT-OSS Meeting baseline (40).",
+  "where": "docs/results/2026-10-31_ONTOLOGY_LABELS_V11_B5T.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Experiments",
+  "title": "Cross-FL runs complete for all three models",
+  "detail": "36 runs (Calendar and Meeting in Z3, ZebraLogic and BlocksWorld in Python; DeepSeek, GPT-OSS, Qwen; 3 conditions), executed and scored. Every dataset now has two FLs.",
+  "where": "output_crossfl/"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "Cross-FL A judge done",
+  "detail": "gemma_v11t on all 18,865 cross-FL segments, none missing.",
+  "where": "output_crossfl/ontology/"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Experiments",
+  "title": "Cross-FL runs judged",
+  "detail": "A, B and A2/C judges ran on all cross-FL runs (GPUs 1-3, GPU 0 kept free) and were assembled into output_crossfl/*_ontology_gemma_v11_b5t.json; FL-compliance report regenerated.",
+  "where": "output_crossfl/"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Experiments",
+  "title": "DeepSeek cross-FL runs excluded (API drift)",
+  "detail": "Re-running 20 native prompts today gives traces 4-5x shorter than in August with the same settings, so the API model changed. Harry: exclude DeepSeek from all cross-FL analyses.",
+  "where": "docs/CROSS_FL_DESIGN.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Analysis",
+  "title": "Hypotheses H1-H3 tested on all runs",
+  "detail": "SLB is common (ratio ~.20, ~70% of traces >= .10), mostly complete prose solutions the program ignores, and does not change accuracy. Python has more SLB than Z3/PDDL in all four datasets, but the effect is large only for BlocksWorld and Meeting. Cautionary prompts cut the ratio by about a quarter without removing SLB.",
+  "where": "docs/results/2026-10-31_HYPOTHESIS_TESTS.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Paper",
+  "title": "Sections 4-6 drafted around the hypotheses",
+  "detail": "Methods covers both FLs and the vanilla prompt, with a judge reliability table; Section 5 tests H1.1-H1.3 and H2 (FL, dataset, model) on baseline traces, one figure each; Section 6 covers deterring SLB (cautionary prompts; method to come).",
+  "where": "solver-like-paper/acl_latex.tex"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "A1 judge checked in the second FLs: 39/40",
+  "detail": "Harry labelled 40 blind paragraphs, 10 per dataset in its second FL (Calendar and Meeting in Z3, ZebraLogic and BlocksWorld in Python). gemma_v11t agrees on 39/40 after two rulings for the judge; the one miss is a Calendar-Z3 boundary case.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Judging",
+  "title": "B judge checked in the second FLs: 18/20; judge reliability closed",
+  "detail": "Harry checked 20 second-FL programs (9 in Z3) with the judge's evidence and Claude's verification of it: all 10 independent labels confirmed (recall), 8 of 10 inheriting labels. Table 1 in the paper now has held-out second-FL rows for A1 (39/40) and B (18/20). No further reliability checks are planned.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-10-31",
+  "area": "Evaluation",
+  "title": "Code extraction and empty-plan scoring fixed; affected runs rescored and re-judged",
+  "detail": "The extractor now reads the final answer on its own (fences in the thinking had hidden it; 43 programs change), and a Python BlocksWorld program that prints nothing is scored as the empty plan. 68 records re-run, 40 now correct, none worse; the changed traces were re-judged and the paper's numbers updated (e.g. H3 ratio effect +0.007 per 10 points).",
+  "where": "docs/results/2026-10-31_EXTRACTION_EMPTY_PLAN_FIX.md"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Experiments",
+  "title": "Placeholders deter SLB (Section 6)",
+  "detail": "Two methods run in full for Qwen and GPT-OSS (no PDDL). Placeholders (values hidden, given to the program at run time) cut solver-like tokens by 97% and the share of traces with SLB from 94% to 15%, with accuracy +2.6 points (n.s.). Batching (K=5) cuts SLB tokens per problem by 62% but all reasoning as much, and costs 5.9 accuracy points. Paper Section 6, Figure 6 and a practical recommendation written.",
+  "where": "docs/results/2026-11-01_DETERRENCE_FULL.md"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Paper",
+  "title": "Paper tables and conclusion match the final results",
+  "detail": "The old Gemini Ratio and #Tokens rows are gone: Table 1 reports judge agreement and the per-cell appendix table gives the ontology's ratio and SLB tokens. The conclusion is rewritten around H1-H4 and Section 6, without the unsupported '14%' and 'model capability' claims. Prompt listings are shown verbatim from the code, and Figure 2's hardcoded example is a print of the answer.",
+  "where": "solver-like-paper/acl_latex.tex, tables/"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Ontology",
+  "title": "Remaining judge checks closed with judge reliability",
+  "detail": "Hardcoding in Z3 programs is labelled by the B judge, checked on 20 held-out second-FL programs (18/20); a separate Z3 checker and a BlocksWorld A-label spot check were dropped when Harry closed judge reliability on Oct 31.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Paper",
+  "title": "BlocksWorld dataset caveats in the appendix",
+  "detail": "The PDDL reference problem omits the additional constraint, so it differs from the ground-truth problem in 53 of 100 instances; of the 10 unsolvable instances, the planner cannot prove one unsolvable even from the ground-truth PDDL, so PDDL accuracy on BlocksWorld is at most 99%.",
+  "where": "solver-like-paper/acl_latex.tex (Appendix: Tasks, Accuracy)"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Repo",
+  "title": "Branch pushed and pull request opened",
+  "detail": "All commits on fix/evaluation pushed to origin; pull request #1 into main describes the evaluation fixes, ontology and judges, cross-FL runs, hypothesis tests and deterrence.",
+  "where": "https://github.com/rikhil-amonkar/solver-like-behavior-in-llms/pull/1"
+ }
+]

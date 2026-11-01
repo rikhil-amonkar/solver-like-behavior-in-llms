@@ -1,0 +1,20 @@
+This problem is a logic grid puzzle (ZebraLogic): assign unique attributes to each house/entity such that all clues are satisfied.
+
+Output format:
+Print the solution as rows, one per house, showing all attributes in the order specified by the problem headers.
+
+Example output (headers: House, Name, Smoothie, Color):
+```
+House 1: Peter, desert, white
+House 2: Alice, cherry, green
+House 3: Arnold, watermelon, yellow
+House 4: Eric, dragonfruit, red
+```
+
+Rules:
+- Each row must show all attributes for that house in order
+- Use the exact attribute names from the problem (case-insensitive matching is acceptable)
+- Separate attributes with commas and spaces
+- Print houses in numerical order (1, 2, 3, ...)
+
+SOLUTION CODE:

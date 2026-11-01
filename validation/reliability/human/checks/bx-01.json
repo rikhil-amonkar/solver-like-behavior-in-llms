@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "qwen",
+  "sheet": "bx",
+  "task": "blocksworld",
+  "trace": "qwen/blocksworld/caution_a/blocksworld_p31_baseline_constraint31",
+  "updatedAt": "2026-10-31T22:29:52.312Z"
+}

@@ -1,0 +1,136 @@
+<title>A2 Label Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one card per trace in a single column; Gemma's verdict and extracted answer sit above the reasoning tail they came from. */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #1d2330; --muted: #5d6676; --line: #dde1e8; --accent: #2f5fb3;
+  --cmp: #8a4a74; --cmp-bg: #f6e9f1; --par: #9a6400; --par-bg: #fbf0dc; --none: #5d6676; --none-bg: #eef0f3;
+  --ok: #1f7a5c; --bad: #a33b2b;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d; --accent: #7aa2e8;
+  --cmp: #e3a5cf; --cmp-bg: #3a2333; --par: #f0b75a; --par-bg: #3a2c12; --none: #9aa3b2; --none-bg: #232833;
+  --ok: #6fd1ad; --bad: #f08a7a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d; --accent: #7aa2e8;
+  --cmp: #e3a5cf; --cmp-bg: #3a2333; --par: #f0b75a; --par-bg: #3a2c12; --none: #9aa3b2; --none-bg: #232833;
+  --ok: #6fd1ad; --bad: #f08a7a; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel) }
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline }
+h1 { font-size: 15px; font-weight: 600; margin: 0 }
+.tally { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 4px 14px }
+.tally b { color: var(--fg) }
+main { max-width: 940px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;
+  padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.intro { font-size: 13px; color: var(--muted); margin: 0 }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; font-size: 12px; color: var(--muted) }
+.meta .id { font: 600 13px var(--mono); color: var(--fg) }
+.pill { font: 600 12px var(--sans); padding: 1px 9px; border-radius: 999px }
+.pill.complete { background: var(--cmp-bg); color: var(--cmp) } .pill.partial { background: var(--par-bg); color: var(--par) } .pill.none { background: var(--none-bg); color: var(--none) }
+.label { font-size: 12px; color: var(--muted) }
+pre { font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; word-break: break-word; margin: 0 }
+pre.box { max-height: 360px; overflow: auto; padding: 8px 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px }
+pre.answer { padding: 8px 10px; border-radius: 6px; background: var(--cmp-bg); max-height: 200px; overflow: auto }
+details > summary { cursor: pointer; color: var(--muted); font-size: 12px }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+button { font: 13px var(--sans); border: 1px solid var(--line); background: var(--panel); color: var(--fg); padding: 4px 12px; border-radius: 6px; cursor: pointer }
+button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--panel) }
+button.agree[aria-pressed="true"] { border-color: var(--ok); background: var(--ok) }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+textarea { width: 100%; min-height: 40px; font: 13px var(--sans); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px }
+.verdict { font-size: 12px } .verdict.ok { color: var(--ok) } .verdict.bad { color: var(--bad) }
+.banner { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--bad); color: var(--bad); background: var(--panel) }
+</style>
+
+<header>
+  <h1>A2 label check · does the reasoning reach an answer?</h1>
+  <div class="tally" id="tally">Loading…</div>
+</header>
+<main id="main">
+  <p class="intro">Gemma read each reasoning trace and judged how much of an answer it reaches in prose, using its final position:
+    <b>complete</b> (every decision variable gets a value), <b>partial</b> (some decisions only) or <b>none</b>. For complete ones it also wrote the prose answer in the program's output format.
+    The end of the reasoning is shown first; expand for the full text.</p>
+</main>
+
+<script>
+const S = { items: [], marks: {}, db: null };
+// replaceChildren would print "null" for sections that do not apply, so drop them first
+const fill = (el, ...kids) => el.replaceChildren(...kids.filter(k => k != null));
+const h = (tag, attrs = {}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k.startsWith("aria-")) el.setAttribute(k, String(!!v));  // aria-pressed/selected need "true"/"false"
+    else if (v !== false && v != null) el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return el;
+};
+const EXT = ["complete", "partial", "none"];
+const saving = new Map();
+async function save(id) {
+  if (!S.db) return;
+  if (saving.get(id)) { saving.set(id, "again"); return; }
+  saving.set(id, true);
+  try { await S.db.doc("verify_a2/" + id).set({ ...S.marks[id], updatedAt: new Date().toISOString() }); } catch (e) { console.error(e); }
+  const again = saving.get(id) === "again"; saving.delete(id); if (again) save(id);
+}
+function setMark(it, patch) {
+  S.marks[it.id] = { ...(S.marks[it.id] || {}), gemma: it.gemma.extent, task: it.task, model: it.model, ...patch };
+  save(it.id); renderCard(it); renderTally();
+}
+function renderTally() {
+  const done = S.items.filter(it => S.marks[it.id]?.extent);
+  const ok = done.filter(it => S.marks[it.id].extent === it.gemma.extent).length;
+  const ans = S.items.filter(it => S.marks[it.id]?.answerOk != null);
+  fill(document.getElementById("tally"),
+    h("span", {}, "Checked ", h("b", {}, `${done.length}/${S.items.length}`)),
+    h("span", {}, "Extent agrees ", h("b", {}, done.length ? `${ok}/${done.length}` : "–")),
+    h("span", {}, "Extracted answer right ", h("b", {}, ans.length ? `${ans.filter(it => S.marks[it.id].answerOk).length}/${ans.length}` : "–")),
+    S.db ? null : h("span", {}, "· not signed in, marks are not saved"));
+}
+function renderCard(it) {
+  const card = document.getElementById(it.id), m = S.marks[it.id] || {}, g = it.gemma;
+  const r = it.reasoning, tail = r.length > 5000 ? "…" + r.slice(-5000) : r;
+  const verdict = m.extent ? (m.extent === g.extent ? h("span", { class: "verdict ok" }, "agrees") : h("span", { class: "verdict bad" }, "you: " + m.extent)) : null;
+  fill(card,
+    h("div", { class: "meta" }, h("span", { class: "id" }, it.id), `${it.model} · ${it.task} · ${it.cond}`,
+      h("span", { class: "pill " + g.extent }, "Gemma: " + g.extent), verdict),
+    g.extent === "complete" ? h("div", {}, h("div", { class: "label" }, `Answer Gemma extracted from the prose (Gemma says it ${g.match === "yes" ? "matches" : g.match === "no" ? "differs from" : "can't be compared with"} the program output)`), h("pre", { class: "answer" }, g.prose_answer || "(empty)")) : null,
+    h("details", {}, h("summary", {}, "Problem"), h("pre", { class: "box" }, it.problem)),
+    h("div", {}, h("div", { class: "label" }, `End of the reasoning (${Math.round(r.length / 1000)}k characters in total)`), h("pre", { class: "box tail" }, tail)),
+    r.length > 5000 ? h("details", {}, h("summary", {}, "Full reasoning"), h("pre", { class: "box" }, r)) : null,
+    h("details", {}, h("summary", {}, "Program output"), h("pre", { class: "box" }, it.output || "(no output)")),
+    h("div", { class: "row" }, h("span", { class: "label" }, "Extent:"),
+      h("button", { class: "agree", "aria-pressed": m.extent === g.extent, onclick: () => setMark(it, { extent: g.extent }) }, `Correct (${g.extent})`),
+      h("span", { class: "label" }, "or should be"),
+      ...EXT.filter(e => e !== g.extent).map(e => h("button", { "aria-pressed": m.extent === e, onclick: () => setMark(it, { extent: e }) }, e))),
+    g.extent === "complete" ? h("div", { class: "row" }, h("span", { class: "label" }, "Is the extracted answer the prose's final answer?"),
+      h("button", { class: "agree", "aria-pressed": m.answerOk === true, onclick: () => setMark(it, { answerOk: true }) }, "Yes"),
+      h("button", { "aria-pressed": m.answerOk === false, onclick: () => setMark(it, { answerOk: false }) }, "No")) : null,
+    h("textarea", { placeholder: "Note (optional)", oninput: e => { S.marks[it.id] = { ...(S.marks[it.id] || {}), note: e.target.value, gemma: g.extent, task: it.task, model: it.model }; clearTimeout(card.t); card.t = setTimeout(() => save(it.id), 600); } }));
+  card.querySelector("textarea").value = m.note || "";
+  const box = card.querySelector("pre.tail"); if (box) requestAnimationFrame(() => { box.scrollTop = box.scrollHeight; });
+}
+(async () => {
+  try { S.items = await fetch("data/a2_verify.json").then(r => r.json()); }
+  catch (e) { document.getElementById("main").append(h("div", { class: "banner" }, "Could not load the items. Reload the page.")); return; }
+  const main = document.getElementById("main");
+  for (const it of S.items) { main.append(h("section", { class: "card", id: it.id })); renderCard(it); }
+  renderTally();
+  S.db = window.claude ? await window.claude.use("db") : null;
+  if (S.db) {
+    try { const snap = await S.db.collection("verify_a2").get(); for (const d of snap.docs) S.marks[d.id] = structuredClone(d.data()); } catch (e) { console.error(e); }
+    S.items.forEach(renderCard);
+  }
+  renderTally();
+})();
+</script>

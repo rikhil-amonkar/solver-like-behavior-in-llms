@@ -1,0 +1,866 @@
+[
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_784",
+"file": "deepseek__calendar__baseline__calendar_scheduling_example_784.md",
+"chars": 63549
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_555",
+"file": "deepseek__calendar__baseline__calendar_scheduling_example_555.md",
+"chars": 12317
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_98",
+"file": "deepseek__calendar__baseline__calendar_scheduling_example_98.md",
+"chars": 25788
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_784",
+"file": "deepseek__calendar__caution_a__calendar_scheduling_example_784.md",
+"chars": 63655
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_114",
+"file": "deepseek__calendar__caution_a__calendar_scheduling_example_114.md",
+"chars": 29363
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_436",
+"file": "deepseek__calendar__caution_a__calendar_scheduling_example_436.md",
+"chars": 54134
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_629",
+"file": "deepseek__calendar__caution_b__calendar_scheduling_example_629.md",
+"chars": 32512
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_70",
+"file": "deepseek__calendar__caution_b__calendar_scheduling_example_70.md",
+"chars": 50530
+},
+{
+"model": "deepseek",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_583",
+"file": "deepseek__calendar__caution_b__calendar_scheduling_example_583.md",
+"chars": 50573
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_368",
+"file": "deepseek__meeting__baseline__meeting_planning_example_368.md",
+"chars": 62445
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_66",
+"file": "deepseek__meeting__baseline__meeting_planning_example_66.md",
+"chars": 63105
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_479",
+"file": "deepseek__meeting__baseline__meeting_planning_example_479.md",
+"chars": 67846
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_482",
+"file": "deepseek__meeting__caution_a__meeting_planning_example_482.md",
+"chars": 65176
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_701",
+"file": "deepseek__meeting__caution_a__meeting_planning_example_701.md",
+"chars": 70608
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_225",
+"file": "deepseek__meeting__caution_a__meeting_planning_example_225.md",
+"chars": 65387
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_872",
+"file": "deepseek__meeting__caution_b__meeting_planning_example_872.md",
+"chars": 65849
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_225",
+"file": "deepseek__meeting__caution_b__meeting_planning_example_225.md",
+"chars": 64825
+},
+{
+"model": "deepseek",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_976",
+"file": "deepseek__meeting__caution_b__meeting_planning_example_976.md",
+"chars": 75193
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-3x4-14",
+"file": "deepseek__zebralogic__baseline__zebralogic_grid_lgp-test-3x4-14.md",
+"chars": 14027
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-6x3-26",
+"file": "deepseek__zebralogic__baseline__zebralogic_grid_lgp-test-6x3-26.md",
+"chars": 61159
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-3x5-18",
+"file": "deepseek__zebralogic__baseline__zebralogic_grid_lgp-test-3x5-18.md",
+"chars": 39550
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-6x5-17",
+"file": "deepseek__zebralogic__caution_a__zebralogic_grid_lgp-test-6x5-17.md",
+"chars": 66844
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-6x5-3",
+"file": "deepseek__zebralogic__caution_a__zebralogic_grid_lgp-test-6x5-3.md",
+"chars": 65805
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-6x2-8",
+"file": "deepseek__zebralogic__caution_a__zebralogic_grid_lgp-test-6x2-8.md",
+"chars": 44753
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-3x3-9",
+"file": "deepseek__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-9.md",
+"chars": 63835
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-3x6-34",
+"file": "deepseek__zebralogic__caution_b__zebralogic_grid_lgp-test-3x6-34.md",
+"chars": 61358
+},
+{
+"model": "deepseek",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-2x4-24",
+"file": "deepseek__zebralogic__caution_b__zebralogic_grid_lgp-test-2x4-24.md",
+"chars": 20247
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p89_initial_constraint9",
+"file": "deepseek__blocksworld__baseline__blocksworld_p89_initial_constraint9.md",
+"chars": 54710
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p09_state_constraint8",
+"file": "deepseek__blocksworld__baseline__blocksworld_p09_state_constraint8.md",
+"chars": 68090
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p84_initial_constraint4",
+"file": "deepseek__blocksworld__baseline__blocksworld_p84_initial_constraint4.md",
+"chars": 64446
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p39_action_constraint23",
+"file": "deepseek__blocksworld__caution_a__blocksworld_p39_action_constraint23.md",
+"chars": 74194
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p56_action_constraint40",
+"file": "deepseek__blocksworld__caution_a__blocksworld_p56_action_constraint40.md",
+"chars": 67185
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p70_goal_constraint10",
+"file": "deepseek__blocksworld__caution_a__blocksworld_p70_goal_constraint10.md",
+"chars": 67815
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p11_baseline_constraint11",
+"file": "deepseek__blocksworld__caution_b__blocksworld_p11_baseline_constraint11.md",
+"chars": 39698
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p42_baseline_constraint42",
+"file": "deepseek__blocksworld__caution_b__blocksworld_p42_baseline_constraint42.md",
+"chars": 66853
+},
+{
+"model": "deepseek",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p51_action_constraint35",
+"file": "deepseek__blocksworld__caution_b__blocksworld_p51_action_constraint35.md",
+"chars": 66740
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_625",
+"file": "gpt__calendar__baseline__calendar_scheduling_example_625.md",
+"chars": 6984
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_791",
+"file": "gpt__calendar__baseline__calendar_scheduling_example_791.md",
+"chars": 9209
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_819",
+"file": "gpt__calendar__baseline__calendar_scheduling_example_819.md",
+"chars": 5588
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_594",
+"file": "gpt__calendar__caution_a__calendar_scheduling_example_594.md",
+"chars": 2528
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_735",
+"file": "gpt__calendar__caution_a__calendar_scheduling_example_735.md",
+"chars": 7328
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_682",
+"file": "gpt__calendar__caution_a__calendar_scheduling_example_682.md",
+"chars": 10260
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_544",
+"file": "gpt__calendar__caution_b__calendar_scheduling_example_544.md",
+"chars": 6135
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_707",
+"file": "gpt__calendar__caution_b__calendar_scheduling_example_707.md",
+"chars": 8762
+},
+{
+"model": "gpt",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_436",
+"file": "gpt__calendar__caution_b__calendar_scheduling_example_436.md",
+"chars": 7960
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_209",
+"file": "gpt__meeting__baseline__meeting_planning_example_209.md",
+"chars": 17746
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_800",
+"file": "gpt__meeting__baseline__meeting_planning_example_800.md",
+"chars": 27160
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_118",
+"file": "gpt__meeting__baseline__meeting_planning_example_118.md",
+"chars": 18644
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_222",
+"file": "gpt__meeting__caution_a__meeting_planning_example_222.md",
+"chars": 11731
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_952",
+"file": "gpt__meeting__caution_a__meeting_planning_example_952.md",
+"chars": 24771
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_575",
+"file": "gpt__meeting__caution_a__meeting_planning_example_575.md",
+"chars": 17596
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_934",
+"file": "gpt__meeting__caution_b__meeting_planning_example_934.md",
+"chars": 18482
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_115",
+"file": "gpt__meeting__caution_b__meeting_planning_example_115.md",
+"chars": 9951
+},
+{
+"model": "gpt",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_870",
+"file": "gpt__meeting__caution_b__meeting_planning_example_870.md",
+"chars": 17373
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-6x6-4",
+"file": "gpt__zebralogic__baseline__zebralogic_grid_lgp-test-6x6-4.md",
+"chars": 14540
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-4x2-30",
+"file": "gpt__zebralogic__baseline__zebralogic_grid_lgp-test-4x2-30.md",
+"chars": 7456
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-3x4-37",
+"file": "gpt__zebralogic__baseline__zebralogic_grid_lgp-test-3x4-37.md",
+"chars": 7878
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-6x4-38",
+"file": "gpt__zebralogic__caution_a__zebralogic_grid_lgp-test-6x4-38.md",
+"chars": 11394
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-4x2-19",
+"file": "gpt__zebralogic__caution_a__zebralogic_grid_lgp-test-4x2-19.md",
+"chars": 9956
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-6x5-3",
+"file": "gpt__zebralogic__caution_a__zebralogic_grid_lgp-test-6x5-3.md",
+"chars": 12271
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-6x6-32",
+"file": "gpt__zebralogic__caution_b__zebralogic_grid_lgp-test-6x6-32.md",
+"chars": 18096
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-2x3-27",
+"file": "gpt__zebralogic__caution_b__zebralogic_grid_lgp-test-2x3-27.md",
+"chars": 5933
+},
+{
+"model": "gpt",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-3x3-29",
+"file": "gpt__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-29.md",
+"chars": 7393
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p77_goal_constraint17",
+"file": "gpt__blocksworld__baseline__blocksworld_p77_goal_constraint17.md",
+"chars": 9463
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p25_action_constraint9",
+"file": "gpt__blocksworld__baseline__blocksworld_p25_action_constraint9.md",
+"chars": 15050
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p27_baseline_constraint27",
+"file": "gpt__blocksworld__baseline__blocksworld_p27_baseline_constraint27.md",
+"chars": 11275
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p19_state_constraint15",
+"file": "gpt__blocksworld__caution_a__blocksworld_p19_state_constraint15.md",
+"chars": 12944
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p67_goal_constraint7",
+"file": "gpt__blocksworld__caution_a__blocksworld_p67_goal_constraint7.md",
+"chars": 13729
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p52_action_constraint36",
+"file": "gpt__blocksworld__caution_a__blocksworld_p52_action_constraint36.md",
+"chars": 11345
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p10_action_constraint2",
+"file": "gpt__blocksworld__caution_b__blocksworld_p10_action_constraint2.md",
+"chars": 12234
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p100_baseline_constraint100",
+"file": "gpt__blocksworld__caution_b__blocksworld_p100_baseline_constraint100.md",
+"chars": 5456
+},
+{
+"model": "gpt",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p39_action_constraint23",
+"file": "gpt__blocksworld__caution_b__blocksworld_p39_action_constraint23.md",
+"chars": 14815
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_784",
+"file": "qwen__calendar__baseline__calendar_scheduling_example_784.md",
+"chars": 63254
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_682",
+"file": "qwen__calendar__baseline__calendar_scheduling_example_682.md",
+"chars": 29456
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "baseline",
+"id": "calendar_scheduling_example_215",
+"file": "qwen__calendar__baseline__calendar_scheduling_example_215.md",
+"chars": 14118
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_625",
+"file": "qwen__calendar__caution_a__calendar_scheduling_example_625.md",
+"chars": 54117
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_735",
+"file": "qwen__calendar__caution_a__calendar_scheduling_example_735.md",
+"chars": 14968
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "caution_a",
+"id": "calendar_scheduling_example_457",
+"file": "qwen__calendar__caution_a__calendar_scheduling_example_457.md",
+"chars": 24093
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_548",
+"file": "qwen__calendar__caution_b__calendar_scheduling_example_548.md",
+"chars": 20310
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_735",
+"file": "qwen__calendar__caution_b__calendar_scheduling_example_735.md",
+"chars": 20642
+},
+{
+"model": "qwen",
+"task": "calendar",
+"cond": "caution_b",
+"id": "calendar_scheduling_example_493",
+"file": "qwen__calendar__caution_b__calendar_scheduling_example_493.md",
+"chars": 20560
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_956",
+"file": "qwen__meeting__baseline__meeting_planning_example_956.md",
+"chars": 77729
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_322",
+"file": "qwen__meeting__baseline__meeting_planning_example_322.md",
+"chars": 66506
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "baseline",
+"id": "meeting_planning_example_867",
+"file": "qwen__meeting__baseline__meeting_planning_example_867.md",
+"chars": 66966
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_728",
+"file": "qwen__meeting__caution_a__meeting_planning_example_728.md",
+"chars": 65452
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_862",
+"file": "qwen__meeting__caution_a__meeting_planning_example_862.md",
+"chars": 75093
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "caution_a",
+"id": "meeting_planning_example_402",
+"file": "qwen__meeting__caution_a__meeting_planning_example_402.md",
+"chars": 68599
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_884",
+"file": "qwen__meeting__caution_b__meeting_planning_example_884.md",
+"chars": 51464
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_209",
+"file": "qwen__meeting__caution_b__meeting_planning_example_209.md",
+"chars": 65687
+},
+{
+"model": "qwen",
+"task": "meeting",
+"cond": "caution_b",
+"id": "meeting_planning_example_862",
+"file": "qwen__meeting__caution_b__meeting_planning_example_862.md",
+"chars": 73637
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-4x6-7",
+"file": "qwen__zebralogic__baseline__zebralogic_grid_lgp-test-4x6-7.md",
+"chars": 30239
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-3x6-34",
+"file": "qwen__zebralogic__baseline__zebralogic_grid_lgp-test-3x6-34.md",
+"chars": 34599
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "baseline",
+"id": "zebralogic_grid_lgp-test-5x6-36",
+"file": "qwen__zebralogic__baseline__zebralogic_grid_lgp-test-5x6-36.md",
+"chars": 32898
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-3x6-14",
+"file": "qwen__zebralogic__caution_a__zebralogic_grid_lgp-test-3x6-14.md",
+"chars": 52960
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-3x6-30",
+"file": "qwen__zebralogic__caution_a__zebralogic_grid_lgp-test-3x6-30.md",
+"chars": 22859
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "caution_a",
+"id": "zebralogic_grid_lgp-test-3x3-15",
+"file": "qwen__zebralogic__caution_a__zebralogic_grid_lgp-test-3x3-15.md",
+"chars": 13813
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-3x3-32",
+"file": "qwen__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-32.md",
+"chars": 19221
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-3x3-15",
+"file": "qwen__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-15.md",
+"chars": 12395
+},
+{
+"model": "qwen",
+"task": "zebralogic",
+"cond": "caution_b",
+"id": "zebralogic_grid_lgp-test-2x2-34",
+"file": "qwen__zebralogic__caution_b__zebralogic_grid_lgp-test-2x2-34.md",
+"chars": 9192
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p64_goal_constraint4",
+"file": "qwen__blocksworld__baseline__blocksworld_p64_goal_constraint4.md",
+"chars": 67922
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p82_initial_constraint2",
+"file": "qwen__blocksworld__baseline__blocksworld_p82_initial_constraint2.md",
+"chars": 36792
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "baseline",
+"id": "blocksworld_p30_baseline_constraint30",
+"file": "qwen__blocksworld__baseline__blocksworld_p30_baseline_constraint30.md",
+"chars": 64344
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p38_action_constraint22",
+"file": "qwen__blocksworld__caution_a__blocksworld_p38_action_constraint22.md",
+"chars": 68891
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p09_baseline_constraint9",
+"file": "qwen__blocksworld__caution_a__blocksworld_p09_baseline_constraint9.md",
+"chars": 15811
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "caution_a",
+"id": "blocksworld_p100_initial_constraint20",
+"file": "qwen__blocksworld__caution_a__blocksworld_p100_initial_constraint20.md",
+"chars": 66387
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p67_goal_constraint7",
+"file": "qwen__blocksworld__caution_b__blocksworld_p67_goal_constraint7.md",
+"chars": 68393
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p97_initial_constraint17",
+"file": "qwen__blocksworld__caution_b__blocksworld_p97_initial_constraint17.md",
+"chars": 30103
+},
+{
+"model": "qwen",
+"task": "blocksworld",
+"cond": "caution_b",
+"id": "blocksworld_p15_baseline_constraint15",
+"file": "qwen__blocksworld__caution_b__blocksworld_p15_baseline_constraint15.md",
+"chars": 43611
+}
+]

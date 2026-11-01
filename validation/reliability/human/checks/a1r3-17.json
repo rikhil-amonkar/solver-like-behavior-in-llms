@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "N",
+  "model": "gpt",
+  "sheet": "a1r3",
+  "task": "blocksworld",
+  "trace": "gpt/blocksworld/caution_b/blocksworld_p06_state_constraint6",
+  "updatedAt": "2026-10-29T21:41:54.302Z"
+}

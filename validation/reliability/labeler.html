@@ -1,0 +1,326 @@
+<title>SLB Reliability Labels</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky header with queue tabs; item list rail on the left, the item being labelled on the right. */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #1d2330; --muted: #5d6676; --line: #dde1e8;
+  --sel: #eaf0fb; --accent: #2f5fb3;
+  --values: #8a4a74; --values-bg: #f6e9f1;      /* A: mauve, as in Figure 2 */
+  --props: #1f7a5c; --props-bg: #e3f3ec;
+  --prog: #9a6400; --prog-bg: #fbf0dc;          /* B: amber */
+  --ok: #1f7a5c; --warn: #a33b2b;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d;
+  --sel: #1f2a3d; --accent: #7aa2e8;
+  --values: #e3a5cf; --values-bg: #3a2333; --props: #6fd1ad; --props-bg: #173328;
+  --prog: #f0b75a; --prog-bg: #3a2c12; --ok: #6fd1ad; --warn: #f08a7a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1a1e26; --fg: #e3e6ec; --muted: #9aa3b2; --line: #2c323d;
+  --sel: #1f2a3d; --accent: #7aa2e8;
+  --values: #e3a5cf; --values-bg: #3a2333; --props: #6fd1ad; --props-bg: #173328;
+  --prog: #f0b75a; --prog-bg: #3a2c12; --ok: #6fd1ad; --warn: #f08a7a; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel) }
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center }
+h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: .01em }
+.tabs { display: flex; gap: 4px }
+.tab { border: 1px solid var(--line); background: transparent; color: var(--fg); font: inherit; padding: 4px 12px; border-radius: 6px; cursor: pointer }
+.tab[aria-selected="true"] { background: var(--sel); border-color: var(--accent); color: var(--accent); font-weight: 500 }
+.status { margin-left: auto; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums }
+.status b { color: var(--fg); font-weight: 600 }
+main { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px;
+  padding-block: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+@media (max-width: 760px) { main { grid-template-columns: minmax(0, 1fr) } nav.rail { max-height: 180px } }
+nav.rail { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: auto; max-height: calc(100vh - 90px); position: sticky; top: 64px; align-self: start }
+.rail-head { padding: 8px 10px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between }
+.rail button { display: flex; width: 100%; gap: 8px; align-items: center; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--fg);
+  font: 12px var(--mono); padding: 5px 10px; text-align: left; cursor: pointer }
+.rail button[aria-current="true"] { background: var(--sel) }
+.rail .dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--muted); flex: none }
+.rail .dot.done { background: var(--ok); border-color: var(--ok) }
+.rail .meta { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+section.item { min-width: 0; display: flex; flex-direction: column; gap: 12px }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0 }
+.itemhead { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline }
+.itemhead .id { font: 600 15px var(--mono) }
+.chip { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; color: var(--muted) }
+.chip.split-dev { border-color: var(--accent); color: var(--accent) }
+details > summary { cursor: pointer; color: var(--muted); font-size: 13px }
+pre, .para-text { font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; word-break: break-word; margin: 0 }
+pre.box { max-height: 420px; overflow: auto; padding: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; margin-top: 8px }
+.help { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px }
+kbd { font: 11px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; color: var(--fg) }
+.paras { display: flex; flex-direction: column }
+.para { display: grid; grid-template-columns: 34px minmax(0, 1fr) 248px; gap: 10px; padding: 8px 6px; border-bottom: 1px solid var(--line); cursor: pointer }
+@media (max-width: 760px) { .para { grid-template-columns: 28px minmax(0, 1fr) } .para .ctl { grid-column: 2 } }
+.para:last-child { border-bottom: 0 }
+.para .n { font: 11px var(--mono); color: var(--muted); padding-top: 2px; text-align: right }
+.para.focus { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px }
+.para.t-V { background: var(--values-bg); box-shadow: inset 3px 0 var(--values) }
+.para.t-P { background: var(--props-bg); box-shadow: inset 3px 0 var(--props) }
+.ctl { display: flex; flex-wrap: wrap; gap: 4px; align-content: start }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden }
+.seg button, .tog { border: 0; background: var(--panel); color: var(--muted); font: 12px var(--sans); padding: 2px 8px; cursor: pointer }
+.seg button + button { border-left: 1px solid var(--line) }
+.seg button[aria-pressed="true"].tV { background: var(--values); color: var(--panel) }
+.seg button[aria-pressed="true"].tP { background: var(--props); color: var(--panel) }
+.seg button[aria-pressed="true"].tN { background: var(--muted); color: var(--panel) }
+.tog { border: 1px solid var(--line); border-radius: 6px }
+.tog[aria-pressed="true"] { border-color: var(--fg); color: var(--fg); font-weight: 600 }
+.tog:disabled { opacity: .35; cursor: default }
+button:focus-visible, .para:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.btn { border: 1px solid var(--accent); background: var(--accent); color: var(--panel); font: 500 13px var(--sans); padding: 6px 14px; border-radius: 6px; cursor: pointer }
+.btn.ghost { background: transparent; color: var(--accent) }
+.saved { font-size: 12px; color: var(--muted) }
+.saved.err { color: var(--warn) }
+fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px }
+legend { font-size: 12px; color: var(--muted); padding: 0 4px }
+label.opt { display: flex; gap: 6px; align-items: baseline; cursor: pointer }
+label.opt small { color: var(--muted) }
+textarea { width: 100%; min-height: 56px; font: 13px var(--sans); background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px }
+.banner { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--warn); color: var(--warn); background: var(--panel) }
+.guide { font-size: 13px; columns: 2 300px; column-gap: 24px }
+.guide p { margin: 0 0 6px; break-inside: avoid }
+.guide b.v { color: var(--values) } .guide b.p { color: var(--props) }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important } }
+</style>
+
+<header>
+  <h1>SLB reliability labels</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-seg" role="tab" aria-selected="true">Reasoning segments</button>
+    <button class="tab" id="tab-prog" role="tab" aria-selected="false">Programs</button>
+  </div>
+  <div class="status" id="status">Loading…</div>
+</header>
+<main>
+  <nav class="rail" id="rail" aria-label="Items"></nav>
+  <section class="item" id="item"><div class="card">Loading items…</div></section>
+</main>
+
+<script>
+const state = { tab: "seg", segs: [], progs: [], segLabels: {}, progLabels: {}, cur: { seg: 0, prog: 0 }, focus: 0, db: null };
+const $ = (s, r = document) => r.querySelector(s);
+const h = (tag, attrs = {}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") el.className = v; else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ""); else if (v !== false && v != null) el.setAttribute(k, v);
+  }
+  for (const k of kids.flat()) if (k != null) el.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return el;
+};
+const PURPOSES = [["ans", "Answer", "a"], ["chp", "Check problem", "p"], ["chg", "Check program", "g"], ["int", "Interpret", "i"]];
+
+/* ---------- persistence: one doc per item, one write in flight per doc, coalesced ---------- */
+const pending = new Map(), inflight = new Set();
+function save(coll, id, body) {
+  pending.set(coll + "/" + id, body);
+  setSaved("Saving…");
+  clearTimeout(save.t); save.t = setTimeout(flush, 500);
+}
+async function flush() {
+  if (!state.db) { setSaved("Not saved: sign in to claude.ai to store labels", true); return; }
+  for (const [path, body] of [...pending]) {
+    if (inflight.has(path)) continue;
+    pending.delete(path); inflight.add(path);
+    try { await state.db.doc(path).set({ ...body, updatedAt: new Date().toISOString() }); setSaved("Saved"); }
+    catch (e) { pending.set(path, body); setSaved("Save failed (" + (e.code || e.message) + "); retrying on next change", true); }
+    finally { inflight.delete(path); }
+  }
+  if ([...pending.keys()].some(p => !inflight.has(p))) { clearTimeout(save.t); save.t = setTimeout(flush, 800); }
+}
+function setSaved(msg, err) { const el = $("#saved"); if (el) { el.textContent = msg; el.classList.toggle("err", !!err); } }
+
+/* ---------- segments ---------- */
+function segLabel(id) { return state.segLabels[id] || (state.segLabels[id] = { paras: {}, done: false, note: "" }); }
+function para(lab, i) { return lab.paras[i] || { t: "N", s: false, p: [] }; }
+function setPara(seg, i, patch) {
+  const lab = segLabel(seg.id), cur = { ...para(lab, i), ...patch };
+  if (cur.t !== "V") cur.s = false;
+  if (cur.t === "N") cur.p = [];
+  if (cur.t === "N") delete lab.paras[i]; else lab.paras[i] = cur;
+  save("seg_labels", seg.id, lab); renderParaRow(seg, i); renderStatus();
+}
+function renderParaRow(seg, i) {
+  const row = document.getElementById("para-" + i); if (!row) return;
+  const p = para(segLabel(seg.id), i);
+  row.className = "para t-" + p.t + (state.focus === i ? " focus" : "");
+  for (const b of row.querySelectorAll("[data-t]")) b.setAttribute("aria-pressed", b.dataset.t === p.t);
+  const s = row.querySelector("[data-s]"); s.setAttribute("aria-pressed", p.s); s.disabled = p.t !== "V";
+  for (const b of row.querySelectorAll("[data-p]")) { b.setAttribute("aria-pressed", p.p.includes(b.dataset.p)); b.disabled = p.t === "N"; }
+}
+function renderSeg() {
+  const seg = state.segs[state.cur.seg], lab = segLabel(seg.id), root = $("#item");
+  root.replaceChildren(
+    h("div", { class: "card" },
+      h("div", { class: "itemhead" }, h("span", { class: "id" }, seg.id),
+        h("span", { class: "chip split-" + seg.split }, seg.split === "dev" ? "dev set" : "test set"),
+        h("span", { class: "chip" }, `${seg.model} · ${seg.task} · ${seg.cond}`),
+        h("span", { class: "chip" }, `segment ${seg.segment_index + 1} of ${seg.n_segments}`)),
+      h("details", { style: "margin-top:8px" }, h("summary", {}, "Problem given to the model"), h("pre", { class: "box" }, seg.problem)),
+      h("details", { style: "margin-top:6px" }, h("summary", {}, "Labelling guide"), h("div", { class: "guide", style: "margin-top:8px" },
+        h("p", {}, "Label each paragraph by what it establishes about the solutions of this instance. Default is not SLB."),
+        h("p", {}, h("b", { class: "v" }, "Values: "), "assigns, tests or rules out values of decision variables (the slot; friends, order, times; house assignments; the plan). Pruning counts, e.g. computing free intervals or ruling out a friend's window. Tick ", h("i", {}, "rejects"), " if a candidate is rejected."),
+        h("p", {}, h("b", { class: "p" }, "Properties: "), "argues that a solution exists, that none does, or that it is unique or optimal, without committing values."),
+        h("p", {}, h("b", {}, "Not SLB: "), "restating data or constraints, encoding and code design, output format, parsing, interpreting a constraint (unless the reading is chosen by solving under it)."),
+        h("p", {}, h("b", {}, "Purpose (for SLB paragraphs): "), "answer (derive the answer, incl. tie-breaks); check problem (confirm it is solvable or unique); check program (run it by hand, predict its output, compare with the prose answer); interpret (choose a reading by solving under it).")))),
+    h("div", { class: "card help" },
+      h("span", {}, h("kbd", {}, "j"), " ", h("kbd", {}, "k"), " move"),
+      h("span", {}, h("kbd", {}, "0"), " not SLB · ", h("kbd", {}, "1"), " values · ", h("kbd", {}, "2"), " properties"),
+      h("span", {}, h("kbd", {}, "s"), " rejects a candidate (search)"),
+      h("span", {}, PURPOSES.map(([, n, k]) => [h("kbd", {}, k), " " + n.toLowerCase() + "  "])),
+      h("span", {}, h("kbd", {}, "d"), " copy labels from paragraph above"),
+      h("span", {}, h("kbd", {}, "Enter"), " done → next segment")),
+    h("div", { class: "card paras" }, seg.paragraphs.map((text, i) =>
+      h("div", { class: "para", id: "para-" + i, tabindex: "-1", onclick: e => { if (!e.target.closest("button")) { state.focus = i; refocus(seg); } } },
+        h("div", { class: "n" }, i + 1),
+        h("div", { class: "para-text" }, text),
+        h("div", { class: "ctl" },
+          h("span", { class: "seg" },
+            [["N", "Not SLB", "tN"], ["V", "Values", "tV"], ["P", "Properties", "tP"]].map(([t, n, c]) =>
+              h("button", { class: c, "data-t": t, "aria-pressed": "false", onclick: () => { state.focus = i; setPara(seg, i, { t }); refocus(seg); } }, n))),
+          h("button", { class: "tog", "data-s": "1", "aria-pressed": "false", title: "Rejects at least one candidate value",
+            onclick: () => { state.focus = i; setPara(seg, i, { s: !para(segLabel(seg.id), i).s }); } }, "rejects"),
+          PURPOSES.map(([k, n]) => h("button", { class: "tog", "data-p": k, "aria-pressed": "false",
+            onclick: () => { state.focus = i; togglePurpose(seg, i, k); } }, n)))))),
+    h("div", { class: "card" },
+      h("label", { for: "seg-note", class: "saved" }, "Note on this segment (optional)"),
+      h("textarea", { id: "seg-note", oninput: e => { lab.note = e.target.value; save("seg_labels", seg.id, lab); } }),
+      h("div", { class: "actions", style: "margin-top:8px" },
+        h("button", { class: "btn", onclick: () => finishSeg(seg) }, lab.done ? "Done ✓ — next" : "Mark done and go to next"),
+        lab.done ? h("button", { class: "btn ghost", onclick: () => { lab.done = false; save("seg_labels", seg.id, lab); renderAll(); } }, "Reopen") : null,
+        h("span", { class: "saved", id: "saved" }, state.db ? "" : "Labels save only when you are signed in"))));
+  $("#seg-note").value = lab.note || "";
+  seg.paragraphs.forEach((_, i) => renderParaRow(seg, i));
+}
+function togglePurpose(seg, i, k) {
+  const p = para(segLabel(seg.id), i); if (p.t === "N") return;
+  setPara(seg, i, { p: p.p.includes(k) ? p.p.filter(x => x !== k) : [...p.p, k] });
+}
+function refocus(seg) {
+  seg.paragraphs.forEach((_, i) => renderParaRow(seg, i));
+  const el = document.getElementById("para-" + state.focus);
+  if (el) { el.focus({ preventScroll: true }); el.scrollIntoView({ block: "nearest" }); }
+}
+function finishSeg(seg) {
+  const lab = segLabel(seg.id); lab.done = true; save("seg_labels", seg.id, lab);
+  const next = state.segs.findIndex((s, j) => j > state.cur.seg && !segLabel(s.id).done);
+  if (next >= 0) state.cur.seg = next; state.focus = 0; renderAll(); window.scrollTo({ top: 0 });
+}
+
+/* ---------- programs ---------- */
+const B_OPTS = [["hardcoded", "Hardcoded", "prints an answer it does not compute"],
+  ["partly_fixed", "Partly fixed", "some decisions written into the source"],
+  ["steered", "Steered", "searches, but tie-break/objective/order chosen to return the prose answer"],
+  ["independent", "Independent", "solves the problem on its own"],
+  ["na", "N/A", "program does not run or prints nothing"]];
+const SPEC_OPTS = [["none", "No change"], ["required", "Changed, required by the problem"], ["not_required", "Changed, not required"]];
+const EXTENT_OPTS = [["complete", "Complete", "a full answer is stated"], ["partial", "Partial", "some decisions only"], ["none", "None", "no values committed"]];
+const MATCH_OPTS = [["yes", "Same answer"], ["no", "Different answer"], ["na", "N/A", "not complete, or no output"]];
+function progLabel(id) { return state.progLabels[id] || (state.progLabels[id] = { b: null, spec: "none", extent: null, match: null, note: "", done: false }); }
+function renderProg() {
+  const pr = state.progs[state.cur.prog], lab = progLabel(pr.id), root = $("#item");
+  const radio = (name, opts, val, on) => opts.map(([v, n, d]) => h("label", { class: "opt" },
+    h("input", { type: "radio", name, id: name + "-" + v, value: v, checked: val === v, onchange: () => on(v) }), n, d ? h("small", {}, d) : null));
+  root.replaceChildren(
+    h("div", { class: "card" },
+      h("div", { class: "itemhead" }, h("span", { class: "id" }, pr.id),
+        h("span", { class: "chip split-" + pr.split }, pr.split === "dev" ? "dev set" : "test set"),
+        h("span", { class: "chip" }, `${pr.model} · ${pr.task} · ${pr.cond}`),
+        h("span", { class: "chip" }, pr.correct ? "scored correct" : "scored incorrect")),
+      h("details", { style: "margin-top:8px" }, h("summary", {}, "Problem given to the model"), h("pre", { class: "box" }, pr.problem)),
+      h("details", { style: "margin-top:6px" }, h("summary", {}, `Reasoning before the program (${Math.round(pr.reasoning.length / 1000)}k characters; the end usually states the prose answer)`),
+        h("pre", { class: "box", id: "reasoning-box" }, pr.reasoning))),
+    h("div", { class: "card" }, h("div", { class: "saved" }, "Program"), h("pre", { class: "box", style: "max-height:560px" }, pr.program)),
+    h("div", { class: "card" }, h("div", { class: "saved" }, "Output"), h("pre", { class: "box" }, pr.output || "(no output)")),
+    h("div", { class: "card", style: "display:flex;flex-direction:column;gap:10px" },
+      h("fieldset", {}, h("legend", {}, "B. What the program does with the prose answer"),
+        radio("b", B_OPTS, lab.b, v => { lab.b = v; save("prog_labels", pr.id, lab); renderStatus(); })),
+      h("fieldset", {}, h("legend", {}, "Specification-change flag (drops, relaxes or adds constraints, goals or actions)"),
+        radio("spec", SPEC_OPTS, lab.spec, v => { lab.spec = v; save("prog_labels", pr.id, lab); })),
+      h("fieldset", {}, h("legend", {}, "A2. Does the reasoning state an answer? (its final one, if it changes its mind)"),
+        radio("extent", EXTENT_OPTS, lab.extent, v => { lab.extent = v; if (v !== "complete") lab.match = "na"; save("prog_labels", pr.id, lab); renderProg(); })),
+      h("fieldset", {}, h("legend", {}, "C1. If complete: does the program's output give the same answer?"),
+        radio("match", MATCH_OPTS, lab.match, v => { lab.match = v; save("prog_labels", pr.id, lab); })),
+      h("label", { for: "prog-note", class: "saved" }, "Note (optional)"),
+      h("textarea", { id: "prog-note", oninput: e => { lab.note = e.target.value; save("prog_labels", pr.id, lab); } }),
+      h("div", { class: "actions" },
+        h("button", { class: "btn", onclick: () => finishProg(pr) }, lab.done ? "Done ✓ — next" : "Mark done and go to next"),
+        h("span", { class: "saved", id: "saved" }, state.db ? "" : "Labels save only when you are signed in"))));
+  $("#prog-note").value = lab.note || "";
+  const box = $("#reasoning-box"); if (box) box.parentElement.addEventListener("toggle", () => { box.scrollTop = box.scrollHeight; });
+}
+function finishProg(pr) {
+  const lab = progLabel(pr.id);
+  if (!lab.b || !lab.extent || (lab.extent === "complete" && !lab.match)) { setSaved("Answer B, A2 and (if complete) C1 first", true); return; }
+  lab.done = true; save("prog_labels", pr.id, lab);
+  const next = state.progs.findIndex((p, j) => j > state.cur.prog && !progLabel(p.id).done);
+  if (next >= 0) state.cur.prog = next; renderAll(); window.scrollTo({ top: 0 });
+}
+
+/* ---------- shell ---------- */
+function renderRail() {
+  const items = state.tab === "seg" ? state.segs : state.progs, curI = state.cur[state.tab];
+  const isDone = it => (state.tab === "seg" ? segLabel(it.id) : progLabel(it.id)).done;
+  const n = items.filter(isDone).length;
+  $("#rail").replaceChildren(h("div", { class: "rail-head" }, h("span", {}, `${n} / ${items.length} done`), h("span", {}, "dev first")),
+    ...items.map((it, j) => h("button", { "aria-current": j === curI, onclick: () => { state.cur[state.tab] = j; state.focus = 0; renderAll(); } },
+      h("span", { class: "dot" + (isDone(it) ? " done" : "") }), it.id, h("span", { class: "meta" }, `${it.model.slice(0, 2)}/${it.task.slice(0, 4)}`))));
+  const cur = $("#rail [aria-current='true']"); if (cur) cur.scrollIntoView({ block: "nearest" });
+}
+function renderStatus() {
+  const sd = state.segs.filter(s => segLabel(s.id).done).length, pd = state.progs.filter(p => progLabel(p.id).done).length;
+  $("#status").replaceChildren("Segments ", h("b", {}, `${sd}/${state.segs.length}`), " · Programs ", h("b", {}, `${pd}/${state.progs.length}`),
+    state.db ? "" : " · not signed in, labels are not saved");
+}
+function renderAll() {
+  $("#tab-seg").setAttribute("aria-selected", state.tab === "seg"); $("#tab-prog").setAttribute("aria-selected", state.tab === "prog");
+  renderRail(); renderStatus(); state.tab === "seg" ? renderSeg() : renderProg();
+}
+$("#tab-seg").onclick = () => { state.tab = "seg"; renderAll(); };
+$("#tab-prog").onclick = () => { state.tab = "prog"; renderAll(); };
+
+document.addEventListener("keydown", e => {
+  if (state.tab !== "seg" || e.target.closest("textarea, input") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const seg = state.segs[state.cur.seg]; if (!seg) return;
+  const i = state.focus, last = seg.paragraphs.length - 1, key = e.key;
+  const move = d => { state.focus = Math.max(0, Math.min(last, i + d)); refocus(seg); };
+  if (key === "j" || key === "ArrowDown") { e.preventDefault(); move(1); }
+  else if (key === "k" || key === "ArrowUp") { e.preventDefault(); move(-1); }
+  else if (key === "0" || key === "1" || key === "2") { setPara(seg, i, { t: { 0: "N", 1: "V", 2: "P" }[key] }); }
+  else if (key === "s") { if (para(segLabel(seg.id), i).t === "V") setPara(seg, i, { s: !para(segLabel(seg.id), i).s }); }
+  else if (key === "d" && i > 0) { const prev = para(segLabel(seg.id), i - 1); setPara(seg, i, { t: prev.t, s: prev.s, p: [...prev.p] }); move(1); }
+  else if (key === "Enter") { e.preventDefault(); finishSeg(seg); }
+  else { const p = PURPOSES.find(([, , k]) => k === key); if (p) togglePurpose(seg, i, p[0]); }
+});
+
+(async () => {
+  try {
+    const [segs, progs] = await Promise.all([fetch("data/segments.json").then(r => r.json()), fetch("data/programs.json").then(r => r.json())]);
+    state.segs = segs; state.progs = progs;
+  } catch (e) { $("#item").replaceChildren(h("div", { class: "banner" }, "Could not load the items (" + e.message + "). Reload the page.")); return; }
+  renderAll();
+  const db = window.claude ? await window.claude.use("db") : null;
+  state.db = db;
+  if (db) {
+    try {
+      const [sl, pl] = await Promise.all([db.collection("seg_labels").get(), db.collection("prog_labels").get()]);
+      for (const d of sl.docs) state.segLabels[d.id] = structuredClone(d.data());
+      for (const d of pl.docs) state.progLabels[d.id] = structuredClone(d.data());
+      const firstOpen = (items, labs) => Math.max(0, items.findIndex(it => !(labs[it.id] && labs[it.id].done)));
+      state.cur.seg = firstOpen(state.segs, state.segLabels); state.cur.prog = firstOpen(state.progs, state.progLabels);
+    } catch (e) { setSaved("Could not load saved labels (" + (e.code || e.message) + ")", true); }
+  }
+  renderAll();
+})();
+</script>

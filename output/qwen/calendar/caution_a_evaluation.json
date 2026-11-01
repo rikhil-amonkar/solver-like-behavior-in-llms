@@ -3,25 +3,31 @@
     "task": "calendar",
     "model": "qwen",
     "condition": "caution_a",
-    "execution_json": "output/qwen/calendar/caution_a_execution.json",
+    "execution_json": "output_rerun/qwen/calendar/caution_a_execution.json",
     "constraints_json": "data/constraints/calendar_constraints.json",
-    "timestamp": "2026-08-23T13:53:27Z",
+    "timestamp": "2026-10-22T13:22:39Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.96,
-    "constraint_correct": 96,
-    "constraint_incorrect": 4,
-    "golden_solution_accuracy": 0.63,
-    "golden_matches": 63,
+    "constraint_based_accuracy": 0.97,
+    "constraint_correct": 97,
+    "constraint_incorrect": 3,
+    "golden_solution_accuracy": 0.64,
+    "golden_matches": 64,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 0,
-      "execution_error": 2,
-      "no_output": 1,
+      "execution_error": 1,
+      "no_output": 0,
       "no_solution": 0,
       "parse_error": 0,
-      "constraint_violation": 1,
+      "constraint_violation": 2,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
   },
@@ -223,10 +229,10 @@
     {
       "example_id": "calendar_scheduling_example_786",
       "correct": true,
-      "matches_expected": true,
+      "matches_expected": false,
       "classification": "correct",
       "solution": [
-        "Wednesday",
+        "Monday",
         "16:30",
         "17:00"
       ],
@@ -256,18 +262,20 @@
     },
     {
       "example_id": "calendar_scheduling_example_724",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "no_output",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "16:00",
+        "16:30"
+      ],
       "expected_solution": [
         "Monday",
         "16:00",
         "16:30"
       ],
-      "validation": {
-        "error": "empty stdout"
-      }
+      "validation": {}
     },
     {
       "example_id": "calendar_scheduling_example_819",
@@ -798,20 +806,20 @@
     },
     {
       "example_id": "calendar_scheduling_example_246",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "12:30",
+        "13:00"
+      ],
       "expected_solution": [
         "Monday",
         "12:30",
         "13:00"
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_9x05lftt/solution.py\", line 28, in <module>\n    if all(\n       ^^^^\n  File \"/tmp/code_exec_9x05lftt/solution.py\", line 29, in <genexpr>\n    no"
-      }
+      "validation": {}
     },
     {
       "example_id": "calendar_scheduling_example_91",
@@ -985,20 +993,20 @@
     },
     {
       "example_id": "calendar_scheduling_example_356",
-      "correct": false,
-      "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "16:00",
+        "16:30"
+      ],
       "expected_solution": [
         "Monday",
         "16:00",
         "16:30"
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_qnkiuuab/solution.py\", line 1\n    code block, and have the program print only the final answer...\" I can provide a short explanation outside? The final answer requested maybe on"
-      }
+      "validation": {}
     },
     {
       "example_id": "calendar_scheduling_example_215",
@@ -1121,20 +1129,27 @@
     },
     {
       "example_id": "calendar_scheduling_example_910",
-      "correct": true,
-      "matches_expected": true,
-      "classification": "correct",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
       "solution": [
-        "Friday",
-        "14:30",
-        "15:30"
+        "Thursday",
+        "13:00",
+        "14:00"
       ],
       "expected_solution": [
         "Friday",
         "14:30",
         "15:30"
       ],
-      "validation": {}
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Thursday",
+          "start": 0,
+          "end": 24
+        }
+      }
     },
     {
       "example_id": "calendar_scheduling_example_865",
@@ -1478,20 +1493,20 @@
     },
     {
       "example_id": "calendar_scheduling_example_640",
-      "correct": true,
-      "matches_expected": true,
-      "classification": "correct",
-      "solution": [
-        "Monday",
-        "10:00",
-        "10:30"
-      ],
+      "correct": false,
+      "matches_expected": false,
+      "classification": "execution_error",
+      "solution": null,
       "expected_solution": [
         "Monday",
         "10:00",
         "10:30"
       ],
-      "validation": {}
+      "validation": {
+        "error": "execution failed",
+        "exit_code": 1,
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_y5payq9l/solution.py\", line 57, in <module>\n    if all(not has_conflict(person, day, start, end) for person in busy):\n       ^^^^^^^^^^^^^^^^^"
+      }
     },
     {
       "example_id": "calendar_scheduling_example_985",
@@ -1530,12 +1545,12 @@
     {
       "example_id": "calendar_scheduling_example_98",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "Monday",
-        "10:30",
-        "11:00"
+        "13:30",
+        "14:00"
       ],
       "expected_solution": [
         "Monday",

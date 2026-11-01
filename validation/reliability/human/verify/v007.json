@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "gemmaSearch": true,
+  "human": "V",
+  "model": "qwen",
+  "searchOk": true,
+  "task": "zebralogic",
+  "updatedAt": "2026-10-29T13:49:12.463Z"
+}

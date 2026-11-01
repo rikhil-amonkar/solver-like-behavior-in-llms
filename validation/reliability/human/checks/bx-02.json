@@ -1,0 +1,9 @@
+{
+  "gemma": "partly_fixed",
+  "human": "partly_fixed",
+  "model": "qwen",
+  "sheet": "bx",
+  "task": "meeting",
+  "trace": "qwen/meeting/baseline/meeting_planning_example_91",
+  "updatedAt": "2026-10-31T22:30:05.979Z"
+}

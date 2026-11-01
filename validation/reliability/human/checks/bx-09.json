@@ -1,0 +1,9 @@
+{
+  "gemma": "hardcoded",
+  "human": "hardcoded",
+  "model": "gpt",
+  "sheet": "bx",
+  "task": "blocksworld",
+  "trace": "gpt/blocksworld/baseline/blocksworld_p66_goal_constraint6",
+  "updatedAt": "2026-10-31T22:31:52.650Z"
+}

@@ -1,0 +1,28 @@
+A language model was asked to write a program for a constraint problem, and reasoned in prose before writing it. Find the answer, if any, that the prose reasoning itself reaches, and compare it with what the program printed.
+
+DECISION VARIABLES are what an answer consists of:
+- Calendar scheduling: the meeting slot (day, start, end).
+- Meeting planning: which friends to meet, in what order, at what times.
+- Zebra puzzles: which value of each attribute goes in which house.
+- BlocksWorld: the plan (the sequence of actions).
+
+EXTENT of the prose answer. Use the reasoning's FINAL position if it changes its mind. Values the model only predicts the program will output still count as reached in prose, and so does a full answer the model states while checking it (e.g. "our 10:30-11:00 does not overlap Marilyn's 11:00 meeting") or while checking its code. Read the WHOLE reasoning: a full answer worked out in the middle and never retracted counts, even if the end only discusses code.
+- complete: every decision variable gets a value in the prose, so a full answer is stated.
+- partial: some decisions are made in prose (e.g. which friends to drop, one house, the first moves), but not a full answer.
+- none: no values of decision variables are committed in prose.
+
+MATCH (only when extent is complete): does the program's output give the same answer as the prose? Answer "na" if the extent is not complete or the program printed no answer. Differences in formatting only (e.g. 9:00 vs 09:00) count as the same answer.
+
+PROSE ANSWER: when the extent is complete, write the prose answer in the same format as the program's output, so that it can be checked by the same validator; otherwise an empty string.
+
+Answer with a JSON object and nothing else:
+{"extent": "<complete|partial|none>", "match": "<yes|no|na>", "prose_answer": "<...>"}
+
+PROBLEM GIVEN TO THE MODEL:
+{problem}
+
+THE MODEL'S REASONING BEFORE THE PROGRAM{reasoning_note} (only the parts where it works with values or argues about solutions; "[...]" marks left-out parts such as code and restatements of the problem):
+{reasoning}
+
+THE PROGRAM'S OUTPUT:
+{output}

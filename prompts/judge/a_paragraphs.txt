@@ -1,0 +1,43 @@
+You are annotating the reasoning of a language model that was asked to write a program (Python, Python with Z3, or PDDL) for a constraint problem. A solver or interpreter runs the program to find the answer, so the model itself does not need to solve the problem. You will label each numbered paragraph of one excerpt of its reasoning.
+
+DECISION VARIABLES are what an answer consists of:
+- Calendar scheduling: the meeting slot (day, start, end).
+- Meeting planning: which friends to meet, in what order, at what times.
+- Zebra puzzles: which value of each attribute goes in which house.
+- BlocksWorld: the plan (the sequence of actions).
+
+SOLVER-LIKE behavior is reasoning that establishes facts about the solutions of THIS instance. Give each paragraph one TYPE: V, P, VP (both) or N.
+
+V (values): the paragraph assigns, tests or rules out concrete values of decision variables of this instance. Examples: "Monday 14:00-14:30 works"; "Bob can't be in house 1, so Alice is"; "meet Karen at 9:30, then travel 12 min"; "unstack C, put it down, then stack A on B"; "meet Jeffrey first, then Sarah; then Brian is no longer reachable". Ruling out or narrowing candidates counts: "Natalie is busy until 11:30, so no slot before 11:30 works"; ruling out a friend whose window is too short; propagating that two attributes share a house; computing free intervals in order to find a slot.
+
+P (properties) is narrow. A paragraph has the properties type only if BOTH of these hold:
+  1. It concludes something about the WHOLE set of solutions of this instance, of one of these kinds: no solution exists (or the goal cannot be reached); a solution exists; the solution is unique; a bound on the optimum ("at most 3 friends can be met", "the plan needs at least 6 moves").
+  2. The paragraph itself contains the argument for it, a derivation from this instance's specific data or constraints ("Ann and Bo are both only free 9-10 and each needs 45 min plus 20 min travel, so no schedule meets both").
+VP (both): the paragraph does both, e.g. it rules out values or tests a concrete schedule on the way to a property argued in the paragraph ("if brown hair were in house 2, Eric would need a house above 2, impossible; so the solution is unique"; "the two meetings can total at most 255 - 14 = 241 min; check: Tim ends 4:15, travel 13, arrive 4:28..."). Use P only when no concrete values are committed, tested or ruled out.
+
+A paragraph that claims such a property but fails 1 or 2 has no properties type (it is V if it also handles values, else N), in particular:
+  - a property conclusion whose argument is in an earlier paragraph ("Thus the goal is unreachable.", "So max 8."). This applies ONLY to claims about the solution set: a paragraph that states or sums up concrete values ("so Ann, Bo and Cy, ending at 20:30, 6 friends") is V, even if they were derived earlier;
+  - a conclusion with no argument ("all 9 can be met", "the solution is unique, good", "we found it unique");
+  - assuming solvability, e.g. because the problem says a solution exists, or hedging ("it may be impossible, but we only need to encode it");
+  - statements about the program or its search rather than the instance's solutions ("the search space is small, brute force is fine", "Z3 might return a different model if there are several").
+
+N (not solver-like): everything else, including restating the problem's data or constraints (even with small rewrites such as converting times to minutes), designing the encoding or the code, choosing data structures, output format, parsing, writing or quoting code, and interpreting what a constraint means. Also N:
+  - checking the program or encoding against the problem, e.g. that the initial state lists the right facts, that each clue is encoded, that the code's busy intervals match the problem, or that a constraint behaves as intended on a hypothetical plan. This is N even if the paragraph works out a value while checking ("so Arnold must be first; the code doesn't say that explicitly") or measures the instance for the encoding ("the tallest initial stack has 7 blocks, so heights up to 7 must be tracked");
+  - interpreting a constraint, including a one-off check of one example value that was not obtained by solving ("does 11:30 count as morning? It should"). Interpretation is V only when the model chooses the reading by solving the problem under each reading.
+
+Judge each paragraph by what it does, using the paragraphs around it for context. Short connective paragraphs ("Let's check.", "Now the code.") are N unless they themselves state a value.
+
+OUTPUT FORMAT. One line per paragraph, in order, for every paragraph number, and nothing else:
+<number>|<TYPE>
+Example for a five-paragraph excerpt:
+1|N
+2|V
+3|VP
+4|P
+5|N
+
+PROBLEM GIVEN TO THE MODEL:
+{problem}
+
+REASONING EXCERPT ({n} paragraphs; excerpt {segment} of {n_segments} of the full reasoning):
+{paragraphs}

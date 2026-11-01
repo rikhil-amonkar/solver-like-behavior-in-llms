@@ -5,13 +5,13 @@
     "condition": "caution_b",
     "execution_json": "output/deepseek/blocksworld/caution_b_execution.json",
     "constraints_json": "data/constraints/blocksworld_constraints.json",
-    "timestamp": "2026-08-28T15:52:23Z",
+    "timestamp": "2026-10-21T21:21:01Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.69,
-    "constraint_correct": 69,
-    "constraint_incorrect": 31,
+    "constraint_based_accuracy": 0.71,
+    "constraint_correct": 71,
+    "constraint_incorrect": 29,
     "error_breakdown": {
       "no_code_extracted": 1,
       "execution_error": 6,
@@ -19,11 +19,13 @@
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
       "pddl_error": 0,
-      "planning_failure": 19,
-      "incorrect_plan_exists": 0,
-      "evaluation_error": 0,
-      "solver_timeout": 5
+      "planning_failure": 6,
+      "solver_timeout": 2,
+      "invalid_plan": 11,
+      "incorrect_plan_exists": 3,
+      "evaluation_error": 0
     }
   },
   "examples": [
@@ -41,23 +43,15 @@
     },
     {
       "example_id": "blocksworld_p23_action_constraint7",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p14_state_constraint12",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p30_baseline_constraint30",
@@ -97,18 +91,22 @@
     },
     {
       "example_id": "blocksworld_p62_goal_constraint2",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_2ojr4mjl/plan.txt\n;Plan executed successfully - checking goal\nGoal not satisfied\nPlan invalid\n\n\nFailed plans:\n /tmp/val_validation_2ojr4mjl/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p39_action_constraint23",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_3smthg3z/plan.txt\n;\nErrors: 0, warnings: 16\n"
       }
     },
     {
@@ -128,25 +126,33 @@
     },
     {
       "example_id": "blocksworld_p25_action_constraint9",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_pfuxskfh/plan.txt\n;\nErrors: 0, warnings: 14\n"
+      }
     },
     {
       "example_id": "blocksworld_p24_action_constraint8",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "incorrect_plan_exists",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "Found a plan, but no plan should exist for this problem",
+        "error_type": "incorrect_plan_exists"
       }
     },
     {
       "example_id": "blocksworld_p40_action_constraint24",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "planning_failure",
+      "validation": {
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": " state(s).\n[t=0.055999s, 12396 KB] Dead ends: 3092 state(s).\n[t=0.055999s, 12396 KB] Number of registered states: 9648\n[t=0.055999s, 12396 KB] Int hash set load factor: 9648/16384 = 0.588867\n[t=0.055999s, 12396 KB] Int hash set resizes: 14\n[t=0.055999s, 12396 KB] Search time: 0.051999s\n[t=0.055999s, 12396 KB] Total time: 0.055999s\nTask is provably unsolvable.\nPeak memory: 12396 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.21s\n"
+      }
     },
     {
       "example_id": "blocksworld_p15_baseline_constraint15",
@@ -168,9 +174,14 @@
     },
     {
       "example_id": "blocksworld_p77_goal_constraint17",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "planning_failure",
+      "validation": {
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": "B] Generated 0 state(s).\n[t=0.002001s, 11736 KB] Dead ends: 1 state(s).\n[t=0.002001s, 11736 KB] Number of registered states: 1\n[t=0.002001s, 11736 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002001s, 11736 KB] Int hash set resizes: 0\n[t=0.002001s, 11736 KB] Search time: 0.000000s\n[t=0.002001s, 11736 KB] Total time: 0.002001s\nTask is provably unsolvable.\nPeak memory: 11736 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.13s\n"
+      }
     },
     {
       "example_id": "blocksworld_p18_state_constraint14",
@@ -198,19 +209,19 @@
     },
     {
       "example_id": "blocksworld_p89_initial_constraint9",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_dcl5pl3d/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_dcl5pl3d/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p06_state_constraint6",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p70_baseline_constraint70",
@@ -232,9 +243,13 @@
     },
     {
       "example_id": "blocksworld_p73_goal_constraint13",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_rwh3rwgf/plan.txt\n;Plan executed successfully - checking goal\nGoal not satisfied\nPlan invalid\n\n\nFailed plans:\n /tmp/val_validation_rwh3rwgf/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p31_baseline_constraint31",
@@ -245,11 +260,11 @@
     {
       "example_id": "blocksworld_p10_action_constraint2",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_kyefwa3n/plan.txt\n;\nErrors: 0, warnings: 15\n"
       }
     },
     {
@@ -263,9 +278,9 @@
       "correct": false,
       "classification": "solver_timeout",
       "validation": {
-        "error": "Online solver timeout",
+        "error": "planner timed out on the model's PDDL",
         "error_type": "solver_timeout",
-        "planner_output": "Solver timeout after 30.0s"
+        "planner_output": "evaluated, 1522 expanded\n[t=0.029999s, 12528 KB] New best heuristic value for landmark_sum_heuristic: 4\n[t=0.029999s, 12528 KB] g=39, 1570 evaluated, 1569 expanded\n[t=0.029999s, 12528 KB] New best heuristic value for landmark_sum_heuristic: 3\n[t=0.029999s, 12528 KB] g=40, 1571 evaluated, 1570 expanded\nPeak memory: 336720 KB\ncaught signal 24 -- exiting\nTime limit has been reached.\nRemove intermediate file output.sas\nsearch exit code: 23\n\nDriver aborting after search\nINFO     Planner time: 29.15s\n"
       }
     },
     {
@@ -276,23 +291,15 @@
     },
     {
       "example_id": "blocksworld_p20_state_constraint16",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p56_action_constraint40",
-      "correct": false,
-      "classification": "solver_timeout",
-      "validation": {
-        "error": "Online solver timeout",
-        "error_type": "solver_timeout",
-        "planner_output": "Solver timeout after 30.0s"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p99_initial_constraint19",
@@ -308,13 +315,9 @@
     },
     {
       "example_id": "blocksworld_p09_state_constraint8",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p100_initial_constraint20",
@@ -330,13 +333,9 @@
     },
     {
       "example_id": "blocksworld_p41_action_constraint25",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p51_baseline_constraint51",
@@ -358,9 +357,13 @@
     },
     {
       "example_id": "blocksworld_p28_action_constraint12",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "solver_timeout",
+      "validation": {
+        "error": "planner timed out on the model's PDDL",
+        "error_type": "solver_timeout",
+        "planner_output": " evaluated, 111 expanded\n[t=0.030999s, 12524 KB] New best heuristic value for landmark_sum_heuristic: 3\n[t=0.030999s, 12524 KB] g=36, 1194 evaluated, 1086 expanded\n[t=0.049999s, 12648 KB] New best heuristic value for landmark_sum_heuristic: 2\n[t=0.049999s, 12648 KB] g=60, 2540 evaluated, 2304 expanded\nPeak memory: 272988 KB\ncaught signal 24 -- exiting\nTime limit has been reached.\nRemove intermediate file output.sas\nsearch exit code: 23\n\nDriver aborting after search\nINFO     Planner time: 29.20s\n"
+      }
     },
     {
       "example_id": "blocksworld_p80_baseline_constraint80",
@@ -391,13 +394,9 @@
     },
     {
       "example_id": "blocksworld_p37_action_constraint21",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p64_goal_constraint4",
@@ -428,30 +427,23 @@
       "correct": false,
       "classification": "planning_failure",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
+        "error": "planner did not find a plan (but plan should exist)",
         "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "planner_exit_code": 11,
+        "planner_output": "nerated 54 state(s).\n[t=0.018011s, 12696 KB] Dead ends: 14 state(s).\n[t=0.018011s, 12696 KB] Number of registered states: 33\n[t=0.018011s, 12696 KB] Int hash set load factor: 33/64 = 0.515625\n[t=0.018011s, 12696 KB] Int hash set resizes: 6\n[t=0.018011s, 12696 KB] Search time: 0.001011s\n[t=0.018011s, 12696 KB] Total time: 0.018011s\nTask is provably unsolvable.\nPeak memory: 12696 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.17s\n"
       }
     },
     {
       "example_id": "blocksworld_p70_goal_constraint10",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p18_baseline_constraint18",
-      "correct": false,
-      "classification": "solver_timeout",
-      "validation": {
-        "error": "Online solver timeout",
-        "error_type": "solver_timeout",
-        "planner_output": "Solver timeout after 30.0s"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p34_baseline_constraint34",
@@ -461,9 +453,14 @@
     },
     {
       "example_id": "blocksworld_p65_goal_constraint5",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "planning_failure",
+      "validation": {
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": "B] Generated 0 state(s).\n[t=0.002001s, 11736 KB] Dead ends: 1 state(s).\n[t=0.002001s, 11736 KB] Number of registered states: 1\n[t=0.002001s, 11736 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002001s, 11736 KB] Int hash set resizes: 0\n[t=0.002001s, 11736 KB] Search time: 0.000000s\n[t=0.002001s, 11736 KB] Total time: 0.002001s\nTask is provably unsolvable.\nPeak memory: 11736 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.12s\n"
+      }
     },
     {
       "example_id": "blocksworld_p98_initial_constraint18",
@@ -473,29 +470,25 @@
     },
     {
       "example_id": "blocksworld_p42_action_constraint26",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
-    },
-    {
-      "example_id": "blocksworld_p75_goal_constraint15",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
-    },
-    {
-      "example_id": "blocksworld_p81_initial_constraint1",
       "correct": true,
       "classification": "correct",
       "validation": {}
+    },
+    {
+      "example_id": "blocksworld_p75_goal_constraint15",
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
+    },
+    {
+      "example_id": "blocksworld_p81_initial_constraint1",
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_fnocxy8m/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_fnocxy8m/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p79_baseline_constraint79",
@@ -529,9 +522,12 @@
     },
     {
       "example_id": "blocksworld_p07_state_constraint7",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "incorrect_plan_exists",
+      "validation": {
+        "error": "Found a plan, but no plan should exist for this problem",
+        "error_type": "incorrect_plan_exists"
+      }
     },
     {
       "example_id": "blocksworld_p45_baseline_constraint45",
@@ -559,28 +555,28 @@
     },
     {
       "example_id": "blocksworld_p82_initial_constraint2",
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_lvu737z5/plan.txt\n;\nPlan failed to execute\n\n\nFailed plans:\n /tmp/val_validation_lvu737z5/plan.txt \n"
+      }
+    },
+    {
+      "example_id": "blocksworld_p42_baseline_constraint42",
       "correct": true,
       "classification": "correct",
       "validation": {}
     },
     {
-      "example_id": "blocksworld_p42_baseline_constraint42",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
-    },
-    {
       "example_id": "blocksworld_p26_action_constraint10",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_kznsk3re/plan.txt\n;\nErrors: 0, warnings: 24\n"
       }
     },
     {
@@ -591,22 +587,19 @@
     },
     {
       "example_id": "blocksworld_p41_baseline_constraint41",
-      "correct": false,
-      "classification": "solver_timeout",
-      "validation": {
-        "error": "Online solver timeout",
-        "error_type": "solver_timeout",
-        "planner_output": "Solver timeout after 30.0s"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p38_action_constraint22",
       "correct": false,
       "classification": "planning_failure",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
+        "error": "planner did not find a plan (but plan should exist)",
         "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "planner_exit_code": 11,
+        "planner_output": "nerated 54 state(s).\n[t=0.004000s, 11732 KB] Dead ends: 14 state(s).\n[t=0.004000s, 11732 KB] Number of registered states: 33\n[t=0.004000s, 11732 KB] Int hash set load factor: 33/64 = 0.515625\n[t=0.004000s, 11732 KB] Int hash set resizes: 6\n[t=0.004000s, 11732 KB] Search time: 0.001000s\n[t=0.004000s, 11732 KB] Total time: 0.004000s\nTask is provably unsolvable.\nPeak memory: 11732 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.12s\n"
       }
     },
     {
@@ -623,9 +616,13 @@
     },
     {
       "example_id": "blocksworld_p67_goal_constraint7",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "invalid_plan",
+      "validation": {
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_rw3bx5dt/plan.txt\n;Plan executed successfully - checking goal\nGoal not satisfied\nPlan invalid\n\n\nFailed plans:\n /tmp/val_validation_rw3bx5dt/plan.txt \n"
+      }
     },
     {
       "example_id": "blocksworld_p89_baseline_constraint89",
@@ -659,9 +656,14 @@
     },
     {
       "example_id": "blocksworld_p72_goal_constraint12",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "planning_failure",
+      "validation": {
+        "error": "planner did not find a plan (but plan should exist)",
+        "error_type": "planning_failure",
+        "planner_exit_code": 11,
+        "planner_output": "B] Generated 0 state(s).\n[t=0.003001s, 11736 KB] Dead ends: 1 state(s).\n[t=0.003001s, 11736 KB] Number of registered states: 1\n[t=0.003001s, 11736 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.003001s, 11736 KB] Int hash set resizes: 0\n[t=0.003001s, 11736 KB] Search time: 0.000000s\n[t=0.003001s, 11736 KB] Total time: 0.003001s\nTask is provably unsolvable.\nPeak memory: 11736 KB\nRemove intermediate file output.sas\nsearch exit code: 11\n\nDriver aborting after search\nINFO     Planner time: 0.12s\n"
+      }
     },
     {
       "example_id": "blocksworld_p97_initial_constraint17",
@@ -671,9 +673,12 @@
     },
     {
       "example_id": "blocksworld_p19_state_constraint15",
-      "correct": true,
-      "classification": "correct",
-      "validation": {}
+      "correct": false,
+      "classification": "incorrect_plan_exists",
+      "validation": {
+        "error": "Found a plan, but no plan should exist for this problem",
+        "error_type": "incorrect_plan_exists"
+      }
     },
     {
       "example_id": "blocksworld_p81_baseline_constraint81",
@@ -683,13 +688,9 @@
     },
     {
       "example_id": "blocksworld_p01_baseline_constraint1",
-      "correct": false,
-      "classification": "planning_failure",
-      "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p61_baseline_constraint61",
@@ -699,13 +700,9 @@
     },
     {
       "example_id": "blocksworld_p01_state_constraint1",
-      "correct": false,
-      "classification": "solver_timeout",
-      "validation": {
-        "error": "Online solver timeout",
-        "error_type": "solver_timeout",
-        "planner_output": "Solver timeout after 30.0s"
-      }
+      "correct": true,
+      "classification": "correct",
+      "validation": {}
     },
     {
       "example_id": "blocksworld_p46_action_constraint30",
@@ -718,11 +715,11 @@
     {
       "example_id": "blocksworld_p21_action_constraint5",
       "correct": false,
-      "classification": "planning_failure",
+      "classification": "invalid_plan",
       "validation": {
-        "error": "planner did not find a valid plan (but plan should exist)",
-        "error_type": "planning_failure",
-        "planner_output": "planner timeout or no solution"
+        "error": "plan from the model's PDDL is not valid under the golden PDDL",
+        "error_type": "invalid_plan",
+        "val_output": "Checking plan: /tmp/val_validation_1t1mc1uo/plan.txt\n;\nErrors: 0, warnings: 14\n"
       }
     },
     {

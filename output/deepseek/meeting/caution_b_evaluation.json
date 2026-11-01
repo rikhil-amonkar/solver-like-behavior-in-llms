@@ -5,25 +5,28 @@
     "condition": "caution_b",
     "execution_json": "output/deepseek/meeting/caution_b_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-26T14:55:30Z",
+    "timestamp": "2026-10-30T18:48:53Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.92,
-    "constraint_correct": 92,
-    "constraint_incorrect": 8,
-    "golden_solution_accuracy": 0.37,
-    "golden_matches": 37,
+    "constraint_based_accuracy": 0.93,
+    "constraint_correct": 93,
+    "constraint_incorrect": 7,
+    "golden_solution_accuracy": 0.38,
+    "golden_matches": 38,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 0,
-      "execution_error": 6,
+      "execution_error": 5,
       "no_output": 1,
       "no_solution": 0,
       "parse_error": 0,
       "constraint_violation": 1,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -187,7 +190,7 @@
     {
       "example_id": "meeting_planning_example_350",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -271,10 +274,25 @@
     },
     {
       "example_id": "meeting_planning_example_423",
-      "correct": false,
+      "correct": true,
       "matches_expected": false,
-      "classification": "execution_error",
-      "solution": null,
+      "classification": "correct",
+      "solution": [
+        "You start at Presidio at 9:00AM.",
+        "You travel to Financial District in 23 minutes and arrive at 9:23AM.",
+        "You wait until 9:45AM.",
+        "You meet Brian for 15 minutes from 9:45AM to 10:00AM.",
+        "You travel to Richmond District in 21 minutes and arrive at 10:21AM.",
+        "You wait until 1:00PM.",
+        "You meet Jason for 90 minutes from 1:00PM to 2:30PM.",
+        "You travel to Union Square in 21 minutes and arrive at 2:51PM.",
+        "You meet Laura for 75 minutes from 2:51PM to 4:06PM.",
+        "You travel to Golden Gate Park in 22 minutes and arrive at 4:28PM.",
+        "You meet Elizabeth for 105 minutes from 4:28PM to 6:13PM.",
+        "You travel to North Beach in 24 minutes and arrive at 6:37PM.",
+        "You wait until 6:45PM.",
+        "You meet Melissa for 45 minutes from 6:45PM to 7:30PM."
+      ],
       "expected_solution": [
         "You start at Presidio at 9:00AM.",
         "You travel to Richmond District in 7 minutes and arrive at 9:07AM.",
@@ -289,11 +307,7 @@
         "You travel to North Beach in 10 minutes and arrive at 7:02PM.",
         "You meet Melissa for 45 minutes from 7:02PM to 7:47PM."
       ],
-      "validation": {
-        "error": "execution failed",
-        "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ovm9kbze/solution.py\", line 13, in <module>\n    for from_loc, to_loc, dur in [\n        ^^^^^^^^^^^^^^^^^^^^^\nTypeError: cannot unpack non-iter"
-      }
+      "validation": {}
     },
     {
       "example_id": "meeting_planning_example_715",
@@ -644,7 +658,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_5mwxktm9/solution.py\", line 213, in <module>\n    print(build_itinerary())\n          ^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_5mwxktm9/solution"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_qy99buiw/solution.py\", line 213, in <module>\n    print(build_itinerary())\n          ^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_qy99buiw/solution"
       }
     },
     {
@@ -1948,7 +1962,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_atnz9m4g/solution.py\", line 1\n    SOLUTION? No, code block only. Inside code no SOLUTION.\n            ^\nSyntaxError: invalid syntax\n"
+        "stderr": "  File \"/tmp/code_exec_xqknw2jg/solution.py\", line 1\n    SOLUTION? No, code block only. Inside code no SOLUTION.\n            ^\nSyntaxError: invalid syntax\n"
       }
     },
     {
@@ -1982,7 +1996,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_bdkq742z/solution.py\", line 1\n    code block. They said \"enclose the complete solution in a single\n                          ^\nSyntaxError: unterminated string literal (detected"
+        "stderr": "  File \"/tmp/code_exec_7zu5pxf0/solution.py\", line 1\n    code block. They said \"enclose the complete solution in a single\n                          ^\nSyntaxError: unterminated string literal (detected"
       }
     },
     {
@@ -2282,7 +2296,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_vhc7ftpr/solution.py\", line 1, in <module>\n    N = len(friends)\n            ^^^^^^^\nNameError: name 'friends' is not defined\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_qlxyr599/solution.py\", line 1, in <module>\n    N = len(friends)\n            ^^^^^^^\nNameError: name 'friends' is not defined\n"
       }
     },
     {
@@ -2808,7 +2822,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_br00p85w/solution.py\", line 63\n    if best_statements is None or len(order) > len(best_order?) ...\n                                                             ^\nSyntaxError: in"
+        "stderr": "  File \"/tmp/code_exec_gnki9qqp/solution.py\", line 63\n    if best_statements is None or len(order) > len(best_order?) ...\n                                                             ^\nSyntaxError: in"
       }
     },
     {

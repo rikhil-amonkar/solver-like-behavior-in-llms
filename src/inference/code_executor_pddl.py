@@ -1,6 +1,7 @@
 """Execute and validate PDDL code for planning tasks."""
 
 import subprocess
+import sys
 import tempfile
 import re
 import json
@@ -237,72 +238,73 @@ def run_val_validator(
             return False, "", f"VAL execution error: {str(e)}"
 
 
+# Fast Downward exit codes (see repos/downward/driver/returncodes.py)
+FD_UNSOLVABLE_CODES = {10, 11}  # proven unsolvable by translator or complete search
+FD_TIMEOUT_CODES = {21, 23, 24}
+FD_INPUT_ERROR_CODES = {30, 31, 32, 33, 34, 35, 36}
+
+
+def get_fast_downward_path() -> str:
+    """Default Fast Downward driver path (built by scripts/setup_planners.sh)."""
+    project_root = Path(__file__).parent.parent.parent
+    return str(project_root / "repos" / "downward" / "fast-downward.py")
+
+
 def run_fast_downward_planner(
     domain_pddl: str,
     problem_pddl: str,
-    timeout_sec: float = 60.0
-) -> Tuple[Optional[str], str, str, bool]:
+    timeout_sec: float = 60.0,
+    planner_path: Optional[str] = None,
+) -> Tuple[Optional[str], str, str, bool, Optional[int]]:
     """
-    Run Fast Downward planner on domain and problem.
-
-    This uses a simple LAMA-first configuration for quick planning.
+    Run a local Fast Downward planner (LAMA-first configuration) on domain and problem.
 
     Args:
         domain_pddl: Domain PDDL definition
         problem_pddl: Problem PDDL definition
-        timeout_sec: Timeout for planning
+        timeout_sec: Overall time limit for translation and search
+        planner_path: Path to fast-downward.py (defaults to repos/downward/fast-downward.py)
 
     Returns:
-        (plan_text, stdout, stderr, plan_found)
+        (plan_text, stdout, stderr, plan_found, exit_code)
+        exit_code is Fast Downward's return code, or None if the planner could not be run
     """
+    planner_path = planner_path or get_fast_downward_path()
+    if not Path(planner_path).exists():
+        return None, "", f"Fast Downward not found at: {planner_path} (run scripts/setup_planners.sh)", False, None
+
     with tempfile.TemporaryDirectory(prefix="fd_planner_") as tmpdir:
         tmpdir_path = Path(tmpdir)
         domain_file = tmpdir_path / "domain.pddl"
         problem_file = tmpdir_path / "problem.pddl"
-        sas_file = tmpdir_path / "output.sas"
+        plan_file = tmpdir_path / "sas_plan"
 
         domain_file.write_text(domain_pddl, encoding="utf-8")
         problem_file.write_text(problem_pddl, encoding="utf-8")
 
         try:
-            # Fast Downward requires two steps:
-            # 1. Translate PDDL to SAS+ (using translate/translate.py)
-            # 2. Search for plan (using downward binary)
-
-            # We'll use the simple approach: call fast-downward.py wrapper
-            # If not available, we can use pyperplan as fallback
-
-            # Try pyperplan first (pure Python, easier to install)
-            try:
-                result = subprocess.run(
-                    ["pyperplan", str(domain_file), str(problem_file)],
-                    cwd=tmpdir,
-                    capture_output=True,
-                    text=True,
-                    timeout=timeout_sec,
-                    check=False,
-                )
-
-                stdout = result.stdout
-                stderr = result.stderr
-                exit_code = result.returncode
-
-                # Pyperplan writes plan to <problem_name>.soln
-                plan_files = list(tmpdir_path.glob("*.soln"))
-                if plan_files and exit_code == 0:
-                    plan_text = plan_files[0].read_text(encoding="utf-8")
-                    return plan_text, stdout, stderr, True
-                else:
-                    return None, stdout, stderr, False
-
-            except FileNotFoundError:
-                # Pyperplan not available, return no planner found
-                return None, "", "No PDDL planner found (pyperplan not installed)", False
-
+            result = subprocess.run(
+                [
+                    sys.executable, planner_path,
+                    "--overall-time-limit", f"{int(timeout_sec)}s",
+                    "--plan-file", str(plan_file),
+                    "--alias", "lama-first",
+                    str(domain_file), str(problem_file),
+                ],
+                cwd=tmpdir,
+                capture_output=True,
+                text=True,
+                timeout=timeout_sec + 30,
+                check=False,
+            )
         except subprocess.TimeoutExpired:
-            return None, "", f"Planner timeout after {timeout_sec}s", False
+            return None, "", f"Planner timeout after {timeout_sec}s", False, 23
         except Exception as e:
-            return None, "", f"Planner execution error: {str(e)}", False
+            return None, "", f"Planner execution error: {str(e)}", False, None
+
+        if result.returncode == 0 and plan_file.exists():
+            return plan_file.read_text(encoding="utf-8"), result.stdout, result.stderr, True, 0
+        return None, result.stdout, result.stderr, False, result.returncode
 
 
 def run_online_planner(
@@ -426,9 +428,8 @@ def run_pddl_code(
     val_path: Optional[str] = None,
     run_planner: bool = True,
     run_validator: bool = True,
-    use_online_solver: bool = True,
+    use_online_solver: bool = False,
     online_solver_name: str = "dual-bfws-ffparser",
-    groundtruth_problem_pddl: Optional[str] = None
 ) -> dict:
     """
     Extract, validate, plan, and validate PDDL code.
@@ -436,21 +437,20 @@ def run_pddl_code(
     This function:
     1. Extracts domain and problem PDDL from model output (JSON or raw format)
     2. Validates basic PDDL syntax
-    3. Runs a PDDL planner to generate a plan (if run_planner=True)
-       - Uses groundtruth_problem_pddl if provided (for BlocksWorld evaluation)
-       - Otherwise uses the model's problem PDDL
-    4. Validates the plan with VAL (if run_validator=True and plan exists)
+    3. Runs a PDDL planner on the model's domain and problem (if run_planner=True)
+    4. Validates the plan with VAL against the model's own domain and problem
+       (if run_validator=True and plan exists). Correctness against the golden
+       domain/problem is checked in the evaluation stage (evaluation/blocksworld_eval.py).
 
     Args:
         code: Model output containing PDDL code
         timeout_sec: Timeout for planner execution
-        planner_path: Optional path to PDDL planner (not used if use_online_solver=True)
+        planner_path: Optional path to fast-downward.py (not used if use_online_solver=True)
         val_path: Path to VAL Validate binary (defaults to repos/VAL/build/bin/Validate relative to project root)
         run_planner: Whether to run planner (default True)
         run_validator: Whether to run VAL validator on plan (default True)
-        use_online_solver: Whether to use online solver API (default True for better PDDL support)
+        use_online_solver: Whether to use the solver.planning.domains API instead of local Fast Downward
         online_solver_name: Name of online solver to use (default: dual-bfws-ffparser)
-        groundtruth_problem_pddl: Optional groundtruth problem PDDL (for testing domain against correct initial/goal)
 
     Returns:
         Dict with keys:
@@ -458,9 +458,11 @@ def run_pddl_code(
             - domain_pddl: str or None (model's domain)
             - problem_pddl: str or None (model's problem)
             - syntax_valid: bool
-            - plan: str or None (generated using model's domain + groundtruth problem if provided)
+            - plan: str or None (generated using model's domain + model's problem)
             - plan_found: bool or None
-            - val_valid: bool or None (if validator was run, validated against groundtruth if provided)
+            - planner_exit_code: int or None (Fast Downward return code; None for online solver)
+            - plan_proven_unsolvable: bool (planner proved the model's task has no plan)
+            - val_valid: bool or None (plan validated against model's own domain + problem)
             - val_output: str (validator stdout)
             - stdout: str (planner stdout)
             - stderr: str (planner stderr)
@@ -543,19 +545,17 @@ def run_pddl_code(
             "used_online_solver": False,
         }
 
-    # Run planner (online or local)
-    # IMPORTANT: Use groundtruth problem PDDL if provided (for BlocksWorld evaluation)
-    # This ensures we're testing the model's domain against the correct initial/goal states
-    problem_for_planning = groundtruth_problem_pddl if groundtruth_problem_pddl else problem_pddl
-
+    # Run planner (online or local) on the model's own formalization
+    planner_exit_code = None
     if use_online_solver:
         plan_text, planner_stdout, planner_stderr, plan_found = run_online_planner(
-            domain_pddl, problem_for_planning, online_solver_name, timeout_sec
+            domain_pddl, problem_pddl, online_solver_name, timeout_sec
         )
     else:
-        plan_text, planner_stdout, planner_stderr, plan_found = run_fast_downward_planner(
-            domain_pddl, problem_for_planning, timeout_sec
+        plan_text, planner_stdout, planner_stderr, plan_found, planner_exit_code = run_fast_downward_planner(
+            domain_pddl, problem_pddl, timeout_sec, planner_path
         )
+    plan_proven_unsolvable = planner_exit_code in FD_UNSOLVABLE_CODES
 
     # If no plan found, return planner results
     if not plan_found or not plan_text:
@@ -573,15 +573,16 @@ def run_pddl_code(
             "error": "planner did not find a plan",
             "timeout_sec": timeout_sec,
             "used_online_solver": use_online_solver,
+            "planner_exit_code": planner_exit_code,
+            "plan_proven_unsolvable": plan_proven_unsolvable,
         }
 
-    # Run VAL validator if enabled
-    # Use groundtruth problem PDDL if provided (consistent with planning)
+    # Run VAL validator if enabled (sanity check against the model's own files)
     val_valid = None
     val_output = ""
     if run_validator:
         val_valid, val_stdout, val_stderr = run_val_validator(
-            domain_pddl, problem_for_planning, plan_text, val_path
+            domain_pddl, problem_pddl, plan_text, val_path
         )
         val_output = val_stdout if val_stdout else val_stderr
 
@@ -597,6 +598,8 @@ def run_pddl_code(
         "stdout": planner_stdout,
         "stderr": planner_stderr,
         "used_online_solver": use_online_solver,
+        "planner_exit_code": planner_exit_code,
+        "plan_proven_unsolvable": False,
         "error": None if val_valid or not run_validator else "plan found but VAL validation failed",
         "timeout_sec": timeout_sec,
     }

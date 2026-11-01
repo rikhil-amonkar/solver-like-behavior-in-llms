@@ -5,15 +5,15 @@
     "condition": "caution_b",
     "execution_json": "output/gpt/meeting/caution_b_execution.json",
     "constraints_json": "data/constraints/meeting_constraints.json",
-    "timestamp": "2026-08-26T02:18:18Z",
+    "timestamp": "2026-10-30T18:48:54Z",
     "num_examples": 100
   },
   "summary": {
-    "constraint_based_accuracy": 0.9,
-    "constraint_correct": 90,
-    "constraint_incorrect": 10,
-    "golden_solution_accuracy": 0.03,
-    "golden_matches": 3,
+    "constraint_based_accuracy": 0.79,
+    "constraint_correct": 79,
+    "constraint_incorrect": 21,
+    "golden_solution_accuracy": 0.46,
+    "golden_matches": 46,
     "golden_available": 100,
     "error_breakdown": {
       "no_code_extracted": 1,
@@ -21,9 +21,12 @@
       "no_output": 0,
       "no_solution": 0,
       "parse_error": 0,
-      "constraint_violation": 0,
+      "constraint_violation": 9,
+      "suboptimal": 2,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0
     }
@@ -31,9 +34,9 @@
   "examples": [
     {
       "example_id": "meeting_planning_example_389",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Haight-Ashbury at 9:00AM.",
         "You travel to Fisherman's Wharf in 23 minutes and arrive at 9:23AM.",
@@ -56,7 +59,15 @@
         "You wait until 9:45PM.",
         "You meet Helen for 30 minutes from 9:45PM to 10:15PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "meeting outside availability window",
+        "step": 3,
+        "text": "You meet Sarah from 11:45AM to 1:30PM.",
+        "window": {
+          "from": "2:45PM",
+          "to": "5:30PM"
+        }
+      }
     },
     {
       "example_id": "meeting_planning_example_912",
@@ -149,7 +160,7 @@
     {
       "example_id": "meeting_planning_example_444",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -184,7 +195,7 @@
     {
       "example_id": "meeting_planning_example_350",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -246,7 +257,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_3h4_bh3i/solution.py\", line 59, in <module>\n    (\"Elizabeth\", \"Mission District\", to_minutes(\"10:30AM\"), to_minutes(\"8:00PM\"), 90),\n          "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_g2nw4esl/solution.py\", line 59, in <module>\n    (\"Elizabeth\", \"Mission District\", to_minutes(\"10:30AM\"), to_minutes(\"8:00PM\"), 90),\n          "
       }
     },
     {
@@ -331,7 +342,7 @@
     {
       "example_id": "meeting_planning_example_577",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Haight-Ashbury at 9:00AM.",
@@ -446,7 +457,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_4cv8741h/solution.py\", line 118, in <module>\n    a, b, t = line.split()\n    ^^^^^^^\nValueError: too many values to unpack (expected 3)\n"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_u9kua0cx/solution.py\", line 118, in <module>\n    a, b, t = line.split()\n    ^^^^^^^\nValueError: too many values to unpack (expected 3)\n"
       }
     },
     {
@@ -515,7 +526,7 @@
     {
       "example_id": "meeting_planning_example_604",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Fisherman's Wharf at 9:00AM.",
@@ -684,7 +695,7 @@
     {
       "example_id": "meeting_planning_example_203",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -738,9 +749,9 @@
     },
     {
       "example_id": "meeting_planning_example_813",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Marina District at 9:00AM.",
         "You travel to Chinatown in 15 minutes and arrive at 9:15AM.",
@@ -783,12 +794,18 @@
         "You travel to Mission District in 11 minutes and arrive at 7:41PM.",
         "You meet Rebecca for 45 minutes from 7:41PM to 8:26PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong travel time",
+        "step": 10,
+        "text": "You travel to Union Square in 15 minutes and arrive at 2:40PM.",
+        "expected": 18,
+        "got": 15
+      }
     },
     {
       "example_id": "meeting_planning_example_170",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at North Beach at 9:00AM.",
@@ -840,7 +857,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_5r42gwcl/solution.py\", line 126, in <module>\n    src, dst = [x.strip() for x in left.split('to')]\n    ^^^^^^^^\nValueError: too many values to "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_bpsakgpd/solution.py\", line 126, in <module>\n    src, dst = [x.strip() for x in left.split('to')]\n    ^^^^^^^^\nValueError: too many values to "
       }
     },
     {
@@ -912,7 +929,7 @@
     {
       "example_id": "meeting_planning_example_263",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -959,13 +976,13 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_btyg3in4/solution.py\", line 47, in <module>\n    'avail_start': to_min('10:45AM'),\n                   ^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_e5prqfob/solution.py\", line 47, in <module>\n    'avail_start': to_min('10:45AM'),\n                   ^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_"
       }
     },
     {
       "example_id": "meeting_planning_example_488",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Pacific Heights at 9:00AM.",
@@ -1016,13 +1033,13 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_kzs31vb3/solution.py\", line 61\n    ('Fisherman's Wharf', 'Bayview'): 26,\n                                  ^\nSyntaxError: unterminated string literal (detected at line 61)\n"
+        "stderr": "  File \"/tmp/code_exec_jkanhm8k/solution.py\", line 61\n    ('Fisherman's Wharf', 'Bayview'): 26,\n                                  ^\nSyntaxError: unterminated string literal (detected at line 61)\n"
       }
     },
     {
       "example_id": "meeting_planning_example_624",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -1148,13 +1165,13 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_frciekr0/solution.py\", line 196, in <module>\n    steps = feasible_schedule(perm)\n            ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_fr"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_432v1ntx/solution.py\", line 196, in <module>\n    steps = feasible_schedule(perm)\n            ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_43"
       }
     },
     {
       "example_id": "meeting_planning_example_575",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at The Castro at 9:00AM.",
@@ -1230,7 +1247,7 @@
     {
       "example_id": "meeting_planning_example_286",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -1290,11 +1307,11 @@
       "classification": "correct",
       "solution": [
         "You start at Alamo Square at 9:00AM.",
-        "You travel to The Castro in 8 minutes and arrive at 9:08AM.",
-        "You meet George from 9:08AM to 10:08AM.",
-        "You travel to Chinatown in 20 minutes and arrive at 10:28AM.",
-        "You meet Deborah from 10:28AM to 11:13AM.",
-        "You travel to Russian Hill in 7 minutes and arrive at 11:20AM.",
+        "You travel to Chinatown in 16 minutes and arrive at 9:16AM.",
+        "You meet Deborah from 9:16AM to 10:01AM.",
+        "You travel to The Castro in 22 minutes and arrive at 10:23AM.",
+        "You meet George from 10:23AM to 11:23AM.",
+        "You travel to Russian Hill in 18 minutes and arrive at 11:41AM.",
         "You wait until 12:15PM.",
         "You meet Emily from 12:15PM to 2:00PM.",
         "You travel to Presidio in 14 minutes and arrive at 2:14PM.",
@@ -1333,22 +1350,21 @@
       "classification": "correct",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
-        "You travel to Embarcadero in 8 minutes and arrive at 9:08AM.",
-        "You wait until 10:30AM.",
-        "You meet James from 10:30AM to 11:00AM.",
-        "You travel to Pacific Heights in 11 minutes and arrive at 11:11AM.",
-        "You meet Emily from 11:11AM to 1:11PM.",
-        "You travel to Fisherman's Wharf in 13 minutes and arrive at 1:24PM.",
-        "You wait until 2:45PM.",
-        "You meet Paul from 2:45PM to 4:15PM.",
-        "You travel to Richmond District in 18 minutes and arrive at 4:33PM.",
-        "You meet Margaret from 4:33PM to 5:18PM.",
-        "You travel to North Beach in 17 minutes and arrive at 5:35PM.",
-        "You meet Helen from 5:35PM to 6:05PM.",
-        "You travel to Haight-Ashbury in 18 minutes and arrive at 6:23PM.",
-        "You meet Linda from 6:23PM to 6:38PM.",
-        "You travel to Golden Gate Park in 7 minutes and arrive at 6:45PM.",
-        "You meet Kimberly from 6:45PM to 8:00PM."
+        "You travel to Alamo Square in 15 minutes and arrive at 9:15AM.",
+        "You meet Nancy from 9:15AM to 11:15AM.",
+        "You travel to Haight-Ashbury in 5 minutes and arrive at 11:20AM.",
+        "You meet Linda from 11:20AM to 11:35AM.",
+        "You travel to Mission District in 11 minutes and arrive at 11:46AM.",
+        "You meet Anthony from 11:46AM to 1:31PM.",
+        "You travel to Richmond District in 20 minutes and arrive at 1:51PM.",
+        "You wait until 3:15PM.",
+        "You meet Margaret from 3:15PM to 4:00PM.",
+        "You travel to North Beach in 17 minutes and arrive at 4:17PM.",
+        "You meet Helen from 4:17PM to 4:47PM.",
+        "You travel to Fisherman's Wharf in 5 minutes and arrive at 4:52PM.",
+        "You meet Paul from 4:52PM to 6:22PM.",
+        "You travel to Golden Gate Park in 25 minutes and arrive at 6:47PM.",
+        "You meet Kimberly from 6:47PM to 8:02PM."
       ],
       "expected_solution": [
         "You start at Russian Hill at 9:00AM.",
@@ -1428,7 +1444,7 @@
     {
       "example_id": "meeting_planning_example_73",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
@@ -1491,7 +1507,7 @@
     {
       "example_id": "meeting_planning_example_482",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Haight-Ashbury at 9:00AM.",
@@ -1522,7 +1538,7 @@
     {
       "example_id": "meeting_planning_example_502",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -1603,7 +1619,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ohtc7ail/solution.py\", line 43, in <module>\n    \"Charles\": (\"Alamo Square\", hm_to_min(\"6:00PM\"), hm_to_min(\"8:45PM\"), 90),\n                   "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ec4qo8hk/solution.py\", line 43, in <module>\n    \"Charles\": (\"Alamo Square\", hm_to_min(\"6:00PM\"), hm_to_min(\"8:45PM\"), 90),\n                   "
       }
     },
     {
@@ -1652,7 +1668,7 @@
     {
       "example_id": "meeting_planning_example_962",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at The Castro at 9:00AM.",
@@ -1694,9 +1710,9 @@
     },
     {
       "example_id": "meeting_planning_example_88",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Sunset District at 9:00AM.",
         "You wait until 8:34PM.",
@@ -1710,12 +1726,16 @@
         "You wait until 8:45PM.",
         "You meet Joshua for 15 minutes from 8:45PM to 9:00PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "unparseable step",
+        "step": 4,
+        "text": "You travel back to Sunset District in 10 minutes and arrive at 9:10PM."
+      }
     },
     {
       "example_id": "meeting_planning_example_454",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Presidio at 9:00AM.",
@@ -1752,7 +1772,7 @@
     {
       "example_id": "meeting_planning_example_272",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
@@ -1783,7 +1803,7 @@
     {
       "example_id": "meeting_planning_example_592",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at North Beach at 9:00AM.",
@@ -1828,7 +1848,7 @@
     {
       "example_id": "meeting_planning_example_144",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at The Castro at 9:00AM.",
@@ -1902,9 +1922,9 @@
     },
     {
       "example_id": "meeting_planning_example_872",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Presidio at 9:00AM.",
         "You travel to Chinatown in 19 minutes and arrive at 9:19AM.",
@@ -1949,7 +1969,13 @@
         "You wait until 9:00PM.",
         "You meet Karen for 45 minutes from 9:00PM to 9:45PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong travel time",
+        "step": 1,
+        "text": "You travel to Chinatown in 19 minutes and arrive at 9:19AM.",
+        "expected": 21,
+        "got": 19
+      }
     },
     {
       "example_id": "meeting_planning_example_695",
@@ -1975,13 +2001,13 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_msxda1y6/solution.py\", line 59, in <module>\n    f[\"start_min\"] = t2m(f[\"start\"])\n                     ^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_m"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_ke4cugcu/solution.py\", line 59, in <module>\n    f[\"start_min\"] = t2m(f[\"start\"])\n                     ^^^^^^^^^^^^^^^\n  File \"/tmp/code_exec_k"
       }
     },
     {
       "example_id": "meeting_planning_example_268",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -2056,9 +2082,9 @@
     },
     {
       "example_id": "meeting_planning_example_862",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Mission District at 9:00AM.",
         "You travel to Richmond District in 20 minutes and arrive at 9:20AM.",
@@ -2101,12 +2127,20 @@
         "You wait until 7:00PM.",
         "You meet Deborah for 105 minutes from 7:00PM to 8:45PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "meeting outside availability window",
+        "step": 3,
+        "text": "You meet Sandra from 5:00PM to 5:30PM.",
+        "window": {
+          "from": "8:00AM",
+          "to": "3:15PM"
+        }
+      }
     },
     {
       "example_id": "meeting_planning_example_546",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -2169,7 +2203,7 @@
     {
       "example_id": "meeting_planning_example_609",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Chinatown at 9:00AM.",
@@ -2210,7 +2244,7 @@
     {
       "example_id": "meeting_planning_example_908",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Financial District at 9:00AM.",
@@ -2261,7 +2295,7 @@
     {
       "example_id": "meeting_planning_example_335",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Pacific Heights at 9:00AM.",
@@ -2290,7 +2324,7 @@
     {
       "example_id": "meeting_planning_example_607",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Sunset District at 9:00AM.",
@@ -2339,7 +2373,7 @@
     {
       "example_id": "meeting_planning_example_432",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -2427,9 +2461,9 @@
     },
     {
       "example_id": "meeting_planning_example_479",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
         "You travel to Golden Gate Park in 25 minutes and arrive at 9:25AM.",
@@ -2457,7 +2491,13 @@
         "You travel to Financial District in 19 minutes and arrive at 5:19PM.",
         "You meet Emily for 105 minutes from 5:19PM to 7:04PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong travel time",
+        "step": 7,
+        "text": "You travel to Financial District in 22 minutes and arrive at 2:24PM.",
+        "expected": 23,
+        "got": 22
+      }
     },
     {
       "example_id": "meeting_planning_example_98",
@@ -2482,7 +2522,7 @@
     {
       "example_id": "meeting_planning_example_222",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Nob Hill at 9:00AM.",
@@ -2510,9 +2550,9 @@
     },
     {
       "example_id": "meeting_planning_example_629",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "suboptimal",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
         "You travel to Presidio in 14 minutes and arrive at 9:14AM.",
@@ -2553,13 +2593,18 @@
         "You wait until 9:15PM.",
         "You meet Rebecca for 60 minutes from 9:15PM to 10:15PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "valid itinerary but meets fewer friends than the golden solution",
+        "error_type": "suboptimal",
+        "num_met": 6,
+        "golden_num_met": 7
+      }
     },
     {
       "example_id": "meeting_planning_example_468",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Castro at 9:00AM.",
         "You travel to Bayview in 19 minutes and arrive at 9:19AM.",
@@ -2588,12 +2633,17 @@
         "You wait until 6:30PM.",
         "You meet Amanda for 90 minutes from 6:30PM to 8:00PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong start location",
+        "step": 0,
+        "text": "You start at Castro at 9:00AM.",
+        "expected": "The Castro"
+      }
     },
     {
       "example_id": "meeting_planning_example_828",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Marina District at 9:00AM.",
@@ -2646,7 +2696,7 @@
     {
       "example_id": "meeting_planning_example_800",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -2697,16 +2747,16 @@
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
-        "You travel to Nob Hill in 9 minutes and arrive at 9:09AM.",
+        "You travel to North Beach in 10 minutes and arrive at 9:10AM.",
         "You wait until 9:45AM.",
-        "You meet Nancy from 9:45AM to 10:30AM.",
-        "You travel to North Beach in 8 minutes and arrive at 10:38AM.",
-        "You meet John from 10:38AM to 10:53AM.",
-        "You travel to Russian Hill in 4 minutes and arrive at 10:57AM.",
-        "You meet Jessica from 10:57AM to 12:57PM.",
-        "You travel to Sunset District in 23 minutes and arrive at 1:20PM.",
-        "You meet Rebecca from 1:20PM to 2:35PM.",
-        "You travel to Marina District in 21 minutes and arrive at 2:56PM.",
+        "You meet John from 9:45AM to 10:00AM.",
+        "You travel to Sunset District in 27 minutes and arrive at 10:27AM.",
+        "You meet Rebecca from 10:27AM to 11:42AM.",
+        "You travel to Nob Hill in 27 minutes and arrive at 12:09PM.",
+        "You meet Nancy from 12:09PM to 12:54PM.",
+        "You travel to Russian Hill in 5 minutes and arrive at 12:59PM.",
+        "You meet Jessica from 12:59PM to 2:59PM.",
+        "You travel to Marina District in 7 minutes and arrive at 3:06PM.",
         "You wait until 3:15PM.",
         "You meet Jason from 3:15PM to 5:15PM.",
         "You travel to Pacific Heights in 7 minutes and arrive at 5:22PM.",
@@ -2745,7 +2795,7 @@
     {
       "example_id": "meeting_planning_example_391",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Sunset District at 9:00AM.",
@@ -2776,7 +2826,7 @@
     {
       "example_id": "meeting_planning_example_143",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at North Beach at 9:00AM.",
@@ -2801,7 +2851,7 @@
     {
       "example_id": "meeting_planning_example_352",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -2834,7 +2884,7 @@
     {
       "example_id": "meeting_planning_example_409",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Fisherman's Wharf at 9:00AM.",
@@ -2871,7 +2921,7 @@
     {
       "example_id": "meeting_planning_example_952",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -2954,7 +3004,7 @@
     {
       "example_id": "meeting_planning_example_884",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Richmond District at 9:00AM.",
@@ -3000,9 +3050,9 @@
     },
     {
       "example_id": "meeting_planning_example_180",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at North Beach at 9:00AM.",
         "You wait until 12:45PM.",
@@ -3019,12 +3069,17 @@
         "You travel to The Castro in 7 minutes and arrive at 2:07PM.",
         "You meet Robert for 30 minutes from 2:07PM to 2:37PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong arrival time",
+        "step": 2,
+        "text": "You travel to Mission District in 18 minutes and arrive at 9:18AM.",
+        "expected": "1:03PM"
+      }
     },
     {
       "example_id": "meeting_planning_example_174",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Nob Hill at 9:00AM.",
@@ -3091,7 +3146,7 @@
     {
       "example_id": "meeting_planning_example_885",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Russian Hill at 9:00AM.",
@@ -3185,7 +3240,7 @@
     {
       "example_id": "meeting_planning_example_403",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Union Square at 9:00AM.",
@@ -3224,7 +3279,7 @@
     {
       "example_id": "meeting_planning_example_25",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Golden Gate Park at 9:00AM.",
@@ -3243,7 +3298,7 @@
     {
       "example_id": "meeting_planning_example_118",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Bayview at 9:00AM.",
@@ -3295,9 +3350,9 @@
     },
     {
       "example_id": "meeting_planning_example_368",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "constraint_violation",
       "solution": [
         "You start at Bayview at 9:00AM.",
         "You travel to Russian Hill in 23 minutes and arrive at 9:23AM.",
@@ -3324,12 +3379,18 @@
         "You wait until 4:45PM.",
         "You meet Jason for 15 minutes from 4:45PM to 5:00PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "wrong travel time",
+        "step": 3,
+        "text": "You travel to Alamo Square in 13 minutes and arrive at 10:36AM.",
+        "expected": 15,
+        "got": 13
+      }
     },
     {
       "example_id": "meeting_planning_example_115",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Richmond District at 9:00AM.",
@@ -3374,7 +3435,7 @@
     {
       "example_id": "meeting_planning_example_125",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Embarcadero at 9:00AM.",
@@ -3395,7 +3456,7 @@
     {
       "example_id": "meeting_planning_example_131",
       "correct": true,
-      "matches_expected": false,
+      "matches_expected": true,
       "classification": "correct",
       "solution": [
         "You start at Pacific Heights at 9:00AM.",
@@ -3465,9 +3526,9 @@
     },
     {
       "example_id": "meeting_planning_example_763",
-      "correct": true,
+      "correct": false,
       "matches_expected": false,
-      "classification": "correct",
+      "classification": "suboptimal",
       "solution": [
         "You start at Chinatown at 9:00AM."
       ],
@@ -3485,7 +3546,12 @@
         "You travel to Russian Hill in 7 minutes and arrive at 6:50PM.",
         "You meet Matthew for 90 minutes from 6:50PM to 8:20PM."
       ],
-      "validation": {}
+      "validation": {
+        "error": "valid itinerary but meets fewer friends than the golden solution",
+        "error_type": "suboptimal",
+        "num_met": 0,
+        "golden_num_met": 5
+      }
     },
     {
       "example_id": "meeting_planning_example_209",
@@ -3507,7 +3573,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "  File \"/tmp/code_exec_rcjymmu1/solution.py\", line 19\n    (\"Chinese\n     ^\nSyntaxError: unterminated string literal (detected at line 19)\n"
+        "stderr": "  File \"/tmp/code_exec_3ybbahh7/solution.py\", line 19\n    (\"Chinese\n     ^\nSyntaxError: unterminated string literal (detected at line 19)\n"
       }
     }
   ]

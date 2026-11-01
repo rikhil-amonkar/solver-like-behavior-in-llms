@@ -1,0 +1,1606 @@
+{
+ "tag": "gemma_v11_b5t",
+ "ontology": "docs/SLB_ONTOLOGY.md",
+ "examples": [
+  {
+   "example_id": "calendar_scheduling_example_543",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2228,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_544",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_398",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.4136,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_625",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1972,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_502",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_798",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2223,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_710",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_25",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_493",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3393,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_548",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2857,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_446",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_786",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.399,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_185",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_724",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2491,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_819",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2191,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_111",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2055,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_42",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_476",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_458",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3067,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_964",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2024,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_629",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3959,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_702",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2188,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_36",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.41,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_244",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2529,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_473",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_583",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1814,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_652",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.227,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_867",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_626",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2695,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_479",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_812",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_938",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3296,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_678",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3598,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_116",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1868,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_45",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2219,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_707",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1612,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "steered",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_457",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.4288,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_773",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_17",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2785,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_206",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3379,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_114",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1943,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_82",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_304",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_429",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3061,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_776",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_246",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3507,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_91",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_325",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1887,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_904",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2592,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": false,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_113",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2369,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_266",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_32",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3463,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_669",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2774,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_975",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2498,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_723",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2057,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_658",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.184,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_356",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1899,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_215",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2673,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_135",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3149,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_1",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_778",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0792,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_33",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_735",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2013,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_436",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1529,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_910",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_865",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_682",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2482,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_173",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_360",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_30",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2428,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_875",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3368,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_978",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1209,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_307",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_541",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2134,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_396",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_579",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.245,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_858",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.089,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_227",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3475,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_791",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1922,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_70",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_106",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1946,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_172",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_594",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_553",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_935",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2107,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_640",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_985",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2398,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_337",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.1883,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": null,
+   "c1_source": null,
+   "C2": true,
+   "B": "na",
+   "b_source": "script",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_98",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2652,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_555",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.154,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_784",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.4492,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_825",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0149,
+   "unlabelled_paragraphs": 0,
+   "A2": "partial",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_765",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2905,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_103",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.3808,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_767",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.2495,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_441",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_662",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_703",
+   "a_judged": true,
+   "A1": [
+    "none"
+   ],
+   "ratio": 0.0,
+   "unlabelled_paragraphs": 0,
+   "A2": "none",
+   "C1": null,
+   "c1_source": null,
+   "C2": null,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_826",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0712,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  },
+  {
+   "example_id": "calendar_scheduling_example_704",
+   "a_judged": true,
+   "A1": [
+    "values"
+   ],
+   "ratio": 0.0872,
+   "unlabelled_paragraphs": 0,
+   "A2": "complete",
+   "C1": true,
+   "c1_source": "script",
+   "C2": true,
+   "B": "independent",
+   "b_source": "gemma",
+   "flags": []
+  }
+ ]
+}

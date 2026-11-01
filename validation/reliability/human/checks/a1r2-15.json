@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "N",
+  "model": "qwen",
+  "sheet": "a1r2",
+  "task": "blocksworld",
+  "trace": "qwen/blocksworld/caution_a/blocksworld_p92_baseline_constraint92",
+  "updatedAt": "2026-10-29T19:33:42.204Z"
+}

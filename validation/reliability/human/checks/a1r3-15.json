@@ -1,0 +1,9 @@
+{
+  "gemma": null,
+  "human": "P",
+  "model": "gpt",
+  "sheet": "a1r3",
+  "task": "calendar",
+  "trace": "gpt/calendar/baseline/calendar_scheduling_example_70",
+  "updatedAt": "2026-10-29T21:36:45.336Z"
+}

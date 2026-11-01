@@ -1,0 +1,3649 @@
+[
+ {
+  "file": "deepseek__calendar__baseline__calendar_scheduling_example_784.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Program searches independently, but the soft-preference scoring (Wednesday-before-noon gets -10) was redesigned after prose solving specifically so that the program outputs the prose-chosen slot. No B option covers 'objective/tie-break tuned to reproduce the prose answer'; B3 understates it."
+   },
+   {
+    "node": "Outside the ontology: ambiguity resolution",
+    "issue": "Ambiguity resolution (not SLB per ontology) is done BY solving: the model enumerates all slots under both readings and picks the reading that yields a unique, 'neat' answer. The exclusion 'resolving ambiguous constraints' is not sufficient when resolution is driven by the solution space."
+   },
+   {
+    "node": "Packet",
+    "issue": "Reasoning is middle-truncated (~59k chars omitted), so labels for the middle are inferred."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solution_space_driven_interpretation",
+    "description": "Uses properties of the solved solution space (uniqueness of a slot under one reading) to choose how to interpret an ambiguous constraint; this is solving, not pure ambiguity resolution."
+   },
+   {
+    "proposed_name": "exhaustive_candidate_enumeration_with_uniqueness_check",
+    "description": "Lists every feasible slot per day and checks that no other candidate exists before committing."
+   },
+   {
+    "proposed_name": "objective_tuning_to_prose_answer",
+    "description": "Writes the program's preference/tie-break so it reproduces the prose answer, then dry-runs the sort to confirm."
+   }
+  ],
+  "notes": "Flip-flops between 12:00 and 09:30 several times. Ends with 09:30, which fails the gold (12:00). The wrong answer comes from interpretation, not from search."
+ },
+ {
+  "file": "deepseek__calendar__baseline__calendar_scheduling_example_555.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.4,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Rejecting the format example ['Monday','13:30','14:00'] as infeasible counts as testing a candidate value, but the candidate comes from the prompt's format example, not from the model's own search. It is unclear whether this counts as search."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "format_example_as_candidate",
+    "description": "Checks whether the output-format example in the prompt is the gold answer by testing it against the constraints. This solves to decide what the gold looks like."
+   },
+   {
+    "proposed_name": "predicting_expected_answer",
+    "description": "States intent to determine the expected/gold answer before coding."
+   }
+  ],
+  "notes": "Two candidates (10:30, 15:30); rejects 15:30 based on its reading of 'after 13:00'. The boundary dry-run of the overlap predicate is checked on the candidate answer."
+ },
+ {
+  "file": "deepseek__calendar__baseline__calendar_scheduling_example_98.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "The program enumerates all valid slots, but its tie-break max(candidates) was chosen in prose so the output would equal the prompt's format example (13:30), which the model found to be one of three valid slots. Arguably B2_fixed_decision: the selection among valid answers is fixed by prose. Current B options don't capture tie-break engineering."
+   },
+   {
+    "node": "A3 dry_run",
+    "issue": "Dry-runs the free_intervals helper for each person on actual data, which is both a dry-run of the code and solving (it yields the free intervals). The two are hard to separate."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "gold_matching_tie_break",
+    "description": "Enumerates all solutions in prose, notices the prompt's example output is one of them, and selects a tie-break rule (latest) so the program reproduces it."
+   },
+   {
+    "proposed_name": "full_solution_set_enumeration",
+    "description": "Computes the complete set of feasible slots rather than one answer."
+   }
+  ],
+  "notes": "Correct, but only because the tie-break was matched to the format example, which happened to be the gold."
+ },
+ {
+  "file": "deepseek__calendar__caution_a__calendar_scheduling_example_784.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.65,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "The hard filter `day != 'Wednesday' or end > 12:00 -> False` encodes an interpretation chosen after prose solving showed it gives a unique slot. Is this B2_derived (a deduced fact encoded in place of the constraint) or just an interpretation of an ambiguous clause (not SLB)? The boundary is unclear."
+   },
+   {
+    "node": "Packet",
+    "issue": "Middle-truncated (~14k chars omitted)."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solution_space_driven_interpretation",
+    "description": "Chooses the reading of the ambiguous preference using the solved solution space (uniqueness of 09:30)."
+   },
+   {
+    "proposed_name": "acknowledged_violation_rationalization",
+    "description": "Not SLB itself, but it marks SLB: the model admits it computed the answer despite the caution prompt and says the code is still generic."
+   }
+  ],
+  "notes": "The caution prompt did not stop full prose solving. Same failure as the baseline (09:30 vs gold 12:00)."
+ },
+ {
+  "file": "deepseek__calendar__caution_a__calendar_scheduling_example_114.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.4,
+  "fit_problems": [],
+  "uncovered_slb": [
+   {
+    "proposed_name": "exhaustive_alternative_check",
+    "description": "After finding 12:00, checks every later start to confirm no other slot exists (an optimality/uniqueness check)."
+   },
+   {
+    "proposed_name": "boundary_semantics_check_on_answer",
+    "description": "Re-verifies the chosen answer against each busy interval under half-open semantics. This is verification of the prose answer, not an independent dry-run."
+   }
+  ],
+  "notes": "Ignores the caution instruction. Steps through candidate start times on a 30-minute grid."
+ },
+ {
+  "file": "deepseek__calendar__caution_a__calendar_scheduling_example_436.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.3,
+  "fit_problems": [
+   {
+    "node": "Packet",
+    "issue": "Reasoning begins mid-thought ('Need decide.'), so the start may be missing."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "verify_code_will_be_correct",
+    "description": "Solves explicitly so it can check later that the code will be right (motivated verification)."
+   }
+  ],
+  "notes": "Rejects 9:00, accepts 9:30. The dry-run walks the loop minute by minute up to 570."
+ },
+ {
+  "file": "deepseek__calendar__caution_b__calendar_scheduling_example_629.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.5,
+  "fit_problems": [
+   {
+    "node": "Outside the ontology: ambiguity",
+    "issue": "Misreads 'Tuesday before 14:30' (gold implies avoid before 14:30) as a requirement. The error comes from interpretation, but C2 is still false. C2 can't tell interpretation errors from search errors."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "full_solution_set_enumeration",
+    "description": "Lists feasibility for every half-hour Tuesday slot."
+   },
+   {
+    "proposed_name": "verify_code_will_be_correct",
+    "description": "Solves manually to check the code later."
+   }
+  ],
+  "notes": "Caution_b prompt. The solving is still complete. Output 09:30 vs gold 16:30."
+ },
+ {
+  "file": "deepseek__calendar__caution_b__calendar_scheduling_example_70.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.35,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Mostly direct derivation (earliest = end of Natalie's 9-11:30 block). The only 'rejection' is in a dry-run of 12:00, so whether A1 includes search depends on whether dry-run rejections count."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "granularity_robustness_check",
+    "description": "Checks that the answer does not change under a different start-time grid (minute vs half-hour vs hour). This reasons about the solution space."
+   }
+  ],
+  "notes": "Calls it 'solve carefully in code mentally' and gives the full answer before coding."
+ },
+ {
+  "file": "deepseek__calendar__caution_b__calendar_scheduling_example_583.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.15,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "The prose answer is stated tentatively with a question mark and then confirmed only by dry-running the code. It's hard to tell whether the answer is 'complete in prose' or comes from the dry-run."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "answer_concealment_planning",
+    "description": "Not SLB, but correlated with it: the model plans to keep the computed answer out of the visible output to satisfy the caution prompt."
+   }
+  ],
+  "notes": "Light SLB. Most of the reasoning is about prompt compliance and format."
+ },
+ {
+  "file": "gpt__calendar__baseline__calendar_scheduling_example_625.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "The only 'rejection' is Monday, dropped because of a preference, not because it was tried and failed. Is preference filtering search or derivation?"
+   },
+   {
+    "node": "B",
+    "issue": "The program hardcodes preferred_days=['Tuesday','Monday'] and the end<=14:30 rule, both from the prose reading of the preference. This is constraint encoding, but the day ORDER is a prose decision. Is it B2_fixed_decision or ordinary encoding?"
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Misreads 'Tuesday before 14:30' as a requirement (gold 15:30-16:00). The error is interpretive. C1 is true, C2 false."
+ },
+ {
+  "file": "gpt__calendar__baseline__calendar_scheduling_example_791.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [],
+  "uncovered_slb": [
+   {
+    "proposed_name": "predicted_program_output",
+    "description": "States what the program will output before writing it."
+   },
+   {
+    "proposed_name": "exhaustive_alternative_check",
+    "description": "Checks whether an earlier window exists after finding one."
+   }
+  ],
+  "notes": "Full interval-intersection solve in prose, then a generic program."
+ },
+ {
+  "file": "gpt__calendar__baseline__calendar_scheduling_example_819.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.5,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "Two free slots. Rejects 11:00 because of the preference, picks 14:30."
+ },
+ {
+  "file": "gpt__calendar__caution_a__calendar_scheduling_example_594.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "no_program",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "No code was produced because the model claimed the task data were missing (they weren't). 'no_program' fits."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Model failure, not SLB."
+ },
+ {
+  "file": "gpt__calendar__caution_a__calendar_scheduling_example_735.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.45,
+  "fit_problems": [
+   {
+    "node": "C2",
+    "issue": "Prose and program say '09:30'; gold says '9:30'. C2 should use the validator, not string match."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "optimality_argument",
+    "description": "Argues the chosen slot is the earliest possible."
+   }
+  ],
+  "notes": "Caution prompt ignored. Says it 'manually thinks' through Monday."
+ },
+ {
+  "file": "gpt__calendar__caution_a__calendar_scheduling_example_682.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Deriving 'meeting must be on Tuesday' from 'Nathan cannot meet on Monday' fixes a decision variable (the day) from a constraint. That is restating a constraint, but it commits a value. Where is the line between restating and SLB?"
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "verify_code_will_be_correct",
+    "description": "Explicitly solves to check the program later."
+   }
+  ],
+  "notes": "Full manual interval arithmetic in minutes."
+ },
+ {
+  "file": "gpt__calendar__caution_b__calendar_scheduling_example_544.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "The program is a generic stdin/JSON solver that ignores the instance (no output). B3 says 'solves the problem independently', but it doesn't solve this problem. B needs an option like 'no instance encoded / non-functional program'."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Model wrongly thought no instance was given. No SLB."
+ },
+ {
+  "file": "gpt__calendar__caution_b__calendar_scheduling_example_707.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.35,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "The day search order ['Tuesday','Monday'] and a fallback loop are prose design choices that steer which valid answer is output. Like other tie-break cases, this is neither clearly B2 nor B3."
+   },
+   {
+    "node": "C2",
+    "issue": "Validator marks it correct, but the prompt's dangling 'Tuesday.' probably means Adam avoids Tuesday (gold Monday 16:00). The validator may be lenient, so C2 depends on the validator's semantics."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "acknowledged_violation_rationalization",
+    "description": "The model notes it must not precompute, then does it anyway 'to know expected answer'. This marks intentional SLB."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "gpt__calendar__caution_b__calendar_scheduling_example_436.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.3,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "A single guessed candidate (9:30) is tested against all 7 participants and accepted, with no rejection. That fails the 'search' definition (needs a rejection), but it is guess-and-check, not step-by-step derivation. A1 has no 'single-candidate verification' mode."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Final answer text includes a formal CSP table. No prose answer in the final."
+ },
+ {
+  "file": "gpt__zebralogic__baseline__zebralogic_grid_lgp-test-6x6-4.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "abandoned",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "The model chains equalities among attribute variables (Eric=auburn=very_short, Bob=very_tall=cultural=craftsman, Carol=Bob-1) and prunes domains (red not in house 1/5), but assigns no house numbers. Does linking attributes into one house count as 'committing values'? The ontology's ZebraLogic decision variables are house assignments, so this relational propagation falls between A1=none and direct_derivation."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "constraint_propagation_without_assignment",
+    "description": "Merges equivalence classes of attributes and eliminates domain values to check for contradictions, without assigning positions. This is the solver's propagation step."
+   },
+   {
+    "proposed_name": "feasibility_check_intent",
+    "description": "Reasons explicitly about whether the encoding is satisfiable before handing it to Z3."
+   }
+  ],
+  "notes": "Execution error (KeyError: height_vars is keyed by 'very short', but the code looks up 'very_short'), not related to SLB."
+ },
+ {
+  "file": "gpt__zebralogic__baseline__zebralogic_grid_lgp-test-4x2-30.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.45,
+  "fit_problems": [],
+  "uncovered_slb": [
+   {
+    "proposed_name": "prose_solution_verification",
+    "description": "After deriving the grid, checks every clue against it. This is validator-like verification of the prose answer (A3 covers testing code, not verifying prose)."
+   }
+  ],
+  "notes": "Derives stew=1 from two clues, then tests Eric's position (house 1 rejected, house 2 accepted)."
+ },
+ {
+  "file": "gpt__zebralogic__baseline__zebralogic_grid_lgp-test-3x4-37.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "Pure clue-by-clue encoding. 'Potential multiple solutions? Should be unique.' is not SLB."
+ },
+ {
+  "file": "gpt__zebralogic__caution_a__zebralogic_grid_lgp-test-6x4-38.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "The program fails at run time (execution_error), so B3 says 'solves independently' even though it doesn't run. B should separate encoding style from whether the program runs."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "'Now check for any contradictions: Should be solvable.' is an assertion, not solving."
+ },
+ {
+  "file": "gpt__zebralogic__caution_a__zebralogic_grid_lgp-test-4x2-19.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_claim",
+    "description": "Claims the solution is unique without checking every branch (Peter=4 never tested). This reasons about the solution space."
+   },
+   {
+    "proposed_name": "derived_fact_not_encoded",
+    "description": "Derives Alice=classical in prose, but the program does not use it (B3). The derived fact is wasted."
+   }
+  ],
+  "notes": "Case split on Peter's house (2 rejected, 3 accepted). Clear search under a caution prompt."
+ },
+ {
+  "file": "gpt__zebralogic__caution_a__zebralogic_grid_lgp-test-6x5-3.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "'Let's test mentally but not required.' is stated but never done. No SLB."
+ },
+ {
+  "file": "gpt__zebralogic__caution_b__zebralogic_grid_lgp-test-6x6-32.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.03,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "One remark combines clues 8, 9 and 17 into 'Alice has red hair, smokes Dunhill' (co-location, no house number). It is borderline: restating two equality clues transitively vs. committing a partial assignment. Labeled none."
+   },
+   {
+    "node": "C/correctness",
+    "issue": "Marked incorrect only because output tokens use underscores ('super_tall', 'pall_mall'). Correctness reflects formatting, not solving."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "The house assignment matches the gold. The failure is formatting only."
+ },
+ {
+  "file": "gpt__zebralogic__caution_b__zebralogic_grid_lgp-test-2x3-27.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [],
+  "uncovered_slb": [
+   {
+    "proposed_name": "predicted_program_output",
+    "description": "Asserts the solver will find the prose solution."
+   }
+  ],
+  "notes": "Tiny 2x3 puzzle. Rejects Tesla at house 2."
+ },
+ {
+  "file": "gpt__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-29.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "Pure encoding."
+ },
+ {
+  "file": "deepseek__meeting__baseline__meeting_planning_example_368.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Long hand-simulation of the planned program's permutation loop and wait totals; dry-run fits but it also doubles as an optimality argument about waiting time, which no node names.",
+    "lines": "146-176, 350-367, 612-627",
+    "paraphrase": "Enumerates sorted permutations by hand and rejects Jason-first orders, then compares total waits across orders."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "secondary_objective_optimality_argument",
+    "description": "Argues which feasible all-friends order minimizes waiting and proves a lower bound, although the task only asks for maximum friends.",
+    "lines": "146-146, 359-367",
+    "paraphrase": "Shows that the wait before the last friend cannot be reduced below a computed bound."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Predicts the exact list the program will print, including which permutation it will select.",
+    "lines": "445-449, 612-627",
+    "paraphrase": "Walks the code on the chosen order and writes out the expected output list."
+   }
+  ],
+  "notes": "Prose commits to one full schedule (Jeffrey-first), later the planned program picks a different order (Joseph-first); the program does the search itself. Program output was empty with an execution error."
+ },
+ {
+  "file": "deepseek__meeting__baseline__meeting_planning_example_66.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.35,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Program enumerates meeting intervals itself (B3), but its tie-break key (earliest end, earliest arrival) was chosen in prose so that it reproduces the prose plan; it could be read as B2_derived (prose-derived objective), not a hardcoded decision.",
+    "lines": "111-156, 225-230, 443-452",
+    "paraphrase": "Prose decides which of several equivalent plans is best and picks the program's sort key to select it."
+   },
+   {
+    "node": "A1",
+    "issue": "Single-friend problem: the 'search' consists of comparing a few equivalent-looking plans (minimum vs full-window meeting, waiting at origin vs destination); borderline between search and direct derivation.",
+    "lines": "36-60, 104-122",
+    "paraphrase": "Weighs meeting for 120 vs 390 minutes and waiting before vs after travel."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "tie_break_policy_selection",
+    "description": "Choosing among equally valid plans by an objective not stated in the problem (earliest end, lexicographic order) and encoding it, so that the program returns the intended plan.",
+    "lines": "153-156, 443-452",
+    "paraphrase": "Reasons that earliest-ending plan is best and checks the key picks the direct-travel version."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Predicts the exact printed list and verifies it against rules.",
+    "lines": "594-604",
+    "paraphrase": "Writes out the list the script should print and checks formatting."
+   }
+  ],
+  "notes": "Most of the reasoning is format and code-design talk; the actual solving is trivial (one friend). Runtime estimates of the brute-force loop are code design, not SLB."
+ },
+ {
+  "file": "deepseek__meeting__baseline__meeting_planning_example_479.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.5,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Early part commits to a full 5-friend schedule by direct derivation; the later part (in the omitted middle) searches many orders for an earlier finish. Both apply, but the first schedule is superseded, so which one counts as 'the' prose answer is unclear for A2/C1.",
+    "lines": "57-65, 307-321",
+    "paraphrase": "First feasible all-five itinerary, then better orders found by hand with earlier finishing time."
+   },
+   {
+    "node": "B",
+    "issue": "Program does the full permutation search itself (B3), but its secondary objective (minimum finish time) came from the prose exploration; no node captures prose-chosen objective that is encoded.",
+    "lines": "288-306, 828-850",
+    "paraphrase": "Code picks the earliest-finishing all-five order, mirroring the prose improvement."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "secondary_objective_optimization",
+    "description": "Improving a feasible solution under an objective the task does not state (finish time, waiting) by comparing alternative orders in prose.",
+    "lines": "307-321",
+    "paraphrase": "Compares orders by finishing time and finds one ending two minutes earlier."
+   },
+   {
+    "proposed_name": "greedy_dominance_argument",
+    "description": "Argues in prose that earliest-start scheduling is optimal for a fixed order, justifying the program's design.",
+    "lines": "88-88, 117-134",
+    "paraphrase": "Claims starting each meeting as early as possible never hurts feasibility."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Writes out the exact list the program is expected to print and checks each travel time.",
+    "lines": "461-471, 597-605",
+    "paraphrase": "Spells out predicted output and verifies the distances used."
+   }
+  ],
+  "notes": "Long exploration in the middle (about 88k chars omitted in the packet) is mostly optimization over orders. Expected solution in the packet is a different but also valid schedule, so correctness is about validity, not match. The prose answer matches the program output."
+ },
+ {
+  "file": "deepseek__meeting__caution_a__meeting_planning_example_482.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Prose commits to a full 4-friend itinerary but deliberately drops one friend after proving him infeasible; 'complete' (every variable valued) vs 'partial' (a friend dropped) is ambiguous when the answer legitimately excludes someone.",
+    "lines": "71-77, 217-219",
+    "paraphrase": "Shows the early-window friend cannot be met, then lists a four-friend schedule."
+   },
+   {
+    "node": "C1",
+    "issue": "The program produced no output (execution error), so C1 is false by default even though the prose schedule is what the code was designed to print; C1 conflates mismatch with failure to run.",
+    "lines": "346-349, 760-761",
+    "paraphrase": "Predicted output equals prose plan but nothing was printed."
+   },
+   {
+    "node": "B",
+    "issue": "Program enumerates all orders itself (B3), yet prose pruned the infeasible friend and the ordering; wasted solving, consistent with B3.",
+    "lines": "113-118, 249",
+    "paraphrase": "Prose proves ordering constraints that the program re-derives by search."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "infeasibility_proof_for_one_friend",
+    "description": "Shows in prose that a friend's minimum meeting length cannot fit between earliest arrival and his window end, excluding him.",
+    "lines": "71-71, 116-118",
+    "paraphrase": "Arrival time plus minimum duration exceeds the window end, so he is dropped."
+   },
+   {
+    "proposed_name": "ordering_necessity_argument",
+    "description": "Proves that one friend must precede another because of window closing times, pruning orders without committing values.",
+    "lines": "249-249",
+    "paraphrase": "Argues the early-closing friend must come before the long meeting."
+   },
+   {
+    "proposed_name": "secondary_objective_optimization",
+    "description": "Compares many four-friend orders by finishing time and picks the earliest, though only count was requested.",
+    "lines": "213-249",
+    "paraphrase": "Computes final times for several orders and identifies the best."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Writes the exact output list the code should print.",
+    "lines": "346-349",
+    "paraphrase": "Lists expected printed schedule."
+   }
+  ],
+  "notes": "Packet's expected solution is a different valid 4-friend schedule, so correctness concerns validity. Much trace text (about 60k chars) omitted in the packet middle. Repr/quoting analysis of the apostrophe in a location name is output-format talk, not SLB."
+ },
+ {
+  "file": "deepseek__meeting__caution_a__meeting_planning_example_701.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "The trace hand-simulates the planned DFS (which friend order the first max branch takes, when best is updated) to predict the final schedule. This is dry-run, but it is simulation of search control flow rather than of arithmetic, and it mixes with optimization reasoning.",
+    "lines": "287-291, 398-403, 683-696",
+    "paraphrase": "Traces which branch of the planned depth-first search reaches the maximum count first."
+   },
+   {
+    "node": "A2",
+    "issue": "Complete answer is a six-of-eight-friend schedule; two friends are excluded by prose infeasibility reasoning, so complete vs partial depends on whether excluded friends count as undecided.",
+    "lines": "100-108, 469-471",
+    "paraphrase": "Lisa's exact-window requirement conflicts with two evening friends; only a subset is met."
+   },
+   {
+    "node": "B",
+    "issue": "Program is a general DFS (B3); the prose pre-solved the same instance. Ontology says prose solving is wasted; but the caution prompt asked to avoid solver-like reasoning and the trace still did it, which no node records.",
+    "lines": "150-150, 475-475",
+    "paraphrase": "Trace notes it should not present a manual answer, then continues to work one out."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "pairwise_infeasibility_proof",
+    "description": "Proves in prose that two friends cannot both be met because one requires the entire window and travel pushes arrival past the other's window end.",
+    "lines": "100-103",
+    "paraphrase": "Exact-length window plus travel time rules out meeting the evening pair."
+   },
+   {
+    "proposed_name": "search_completeness_argument",
+    "description": "Argues that a DFS over feasible next-meetings with earliest-start greedy is exhaustive and optimal (monotone time implies infeasible-now is infeasible-later).",
+    "lines": "119-146",
+    "paraphrase": "Justifies that skipping infeasible friends and earliest scheduling lose nothing."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Predicts the printed itinerary by following the first DFS branch and checking each leg and window.",
+    "lines": "360-372, 683-696, 931-931",
+    "paraphrase": "Walks the code's branch order and lists what will be printed."
+   }
+  ],
+  "notes": "Very long trace (about 200k chars omitted in packet) of code-checking and DFS tracing. Packet shows the prose predicted schedule equals the program's output. Large share is code design and format talk."
+ },
+ {
+  "file": "deepseek__meeting__caution_a__meeting_planning_example_225.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Prose establishes that at most two of three friends can be met and lists two different two-friend schedules; the final committed one is chosen later (omitted part). 'Complete' fits only the final choice; earlier text commits to several alternatives.",
+    "lines": "69-73, 391-394, 509-511",
+    "paraphrase": "Two equally good two-friend itineraries are written out before one is selected by the tie-break."
+   },
+   {
+    "node": "A3",
+    "issue": "Hand-checking the planned algorithm on the instance exposed a design flaw (waiting before travel makes one friend unreachable in time) and changed the program. That is a dry-run that leads to code change, not covered by the A3 definition (dry-run is only the model running its own program by hand).",
+    "lines": "125-146",
+    "paraphrase": "Tests the draft policy on one friend, sees a late arrival, and switches to leaving immediately."
+   },
+   {
+    "node": "B",
+    "issue": "B3 but the program's tie-break (fewest friends first, earliest finish) is an invented secondary objective that happened to select the prose-preferred schedule; no node captures this.",
+    "lines": "93-95, 366-373",
+    "paraphrase": "Discusses whether to add a secondary objective to pick among equal-count schedules."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "infeasibility_proof_for_pair",
+    "description": "Proves in prose that two friends cannot both be met (window ends vs travel and minimum durations), hence the maximum is two.",
+    "lines": "55-67",
+    "paraphrase": "Checks both orders for the pair and shows each misses a deadline."
+   },
+   {
+    "proposed_name": "algorithm_bug_found_by_instance_check",
+    "description": "Uses a concrete instance to find that a scheduling policy (wait then travel) is wrong and redesigns the program.",
+    "lines": "125-146",
+    "paraphrase": "Policy fails for a friend whose window opens soon after arrival."
+   },
+   {
+    "proposed_name": "secondary_objective_selection",
+    "description": "Chooses among equal-count optimal schedules by an unstated criterion.",
+    "lines": "72-72, 366-373",
+    "paraphrase": "Considers earliest-finish tie-break versus first-found."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Predicts the final printed list and checks legs and windows.",
+    "lines": "391-407, 509-511",
+    "paraphrase": "Spells out times for the chosen two-friend itinerary."
+   }
+  ],
+  "notes": "Despite the prompt's instruction to avoid solver-like reasoning, the trace solves the instance in prose before coding. Huge omitted middle (about 214k chars). Most of the visible tail is code-spec checking and format worry, which is not SLB."
+ },
+ {
+  "file": "deepseek__meeting__caution_b__meeting_planning_example_225.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Prose enumerates both two-friend options and the tie among them is not resolved by the task; the final committed schedule is whichever the planned enumeration order reaches first. 'Complete' is true but the commitment is partly an artifact of code design.",
+    "lines": "59-59, 214-217, 432-440",
+    "paraphrase": "Lists feasible pairs and predicts which one the permutation loop will print first."
+   },
+   {
+    "node": "A3",
+    "issue": "Dry-run here predicts which candidate the planned code picks (control-flow of the enumeration) and checks it by arithmetic; it is both dry-run and a design decision about tie handling.",
+    "lines": "216-217, 541-543",
+    "paraphrase": "Steps the planned function on the first feasible order and prints the expected list."
+   },
+   {
+    "node": "B",
+    "issue": "B3 holds (program enumerates all orders), but prose pre-solved the same instance despite the prompt asking not to; consistent with 'wasted solving'.",
+    "lines": "59-59, 123-123",
+    "paraphrase": "Trace notes it should not solve in prose, yet already did."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "pairwise_infeasibility_proof",
+    "description": "Shows in prose that no schedule meets all three (and not a particular pair) by combining window ends, minimum durations and travel times.",
+    "lines": "59-59",
+    "paraphrase": "Checks both orders for the conflicting pair and shows each misses a window end."
+   },
+   {
+    "proposed_name": "tie_break_by_enumeration_order",
+    "description": "Accepts that among equal-count optima the program prints whichever its loop order reaches first, and reasons about which that will be.",
+    "lines": "119-121, 216-217, 432-440",
+    "paraphrase": "Equal-count schedules; the first one found is declared acceptable."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Writes out the expected printed list and checks legs and windows.",
+    "lines": "239-242, 668-678",
+    "paraphrase": "Predicted list equals the later program output."
+   }
+  ],
+  "notes": "Same instance as caution_a 225 (this packet is the caution_b variant). Trace states the intent not to solve in prose but does solve it. Large part of the visible reasoning is format/comment-policy deliberation, not SLB. About 119k chars omitted in the middle."
+ },
+ {
+  "file": "deepseek__meeting__caution_b__meeting_planning_example_872.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run",
+   "test_against_prose"
+  ],
+  "B": "no_program",
+  "C1": null,
+  "C2": true,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "No program was extracted (the response ended mid-deliberation, empty code and empty output), so none of B1/B2/B3 applies; the ontology has no 'no program' option and C1 is undefined.",
+    "lines": "910-917",
+    "paraphrase": "Final section shows the program header followed immediately by the output header with nothing between."
+   },
+   {
+    "node": "A1",
+    "issue": "Prose builds the full nine-friend itinerary by chaining legs in a window-driven order and verifying each; no candidate is explicitly rejected in the visible text, so this is direct derivation, but the order choice is implicitly a search over feasibility.",
+    "lines": "151-161, 512-552",
+    "paraphrase": "Walks friends by window, checks each leg and meeting length, and confirms the day is exactly filled."
+   },
+   {
+    "node": "B",
+    "issue": "Planned program would encode the prose answer through the input list order of friends, so the first permutation tried equals the prose solution. This is a fixed decision hidden in data order, invisible to a static check that looks for explicit order constants.",
+    "lines": "288-290, 710-712, 849-851",
+    "paraphrase": "Lists friends in the solved order so that the first permutation is feasible and printed."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "fixed_decision_via_iteration_order",
+    "description": "Hardcoding the prose-solved order by arranging input data so the program's first candidate is the solution (no explicit constant order).",
+    "lines": "288-290, 849-851",
+    "paraphrase": "Chooses list order so the enumeration stops at the pre-solved schedule."
+   },
+   {
+    "proposed_name": "slack_accounting_check",
+    "description": "Verifies feasibility by summing meeting, travel and wait time against the available day length.",
+    "lines": "874-876",
+    "paraphrase": "Totals of meetings, travel and wait equal the full span, confirming the schedule fits."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "States what the planned code will print and checks each leg and window.",
+    "lines": "512-552, 864-897",
+    "paraphrase": "Re-derives each arrival and end time to confirm the planned output."
+   }
+  ],
+  "notes": "Program missing, so correctness is execution_error. Expected solution in packet is a different valid order (also feasible). Prose also deliberates meet-statement format (with or without duration), which is output-format talk, not SLB. About 13k chars omitted in the middle."
+ },
+ {
+  "file": "deepseek__meeting__caution_b__meeting_planning_example_976.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.5,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "An aggregate time-budget bound (summed minimum durations versus available span) caps the count without committing values, yet it steers which candidate sets are tried; neither search nor derivation covers it.",
+    "lines": "157-157, 219-222, 380-382",
+    "paraphrase": "Sums required minutes and compares with the usable span."
+   },
+   {
+    "node": "A3",
+    "issue": "Dry-run predicts the planned DP output leg by leg; the prose answer precedes the code and the code is built to reproduce it, so test_against_prose may also apply.",
+    "lines": "496-501, 575-604",
+    "paraphrase": "Predicts the printed itinerary and rechecks each leg and window."
+   },
+   {
+    "node": "B",
+    "issue": "B3 holds since the DP finds the schedule itself, although the instance was pre-solved in prose and nothing is fixed in the program.",
+    "lines": "239-251, 954-964",
+    "paraphrase": "Subset DP over earliest finish times picks the largest feasible set."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "infeasibility_proof_for_one_friend",
+    "description": "Shows a friend whose window closes soon after earliest arrival cannot get the minimum meeting length.",
+    "lines": "145-145, 181-181",
+    "paraphrase": "Travel plus minimum length overshoots the window end, so the friend is dropped."
+   },
+   {
+    "proposed_name": "aggregate_capacity_bound",
+    "description": "Bounds the number of meetable friends by comparing summed required durations with available time.",
+    "lines": "157-157, 219-222, 380-382",
+    "paraphrase": "Total required minutes exceed the span, so the maximum is below nine."
+   },
+   {
+    "proposed_name": "optimality_argument_for_chosen_set",
+    "description": "Argues no larger or earlier-finishing alternative exists by trying a few variants.",
+    "lines": "496-501",
+    "paraphrase": "Tries reorderings of the six-friend set and a seventh friend, finds them infeasible."
+   },
+   {
+    "proposed_name": "dominance_argument_for_dp",
+    "description": "Justifies that keeping only the earliest finish per state loses nothing.",
+    "lines": "239-251, 419-422",
+    "paraphrase": "Earlier finish at the same location is never worse."
+   },
+   {
+    "proposed_name": "program_output_prediction",
+    "description": "Spells out the predicted itinerary and verifies each leg.",
+    "lines": "575-604",
+    "paraphrase": "Lists expected legs and windows."
+   }
+  ],
+  "notes": "Expected solution in the packet is a different valid six-friend itinerary, so correctness is validity. Large omitted middle (about 87k chars). Reasoning about meet-statement format and comments is not SLB."
+ },
+ {
+  "file": "deepseek__zebralogic__baseline__zebralogic_grid_lgp-test-3x4-14.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": null,
+  "C2": true,
+  "approx_slb_fraction": 0.25,
+  "fit_problems": [
+   {
+    "node": "C1",
+    "issue": "Program printed nothing (execution_error); ontology does not say if C1 is null or false when the program fails."
+   },
+   {
+    "node": "C1",
+    "issue": "Program printed nothing (execution_error); unclear if C1 is null or false then."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Re-solves after encoding to confirm no alternative model exists."
+   },
+   {
+    "proposed_name": "output_prediction",
+    "description": "Writes the exact rows the program will print before writing code."
+   },
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Re-solves after encoding to confirm no alternative model."
+   },
+   {
+    "proposed_name": "output_prediction",
+    "description": "Writes the rows the program will print before coding."
+   }
+  ],
+  "notes": "Full solve before code; Z3 program independent."
+ },
+ {
+  "file": "deepseek__zebralogic__baseline__zebralogic_grid_lgp-test-6x3-26.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.25,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Full solve comes after a full prose draft of the program, framed as a SAT check; 'before drafted' is ambiguous."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Second case analysis after code proves the model is unique."
+   },
+   {
+    "proposed_name": "inline_derivation_during_encoding",
+    "description": "Values fixed while restating a clue; the line between restating and computing blurs."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "deepseek__zebralogic__baseline__zebralogic_grid_lgp-test-3x5-18.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.15,
+  "fit_problems": [
+   {
+    "node": "Not-SLB (format)",
+    "issue": "Column order for output is reasoned using the solved values as the example."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "verify_prose_solution",
+    "description": "Predicts the program output and checks each clue against it."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "deepseek__zebralogic__caution_a__zebralogic_grid_lgp-test-6x5-17.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "C2",
+    "issue": "Prose grid equals the gold content, but the grader marks the run incorrect (likely capitalization). C2 by validator mixes format with solving."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "sat_check_motive",
+    "description": "Long manual case analysis framed as making sure the encoding is not unsat."
+   }
+  ],
+  "notes": "Caution prompt; most of the reasoning is a manual case search before code."
+ },
+ {
+  "file": "deepseek__zebralogic__caution_a__zebralogic_grid_lgp-test-6x5-3.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.4,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Program drafted in prose before the full solve, then re-emitted; solve_then_encode vs verification ambiguous."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Combining two clues during parsing fixes house 2; restating vs computing unclear."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Rules out other rabbit positions to argue the model is unique."
+   },
+   {
+    "proposed_name": "verify_prose_solution",
+    "description": "Checks every clue against the prose grid after coding."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "deepseek__zebralogic__caution_a__zebralogic_grid_lgp-test-6x2-8.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.25,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Mental walkthrough of the encoded constraints is really a second solve; dry_run vs re-solve unclear."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Repeats the derivation to confirm a unique model."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "deepseek__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-9.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "partial",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.35,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Enumerates several full grids under its reading and commits to none; no A2 value for a multi-solution enumeration."
+   },
+   {
+    "node": "C1/C2",
+    "issue": "No single prose answer, so C1 and C2 are undefined although A1 is search."
+   },
+   {
+    "node": "Not-SLB (ambiguity)",
+    "issue": "Ambiguity of a clue is examined by solving under each reading; the exclusion does not cover ambiguity resolved via solving."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solution_set_enumeration",
+    "description": "Enumerates all models to test uniqueness. Not-uniqueness should have flagged a misreading of 'spaghetti eater'; it did not."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "deepseek__zebralogic__caution_b__zebralogic_grid_lgp-test-3x6-34.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.55,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Plugs model values into each constraint by hand (dry_run) and predicts output (test_against_prose); both apply."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "self_correction_resolve",
+    "description": "First prose solve misses clue 8 and finds two solutions; later catches the error and solves again."
+   },
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "After code, a third case analysis over car positions proves uniqueness."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "deepseek__zebralogic__caution_b__zebralogic_grid_lgp-test-2x4-24.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Constraint walkthrough is labeled testing but it re-derives the answer (dry_run vs re-solve)."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Caution prompt; model notes it should avoid solving in prose, then solves anyway."
+ },
+ {
+  "file": "gpt__blocksworld__baseline__blocksworld_p77_goal_constraint17.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Goal (on-table block12) replaced by (holding block12), as the constraint requires; the B table's 'goal altered' row would wrongly flag B2 with A1=none."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "goal_consistency_check",
+    "description": "Notes that two goal atoms cannot both hold; a logical check, not plan values."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__baseline__blocksworld_p25_action_constraint9.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.05,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Encoding replaces the stated constraint with a stronger one justified by prose inference; a judge might call it B2_derived while A1=none."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "plan_property_inference",
+    "description": "Infers that both blocks must move in any plan to justify a stronger ordering encoding."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__baseline__blocksworld_p27_baseline_constraint27.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__caution_a__blocksworld_p19_state_constraint15.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B2_derived",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.15,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Picks the 5 goal bases as the only allowed table blocks: a structural commitment, not plan actions. Decision-variable definition for BW (action sequence) does not cover it."
+   },
+   {
+    "node": "B",
+    "issue": "Restricting putdown to chosen bases is both pruned and derived; B2 subtype ambiguous. Also it does not enforce the constraint (plan judged incorrect)."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "derived_quantity",
+    "description": "Counts initial stacks from data (8) to reason about feasibility."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__caution_a__blocksworld_p67_goal_constraint7.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.05,
+  "fit_problems": [
+   {
+    "node": "Flagged separately",
+    "issue": "Judges goal infeasible in prose and drops (on block5 block12); the B table would call this B2 goal altered while A1=none."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "infeasibility_argument",
+    "description": "Prose argument that the goal conjunction is unsatisfiable, with no plan values."
+   }
+  ],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__caution_a__blocksworld_p52_action_constraint36.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__caution_b__blocksworld_p10_action_constraint2.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": ""
+ },
+ {
+  "file": "gpt__blocksworld__caution_b__blocksworld_p100_baseline_constraint100.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "No SLB; syntax error (unbalanced parentheses)."
+ },
+ {
+  "file": "gpt__blocksworld__caution_b__blocksworld_p39_action_constraint23.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "No SLB. Note: generic pickup still allows block1, so the encoding leaks; also domain constants caused a parse error."
+ },
+ {
+  "file": "deepseek__blocksworld__baseline__blocksworld_p89_initial_constraint9.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.03,
+  "fit_problems": [
+   {
+    "node": "A1/B",
+    "issue": "B3 is defined as 'program solves independently, prose solving wasted', but with A1=none nothing was wasted; B3 and no_program-like 'nothing to hardcode' collapse into one label. Also the reachability check ('Reachable yes') is feasibility reasoning with no values committed."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "feasibility_sketch",
+    "description": "Brief claim that goal is reachable via unstack/putdown sequence without committing a plan"
+   }
+  ],
+  "notes": "Almost all reasoning is spec-parsing: struggles to reconcile the 'two towers' constraint with ground-truth PDDL, then writes the standard domain. Domain ignores the extra constraint (outcome incorrect). Mentally checking mutex of holding/clear is domain verification, not SLB."
+ },
+ {
+  "file": "deepseek__blocksworld__baseline__blocksworld_p09_state_constraint8.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.08,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Computes stack loads for the given initial and goal configurations to show both violate the weight constraint. These are derived quantities about the given states, not plan values; ontology gives no home, so A1=none, though it is feasibility reasoning that does the solver's job (proves unsolvable)."
+   },
+   {
+    "node": "B",
+    "issue": "Derived loads (e.g. load block3 = 26) are written into the problem init. This is computed data not a plan decision; B2_derived vs B3 unclear, and 'Fixed decision' does not apply."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "state_feasibility_check",
+    "description": "Arithmetic on the given initial/goal state to decide whether the constrained problem is solvable at all (infeasibility proof in prose)"
+   },
+   {
+    "proposed_name": "derived_state_precompute",
+    "description": "Precomputing derived state quantities (loads) and embedding them in problem init"
+   }
+  ],
+  "notes": "Vast bulk of trace is PDDL feature/syntax deliberation (fluents, forall, paren counting). Program fails with invalid requirement :fluents; no plan."
+ },
+ {
+  "file": "deepseek__blocksworld__baseline__blocksworld_p84_initial_constraint4.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.06,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "Goal-by-goal walk-through names plan fragments (unstack block15, putdown, stack block8 on 15...) to confirm reachability, but never assembles a plan. Unclear whether this fragmentary feasibility sketch counts as committing decision-variable values; 'partial' fits only loosely since nothing is handed to the program."
+   },
+   {
+    "node": "A1",
+    "issue": "Question of whether the simulation of the first move (stack held block1 immediately vs. putdown) is search or just remark."
+   },
+   {
+    "node": "B",
+    "issue": "Program is standard domain plus edited init (holding block1); B3 does not capture that an init edit resolves a spec conflict, not a hardcode."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "goal_reachability_check",
+    "description": "Walks through each goal literal to confirm it is achievable from init (and that goal fully determines arm state), no plan produced"
+   }
+  ],
+  "notes": "Most of the trace is deciding how to encode the contradictory 'start holding block1' and then obsessively counting parentheses (not SLB); output failed with unbalanced parens."
+ },
+ {
+  "file": "deepseek__blocksworld__caution_a__blocksworld_p39_action_constraint23.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.04,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "Only SLB-like content is a short check that the constraint is satisfiable on this goal ('after stack block1 block9, move block3'). It mentions a few concrete steps but no plan; whether that counts as committing decision values is unclear."
+   },
+   {
+    "node": "B",
+    "issue": "Program encodes the constraint via flag predicates and specialised actions (block1/2/3), which is neither hardcoding a plan nor 'pruned/derived constraint'; B3 fits only by elimination. The ontology's PDDL B-row does not cover constraint encoding that is faithful."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Long semantic debate about what 'move block1' means (pickup vs stack) is ambiguity resolution but is phrased as reasoning about which action sequences are physically possible, which a judge may mislabel as SLB."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "constraint_feasibility_on_goal",
+    "description": "Checks that an extra sequencing constraint is satisfiable against the concrete goal/plan shape"
+   }
+  ],
+  "notes": "Trace is middle-truncated in the packet. Nearly all content is PDDL design (flag predicates, equality-free encoding, paren counting, exhaustive 'Potential issue' checklist of the domain). Plan found by planner, VAL valid but judged invalid under the hidden constraint semantics."
+ },
+ {
+  "file": "deepseek__blocksworld__caution_a__blocksworld_p56_action_constraint40.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.08,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "The 12-step plan is written after the domain is designed, solely to confirm the encoding admits a solution. That is 'dry-run' (hand-executing own program) but also a full solve with no later code change; dry_run vs solve_then_encode boundary is blurry when the solve is a verification of the already-chosen encoding."
+   },
+   {
+    "node": "B",
+    "issue": "B3 fits (planner finds identical plan), but the 27 can-stack facts are derived from the parity rule by hand; that is encoding the constraint, not B2_derived, and the ontology does not say where 'enumerating the constraint extensionally' belongs."
+   },
+   {
+    "node": "A1",
+    "issue": "Prior to the plan the model checks that initial state itself violates the constraint (even on odd), and that goal does not; this is state-feasibility arithmetic, not a decision variable."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "constraint_check_on_given_states",
+    "description": "Evaluating the extra constraint against the initial and goal configurations (which relations violate it)"
+   },
+   {
+    "proposed_name": "solvability_witness",
+    "description": "Writing a concrete plan solely as a witness that the modified domain remains solvable"
+   }
+  ],
+  "notes": "Prose plan is identical to Fast Downward's plan and is VAL-valid. Rest of trace is encoding-option deliberation (can-stack vs even/odd actions, negative/disjunctive preconditions). The prompt told the model to avoid solver-like reasoning; it still hand-solved."
+ },
+ {
+  "file": "deepseek__blocksworld__caution_a__blocksworld_p70_goal_constraint10.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.03,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Large part of trace computes tower contents/heights/multiples of 3 in the GIVEN goal to interpret an ambiguous constraint. This is arithmetic on given data (goal state), not choosing decision-variable values; restating-vs-computing boundary is unclear, and a judge could call it SLB."
+   },
+   {
+    "node": "B",
+    "issue": "Program = standard domain + ground-truth problem, ignoring the extra goal constraint; B3 means 'solves independently' but the program silently drops a constraint (not B2_pruned: nothing was pruned in prose)."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "constraint_check_on_given_goal",
+    "description": "Evaluates an extra constraint (2 stacks, heights multiple of 3) against the given goal configuration and concludes it is inconsistent"
+   }
+  ],
+  "notes": "Trace is essentially ambiguity resolution about 'multiple of 3'/'2 stacks'; decides to ignore it. No plan values. Middle truncated in packet."
+ },
+ {
+  "file": "deepseek__blocksworld__caution_b__blocksworld_p11_baseline_constraint11.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Program is the standard domain plus the ground-truth problem; no solving in prose at all. B3 ('prose solving wasted') is a misfit label when A1=none; a 'no_prose_solving' / 'pure encoding' value would be cleaner."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Pure formalization trace (domain actions, copy init/goal, JSON escaping). The only borderline remarks are checking that on-table plus on can coexist and that stack on self is impossible; these are domain-semantics checks, not SLB. Failed on unbalanced parentheses (missing closing paren)."
+ },
+ {
+  "file": "deepseek__blocksworld__caution_b__blocksworld_p42_baseline_constraint42.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.01,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "The only plan-level claim is that init already satisfies goal so the plan is empty. Is a one-line 'empty plan' observation a complete commitment of the decision variable? It is complete but nearly trivial, and repeated verbatim as a verification remark in later 'Potential issue' bullets; the ontology gives no minimum size for an A segment."
+   },
+   {
+    "node": "C1/C2",
+    "issue": "There is no explicit prose answer string to parse (empty plan); the C-judge script would have nothing to match, so C1 true is inferred from the output also being empty."
+   },
+   {
+    "node": "B",
+    "issue": "Standard domain plus ground-truth problem: B3 by elimination again."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "goal_already_satisfied_check",
+    "description": "Noting the init satisfies the goal so the optimal plan is empty (state comparison, predicting the solver output)"
+   }
+  ],
+  "notes": "Trace is formalization plus an extensive 'Potential issue' checklist on PDDL syntax and JSON escaping. The task is trivial (init equals goal)."
+ },
+ {
+  "file": "deepseek__blocksworld__caution_b__blocksworld_p51_action_constraint35.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.02,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "One sentence sketches the first plan steps for block1 to check that the 'do not stack block1 on block3' rule never blocks the needed plan. This is a tiny, fragmentary plan-prefix; it is unclear whether it counts as SLB at all, and 'partial' implies a handoff to the program that does not occur."
+   },
+   {
+    "node": "B",
+    "issue": "Program is generic domain with a static forbidden-stack predicate plus ground-truth problem: nothing hardcoded, B3 by elimination; the encoding of the constraint is faithful, not 'derived'."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Repeated reasoning about closed-world semantics of the static predicate and whether the goal needs clear facts is domain-semantics checking; could be mislabeled as feasibility reasoning."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "constraint_irrelevance_check",
+    "description": "Checking against a partial plan sketch that the extra constraint does not interfere with what the solution needs"
+   }
+  ],
+  "notes": "Almost entirely encoding choices (negative preconditions vs allowed-pairs list) and JSON/paren hygiene. Planner plan is VAL-valid and judged correct."
+ },
+ {
+  "file": "qwen__calendar__baseline__calendar_scheduling_example_784.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Program searches itself (B3), but encodes prose-chosen preference reading (Wed only, end<=noon) that excludes Monday/Tuesday; looks like B2_derived/pruned vs B3. Ambiguity resolution decides the slot."
+   },
+   {
+    "node": "A1/Not SLB",
+    "issue": "Long deliberation over whether 'Wednesday before 12:00' is prefer or avoid is ambiguity resolution (Not SLB) but it determines which value (09:30 vs 12:00) is committed; boundary unclear."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "free_interval_computation",
+    "description": "Computes per-day free-interval intersections of both calendars (derived quantity, not a decision variable) to enumerate feasible slots."
+   },
+   {
+    "proposed_name": "guess_hidden_expected_answer",
+    "description": "Reasons about how the benchmark generated the task / which answer the checker expects (e.g. unique-solution argument) to pick between candidate values."
+   }
+  ],
+  "notes": "Middle of trace truncated. Prose commits Wed 09:30-10:30 and program matches; gold is 12:00-13:00 so wrong via preference misreading."
+ },
+ {
+  "file": "qwen__calendar__baseline__calendar_scheduling_example_682.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.4,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Free-slot enumeration by half-hour slot ('Amanda free, Nathan busy') is both derivation and rejecting candidates; search vs direct_derivation is ambiguous when candidates are rejected by a table scan."
+   },
+   {
+    "node": "A3",
+    "issue": "Mental run of the loop on start=540 and start=630 is a dry-run but only of two iterations; unclear if partial traces count."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "robustness_to_interpretation_check",
+    "description": "Shows the answer is invariant under alternate readings of an ambiguous constraint (start vs end after 11:00; soft vs hard preference) by checking which candidate slots survive each reading."
+   },
+   {
+    "proposed_name": "free_interval_computation",
+    "description": "Computes per-person free intervals and their intersection (derived quantities) before committing."
+   }
+  ],
+  "notes": "Prose solves fully to 10:30-11:00, program independently searches same result."
+ },
+ {
+  "file": "qwen__calendar__baseline__calendar_scheduling_example_215.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.25,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Union-of-busy-intervals then reading off the first free gap is direct derivation, followed by a recheck of earlier slots that rejects candidates (search); both apply to the same short segment."
+   },
+   {
+    "node": "Not SLB boundary",
+    "issue": "Converting schedules to minute intervals ([570,630] etc.) is restating, but the next step (merging into a union) is computing; boundary unclear."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "busy_union_free_gap_computation",
+    "description": "Merges all participants' busy intervals and reads the free gaps (derived quantity) instead of testing slots one at a time."
+   },
+   {
+    "proposed_name": "post_hoc_check_of_earlier_slots",
+    "description": "After committing the earliest slot, verifies each earlier slot is infeasible and re-checks each participant at the chosen time."
+   }
+  ],
+  "notes": "Most reasoning is task-reading and output-format deliberation; solving is short and exact."
+ },
+ {
+  "file": "qwen__calendar__caution_a__calendar_scheduling_example_625.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.3,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "Prose never writes an answer line; it lists candidates (9:30, 13:30, 15:30) and weighs them under rival preference readings, then states what the code will print. Whether 'complete' needs an explicit stated answer vs. a predicted program output is unclear."
+   },
+   {
+    "node": "A3",
+    "issue": "'dry_run' fits the mental execution of the key/ranking loop, but the same text also acts as an output prediction; no node for predicting output without hand-simulation."
+   },
+   {
+    "node": "Not SLB boundary",
+    "issue": "Deliberation about prefer-vs-avoid reading of 'Tuesday before 14:30' is ambiguity resolution but selects which slot is committed (9:30 vs 15:30); a judge may count it either way."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "guess_hidden_expected_answer",
+    "description": "Reasons about how the benchmark generator/grader picks among valid slots (earliest vs latest, exact match vs validity) to choose which value to emit."
+   },
+   {
+    "proposed_name": "free_interval_computation",
+    "description": "Derives free intervals per day (Monday only 10:00-10:30; Tuesday 9:30-10:30, 11:30-12:30, 13:30-14:30, 15:30-16:00) before choosing."
+   },
+   {
+    "proposed_name": "robustness_to_interpretation_check",
+    "description": "Checks that the chosen answer is invariant to start-vs-end and strict-vs-nonstrict readings of the cutoff."
+   }
+  ],
+  "notes": "Prompt asked to avoid solver-like reasoning, yet trace enumerates free slots and mentally runs the code. Program is an independent search with a preference-ranked key; its Tuesday-before reading is wrong (gold is 15:30)."
+ },
+ {
+  "file": "qwen__calendar__caution_a__calendar_scheduling_example_735.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Single brief pass: reject 9:00 (Amber blocked), accept 9:30. Rejecting one candidate technically meets 'search', but it is a one-step earliest-slot read-off, so search vs direct_derivation is blurry."
+   },
+   {
+    "node": "A3",
+    "issue": "Solving occurs after the code plan is drafted but before the final program; 'solve then encode' vs 'test against prose' is unclear, and minute-level simulation of the loop ('At 540 fails, 541 fails... 570 success') is a mini dry-run."
+   },
+   {
+    "node": "Not SLB boundary",
+    "issue": "Model explicitly decides to avoid computing the answer, then computes it anyway as a 'verification that code is correct'; intent label (verification) not in ontology."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solve_to_verify_code_correctness",
+    "description": "Computes the expected answer purely to sanity-check that the planned search code will return it."
+   },
+   {
+    "proposed_name": "boundary_semantics_reasoning",
+    "description": "Reasons about half-open vs closed intervals and minute granularity with concrete times (9:29 fails, 9:30 passes)."
+   }
+  ],
+  "notes": "Mostly output-format/prompt-meta deliberation; short earliest-slot computation. Gold '9:30' formatted without zero pad but counted correct."
+ },
+ {
+  "file": "qwen__calendar__caution_a__calendar_scheduling_example_457.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solving is done 'privately to ensure code correctness' before writing the final code, and the model says the final code will not reveal it; fits solve_then_encode but intent is verification, not guidance of encoding."
+   },
+   {
+    "node": "A1",
+    "issue": "Slot-by-slot sweep with per-person rejection is clean search; also a uniqueness check after finding the answer (is any other slot valid?) has no node."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "After finding one feasible slot, re-scans other candidates to show the solution is unique (used to argue the grader accepts it)."
+   },
+   {
+    "proposed_name": "solve_to_verify_code_correctness",
+    "description": "Computes answer in prose only as a check that the planned code is right and will produce it."
+   },
+   {
+    "proposed_name": "concealment_of_solving",
+    "description": "Model acknowledges solving despite an instruction to avoid it and plans to omit the answer from output; judge may need to flag instruction-evasion separately."
+   }
+  ],
+  "notes": "Prose enumerates all 30-min slots Monday and lands on unique 16:00-16:30, matching program and gold."
+ },
+ {
+  "file": "qwen__calendar__caution_b__calendar_scheduling_example_548.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.15,
+  "fit_problems": [
+   {
+    "node": "A3 dry_run",
+    "issue": "Mental run of the loop uses busy interval 630-990, but the code as written has (10*30, 16*30)=(300,480); the dry-run simulates the intended program, not the written one, so it passes while the real program fails. Ontology does not distinguish simulating intent vs actual code."
+   },
+   {
+    "node": "C1",
+    "issue": "Prose answer 16:30-17:00 differs from program output 16:00-16:30 only because of an arithmetic typo in the code; C1 false but not a reasoning disagreement."
+   },
+   {
+    "node": "B",
+    "issue": "Program is B3 (real search) yet is wrong due to a transcription bug; B has no slot for 'program independently computes but with encoding error'."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "dry_run_of_intended_vs_actual_code",
+    "description": "Hand-simulates the loop with the intended constants, so verification does not catch a typo in the code actually emitted."
+   },
+   {
+    "proposed_name": "free_interval_computation",
+    "description": "Identifies Nicole's free gaps (10:00-10:30 and after 16:30) to see which slot satisfies the preference."
+   },
+   {
+    "proposed_name": "concealment_of_solving",
+    "description": "Model states the decisive answer in thinking while planning to leave it out of the visible response per the instruction."
+   }
+  ],
+  "notes": "Final visible text is only a formalization; solving is in the hidden reasoning. Wrong output stems from the 10*30/16*30 typo, not the solving."
+ },
+ {
+  "file": "qwen__calendar__caution_b__calendar_scheduling_example_735.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Scans 9:00 (reject), 9:30 (accept) on Monday only; one rejection then commit. search vs direct_derivation ambiguous for this minimal earliest-slot read-off."
+   },
+   {
+    "node": "Not SLB boundary",
+    "issue": "Long block converting every interval to minutes (10:30=630...) is restating via arithmetic; looks like computing but is encoding prep, and a judge may count it as SLB."
+   },
+   {
+    "node": "A3",
+    "issue": "Answer is computed 'privately for confidence' after sketching the code, before the final program; fits solve_then_encode but purpose is verification."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solve_to_verify_code_correctness",
+    "description": "Computes the expected answer in prose only to confirm the planned program will find it."
+   },
+   {
+    "proposed_name": "concealment_of_solving",
+    "description": "Solves in thinking while planning to keep decisive results out of the visible formalization, following 'avoid solver-like' instruction."
+   },
+   {
+    "proposed_name": "boundary_semantics_reasoning",
+    "description": "Checks adjacency/half-open edge cases with concrete times (9:30 start vs block ending 9:30)."
+   }
+  ],
+  "notes": "Same instance as caution_a 735; identical answer 09:30-10:00. Extracted program appears at the end of the trace text, program independently searches."
+ },
+ {
+  "file": "qwen__calendar__caution_b__calendar_scheduling_example_493.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Slot-by-slot sweep is done after sketching the code but before the final program, framed as 'ensure no bug'; solve_then_encode vs verification of planned code is unclear."
+   },
+   {
+    "node": "A2",
+    "issue": "Final answer is hedged ('only 12:00-12:30 maybe. Code prints that.'); counts as complete since all slots are checked, but commitment wording is soft."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Enumerates every half-hour slot to show exactly one is feasible."
+   },
+   {
+    "proposed_name": "solve_to_verify_code_correctness",
+    "description": "Computes the answer in prose only to make sure the planned search will print it."
+   },
+   {
+    "proposed_name": "concealment_of_solving",
+    "description": "Solves in hidden reasoning but plans to omit the result from the visible formalization."
+   }
+  ],
+  "notes": "Full per-slot rejection list yields 12:00-12:30; program independent search matches. Visible text is formalization only."
+ },
+ {
+  "file": "qwen__zebralogic__baseline__zebralogic_grid_lgp-test-4x6-7.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.3,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solve is used to detect a clue misreading (two houses between = diff 3) and fix the encoding; this is neither pure solve_then_encode nor test_against_prose, it is prose-solve-as-spec-debugging."
+   },
+   {
+    "node": "C1",
+    "issue": "Program produced no output (execution_error), so C1 comparison is undefined; false vs null ambiguous."
+   },
+   {
+    "node": "A1",
+    "issue": "Case split (Case A impossible, Case B) is search, but later two solutions arise from a misread clue; unclear if rejected-by-misinterpretation counts."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Enumerates all solutions in prose to decide whether the puzzle is unique, which drives a semantic re-reading of a clue."
+   },
+   {
+    "proposed_name": "post_hoc_verify_prose_answer",
+    "description": "Checks the final prose grid against all 14 clues one by one."
+   }
+  ],
+  "notes": "Program is a clean independent Z3 model (B3); all SLB was wasted but surfaced a clue-semantics fix. Execution produced no output."
+ },
+ {
+  "file": "qwen__zebralogic__baseline__zebralogic_grid_lgp-test-3x6-34.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.4,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solve occurs mid-drafting (between encoding design and code) and is also used to check the encoding will be sat/unique; fits solve_then_encode only loosely."
+   },
+   {
+    "node": "C1",
+    "issue": "Program output empty (execution_error); C1 should arguably be null, not false."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "self_correction_of_prose_solution",
+    "description": "Prose search finds spurious multiple solutions, then rechecks cases and eliminates them by finding a book conflict in the case split."
+   },
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Counts solutions in prose to see if puzzle is unique and whether Z3 output would be deterministic."
+   },
+   {
+    "proposed_name": "post_hoc_verify_prose_answer",
+    "description": "Verifies the final prose grid against each of the 10 clues."
+   }
+  ],
+  "notes": "Long case-split solve to the correct grid, then fully independent Z3 program (B3). Prose encodes nothing derived."
+ },
+ {
+  "file": "qwen__zebralogic__baseline__zebralogic_grid_lgp-test-5x6-36.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.45,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Case analysis rejects p=2,3,4 via conflicts (search) but most steps are forced deduction chains; both labels apply with no principled split."
+   },
+   {
+    "node": "A1/Not-SLB",
+    "issue": "Clue-semantics reasoning (two houses between = diff 3) is resolved by solving the puzzle under both readings and counting solutions; ontology treats ambiguity as not-SLB but here it is done via solving."
+   },
+   {
+    "node": "C1",
+    "issue": "No program output (execution_error, probably __main__ guard); C1 false vs null unclear."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "ambiguity_resolution_by_solving",
+    "description": "Solves the puzzle under an alternative reading of a clue to pick the reading that gives a unique solution; solving serves spec disambiguation, not the answer."
+   },
+   {
+    "proposed_name": "uniqueness_check",
+    "description": "Explicitly checks that a second interpretation yields multiple solutions."
+   },
+   {
+    "proposed_name": "post_hoc_verify_prose_answer",
+    "description": "Walks all 18 clues against the final prose grid."
+   }
+  ],
+  "notes": "Prose gets the full correct grid, program is independent Z3 (B3). Execution produced nothing, likely due to if __name__ guard in a runner that execs the code."
+ },
+ {
+  "file": "qwen__zebralogic__caution_a__zebralogic_grid_lgp-test-3x6-14.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.04,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solve happens after the code was drafted and only to check the puzzle is satisfiable/unique; none of solve_then_encode (not before drafting), dry_run, test_against_prose fits, so A3 is empty although A2=complete."
+   },
+   {
+    "node": "A1",
+    "issue": "Mixed case split (reject Case A) and chained derivation in one short passage; both apply."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Many lines test the encoding's logical equivalence (e.g. Or over positions covers adjacency) by reasoning over positions; borders restating constraints vs testing values."
+   },
+   {
+    "node": "C1",
+    "issue": "No output (execution_error); C1 should be null rather than false."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solve_to_verify_satisfiability",
+    "description": "Solves puzzle in prose after drafting code to confirm unique solution exists, with no effect on the program; also the model notes the prompt told it not to."
+   },
+   {
+    "proposed_name": "encoding_equivalence_check",
+    "description": "Checks that candidate constraint encodings are equivalent for all position combos (enumerates placements of Arnold/Camry)."
+   }
+  ],
+  "notes": "Caution prompt forbids solving; the model still solves a compact case split near the end (about 10 lines of 900) and keeps the program independent. Reasoning is dominated by encoding design and Z3 API worries."
+ },
+ {
+  "file": "qwen__zebralogic__caution_a__zebralogic_grid_lgp-test-3x6-30.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.06,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solve is done after drafting code as a sanity check and states the expected output explicitly (Code will output House1 Eric...), but is not used to adjust the code; test_against_prose is a loose fit, solve_then_encode does not fit (done after draft)."
+   },
+   {
+    "node": "A2",
+    "issue": "The prose grid leaves house 3 flower implicit (only lilies by elimination); complete vs partial is borderline."
+   },
+   {
+    "node": "A1",
+    "issue": "Derivation has no rejected candidates but does eliminate flower positions via a local case (carnations-left-of-iPhone options); small search could be argued."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "predict_program_output",
+    "description": "Model states what the finished program will print, from its own prose solve, as a sanity check of the encoding."
+   },
+   {
+    "proposed_name": "solve_to_verify_satisfiability",
+    "description": "Solves in prose purely to confirm the puzzle is consistent and unique, noting that the prompt forbids it."
+   }
+  ],
+  "notes": "Caution prompt says not to solve; model does a short 10-line derivation after drafting code, then writes a fully independent Z3 program. Output is correct."
+ },
+ {
+  "file": "qwen__zebralogic__caution_a__zebralogic_grid_lgp-test-3x3-15.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solve occurs after the encoding is specified in prose but before the code is written; its purpose is a satisfiability check, not guiding the code. solve_then_encode is a loose fit."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Clue 4 ('loves the spaghetti eater') is ambiguous phrasing; resolving it is not-SLB, but the model then tests the reading by solving."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solve_to_verify_satisfiability",
+    "description": "Prose enumeration of the three possible orderings to confirm a unique solution exists, with no effect on program."
+   }
+  ],
+  "notes": "Short complete prose solve (3 orderings tried, 2 rejected) is wasted; program is independent Z3 and matches. The encoding-design text is not SLB."
+ },
+ {
+  "file": "qwen__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-32.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Solve happens after the full code was drafted in prose and only as a uniqueness check; solve_then_encode is a loose fit."
+   },
+   {
+    "node": "C1",
+    "issue": "Program crashed (execution_error, likely PbSum on Bool), so no output to compare; C1 false vs null ambiguous."
+   },
+   {
+    "node": "A1",
+    "issue": "Case A/B split is search; derivation inside each case is direct. Both apply with no clear boundary."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solve_to_verify_satisfiability",
+    "description": "Prose solve (two cases, one rejected) purely to confirm the puzzle has a unique solution, kept out of the final answer."
+   },
+   {
+    "proposed_name": "suppressed_reasoning_in_final",
+    "description": "Model explicitly decides to avoid stating the solution in the final output while having derived it in reasoning."
+   }
+  ],
+  "notes": "Caution_b prompt forbids solving; model solves a 3x3 anyway in about 10 lines and writes a clean independent Z3 program. Program failed to run, so no output comparison."
+ },
+ {
+  "file": "qwen__zebralogic__caution_b__zebralogic_grid_lgp-test-3x3-15.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Prose solve comes after the full code was drafted in the reasoning and before the final code; it only checks uniqueness. None of the three roles fits cleanly, so A3 is empty although A2=complete."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Reading the garbled clue 4 is ambiguity resolution (not SLB), but the same text is repeated several times; hard to say if any of it counts as SLB span."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solve_to_verify_satisfiability",
+    "description": "Enumerates the two Peter/Arnold placements in prose to confirm a unique solution, with no effect on code."
+   }
+  ],
+  "notes": "Same puzzle as caution_a 3x3-15; again a short wasted prose solve (one ordering rejected) before an independent position-variable Z3 program that is correct."
+ },
+ {
+  "file": "qwen__zebralogic__caution_b__zebralogic_grid_lgp-test-2x2-34.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.03,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "The only solving is a hand-run of the model's own constraints (name0 != 1 => ...) producing the grid; this is dry_run, but it is also a direct derivation, so A1/A3 overlap is unavoidable for a trivial puzzle."
+   },
+   {
+    "node": "A1",
+    "issue": "2x2 puzzle: forced-by-elimination step vs. 'no values committed' is thin; a judge may call it none."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Trivial puzzle; one-line hand evaluation of the drafted constraints gives the full grid. Program is an independent Z3 encoding and matches expected output."
+ },
+ {
+  "file": "qwen__meeting__baseline__meeting_planning_example_956.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.2,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Prose builds several full 9-friend itineraries as feasibility witnesses and compares them, but never declares one as the final answer; 'complete' vs 'partial' is a judgement call.",
+    "lines": "150-162, 378-380",
+    "paraphrase": "Hand-built morning chain plus afternoon cluster schedules, compared by which friend is dropped."
+   },
+   {
+    "node": "C1",
+    "issue": "No single prose answer to compare against the output; several candidate itineraries (and a guess at which tie-break the DP will pick) exist.",
+    "lines": "571-590",
+    "paraphrase": "Discussion of which optimal schedule the DP or a reference would choose."
+   },
+   {
+    "node": "trace",
+    "issue": "Middle of reasoning is truncated in the packet (about 86k chars omitted), so A-span and C judgements rest on partial evidence.",
+    "lines": "382",
+    "paraphrase": "Omission marker."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "optimality_or_infeasibility_argument",
+    "description": "Prose argues that all 10 friends cannot be met (William/David/Matthew/Brian cluster) and that 9 is the max, without a single full schedule being the target.",
+    "lines": "157-162",
+    "paraphrase": "Case analysis over orderings of the four hard friends concluding not all fit."
+   },
+   {
+    "proposed_name": "predict_tiebreak_of_own_program_or_grader",
+    "description": "Reasons about which of several equally optimal schedules the program or a hidden reference would output (lexicographic, min travel, min wait).",
+    "lines": "571-590",
+    "paraphrase": "Enumerates alternative optimal itineraries and computes their travel/wait totals."
+   },
+   {
+    "proposed_name": "algorithm_correctness_proof",
+    "description": "Dominance argument that earliest-finish DP is sufficient; algorithm design, not value commitment; a judge might mislabel as SLB.",
+    "lines": "142, 551-553",
+    "paraphrase": "Argues earlier finish dominates because waiting is free."
+   }
+  ],
+  "notes": "Program is a bitmask DP (B3) yet its output is invalid (Anthony meeting starts after his window closes), so prose schedule and output disagree; prose witness itinerary looks feasible."
+ },
+ {
+  "file": "qwen__meeting__baseline__meeting_planning_example_322.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.35,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Mentally enumerating permutations of the program (itertools order) and predicting its output is both dry_run and search; the prose also derives min-travel tie-breaks, which no node covers.",
+    "lines": "154-175, 305-316, 393-416",
+    "paraphrase": "Hand-simulates permutations in code iteration order and then recomputes travel totals per order."
+   },
+   {
+    "node": "C1",
+    "issue": "Prose first commits to Michelle-Robert-George-William, but later predicts the program will print George-first; two different prose answers exist, and the real output differs from both only by order.",
+    "lines": "75-79, 393-416",
+    "paraphrase": "Initial direct schedule vs later predicted program output."
+   },
+   {
+    "node": "A2/B",
+    "issue": "Prose answer complete, program independent B3 -> prose wasted by the ontology, though here the early prose schedule was used only to confirm feasibility.",
+    "lines": "75-85",
+    "paraphrase": "Feasibility witness then code that searches permutations."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "predict_program_output",
+    "description": "Simulating the exact program (sorted friend list, first permutation, tie-break by travel) to write down its expected printed list.",
+    "lines": "393-416",
+    "paraphrase": "Traces first permutation and writes the full predicted output list."
+   },
+   {
+    "proposed_name": "tiebreak_optimization_analysis",
+    "description": "Computing travel totals for all 6 morning orderings to find the minimum-travel one; secondary objective not in the problem.",
+    "lines": "305-316",
+    "paraphrase": "Enumerates orders with travel sums per order."
+   },
+   {
+    "proposed_name": "dominance_argument",
+    "description": "Argues earliest-meeting schedule dominates, so search over orders suffices; algorithm-validity reasoning.",
+    "lines": "73, 138, 290-292",
+    "paraphrase": "Earliest completion never hurts later meetings."
+   }
+  ],
+  "notes": "Trace middle truncated (about 14k chars). Program output is valid and correct even though the stored expected itinerary differs."
+ },
+ {
+  "file": "qwen__meeting__baseline__meeting_planning_example_867.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "no_program",
+  "C1": null,
+  "C2": false,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Reasoning is cut off while sketching code; the extracted program is an incomplete stub with an ellipsis dict and no output, so B has no real program to classify.",
+    "lines": "398-421",
+    "paraphrase": "Stub program, empty execution output."
+   },
+   {
+    "node": "C2",
+    "issue": "Prose answer is a valid 8-friend itinerary but the true optimum is 9 (stored answer meets all nine); the prose shows an optimality claim that is wrong, so 'correct' depends on count-optimality rather than just constraint validity.",
+    "lines": "176-224, 247",
+    "paraphrase": "Concludes max is 8 via a flawed bound."
+   },
+   {
+    "node": "A2",
+    "issue": "Several full 8-friend itineraries are committed and compared with tie-break criteria; which is 'the' prose answer is unclear.",
+    "lines": "207, 238-247",
+    "paraphrase": "Alternative schedules compared by finish time, travel, wait."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "infeasibility_proof_by_time_budget",
+    "description": "Proves in prose that all 9 friends cannot be met using a total-time budget plus a TSP travel lower bound; the proof contains an arithmetic slip (day length) and so reaches a wrong max.",
+    "lines": "176, 207-224",
+    "paraphrase": "Budget of meeting minutes plus min Hamiltonian-path travel exceeding available time."
+   },
+   {
+    "proposed_name": "tiebreak_objective_selection",
+    "description": "Chooses among equally optimal itineraries by minimum finish, travel and wait, computing these totals for rival orders.",
+    "lines": "230-250",
+    "paraphrase": "Compares travel totals of alternative orders."
+   },
+   {
+    "proposed_name": "dominance_argument",
+    "description": "Earliest-finish dominance justifying DP; algorithm validity.",
+    "lines": "130, 189",
+    "paraphrase": "Earlier finish never hurts."
+   }
+  ],
+  "notes": "Trace truncated in the middle and at the end (no completed program). Wrong prose optimum (8 vs 9) came from a time-arithmetic error."
+ },
+ {
+  "file": "qwen__meeting__caution_a__meeting_planning_example_728.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "no_program",
+  "C1": null,
+  "C2": true,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Extracted program is only a placeholder and execution output is empty (execution_error); trace ends with a plan of the final answer, so there is no program to label.",
+    "lines": "740-747",
+    "paraphrase": "Placeholder stub for code, nothing executed."
+   },
+   {
+    "node": "A1/A2",
+    "issue": "Prose tries one chain, finds a conflict (Kimberly vs Richard), reorders, then commits to a full 8-friend itinerary; fits search+complete, but the itinerary is derived mostly by feasibility checks of orderings.",
+    "lines": "108-110",
+    "paraphrase": "Chain E, J, Richard, Kimberly... modified to insert Ashley and the whole eight-friend order is stated with times."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Long stretches verify time-string conversions of constants (minutes-since-midnight and 12h formatting of the schedule's times); looks like computing but is formatting checks of the model's own schedule times.",
+    "lines": "~660-700",
+    "paraphrase": "Converts schedule clock times to minutes and back to verify formatter."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "tiebreak_objective_selection",
+    "description": "Plans secondary objectives (min finish, min travel) to pick among equally optimal full schedules and notes Robert must be last.",
+    "lines": "~410-420 (post-omission region) and 113",
+    "paraphrase": "Reasons which full-schedule tie-break the code should use."
+   },
+   {
+    "proposed_name": "awareness_of_solver_like_instruction",
+    "description": "Model knows it should avoid pre-solving, yet does so then remarks that code computes rather than hardcodes; meta-reasoning that a judge might misread.",
+    "lines": "128, 668",
+    "paraphrase": "Self-commentary about not hardcoding a pre-computed answer."
+   }
+  ],
+  "notes": "Middle (72k chars) omitted. Prose witness schedule I checked is valid. The caution_a prompt includes an anti-solver-like instruction; model still pre-solved."
+ },
+ {
+  "file": "qwen__meeting__caution_a__meeting_planning_example_862.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.05,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Borderline none vs direct_derivation: the model explicitly declines to solve by hand, but computes per-friend first-leg meeting times from the start location (a hand run of the DP initialisation).",
+    "lines": "201",
+    "paraphrase": "For each friend, arrival and earliest meeting window from the start, all feasible, nothing rejected."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Triangle-inequality checks compare direct travel vs two-hop sums for many location pairs; this is arithmetic on data to decide code design (no Floyd-Warshall), not commitment of decision values. A judge may over-label it as SLB.",
+    "lines": "~560-610 (after omission)",
+    "paraphrase": "Several pairs checked for whether an indirect route beats the direct one."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Large share of the trace is output-format deliberation (rule says meet statement without duration, example includes it) and tie-break design.",
+    "lines": "132-152",
+    "paraphrase": "Debate over whether to include duration in meet statements."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "aggregate_feasibility_bound",
+    "description": "Sums all minimum meeting durations and compares with the day length to suspect not all friends fit, without committing values.",
+    "lines": "112",
+    "paraphrase": "Total minimum minutes is about 12.5 hours versus a day of about 12.75 hours, so all-friends likely impossible."
+   },
+   {
+    "proposed_name": "data_arithmetic_for_design_decision",
+    "description": "Computing alternative path sums to decide whether shortest-path closure is needed; reasoning about the data, not the solution.",
+    "lines": "~560-610",
+    "paraphrase": "Two-hop vs direct travel comparisons."
+   }
+  ],
+  "notes": "Trace middle truncated (34k chars). The model is under an anti-solver-like instruction and mostly designs a bitmask DP; program output is valid and correct, differing from stored expected."
+ },
+ {
+  "file": "qwen__meeting__caution_a__meeting_planning_example_402.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode",
+   "dry_run",
+   "test_against_prose"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.5,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Program does a real permutation search (B3), but its objective ordering (finish, travel, wait, earliest starts) was chosen specifically so that it picks the order found in prose. Neither B3 nor B2 captures 'tie-break tuned to reproduce the prose answer'.",
+    "lines": "140-148, 392-403",
+    "paraphrase": "Tie-break key designed to select Matthew-Robert-Joseph-Sarah-Patricia."
+   },
+   {
+    "node": "A3",
+    "issue": "test_against_prose is ambiguous: the prose answer is not used to check output but to steer the tie-break rule of the code before it is written.",
+    "lines": "142-148",
+    "paraphrase": "Chooses tie-break so code selects the human-natural schedule."
+   },
+   {
+    "node": "A2",
+    "issue": "Prose enumerates many full orders; which one is the committed answer is only fixed at lines 140-142 when one is judged natural.",
+    "lines": "106-142",
+    "paraphrase": "All-five orders enumerated, one preferred."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "enumerate_all_optimal_solutions",
+    "description": "Prose lists every feasible all-friend order and rejects the others with timing arithmetic (which friend first, why Matthew must precede 12:00).",
+    "lines": "106-123",
+    "paraphrase": "Case analysis of orders, rejecting those with a late arrival."
+   },
+   {
+    "proposed_name": "optimality_of_finish_time_proof",
+    "description": "Argues earliest possible finish is 7:45PM because the last two friends form a rigid block.",
+    "lines": "71",
+    "paraphrase": "Shows finish cannot be earlier than the end of Patricia's window."
+   },
+   {
+    "proposed_name": "predict_program_selection",
+    "description": "Steps through the program's key comparison over candidate permutations to show which one it selects.",
+    "lines": "627-641",
+    "paraphrase": "Mentally evaluates key tuples for several orders."
+   },
+   {
+    "proposed_name": "tiebreak_objective_selection",
+    "description": "Computes travel and waiting totals for competing optimal orders to choose a canonical one.",
+    "lines": "124-141",
+    "paraphrase": "Travel totals 75 vs 91, waits equal at 360."
+   }
+  ],
+  "notes": "Prose chose a complete 5-friend itinerary and the program printed exactly that; stored expected differs but both are valid. Anti-solver-like instruction in the prompt was violated in the trace."
+ },
+ {
+  "file": "qwen__meeting__caution_b__meeting_planning_example_884.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "no_program",
+  "C1": null,
+  "C2": true,
+  "approx_slb_fraction": 0.6,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Extracted program is a placeholder and execution output is empty, so B and C1 cannot be assessed although the prose solving is extensive.",
+    "lines": "383-389",
+    "paraphrase": "Stub program, no output."
+   },
+   {
+    "node": "A2",
+    "issue": "A full 8-friend itinerary is committed first, then a different order is preferred after a hand enumeration of routes; which one is the prose answer is unclear.",
+    "lines": "183-203, 241-266, 351-366",
+    "paraphrase": "Initial full schedule, later lower-travel alternative."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "infeasibility_proof_by_pairwise_timing",
+    "description": "Shows that the three evening friends cannot all be met by checking the pairwise finish and travel times.",
+    "lines": "163",
+    "paraphrase": "Karen and Laura ordering analysis, then Deborah conflict."
+   },
+   {
+    "proposed_name": "min_travel_route_enumeration",
+    "description": "Enumerates visit orders of four locations with travel sums to pick a canonical optimal route.",
+    "lines": "241-266",
+    "paraphrase": "Table of route totals, minimum chosen."
+   }
+  ],
+  "notes": "Prose reaches a valid 8-friend itinerary (stored answer also has 8). The trace ends before any code; the prompt asked the model not to pre-solve."
+ },
+ {
+  "file": "qwen__meeting__caution_b__meeting_planning_example_209.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.4,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Prose states two full itineraries, a minimum-duration one and an extended-duration one; the first is carried into the code, so which is the committed answer is a judgement call.",
+    "lines": "58-77",
+    "paraphrase": "Two complete schedules compared on waiting and total meeting time."
+   },
+   {
+    "node": "B",
+    "issue": "Program is a real subset and permutation search (B3), but its tie-break objective (earliest event times) was chosen so the code reproduces the preferred prose schedule; no B option captures that.",
+    "lines": "83-106",
+    "paraphrase": "Objective picked so the code selects the earliest minimum-duration schedule."
+   },
+   {
+    "node": "Not-SLB boundary",
+    "issue": "Much of the trace is deliberation about response format and interpretation of the goal, which a judge could confuse with solving.",
+    "lines": "46-48, 56-57, 114-123",
+    "paraphrase": "Prompt-interpretation and format debate."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "slack_and_extension_analysis",
+    "description": "Computes how long the first meeting could be extended without losing later friends, deriving a maximal-duration variant (includes a self-caught arithmetic slip).",
+    "lines": "52-54",
+    "paraphrase": "Latest end of the first meeting derived from the next friend's window."
+   },
+   {
+    "proposed_name": "uniqueness_of_order_argument",
+    "description": "Argues only one visiting order can meet all three friends by checking the alternatives.",
+    "lines": "52",
+    "paraphrase": "Other orders fail on window timing."
+   },
+   {
+    "proposed_name": "tiebreak_objective_selection",
+    "description": "Compares total waiting and meeting time of the two candidate schedules to choose a canonical one.",
+    "lines": "77-85",
+    "paraphrase": "Wait totals of the two variants compared."
+   }
+  ],
+  "notes": "Prose itinerary equals the program output and the stored answer. The prompt asked not to pre-solve; the trace did anyway."
+ },
+ {
+  "file": "qwen__blocksworld__baseline__blocksworld_p64_goal_constraint4.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B2_derived",
+  "C1": false,
+  "C2": false,
+  "approx_slb_fraction": 0.12,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Constraint 'hold block1 at the end' contradicts the goal (on-table block1). Qwen invented a non-standard 'complete-holding' action that adds holding without deleting on-table and put holding+on-table both in the goal. This is not a hardcoded plan nor a pruned encoding; it is a domain hack that alters semantics. B2_derived (domain/goal altered) fits only loosely."
+   },
+   {
+    "node": "A2",
+    "issue": "The middle of the trace is truncated in the packet, so whether a complete plan was stated in prose cannot be confirmed. Only fragments are visible ('plan up to step 21', 'step 22 complete-holding'), so complete vs partial is uncertain."
+   },
+   {
+    "node": "flagged-separately",
+    "issue": "The spec was changed after judging the goal infeasible. This is the 'flagged separately' case, but here the change happens by relaxing the domain, not by dropping a goal."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "feasibility_check_of_alternative_goal",
+    "description": "Qwen tests, by mentally unstacking, whether a relaxed goal (hold block1, drop on-table) has a plan. This is a solvability proof on a modified problem and not a commitment to a plan."
+   },
+   {
+    "proposed_name": "spec_contradiction_resolution_by_domain_hack",
+    "description": "On contradictory constraints, Qwen designs an encoding that makes the contradictory goal satisfiable and checks that the plan remains valid and that the special action must be last. This is design-level reasoning about reachability, not SLB."
+   }
+  ],
+  "notes": "Mostly interpretation and PDDL design; paren-checking and JSON-escaping are not SLB. Packet middle truncated."
+ },
+ {
+  "file": "qwen__blocksworld__baseline__blocksworld_p82_initial_constraint2.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "A3 dry_run",
+    "issue": "A large share of the trace is hand-checking parenthesis balance in the JSON/PDDL strings. A judge could mislabel this as 'dry-run' of the program, but it is syntax verification, not SLB."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Entirely resolving a contradictory 'start with all blocks on table' constraint (kept groundtruth init) plus syntax checking. No plan values committed. Correct=False because the model ignored the constraint (invalid_plan)."
+ },
+ {
+  "file": "qwen__blocksworld__baseline__blocksworld_p30_baseline_constraint30.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.02,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "Only a one-sentence plan strategy is given (unstack from the top down, put each down) as a reachability remark. It names no concrete action sequence for all variables, so 'direct_derivation, partial' is borderline against 'none'."
+   },
+   {
+    "node": "A3",
+    "issue": "The plan remark happens after the PDDL is drafted and serves as a solvability check. None of solve_then_encode, dry_run or test_against_prose describes it."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "reachability_sanity_check",
+    "description": "A brief prose argument that the goal is reachable from the initial state under the drafted domain, without committing a plan."
+   },
+   {
+    "proposed_name": "domain_invariant_verification",
+    "description": "Reasoning about whether the drafted actions preserve the invariants (a block cannot be on-table and on something). This verifies the encoding semantics and is not solving."
+   }
+  ],
+  "notes": "About 85% of the trace is hand-counting parentheses (the extracted domain still failed with unbalanced parentheses, execution_error). This is not SLB but is a big chunk that a judge could mis-assign."
+ },
+ {
+  "file": "qwen__blocksworld__caution_a__blocksworld_p38_action_constraint22.md",
+  "A1": [
+   "search"
+  ],
+  "A2": "abandoned",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.12,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "Qwen tries concrete action prefixes under the immediate-after constraint (pickup b2, then b3 must move, impossible) and rejects them, concluding the problem is infeasible in prose. It commits no plan. 'search' fits, but A2 'abandoned' says it hands over to the program, whereas here the prose reaches a definite infeasibility conclusion."
+   },
+   {
+    "node": "B",
+    "issue": "The program faithfully encodes the problem's own constraint (obligation flags) and adds negated obligations to the goal. That is neither B3 'solves independently' in spirit nor B2_derived (the facts are not deduced in prose), so B3 is a loose fit."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "prose_infeasibility_proof",
+    "description": "The model reasons that the constrained problem has no solution by enumerating which actions could satisfy 'move b3 immediately after b2'. This is a feasibility proof, not a plan."
+   },
+   {
+    "proposed_name": "constraint_semantics_exploration_by_simulation",
+    "description": "Qwen compares interpretations of 'move' (primitive action vs complete relocation) by checking which interpretation would make the goal reachable."
+   }
+  ],
+  "notes": "Planner found no plan (correct=False, planning_failure) because the constraint, faithfully encoded, is infeasible. Prose infeasibility judgement matched the planner."
+ },
+ {
+  "file": "qwen__blocksworld__caution_a__blocksworld_p09_baseline_constraint9.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.02,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "The only value-like reasoning is that the goal stacks account for all blocks, so arm-empty is implied. This is reasoning about goal semantics and not committing decision variables. 'none' fits, but a judge may be tempted by it."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "goal_implication_check",
+    "description": "Deduces that the goal (all blocks stacked) implies a final arm-empty state without being asked, to decide whether to add extra goal atoms."
+   }
+  ],
+  "notes": "Clean formalization trace; copies groundtruth init/goal and standard domain. Correct."
+ },
+ {
+  "file": "qwen__blocksworld__caution_a__blocksworld_p100_initial_constraint20.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.04,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "A 3-line sketch ('putdown O, then pick N stack on O...') is only a plan-existence check. It is borderline between 'none' and direct_derivation/partial, because it names a partial action order for a few of the variables."
+   },
+   {
+    "node": "Not SLB boundary",
+    "issue": "Long deliberation on whether to add (clear ...) atoms to the goal and whether held blocks are 'clear' is about modelling the goal and initial state. 'Restating vs computing with data' is ambiguous here, because deducing the init clear-set is computing, but it is not a decision variable."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "reachability_sketch",
+    "description": "Short prose sketch of a partial plan to confirm solvability under the modified initial state (start holding O)."
+   },
+   {
+    "proposed_name": "goal_completeness_argument",
+    "description": "Argues that the groundtruth goal accounts for all 15 blocks, so no extra clear/arm-empty atoms are needed."
+   }
+  ],
+  "notes": "Initial-state constraint encoded as (holding o). Correct. Most of the trace is domain-semantics deliberation and paren counting."
+ },
+ {
+  "file": "qwen__blocksworld__caution_b__blocksworld_p67_goal_constraint7.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "partial",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B2_derived",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.1,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "The program keeps the full groundtruth goal and adds (holding block5), and makes it satisfiable through a new action 'complete-holding' that sets holding without deleting support. Nothing is hardcoded and nothing is pruned, but the domain is changed so a contradictory goal is reachable. B2_derived only loosely covers a semantic-relaxation loophole. The planner then exploited it (first plan step is complete-holding block10 block5)."
+   },
+   {
+    "node": "flagged-separately",
+    "issue": "The spec was changed after the prose judged the goal contradictory, by altering the domain instead of the goal. The 'flagged separately' note mentions dropping a goal, so this variant is not covered."
+   },
+   {
+    "node": "A2",
+    "issue": "The middle of the trace is truncated. The visible prose compares encodings (options A to E) and sketches a plan shape (stack the tower, then hold block5) without a full action sequence, so A2 'partial' is uncertain."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "encoding_option_feasibility_comparison",
+    "description": "Compares candidate encodings by whether the goal becomes satisfiable, simulating initial-state moves (e.g. unstack block10 from block5 first, then pickup block5)."
+   },
+   {
+    "proposed_name": "loophole_exploit_prediction_failure",
+    "description": "Qwen reasoned that the planner could not shorten the plan with the new action. The planner did exploit it in step 1. Prose prediction of planner behaviour was wrong."
+   }
+  ],
+  "notes": "Executed plan is >100 steps and invalid for the real task (invalid_plan). Fully attributable to the invented domain action, not to prose solving."
+ },
+ {
+  "file": "qwen__blocksworld__caution_b__blocksworld_p97_initial_constraint17.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.05,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "A brief sketch ('stack c b first, then unstack top blocks...') verifies solvability. It names an opening action and a general strategy but not a full plan, so partial/direct_derivation is borderline against none."
+   },
+   {
+    "node": "Not SLB boundary",
+    "issue": "Computing the initial clear-set after 'holding C' (e.g. b becomes clear) is derivation from data, not a decision variable. A judge could mistake it for SLB, so the restate-vs-compute boundary needs a rule for initial-state derivation."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "initial_state_derivation",
+    "description": "Deriving the modified initial state implied by the extra constraint (c held, so b clear, c not on b). Computed state facts, not decision variables."
+   },
+   {
+    "proposed_name": "reachability_sketch",
+    "description": "Short prose check that the goal is reachable with the constraint."
+   }
+  ],
+  "notes": "Correct. Mostly encoding semantics (clear-while-held convention) and JSON-escaping."
+ },
+ {
+  "file": "qwen__blocksworld__caution_b__blocksworld_p15_baseline_constraint15.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.07,
+  "fit_problems": [
+   {
+    "node": "A3",
+    "issue": "Qwen drafts the full PDDL first, then solves the instance in prose to confirm solvability ('verify plan existence'). This is not solve_then_encode (domain was already drafted), not dry_run (it is not running its program by hand), and not test_against_prose (nothing is adjusted). No A3 value fits, so a 'verification solve' role is missing."
+   },
+   {
+    "node": "A1",
+    "issue": "Genuine search: tries to stack block6 on block5 while block5 is still on block1, rejects it, and revises the order. The ontology's 'search' fits, but the whole thing is incidental to the encoding and ends in a plan that differs from the planner's."
+   },
+   {
+    "node": "C1",
+    "issue": "The prose plan (put block6 down, move block5, pick block6 up) is longer than the planner's 10-step plan, so 'match' is ambiguous: same goal, different plan. Whether C1 compares the plan text or only validity is unclear."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "solvability_verification_by_solving",
+    "description": "After the encoding is written, a prose solve of the concrete instance to confirm the goal is reachable. It commits action sequences with a rejected branch but does not influence the program."
+   },
+   {
+    "proposed_name": "domain_invariant_verification",
+    "description": "Reasons about whether the clear-false-while-held convention prevents self-stacking and double-hold, i.e. checks the semantics of the encoding."
+   }
+  ],
+  "notes": "Only packet with real prose search. The program ignores it (B3) and gets the answer right independently."
+ },
+ {
+  "file": "gpt__meeting__baseline__meeting_planning_example_209.md",
+  "A1": [
+   "direct_derivation",
+   "search"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": null,
+  "C2": true,
+  "approx_slb_fraction": 0.5,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Both search and direct_derivation could apply: the model derives one full schedule step by step, and only weakly considers alternatives (meet Melissa after Anthony, start at 9:29 vs 9:30), dismissing them by assumption rather than testing. Unclear whether this counts as 'rejects at least one candidate'."
+   },
+   {
+    "node": "C1",
+    "issue": "Program crashed (fmt_to_min used before definition), so there is no output to compare; C1 undefined although A2=complete."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "tie_break_among_equivalent_solutions",
+    "description": "Chooses between equally valid concrete schedules (start meeting at 9:29 vs wait to 9:30 for nicer times; earliest-start vs padded) and predicts what the planned program will output under each rule."
+   }
+  ],
+  "notes": "Full prose schedule then a real exhaustive-search program with no hardcoding (B3); prose solving is wasted. Program fails on a NameError. 'Restating data' vs computing: travel arithmetic (9:00+29=9:29) is both a restatement of data and a commitment of values, hard to separate."
+ },
+ {
+  "file": "gpt__meeting__baseline__meeting_planning_example_800.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.75,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Mixed: heavy rejection of candidates (Steven vs Betty+Melissa+Barbara, Joseph vs Joshua) via overlap/feasibility arguments, then direct derivation of the final 18-step itinerary. Much of the 'search' is pairwise infeasibility proofs, not trial of full value assignments."
+   },
+   {
+    "node": "A2/C2",
+    "issue": "Prose itinerary uses a couple of wrong travel times (Embarcadero->Haight 20 vs 21, Fisherman's Wharf->Nob Hill/Kimberly->Nob Hill) but the schedule has slack, so C2 depends on validator strictness (true if validator recomputes times; prose is not in output format)."
+   },
+   {
+    "node": "C1",
+    "issue": "Program output meets 3 friends while prose meets 7; program has a bug in best-update (len(actions)//2 > best_count) so DFS never improves. C1 false is a program bug, not an SLB disagreement."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "capacity_feasibility_bound",
+    "description": "Aggregate arithmetic argument (sum of required minutes vs available hours) to judge whether meeting everyone is possible, without committing any values."
+   },
+   {
+    "proposed_name": "pairwise_infeasibility_and_optimality_argument",
+    "description": "Proves in prose that two friends cannot both be met (overlapping windows, window length == required duration) and that dropping one to gain three is optimal for count."
+   }
+  ],
+  "notes": "Prose finds a 7-friend schedule that matches the gold count; the program searches independently (B3) and is buggy. Prose is not in the final-answer format, so C1/C2 parsing is needed."
+ },
+ {
+  "file": "gpt__meeting__baseline__meeting_planning_example_118.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B1",
+  "C1": true,
+  "C2": false,
+  "approx_slb_fraction": 0.9,
+  "fit_problems": [
+   {
+    "node": "outside-ontology flag",
+    "issue": "Model proves the stated min durations (120 each) infeasible in prose, then silently relaxes the specification to 'meet both for any positive time'. This is the 'flagged separately' spec change, but here it drives a full hardcode and a wrong answer; ontology has no node for it besides the note."
+   },
+   {
+    "node": "A1",
+    "issue": "The 'search' is an algebraic case analysis over parameters (t1,t2,t3), not trial of concrete values; fits 'search' only loosely. Final schedule values are then chosen arbitrarily (12:00PM chosen for convenience)."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "symbolic_feasibility_proof",
+    "description": "Solves a parametric version of the problem (variables t1,t2,t3 for split meetings) to prove infeasibility of the stated requirement and derive that total meeting time is constant."
+   },
+   {
+    "proposed_name": "spec_relaxation_after_infeasibility",
+    "description": "After proving infeasibility, reinterprets the objective (count of friends instead of min durations) and optimizes the relaxed objective."
+   },
+   {
+    "proposed_name": "optimization_over_relaxed_objective",
+    "description": "Maximizes total meeting minutes analytically and shows the objective is independent of departure time."
+   }
+  ],
+  "notes": "Textbook B1: prose schedule is printed as a literal list; C1 true, C2 false because the relaxed schedule violates the 120-minute minimums. Gold meets only Richard for 120."
+ },
+ {
+  "file": "gpt__meeting__caution_a__meeting_planning_example_222.md",
+  "A1": [
+   "search",
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B2_fixed_decision",
+  "C1": false,
+  "C2": true,
+  "approx_slb_fraction": 0.7,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "Program fixes only the friend order (Helen, Kimberly, Patricia, chosen in prose) and recomputes times greedily; the prose's specific times (Helen 2:25-4:25) are not used, so output differs from prose (C1 false). B2_fixed_decision fits, but 'times recomputed' means the prose's key decision (delay Helen) was dropped."
+   },
+   {
+    "node": "A1",
+    "issue": "Search is thin: the model considers meeting Helen early, notes a long wait, and moves her to 2:25PM; this is one rejection embedded in otherwise direct derivation."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "backward_scheduling_latest_start",
+    "description": "Works backward from a downstream deadline (leave North Beach by 4:25 to reach Wharf at 4:30) to pick the latest start of the first meeting. A derivation technique, covered by direct_derivation but not obviously 'tries then rejects'."
+   }
+  ],
+  "notes": "Prose answer (delayed Helen) is valid and the program output is also valid but different; both meet all three. Program's greedy order is hardcoded without search, so wasted prose detail but B2 fixed order."
+ },
+ {
+  "file": "gpt__meeting__caution_a__meeting_planning_example_952.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "partial",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.03,
+  "fit_problems": [
+   {
+    "node": "A1/A2",
+    "issue": "Only decision committed is dropping Matthew (infeasible by arrival time arithmetic). Borderline whether a single exclusion counts as direct_derivation + partial or as none/restating data."
+   },
+   {
+    "node": "B",
+    "issue": "Matthew's infeasibility was deduced in prose but the program keeps Matthew in the data (window clipped to 0) and lets search reject him; so neither B2_pruned nor plain B3 is clean; B3 chosen since the encoding is unchanged."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "single_friend_feasibility_check",
+    "description": "Checks reachability of one friend from the start (travel time vs window end) to rule them out; arithmetic on given data, not a decision-variable commitment."
+   }
+  ],
+  "notes": "Otherwise the reasoning is code design for an exhaustive memoized DFS. Program output is a correct-looking 9-friend schedule matching gold; it is independent (B3)."
+ },
+ {
+  "file": "gpt__meeting__caution_a__meeting_planning_example_575.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "abandoned",
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.08,
+  "fit_problems": [
+   {
+    "node": "A2",
+    "issue": "Model sketches a tentative friend order and derives Elizabeth must run 5:15-7:00, then says it needs code. Abandoned vs partial is ambiguous: a candidate order (William, Robert, Linda, Elizabeth, Rebecca, Mark) is proposed but never tested or committed."
+   },
+   {
+    "node": "A3",
+    "issue": "A3 requires an option when A2 is not none; none fits ('abandoned' with no role). Role list left empty."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "window_tightness_inference",
+    "description": "Infers that a window is exactly tight or forced (Elizabeth needs 105 of 135 minutes) without assigning times."
+   }
+  ],
+  "notes": "Mostly code design plus a vague sketch. Program does a full permutation search (B3). Program output is a valid 6-friend schedule that differs from gold."
+ },
+ {
+  "file": "gpt__meeting__caution_b__meeting_planning_example_934.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "B3",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [],
+  "uncovered_slb": [],
+  "notes": "Pure planning of an exhaustive permutation search; no values committed. The program (permutations of 10 friends) produced no output (timeout/ missing travel entry 'Haight-Ashbery' typo), so no correctness data."
+ },
+ {
+  "file": "gpt__meeting__caution_b__meeting_planning_example_115.md",
+  "A1": [
+   "direct_derivation"
+  ],
+  "A2": "complete",
+  "A3": [
+   "solve_then_encode"
+  ],
+  "B": "B3",
+  "C1": true,
+  "C2": true,
+  "approx_slb_fraction": 0.35,
+  "fit_problems": [
+   {
+    "node": "A1",
+    "issue": "Feasibility check of Carol-then-Jessica is a full schedule with times, but it only tests one of two orderings, no rejection, so it is direct_derivation; yet its stated purpose is feasibility, not producing the answer."
+   },
+   {
+    "node": "A2",
+    "issue": "Complete is satisfied (all times stated) although the prose never lists it as a final answer or in output format; C1/C2 parsing must read free text."
+   }
+  ],
+  "uncovered_slb": [
+   {
+    "proposed_name": "feasibility_probe_of_one_order",
+    "description": "Hand-computes one concrete order to answer 'is meeting everyone possible?' and then lets code do the real work; it commits values but is framed as a feasibility test."
+   }
+  ],
+  "notes": "Prose schedule equals program output, which equals gold. Program searches all subsets/orders independently (B3), so prose solving was redundant."
+ },
+ {
+  "file": "gpt__meeting__caution_b__meeting_planning_example_870.md",
+  "A1": [
+   "none"
+  ],
+  "A2": null,
+  "A3": [],
+  "B": "no_program",
+  "C1": null,
+  "C2": null,
+  "approx_slb_fraction": 0.0,
+  "fit_problems": [
+   {
+    "node": "B",
+    "issue": "EXTRACTED PROGRAM is '(none)' because the code sits in the final answer in a ```python fence after 'SOLUTION:'; extractor missed it. B judge sees no program although one exists (a memoized DFS, B3 in reality). Pipeline issue, not ontology, but 'no_program' is not an option in the ontology."
+   }
+  ],
+  "uncovered_slb": [],
+  "notes": "Reasoning is code design only. The code contains a messy first friends table with wrong offsets then overwritten; irrelevant to SLB."
+ }
+]

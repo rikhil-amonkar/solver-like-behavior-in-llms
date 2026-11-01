@@ -1,0 +1,9 @@
+{
+  "gemma": "V",
+  "gemmaSearch": true,
+  "human": "V",
+  "model": "deepseek",
+  "searchOk": true,
+  "task": "calendar",
+  "updatedAt": "2026-10-29T13:48:54.268Z"
+}

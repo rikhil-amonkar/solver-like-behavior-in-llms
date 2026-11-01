@@ -388,6 +388,54 @@ def parse_batch_results(output_gcs_uri_prefix: str) -> list[dict]:
     return all_results
 
 
+def _prompt_text(request: dict) -> str:
+    """Concatenated text parts of a generateContent request."""
+    return "".join(
+        part.get("text", "")
+        for content in request.get("contents", [])
+        for part in content.get("parts", [])
+    )
+
+
+def match_batch_results(raw_results: list[dict], requests: list[dict], request_ids: list[str]) -> dict:
+    """
+    Match batch output lines to the requests they answer.
+
+    Vertex AI does not keep input order in batch output, so results must not be
+    matched by position. Each output line echoes its request, so we match on the
+    request's prompt text. Identical prompts are interchangeable.
+
+    Args:
+        raw_results: Output lines from parse_batch_results
+        requests: Request dicts as submitted (from prepare_batch_requests)
+        request_ids: ID for each request, in the same order as requests
+
+    Returns:
+        Dict mapping request ID to its output line (IDs with no output are absent)
+    """
+    ids_by_prompt = {}
+    for request_id, request in zip(request_ids, requests):
+        ids_by_prompt.setdefault(_prompt_text(request["request"]), []).append(request_id)
+
+    matched = {}
+    for result in raw_results:
+        if "request" not in result:
+            raise ValueError("Batch output line has no 'request' field; cannot match it to an example")
+        pending = ids_by_prompt.get(_prompt_text(result["request"]))
+        if not pending:
+            raise ValueError("Batch output line does not match any submitted request")
+        matched[pending.pop(0)] = result
+    return matched
+
+
+def batch_response_text(result: dict) -> str:
+    """Judge output text from one batch output line ('' if missing)."""
+    candidates = result.get("response", {}).get("candidates", [])
+    if candidates and "parts" in candidates[0].get("content", {}):
+        return candidates[0]["content"]["parts"][0].get("text", "")
+    return ""
+
+
 if __name__ == "__main__":
     # Test single call
     print("Testing Vertex AI judge call...")

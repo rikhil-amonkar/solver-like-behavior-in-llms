@@ -5,7 +5,7 @@
     "condition": "caution_b",
     "execution_json": "output/gpt/zebralogic/caution_b_execution.json",
     "constraints_json": "data/constraints/zebralogic_constraints.json",
-    "timestamp": "2026-08-26T05:59:06Z",
+    "timestamp": "2026-10-21T21:19:59Z",
     "num_examples": 100
   },
   "summary": {
@@ -22,8 +22,11 @@
       "no_solution": 1,
       "parse_error": 0,
       "constraint_violation": 0,
+      "suboptimal": 0,
       "pddl_error": 0,
       "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
       "incorrect_plan_exists": 0,
       "evaluation_error": 0,
       "incorrect_solution": 10
@@ -854,7 +857,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_9hltozap/solution_z3.py\", line 50, in <module>\n    s.add(Implies(name_at[pos_eric] == NAME[\"Eric\"], phone_at[pos_eric] == PHONE[\"samsung galaxy "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_xn0u7us4/solution_z3.py\", line 50, in <module>\n    s.add(Implies(name_at[pos_eric] == NAME[\"Eric\"], phone_at[pos_eric] == PHONE[\"samsung galaxy "
       }
     },
     {
@@ -1505,7 +1508,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_jqcoj095/solution_z3.py\", line 86, in <module>\n    s.add(style_pos[style_idx[\"ranch\"]] < sport_pos[sport_idx[\"cooking\"]])\n                      "
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_7uhi502o/solution_z3.py\", line 86, in <module>\n    s.add(style_pos[style_idx[\"ranch\"]] < sport_pos[sport_idx[\"cooking\"]])\n                      "
       }
     },
     {
@@ -4677,7 +4680,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_3aho9v_3/solution_z3.py\", line 47, in <module>\n    name_at[m[house].as_long()] = val\n            ~^^^^^^^\n  File \"/local-ssd/rma336/solver-like-"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_7rou7f6w/solution_z3.py\", line 47, in <module>\n    name_at[m[house].as_long()] = val\n            ~^^^^^^^\n  File \"/local-ssd/hz466/vllm-env/lib/"
       }
     },
     {
@@ -5861,7 +5864,7 @@
       "validation": {
         "error": "execution failed",
         "exit_code": 1,
-        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_m22gqenx/solution_z3.py\", line 53, in <module>\n    And(i + 1 < H, name[i + 1] == idx(names, \"Eric\"))))\n                   ~~~~^^^^^^^\nIndexError"
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/z3_exec_4ps5oan2/solution_z3.py\", line 53, in <module>\n    And(i + 1 < H, name[i + 1] == idx(names, \"Eric\"))))\n                   ~~~~^^^^^^^\nIndexError"
       }
     },
     {

@@ -43,6 +43,7 @@ temp/
 # Secrets and local env files
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 secrets/
@@ -62,3 +63,18 @@ repos/
 
 # Anonymous information
 hidden/
+
+# Scratch outputs from test runs
+output_test/
+
+# Local judge segment caches
+output/judge_cache_*.jsonl
+output/judge_segments_*.json
+
+# Re-run scratch outputs and backups of replaced outputs (kept in git history)
+output_rerun/
+output_rerun_parts/
+output_backup/
+
+# Dashboard snapshots
+output/dashboard/

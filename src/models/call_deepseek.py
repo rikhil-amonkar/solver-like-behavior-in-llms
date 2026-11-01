@@ -40,10 +40,10 @@ def call_deepseek(prompt: str, max_tokens: int = None, reasoning_effort: str = "
     reasoning_content = getattr(message, "reasoning_content", "") or ""
     answer_content = message.content or ""
 
-    # Combine reasoning + answer for full trace
+    # Combine reasoning + answer for full trace, marking where the answer starts
     has_reasoning = bool(reasoning_content and reasoning_content.strip())
     if has_reasoning:
-        reasoning_trace = f"{reasoning_content}\n\n{answer_content}"
+        reasoning_trace = f"{reasoning_content}\n</think>\n\n{answer_content}"
     else:
         reasoning_trace = answer_content
 

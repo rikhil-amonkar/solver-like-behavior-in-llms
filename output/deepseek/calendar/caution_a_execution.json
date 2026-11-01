@@ -4,7 +4,7 @@
     "model": "deepseek",
     "condition": "caution_a",
     "inference_json": "output/deepseek/calendar/caution_a_inference.json",
-    "timestamp": "2026-08-23T13:47:58Z",
+    "timestamp": "2026-10-21T21:19:23Z",
     "num_examples": 100,
     "code_timeout_sec": 30.0
   },

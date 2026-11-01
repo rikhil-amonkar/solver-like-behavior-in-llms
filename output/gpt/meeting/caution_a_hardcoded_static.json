@@ -1,0 +1,505 @@
+{
+  "checker": "static_checker.py",
+  "examples": [
+    {
+      "example_id": "meeting_planning_example_389",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_912",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_446",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_444",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_350",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_867",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_423",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_715",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_577",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_728",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_831",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_789",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_219",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_604",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_52",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_137",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_911",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_433",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_203",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_224",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_813",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_170",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_892",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_258",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_700",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_263",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_312",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_488",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_215",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_624",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_978",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_934",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_575",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_356",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_286",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_210",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_612",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_901",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_956",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_73",
+      "label": "hardcoded",
+      "reason": "replay"
+    },
+    {
+      "example_id": "meeting_planning_example_835",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_482",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_502",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_225",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_372",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_701",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_962",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_88",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_454",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_272",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_592",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_144",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_900",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_872",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_695",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_268",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_6",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_385",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_862",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_546",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_91",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_609",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_908",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_335",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_607",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_432",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_309",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_322",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_479",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_98",
+      "label": "hardcoded",
+      "reason": "replay"
+    },
+    {
+      "example_id": "meeting_planning_example_222",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_629",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_468",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_828",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_800",
+      "label": "n/a",
+      "reason": "did_not_run"
+    },
+    {
+      "example_id": "meeting_planning_example_940",
+      "label": "hardcoded",
+      "reason": "literal"
+    },
+    {
+      "example_id": "meeting_planning_example_391",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_143",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_352",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_409",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_952",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_870",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_884",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_180",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_174",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_976",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_885",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_937",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_403",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_25",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_118",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_402",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_368",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_115",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_66",
+      "label": "not_hardcoded",
+      "reason": "derived"
+    },
+    {
+      "example_id": "meeting_planning_example_125",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_131",
+      "label": "hardcoded",
+      "reason": "fixed_plan"
+    },
+    {
+      "example_id": "meeting_planning_example_974",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_763",
+      "label": "not_hardcoded",
+      "reason": "search"
+    },
+    {
+      "example_id": "meeting_planning_example_209",
+      "label": "not_hardcoded",
+      "reason": "search"
+    }
+  ]
+}

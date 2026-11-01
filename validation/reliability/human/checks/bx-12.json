@@ -1,0 +1,9 @@
+{
+  "gemma": "independent",
+  "human": "independent",
+  "model": "gpt",
+  "sheet": "bx",
+  "task": "calendar",
+  "trace": "gpt/calendar/baseline/calendar_scheduling_example_625",
+  "updatedAt": "2026-10-31T22:32:02.401Z"
+}

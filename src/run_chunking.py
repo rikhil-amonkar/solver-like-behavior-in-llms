@@ -20,7 +20,9 @@ from chunking.vertex_batch_judge import (
     prepare_batch_requests,
     submit_batch_job,
     poll_batch_job,
-    parse_batch_results
+    parse_batch_results,
+    match_batch_results,
+    batch_response_text,
 )
 from chunking.judge_caller import call_judge
 from chunking.chunk_parser import (
@@ -191,22 +193,12 @@ def run_batch_chunking_pipeline(
 
     # Map results back to examples (handle segments)
     print("\nProcessing results...")
-    example_id_to_response = {}
-
-    for idx, result in enumerate(batch_results):
-        # Extract response text from Vertex AI format
-        response_text = ""
-
-        if "response" in result and "candidates" in result["response"]:
-            candidate = result["response"]["candidates"][0]
-            if "content" in candidate and "parts" in candidate["content"]:
-                response_text = candidate["content"]["parts"][0].get("text", "")
-
-        # Map by index since batch results don't include custom_id in current format
-        # Results are returned in same order as input requests
-        if idx < len(batch_examples):
-            example_id = batch_examples[idx]["example_id"]
-            example_id_to_response[example_id] = response_text
+    # Batch output order is not input order: match each result to its request
+    matched = match_batch_results(batch_results, requests, [ex["example_id"] for ex in batch_examples])
+    example_id_to_response = {rid: batch_response_text(result) for rid, result in matched.items()}
+    missing = len(batch_examples) - len(matched)
+    if missing:
+        print(f"  ⚠ {missing} requests have no batch output")
 
     # Build final results
     judge_model = os.getenv("VERTEX_JUDGE_BATCH_MODEL", "publishers/google/models/gemini-2.5-pro")
