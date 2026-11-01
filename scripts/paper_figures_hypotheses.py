@@ -5,6 +5,7 @@ Section 5 figures, one per hypothesis, from the per-trace rows of the native and
 DeepSeek's cross-FL runs are excluded (API drift; docs/CROSS_FL_DESIGN.md).
 
 - figures/h1_prevalence.pdf   H1: traces with SLB, solver-like ratio, SLB tokens (baseline)
+- figures/h1_prevalence_b.pdf same, with the SLB bars split by the program's B label (merges h2_kinds into H1)
 - figures/h2_kinds.pdf        H2: inheriting programs per dataset and FL (one column)
 - figures/h3_accuracy.pdf     H3: within-problem effect of SLB on accuracy
 - figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset (one column, a dumbbell per dataset for each of Qwen and GPT-OSS; R^2 drops in nums only)
@@ -43,6 +44,7 @@ TASK_NAMES = {"calendar": "Calendar", "meeting": "Meeting", "zebralogic": "Zebra
 FL_NAMES = {"python": "Python", "z3": "Z3", "pddl": "PDDL"}
 NATIVE = {"calendar": "python", "meeting": "python", "zebralogic": "z3", "blocksworld": "pddl"}
 B_COLORS = {"hardcoded": "#2a78d6", "partly_fixed": "#eb6834", "steered": "#1baf7a"}
+B_SHADES = {"hardcoded": "#2b2b2b", "partly_fixed": "#6d6c68", "steered": "#b4b3ae"}  # B1-B3 caps on model-coloured B4
 B_NAMES = {"hardcoded": "B1 hardcoded", "partly_fixed": "B2 partly fixed", "steered": "B3 steered", "independent": "B4 independent"}
 COND_COLORS = {"baseline": "#52514e", "caution_a": "#6250d6", "caution_b": "#c4bdf2"}
 COND_NAMES = {"baseline": "Baseline", "caution_a": "Cautionary A", "caution_b": "Cautionary B"}
@@ -75,9 +77,12 @@ def combo_label(t, fl, short=False):
     return f"{(SHORT if short else TASK_NAMES)[t]}\n{FL_NAMES[fl]}"
 
 
-def fig_h11(rows, dest, nums):
+def fig_h11(rows, dest, nums, split_b=False):
+    # split_b: each SLB bar is stacked by the program's B label, B1-B3 from the axis up in greys, B4 in the
+    # model's colour, and programs with no output (B = na) hatched on top; the bar height is still % SLB.
     base = [r for r in rows if r["cond"] == "baseline"]
-    fig, axes = plt.subplots(3, 1, figsize=(6.3, 3.6), sharex=True, gridspec_kw={"hspace": 0.25})
+    fig, axes = plt.subplots(3, 1, figsize=(6.3, 4.2 if split_b else 3.6), sharex=True,
+                             gridspec_kw={"hspace": 0.25, "height_ratios": [1.7, 1, 1] if split_b else [1, 1, 1]})
     w = 0.26
     metrics = [("Traces with SLB (%)", lambda g: (100 * np.mean([r["values"] for r in g]), 0)),
                ("Solver-like ratio", lambda g: mean_ci([r["ratio"] or 0 for r in g])),
@@ -91,6 +96,17 @@ def fig_h11(rows, dest, nums):
                     if ax is axes[0]:
                         ax.text(x, 3, "–", ha="center", va="bottom", color=MUTED, fontsize=6)
                     continue
+                if split_b and ax is axes[0]:
+                    slb = [r for r in g if r["values"]]
+                    segs = [(sum(r["B"] == k for r in slb), dict(color=B_SHADES[k])) for k in INHERIT]
+                    segs += [(sum(r["B"] == "independent" for r in slb), dict(color=MODEL_COLORS[m])),
+                             (sum(r["B"] not in B_NAMES for r in slb),
+                              dict(color="white", edgecolor=MODEL_COLORS[m], hatch="//////", linewidth=0))]
+                    bottom = 0.0
+                    for c, kw in segs:
+                        ax.bar(x, 100 * c / len(g), w * 0.9, bottom=bottom, **kw)
+                        bottom += 100 * c / len(g)
+                    continue
                 v, ci = f(g)
                 ax.bar(x, v, w * 0.9, color=MODEL_COLORS[m], yerr=ci or None, error_kw=dict(lw=0.5, capsize=0, ecolor=INK))
         ax.set_ylabel(name, fontsize=6.5)
@@ -103,10 +119,18 @@ def fig_h11(rows, dest, nums):
             for ax in axes:
                 ax.axvspan(i - 0.5, i + 0.5, color="#f3f2ee", zorder=-1, lw=0)
     axes[2].set_xticks(range(len(COMBOS)), [combo_label(*c) for c in COMBOS])
-    axes[0].legend(handles=[Patch(color=MODEL_COLORS[m], label=n) for m, n in MODELS], ncol=3, frameon=False,
-                   loc="lower center", bbox_to_anchor=(0.5, 1.0), fontsize=6.5, handlelength=1.0)
+    handles = [Patch(color=MODEL_COLORS[m], label=n) for m, n in MODELS]
+    if split_b:
+        plt.rcParams["hatch.linewidth"] = 0.5
+        handles = [Patch(color=MODEL_COLORS[m], label=f"{n} (B4)") for m, n in MODELS]
+        handles += [Patch(color=B_SHADES[k], label=B_NAMES[k]) for k in INHERIT]
+        handles += [Patch(facecolor="white", edgecolor=MUTED, hatch="//////", linewidth=0, label="No output")]
+    axes[0].legend(handles=handles, ncol=7 if split_b else 3, frameon=False, loc="lower center",
+                   bbox_to_anchor=(0.5, 1.0), fontsize=6.5, handlelength=1.0, columnspacing=1.2)
     fig.savefig(dest, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
+    if split_b:
+        return
     v = [r for r in base if r["values"]]
     nums["h11"] = dict(
         traces=len(base), with_values=np.mean([r["values"] for r in base]),
@@ -292,6 +316,7 @@ def main():
     base = [r for r in rows if r["cond"] == "baseline"]
     nums = {"traces": len(rows), "baseline_traces": len(base)}
     fig_h11(base, fig_dir / "h1_prevalence.pdf", nums)
+    fig_h11(base, fig_dir / "h1_prevalence_b.pdf", nums, split_b=True)
     fig_h12(base, fig_dir / "h2_kinds.pdf", nums)
     fig_h13(base, fig_dir / "h3_accuracy.pdf", nums)
     fig_h2(base, fig_dir / "h4_fl_dataset.pdf", nums)
