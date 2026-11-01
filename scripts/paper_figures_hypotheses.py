@@ -7,7 +7,7 @@ DeepSeek's cross-FL runs are excluded (API drift; docs/CROSS_FL_DESIGN.md).
 - figures/h1_prevalence.pdf   H1: traces with SLB, solver-like ratio, SLB tokens (baseline)
 - figures/h2_kinds.pdf        H2: inheriting programs per dataset and FL (one column)
 - figures/h3_accuracy.pdf     H3: within-problem effect of SLB on accuracy
-- figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset (Qwen and GPT-OSS pooled; one column; R^2 drops in nums only)
+- figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset (one column, a dumbbell per dataset for each of Qwen and GPT-OSS; R^2 drops in nums only)
 - figures/caution.pdf         Section 6: baseline vs cautionary prompts
 H1-H4 (Section 5) use the baseline prompt only; the cautionary prompts are Section 6.
 The paper treats a dataset's two FLs alike, so no FL is marked as native; Python comes first in every dataset.
@@ -36,7 +36,7 @@ from hypothesis_tests import load, boot, by_example, ols, dummies, INHERIT  # no
 
 MODELS = [("deepseek", "DeepSeek"), ("gpt", "GPT-OSS"), ("qwen", "Qwen")]
 MODEL_COLORS = {"deepseek": "#2a78d6", "gpt": "#eb6834", "qwen": "#1baf7a"}
-DATASET_COLORS = {"calendar": "#2a78d6", "meeting": "#eb6834", "zebralogic": "#1baf7a", "blocksworld": "#6250d6"}
+FL_COLORS = {"python": "#6250d6", "decl": "#9e9d98"}
 COMBOS = [("calendar", "python"), ("calendar", "z3"), ("meeting", "python"), ("meeting", "z3"),
           ("zebralogic", "python"), ("zebralogic", "z3"), ("blocksworld", "python"), ("blocksworld", "pddl")]
 TASK_NAMES = {"calendar": "Calendar", "meeting": "Meeting", "zebralogic": "ZebraLogic", "blocksworld": "BlocksWorld"}
@@ -199,16 +199,33 @@ def r2_drops(rows):
 
 
 def fig_h2(rows, dest, nums):
-    # One column: Qwen and GPT-OSS pooled; each dataset is a line from Python to its declarative FL.
+    # One column, one panel per model: a dumbbell per dataset from Python to its declarative FL.
     both = [r for r in rows if r["model"] in ("gpt", "qwen")]
-    fig, ax = plt.subplots(figsize=(3.0, 2.0))
+    tasks = ["calendar", "meeting", "zebralogic", "blocksworld"]
+    decl = {t: next(fl for tt, fl in COMBOS if tt == t and fl != "python") for t in tasks}
+    fig, axes = plt.subplots(1, 2, figsize=(3.1, 1.55), sharey=True, gridspec_kw={"wspace": 0.12})
+    for ax, (m, name) in zip(axes, MODELS[1:]):
+        for k, t in enumerate(tasks):
+            y = len(tasks) - 1 - k
+            pts = {fl: mean_ci([r["ratio"] or 0 for r in both if r["task"] == t and r["fl"] == fl and r["model"] == m])
+                   for fl in ("python", decl[t])}
+            ax.plot([pts["python"][0], pts[decl[t]][0]], [y, y], color=GRID, lw=2.2, zorder=1, solid_capstyle="round")
+            for fl, col, lab in (("python", FL_COLORS["python"], "Python"), (decl[t], FL_COLORS["decl"], "Z3 or PDDL")):
+                ax.errorbar(pts[fl][0], y, xerr=pts[fl][1], color=col, marker="o", ms=3.2, ls="none", elinewidth=0.6,
+                            capsize=0, zorder=2, label=lab if k == 0 else None)
+        ax.set_title(name, fontsize=7)
+        ax.set_xlim(0, 0.5)
+        ax.set_xticks([0, 0.2, 0.4])
+        ax.set_xlabel("Solver-like ratio", fontsize=6.5)
+        style(ax, "x")
+        ax.tick_params(axis="y", length=0)
+    axes[0].set_yticks(range(len(tasks))[::-1], [f"{TASK_NAMES[t]} ({FL_NAMES[decl[t]]})" for t in tasks], fontsize=6)
+    axes[0].set_ylim(-0.6, len(tasks) - 0.4)
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", bbox_to_anchor=(0.55, 0.98), ncol=2,
+               frameon=False, fontsize=6, handlelength=1.0)
     nums["h2"] = {"contrast": {}}
-    for i, t in enumerate(["calendar", "meeting", "zebralogic", "blocksworld"]):
-        fls = [NATIVE[t], next(fl for tt, fl in COMBOS if tt == t and fl != NATIVE[t])]
-        fls = sorted(fls, key=lambda fl: fl != "python")  # Python first
-        pts = [mean_ci([r["ratio"] or 0 for r in both if r["task"] == t and r["fl"] == fl]) for fl in fls]
-        ax.errorbar([0, 1], [p[0] for p in pts], yerr=[p[1] for p in pts], color=DATASET_COLORS[t], marker="o", ms=3,
-                    lw=1.2, capsize=0, elinewidth=0.6, label=f"{TASK_NAMES[t]} ({FL_NAMES[fls[1]]})")
+    for t in tasks:
+        fls = ["python", decl[t]]
         pairs = collections.defaultdict(dict)
         for r in both:
             if r["task"] == t:
@@ -218,12 +235,6 @@ def fig_h2(rows, dest, nums):
         for p in pairs:
             groups[p[fls[0]]["example_id"]].append(p)
         nums["h2"]["contrast"][t] = (fls, boot(groups.values(), lambda s: np.mean([(p[fls[0]]["ratio"] or 0) - (p[fls[1]]["ratio"] or 0) for p in s]), n=1000))
-    ax.set_xticks([0, 1], ["Python", "Z3 / PDDL"])
-    ax.set_xlim(-0.2, 1.2)
-    ax.set_ylim(0, 0.45)
-    ax.set_ylabel("Solver-like ratio", fontsize=6.5)
-    ax.legend(frameon=False, fontsize=6, handlelength=1.2, loc="upper right", borderaxespad=0.1)
-    style(ax)
     full, drops = r2_drops(both)  # variance explained per factor: quoted in the text, not drawn
     fig.savefig(dest, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
