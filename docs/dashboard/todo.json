@@ -1,50 +1,5 @@
 [
  {
-  "priority": 2,
-  "area": "Experiments",
-  "item": "Characterise hardcoding in cross-FL programs before choosing a checker",
-  "detail": "Harry: look at the Z3 programs first. DeepSeek Calendar-Z3 so far: no literal answers; decisions pinned as constraints (e.g. s.add(day == 2) when only Monday is ruled out), and Python loops that use Z3 as a checker. The B judge (gemma_b5t) already covers Z3 but was checked on only 1 Z3 program by Harry.",
-  "status": "in progress",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 2,
-  "area": "Paper",
-  "item": "Replace the Ratio and #Tokens rows",
-  "detail": "Table 1 still shows the old Gemini judgments; use the ontology's solver-like ratio once labels are assembled.",
-  "status": "to do",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 2,
-  "area": "Ontology",
-  "item": "Check DeepSeek and Qwen BlocksWorld A labels",
-  "detail": "Under the final judges the BlocksWorld ratio is 0.01-0.06 (was 0.16-0.20 under gemma_v1), in line with the sweep estimate; a spot check of these labels would confirm it.",
-  "status": "to do",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 3,
-  "area": "Paper",
-  "item": "Fix the conclusion's unsupported claims",
-  "detail": "'Ablating solver-like reasoning improves accuracy up to 14%' and 'grows with model capability' have no supporting results. Part of the paper rehaul after all experiments are done; until then paper work covers Sections 3 and 4 only.",
-  "status": "later",
-  "after": "All experiments",
-  "decider": ""
- },
- {
-  "priority": 3,
-  "area": "Paper",
-  "item": "Match the prompt listings and Figure 2 to the code",
-  "detail": "Listings place the cautionary text before {PROBLEM} (the code appends it after SOLUTION CODE:); Figure 2's hardcoded example uses an output format the prompt does not ask for.",
-  "status": "to do",
-  "after": "",
-  "decider": ""
- },
- {
   "priority": 3,
   "area": "Paper",
   "item": "Note the BlocksWorld dataset caveats",
@@ -57,7 +12,7 @@
   "priority": 3,
   "area": "Repo",
   "item": "Push the branch and open a pull request",
-  "detail": "68 commits on fix/evaluation are local only.",
+  "detail": "121 commits on fix/evaluation are local only (origin has none of them).",
   "status": "needs decision",
   "after": "",
   "decider": "Harry"

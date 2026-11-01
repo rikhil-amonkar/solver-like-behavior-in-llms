@@ -215,5 +215,19 @@
   "title": "Placeholders deter SLB (Section 6)",
   "detail": "Two methods run in full for Qwen and GPT-OSS (no PDDL). Placeholders (values hidden, given to the program at run time) cut solver-like tokens by 97% and the share of traces with SLB from 94% to 15%, with accuracy +2.6 points (n.s.). Batching (K=5) cuts SLB tokens per problem by 62% but all reasoning as much, and costs 5.9 accuracy points. Paper Section 6, Figure 6 and a practical recommendation written.",
   "where": "docs/results/2026-11-01_DETERRENCE_FULL.md"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Paper",
+  "title": "Paper tables and conclusion match the final results",
+  "detail": "The old Gemini Ratio and #Tokens rows are gone: Table 1 reports judge agreement and the per-cell appendix table gives the ontology's ratio and SLB tokens. The conclusion is rewritten around H1-H4 and Section 6, without the unsupported '14%' and 'model capability' claims. Prompt listings are shown verbatim from the code, and Figure 2's hardcoded example is a print of the answer.",
+  "where": "solver-like-paper/acl_latex.tex, tables/"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Ontology",
+  "title": "Remaining judge checks closed with judge reliability",
+  "detail": "Hardcoding in Z3 programs is labelled by the B judge, checked on 20 held-out second-FL programs (18/20); a separate Z3 checker and a BlocksWorld A-label spot check were dropped when Harry closed judge reliability on Oct 31.",
+  "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
  }
 ]
