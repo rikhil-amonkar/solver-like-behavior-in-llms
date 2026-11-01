@@ -236,5 +236,12 @@
   "title": "BlocksWorld dataset caveats in the appendix",
   "detail": "The PDDL reference problem omits the additional constraint, so it differs from the ground-truth problem in 53 of 100 instances; of the 10 unsolvable instances, the planner cannot prove one unsolvable even from the ground-truth PDDL, so PDDL accuracy on BlocksWorld is at most 99%.",
   "where": "solver-like-paper/acl_latex.tex (Appendix: Tasks, Accuracy)"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Repo",
+  "title": "Branch pushed and pull request opened",
+  "detail": "All commits on fix/evaluation pushed to origin; pull request #1 into main describes the evaluation fixes, ontology and judges, cross-FL runs, hypothesis tests and deterrence.",
+  "where": "https://github.com/rikhil-amonkar/solver-like-behavior-in-llms/pull/1"
  }
 ]
