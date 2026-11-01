@@ -1,15 +1,6 @@
 [
  {
   "priority": 3,
-  "area": "Paper",
-  "item": "Note the BlocksWorld dataset caveats",
-  "detail": "53 of 100 prompts give the unconstrained reference PDDL; one unsolvable instance cannot be proven unsolvable.",
-  "status": "to do",
-  "after": "",
-  "decider": ""
- },
- {
-  "priority": 3,
   "area": "Repo",
   "item": "Push the branch and open a pull request",
   "detail": "121 commits on fix/evaluation are local only (origin has none of them).",

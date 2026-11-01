@@ -229,5 +229,12 @@
   "title": "Remaining judge checks closed with judge reliability",
   "detail": "Hardcoding in Z3 programs is labelled by the B judge, checked on 20 held-out second-FL programs (18/20); a separate Z3 checker and a BlocksWorld A-label spot check were dropped when Harry closed judge reliability on Oct 31.",
   "where": "docs/results/2026-10-30_A_JUDGE_RELIABILITY.md"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Paper",
+  "title": "BlocksWorld dataset caveats in the appendix",
+  "detail": "The PDDL reference problem omits the additional constraint, so it differs from the ground-truth problem in 53 of 100 instances; of the 10 unsolvable instances, the planner cannot prove one unsolvable even from the ground-truth PDDL, so PDDL accuracy on BlocksWorld is at most 99%.",
+  "where": "solver-like-paper/acl_latex.tex (Appendix: Tasks, Accuracy)"
  }
 ]
