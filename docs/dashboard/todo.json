@@ -1,11 +1,11 @@
 [
  {
   "priority": 3,
-  "area": "Paper",
-  "item": "Full paper rehaul",
-  "detail": "Planned by Harry for after all experiments; every experiment is now done.",
-  "status": "to do",
+  "area": "Project",
+  "item": "Nothing open: project wrapped up",
+  "detail": "Experiments, judging, the paper rehaul and the pull request are all done; see Done so far.",
+  "status": "done",
   "after": "",
-  "decider": "Harry"
+  "decider": ""
  }
 ]

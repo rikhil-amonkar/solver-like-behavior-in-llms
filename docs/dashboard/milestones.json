@@ -243,5 +243,12 @@
   "title": "Branch pushed and pull request opened",
   "detail": "All commits on fix/evaluation pushed to origin; pull request #1 into main describes the evaluation fixes, ontology and judges, cross-FL runs, hypothesis tests and deterrence.",
   "where": "https://github.com/rikhil-amonkar/solver-like-behavior-in-llms/pull/1"
+ },
+ {
+  "date": "2026-11-01",
+  "area": "Paper",
+  "title": "Full paper rehaul done",
+  "detail": "80 commits since the submitted version: abstract and introduction rewritten around SLB and H1-H4, Section 3 ontology, Methods with both formal languages and judge reliability, Section 5 hypothesis tests, Section 6 deterrence with a practical recommendation, new conclusion and limitations, and an appendix covering every run, prompt and judge.",
+  "where": "solver-like-paper/acl_latex.tex"
  }
 ]
