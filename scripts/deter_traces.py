@@ -40,9 +40,10 @@ def main():
             print(f"{root}: no A items yet, skipped")
             continue
         labels = {}
-        for line in open(REPO / root / f"ontology/judge_a_{args.a_tag}.jsonl"):
-            r = json.loads(line)
-            labels[(r["id"], r.get("h"))] = r
+        for jf in (REPO / root / "ontology").glob(f"judge_a_{args.a_tag}*.jsonl"):  # with shard files
+            for line in open(jf):
+                r = json.loads(line)
+                labels[(r["id"], r.get("h"))] = r
         # trace -> [tokens, SLB tokens, chars, SLB chars, values, all judged]; the ratio is in characters, as in
         # the baseline labels
         tok = collections.defaultdict(lambda: [0, 0, 0, 0, False, True])

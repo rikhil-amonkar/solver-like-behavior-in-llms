@@ -68,8 +68,7 @@ def main():
     root = REPO / args.root
     items = json.load(open(root / "ontology/a_items.json"))
     labels = {}
-    jf = root / f"ontology/judge_a_{args.tag}.jsonl"
-    if jf.exists():
+    for jf in (root / "ontology").glob(f"judge_a_{args.tag}*.jsonl"):  # with shard files
         for line in jf.open():
             r = json.loads(line)
             labels[(r["id"], r.get("h"))] = r

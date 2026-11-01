@@ -181,7 +181,9 @@ def main():
         items = json.load(open(items_path))
         if args.split:
             items = [it for it in items if it.get("split") == args.split]
-        out = items_path.with_name(f"judge_{args.kind}_{args.tag}.jsonl")
+        # shards write to their own files: concurrent appends of long lines to one file can interleave
+        suffix = f".shard{shard}" if n_shards > 1 else ""
+        out = items_path.with_name(f"judge_{args.kind}_{args.tag}{suffix}.jsonl")
     if args.condense_a_tag:
         items = condense(items, args.condense_a_tag, args.condense_values_only, args.root)
     template = PROMPTS["c_condensed" if args.kind == "c" and args.condense_a_tag else args.kind].read_text(encoding="utf-8")
