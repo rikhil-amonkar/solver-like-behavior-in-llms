@@ -3,10 +3,10 @@
 traces with values (A1), solver-like characters per problem, reasoning length and accuracy.
 
 A labels: <root>/ontology/judge_a_<tag>.jsonl (scripts/deter_judge_items.py, then the A judge).
-Baseline: output/<model>/<task>/baseline_ontology_gemma_v11_b5t.json and baseline_evaluation.json,
-restricted to the problems the deterrence run covers. A batch group's trace is compared with its
-members' baseline traces: ratio vs their mean ratio, values chars / K vs their mean values chars,
-"any values" vs the share of members whose trace has values.
+Baseline: <base>/<model>/<task>/baseline_ontology_gemma_v11_b5t.json and baseline_evaluation.json, where
+<base> is output_crossfl for a *_crossfl root (same task and FL) and output otherwise, restricted
+to the problems the deterrence run covers. A batch group's trace is compared with its members'
+baseline traces: ratio vs their mean ratio, values chars / K vs their mean values chars, "any values" vs the share of members whose trace has values.
 
 Usage: python scripts/deter_compare.py --root output_deter_pilot [--tag gemma_v11t]
 """
@@ -43,11 +43,11 @@ def a_by_trace(items, labels):
     return out
 
 
-def baseline_values_chars(model, task, eids):
-    """Baseline values chars per problem, from the native A labels."""
-    segs, _ = build_items("output", [(model, task, "baseline")])
+def baseline_values_chars(base, model, task, eids):
+    """Baseline values chars per problem, from the baseline's A labels."""
+    segs, _ = build_items(base, [(model, task, "baseline")])
     labels = {}
-    for f in (REPO / "output/ontology").glob("judge_a_gemma_v11t*.jsonl"):
+    for f in (REPO / base / "ontology").glob("judge_a_gemma_v11t*.jsonl"):
         for line in f.open():
             r = json.loads(line)
             labels[(r["id"], r.get("h"))] = r
@@ -74,6 +74,7 @@ def main():
             r = json.loads(line)
             labels[(r["id"], r.get("h"))] = r
     acc = a_by_trace(items, labels)
+    base = "output_crossfl" if args.root.rstrip("/").endswith("crossfl") else "output"
 
     rows = []
     for ev_path in sorted(root.glob("*/*/*_evaluation.json")):
@@ -82,10 +83,10 @@ def main():
         ev = {e["example_id"]: e for e in json.load(open(ev_path))["examples"]}
         ex = {e["example_id"]: e for e in json.load(open(ev_path.with_name(f"{cond}_execution.json")))["examples"]}
         eids = set(ev)
-        base_ont = {e["example_id"]: e for e in json.load(open(REPO / f"output/{model}/{task}/baseline_ontology_{BASE_TAG}.json"))["examples"]}
-        base_ev = {e["example_id"]: e for e in json.load(open(REPO / f"output/{model}/{task}/baseline_evaluation.json"))["examples"]}
-        base_ex = {e["example_id"]: e for e in json.load(open(REPO / f"output/{model}/{task}/baseline_execution.json"))["examples"]}
-        base_vc = baseline_values_chars(model, task, eids)
+        base_ont = {e["example_id"]: e for e in json.load(open(REPO / base / f"{model}/{task}/baseline_ontology_{BASE_TAG}.json"))["examples"]}
+        base_ev = {e["example_id"]: e for e in json.load(open(REPO / base / f"{model}/{task}/baseline_evaluation.json"))["examples"]}
+        base_ex = {e["example_id"]: e for e in json.load(open(REPO / base / f"{model}/{task}/baseline_execution.json"))["examples"]}
+        base_vc = baseline_values_chars(base, model, task, eids)
 
         # units: a trace of the deterrence run and the baseline problems it covers
         units = collections.defaultdict(list)
