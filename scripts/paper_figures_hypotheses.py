@@ -7,7 +7,7 @@ DeepSeek's cross-FL runs are excluded (API drift; docs/CROSS_FL_DESIGN.md).
 - figures/h1_prevalence.pdf   H1: traces with SLB, solver-like ratio, SLB tokens (baseline)
 - figures/h2_kinds.pdf        H2: inheriting programs per dataset and FL (one column)
 - figures/h3_accuracy.pdf     H3: within-problem effect of SLB on accuracy
-- figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset; variance explained by each factor
+- figures/h4_fl_dataset.pdf   H4: ratio by FL per dataset (Qwen and GPT-OSS pooled; one column; R^2 drops in nums only)
 - figures/caution.pdf         Section 6: baseline vs cautionary prompts
 H1-H4 (Section 5) use the baseline prompt only; the cautionary prompts are Section 6.
 The paper treats a dataset's two FLs alike, so no FL is marked as native; Python comes first in every dataset.
@@ -36,6 +36,7 @@ from hypothesis_tests import load, boot, by_example, ols, dummies, INHERIT  # no
 
 MODELS = [("deepseek", "DeepSeek"), ("gpt", "GPT-OSS"), ("qwen", "Qwen")]
 MODEL_COLORS = {"deepseek": "#2a78d6", "gpt": "#eb6834", "qwen": "#1baf7a"}
+DATASET_COLORS = {"calendar": "#2a78d6", "meeting": "#eb6834", "zebralogic": "#1baf7a", "blocksworld": "#6250d6"}
 COMBOS = [("calendar", "python"), ("calendar", "z3"), ("meeting", "python"), ("meeting", "z3"),
           ("zebralogic", "python"), ("zebralogic", "z3"), ("blocksworld", "python"), ("blocksworld", "pddl")]
 TASK_NAMES = {"calendar": "Calendar", "meeting": "Meeting", "zebralogic": "ZebraLogic", "blocksworld": "BlocksWorld"}
@@ -198,30 +199,16 @@ def r2_drops(rows):
 
 
 def fig_h2(rows, dest, nums):
+    # One column: Qwen and GPT-OSS pooled; each dataset is a line from Python to its declarative FL.
     both = [r for r in rows if r["model"] in ("gpt", "qwen")]
-    fig = plt.figure(figsize=(6.3, 1.8))
-    gs = fig.add_gridspec(1, 5, width_ratios=[1, 1, 1, 1, 1.25], wspace=0.45)
+    fig, ax = plt.subplots(figsize=(3.0, 2.0))
     nums["h2"] = {"contrast": {}}
     for i, t in enumerate(["calendar", "meeting", "zebralogic", "blocksworld"]):
-        ax = fig.add_subplot(gs[0, i])
         fls = [NATIVE[t], next(fl for tt, fl in COMBOS if tt == t and fl != NATIVE[t])]
         fls = sorted(fls, key=lambda fl: fl != "python")  # Python first
-        for m, name in MODELS[1:]:
-            pts = [mean_ci([r["ratio"] or 0 for r in both if r["task"] == t and r["fl"] == fl and r["model"] == m]) for fl in fls]
-            ax.errorbar([0, 1], [p[0] for p in pts], yerr=[p[1] for p in pts], color=MODEL_COLORS[m], marker="o", ms=3,
-                        lw=1.2, capsize=0, elinewidth=0.6, label=name)
-        ds = [mean_ci([r["ratio"] or 0 for r in rows if r["task"] == t and r["model"] == "deepseek"])]
-        ax.errorbar([0 if NATIVE[t] == fls[0] else 1], [ds[0][0]], yerr=[ds[0][1]], color=MODEL_COLORS["deepseek"],
-                    marker="o", ms=3, ls="none", elinewidth=0.6, label="DeepSeek (one FL)")
-        ax.set_xticks([0, 1], [FL_NAMES[fl] for fl in fls])
-        ax.set_xlim(-0.4, 1.4)
-        ax.set_ylim(0, 0.5)
-        if i:
-            ax.set_yticklabels([])
-        else:
-            ax.set_ylabel("Solver-like ratio", fontsize=6.5)
-        ax.set_title(TASK_NAMES[t], fontsize=7)
-        style(ax)
+        pts = [mean_ci([r["ratio"] or 0 for r in both if r["task"] == t and r["fl"] == fl]) for fl in fls]
+        ax.errorbar([0, 1], [p[0] for p in pts], yerr=[p[1] for p in pts], color=DATASET_COLORS[t], marker="o", ms=3,
+                    lw=1.2, capsize=0, elinewidth=0.6, label=f"{TASK_NAMES[t]} ({FL_NAMES[fls[1]]})")
         pairs = collections.defaultdict(dict)
         for r in both:
             if r["task"] == t:
@@ -231,21 +218,13 @@ def fig_h2(rows, dest, nums):
         for p in pairs:
             groups[p[fls[0]]["example_id"]].append(p)
         nums["h2"]["contrast"][t] = (fls, boot(groups.values(), lambda s: np.mean([(p[fls[0]]["ratio"] or 0) - (p[fls[1]]["ratio"] or 0) for p in s]), n=1000))
-        if i == 0:
-            fig.legend(*ax.get_legend_handles_labels(), loc="lower center", bbox_to_anchor=(0.42, 1.0), ncol=3, frameon=False,
-                       fontsize=6.5, handlelength=1.4)
-    ax = fig.add_subplot(gs[0, 4])
-    full, drops = r2_drops(both)
-    names = list(drops)
-    ax.barh(range(len(names))[::-1], [drops[n] for n in names], 0.6, color="#6250d6")
-    for k, n in enumerate(names):
-        ax.text(drops[n] + 0.002, len(names) - 1 - k, f"{drops[n]:.3f}", va="center", fontsize=5.5, color=MUTED)
-    ax.set_yticks(range(len(names))[::-1], names)
-    ax.set_xlim(0, 0.15)
-    ax.set_xlabel("$R^2$ lost without factor", fontsize=6.5)
-    ax.set_title("Variance in ratio", fontsize=7)
-    style(ax, "x")
-    ax.tick_params(axis="y", length=0)
+    ax.set_xticks([0, 1], ["Python", "Z3 / PDDL"])
+    ax.set_xlim(-0.2, 1.2)
+    ax.set_ylim(0, 0.45)
+    ax.set_ylabel("Solver-like ratio", fontsize=6.5)
+    ax.legend(frameon=False, fontsize=6, handlelength=1.2, loc="upper right", borderaxespad=0.1)
+    style(ax)
+    full, drops = r2_drops(both)  # variance explained per factor: quoted in the text, not drawn
     fig.savefig(dest, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     nums["h2"]["r2_full"], nums["h2"]["r2_drops"] = full, drops
