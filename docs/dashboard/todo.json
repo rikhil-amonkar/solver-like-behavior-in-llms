@@ -1,1 +1,11 @@
-[]
+[
+ {
+  "priority": 3,
+  "area": "Paper",
+  "item": "Full paper rehaul",
+  "detail": "Planned by Harry for after all experiments; every experiment is now done.",
+  "status": "to do",
+  "after": "",
+  "decider": "Harry"
+ }
+]
