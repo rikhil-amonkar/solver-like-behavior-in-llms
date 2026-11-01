@@ -68,3 +68,9 @@ against the baseline traces of the same 20 problems.
   judges get the placeholder problem text and must count symbolic decisions as values. Check the
   new attribution on ~30 paragraphs.
 - Full runs: both methods × both FLs × Qwen, GPT-OSS; K sweep {2, 10} on one model and dataset.
+
+## Paper (Section 6)
+- Figure 7 becomes figures/deter.pdf (scripts/deter_traces.py, then scripts/paper_figure_deter.py): each
+  method's change from the baseline on the same problems, next to the cautionary prompts.
+- Harry (2026-11-01): the Section 6 write-up must end with a sentence or two of practical
+  recommendation, i.e. what someone using an LLM as a formalizer should do given these results.
