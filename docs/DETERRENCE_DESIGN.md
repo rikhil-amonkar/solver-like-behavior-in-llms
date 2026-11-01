@@ -51,6 +51,12 @@ runs inference, execution and evaluation per cell in tmux `deter-<model>-<root>`
 dashboard shows these sessions (`deter_job` in scripts/project_dashboard_snapshot.py).
 Outputs: `output_deter/` (native FL), `output_deter_crossfl/` (second FL), `output_deter_pilot/`.
 
+Full runs (Harry, 2026-11-01: as many GPUs as allowed): `scripts/deter_dispatch.py` (tmux
+`deter-dispatch`, log logs/deter-dispatch.log, state output_deter/dispatch_state.json) holds the
+job list (Python cells first, then Z3, then the GPT-OSS K sweep {2, 10} on Calendar and Meeting
+in Python, then the A judge per root) and starts each job on a free GPU while we hold at most 4
+and one flex GPU stays idle. Qwen and GPT-OSS, 100 problems per cell.
+
 ## Pilot (2026-10-31)
 20 problems (the first 20 of each dataset, i.e. 4 groups of K = 5), Calendar and Meeting in
 Python, both methods, Qwen (GPU 3) and GPT-OSS (GPU 4); `ROOT=output_deter_pilot`. Check by hand:

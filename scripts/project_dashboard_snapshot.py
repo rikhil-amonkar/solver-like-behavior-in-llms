@@ -135,7 +135,61 @@ def build_jobs():
                      "finished": marker in xlog})
     jobs += [rejudge_job("rejudge_native", "Re-judge changed traces: native", "rejudge-native"),
              rejudge_job("rejudge_crossfl", "Re-judge changed traces: cross-FL", "rejudge-crossfl")]
+    jobs += [deter_job("deter_pilot_qwen", "Deterrence pilot: Qwen", "deter-qwen-output_deter_pilot"),
+             deter_job("deter_pilot_gpt", "Deterrence pilot: GPT-OSS", "deter-gpt-output_deter_pilot")]
+    jobs += deter_dispatch_jobs()
     return jobs
+
+
+def deter_dispatch_jobs():
+    """scripts/deter_dispatch.py: one row for the queue, one per job that has started."""
+    path = REPO / "output_deter/dispatch_state.json"
+    if not path.exists():
+        return []
+    state = json.loads(path.read_text())
+    n_done = sum(j["status"] == "done" for j in state.values())
+    rows = [{"id": "deter_queue", "name": "Deterrence full runs: queue", "stage":
+             f"{sum(j['status'] == 'running' for j in state.values())} running, "
+             f"{sum(j['status'] == 'pending' for j in state.values())} waiting for a free GPU",
+             "gpus": "", "done": n_done, "total": len(state), "unit": "jobs",
+             "extra": "Starts jobs as GPUs free up (max 4, one flex GPU idle)", "session": "deter-dispatch",
+             "after": None, "finished": n_done == len(state)}]
+    if tmux_alive("deter-judge"):  # the first pilot judge, started by hand before the queue
+        state = {"judge-pilot-first": {"status": "running", "gpu": 4}, **state}
+    for name, j in state.items():
+        if j["status"] == "pending":
+            continue
+        session = "deter-judge" if name == "judge-pilot-first" else f"deter-{name}"
+        if name.startswith("judge-"):
+            log = log_text(f"{session}.log")
+            total = re.findall(r"^(\d+) items, (\d+) cached", log, re.M)
+            judged = count_lines(f"{'output_deter_pilot' if name.startswith('judge-pilot') else 'output_deter' if name == 'judge-native' else 'output_deter_crossfl'}/ontology/judge_a_gemma_v11t.jsonl")
+            rows.append({"id": f"deter_{name}", "name": f"Deterrence A judge: {name[6:]}", "stage": "Paragraph labels",
+                         "gpus": str(j.get("gpu", "")), "done": judged, "total": int(total[-1][0]) if total else 0,
+                         "unit": "segments", "extra": "", "session": session, "after": None,
+                         "finished": j["status"] == "done"})
+        else:
+            row = deter_job(f"deter_{name}", f"Deterrence: {name}", session)
+            row["extra"] = "100 problems per cell; docs/DETERRENCE_DESIGN.md"
+            rows.append(row)
+    return rows
+
+
+def deter_job(job_id, name, session):
+    """scripts/run_deter.sh: per cell, inference, execution and evaluation in one tmux session."""
+    log = log_text(f"{session}.log")
+    cells = re.search(r"^CELLS: (.+)$", log, re.M)
+    total = len(cells.group(1).split()) if cells else 4  # the pilot's four cells
+    done = len(re.findall(r"^\w+: \d+/\d+ programs ran", log, re.M))
+    runs = re.findall(r"^Task: (\w+)\n.*?^Condition: (\w+)", log, re.M | re.S)
+    alive = tmux_alive(session)
+    stage = (f"{runs[-1][0]} {runs[-1][1]}" if runs and alive else "Done" if log else "Not started")
+    gpu = re.search(r"CUDA_VISIBLE_DEVICES=(\d)", subprocess.run(
+        ["tmux", "list-panes", "-t", session, "-F", "#{pane_start_command}"], capture_output=True, text=True).stdout)
+    return {"id": job_id, "name": name, "stage": stage, "gpus": gpu.group(1) if gpu else "",
+            "done": done, "total": total, "unit": "cells",
+            "extra": "Batching (K=5) and placeholders, 20 problems per cell; docs/DETERRENCE_DESIGN.md",
+            "session": session, "after": None, "finished": bool(log) and not alive}
 
 
 def rejudge_job(job_id, name, session):
