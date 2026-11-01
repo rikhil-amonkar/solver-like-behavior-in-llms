@@ -40,6 +40,8 @@ INFER = [
     infer("gpt-py", "gpt", D, "calendar:python:k5 meeting:python:k5 calendar:python:ph meeting:python:ph"),
     infer("qwen-py-k5", "qwen", D, "calendar:python:k5 meeting:python:k5"),
     infer("qwen-py-ph", "qwen", D, "calendar:python:ph meeting:python:ph"),
+    # gpt-py ran its placeholder cells with the v2 note; re-run them with v3 (2026-11-01)
+    infer("gpt-py-ph", "gpt", D, "calendar:python:ph meeting:python:ph"),
     infer("gpt-xpy", "gpt", X, "zebralogic:python:k5 blocksworld:python:k5"),
     infer("qwen-xpy", "qwen", X, "zebralogic:python:k5 blocksworld:python:k5"),
     # Z3
@@ -54,7 +56,7 @@ INFER = [
 JOBS = [
     # The pilot's last Qwen cell, once that run and the first pilot judge are done
     {"name": "judge-pilot", "kind": "judge", "root": "output_deter_pilot",
-     "after_sessions": ["deter-qwen-output_deter_pilot", "deter-judge"]},
+     "after_sessions": ["deter-pilot-v3-qwen", "deter-judge2"]},
 ] + INFER + [
     {"name": "judge-native", "kind": "judge", "root": D, "after_jobs": [j["name"] for j in INFER if j["root"] == D]},
     {"name": "judge-crossfl", "kind": "judge", "root": X, "after_jobs": [j["name"] for j in INFER if j["root"] == X]},
