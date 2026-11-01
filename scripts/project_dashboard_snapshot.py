@@ -163,11 +163,15 @@ def deter_dispatch_jobs():
         if name.startswith("judge-"):
             log = log_text(f"{session}.log")
             total = re.findall(r"^(\d+) items, (\d+) cached", log, re.M)
-            judged = count_lines(f"{'output_deter_pilot' if name.startswith('judge-pilot') else 'output_deter' if name == 'judge-native' else 'output_deter_crossfl'}/ontology/judge_a_gemma_v11t.jsonl")
+            judged = count_lines(f"{'output_deter_pilot' if name.startswith('judge-pilot') else 'output_deter' if name == 'judge-native' else 'output_deter_crossfl'}/ontology/judge_a_gemma_v11t*.jsonl")
+            # a judge restarted by hand as shards (tmux <session>-s0, -s1, ...) keeps running after the queue marks it done
+            shards = [f"{session}-s{i}" for i in range(8) if tmux_alive(f"{session}-s{i}")]
+            if shards:
+                session = shards[0]
             rows.append({"id": f"deter_{name}", "name": f"Deterrence A judge: {name[6:]}", "stage": "Paragraph labels",
                          "gpus": str(j.get("gpu", "")), "done": judged, "total": int(total[-1][0]) if total else 0,
                          "unit": "segments", "extra": "", "session": session, "after": None,
-                         "finished": j["status"] == "done"})
+                         "finished": j["status"] == "done" and not shards})
         else:
             row = deter_job(f"deter_{name}", f"Deterrence: {name}", session)
             row["extra"] = "100 problems per cell; docs/DETERRENCE_DESIGN.md"
