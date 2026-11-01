@@ -8730,9 +8730,11 @@
    ]
   },
   "zebralogic_grid_lgp-test-3x4-15": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "zebralogic_grid_lgp-test-4x4-18": {
    "compliant": true,
@@ -11336,8 +11338,8 @@
    "non_stdlib": []
   },
   "calendar_scheduling_example_867": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "calendar_scheduling_example_626": {
@@ -12265,8 +12267,8 @@
    "non_stdlib": []
   },
   "meeting_planning_example_604": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "meeting_planning_example_52": {
@@ -12370,8 +12372,8 @@
    "non_stdlib": []
   },
   "meeting_planning_example_286": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "meeting_planning_example_210": {
@@ -12390,8 +12392,8 @@
    "non_stdlib": []
   },
   "meeting_planning_example_956": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "meeting_planning_example_73": {
@@ -13047,6 +13049,11 @@
    "non_stdlib": []
   },
   "meeting_planning_example_98": {
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": []
+  },
+  "meeting_planning_example_222": {
    "compliant": true,
    "reason": null,
    "non_stdlib": []
@@ -13862,9 +13869,11 @@
    ]
   },
   "zebralogic_grid_lgp-test-3x6-1": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "zebralogic_grid_lgp-test-6x2-39": {
    "compliant": true,
@@ -14131,9 +14140,11 @@
    ]
   },
   "zebralogic_grid_lgp-test-6x5-31": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "zebralogic_grid_lgp-test-3x3-9": {
    "compliant": true,
@@ -14206,8 +14217,8 @@
    ]
   },
   "zebralogic_grid_lgp-test-3x4-4": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -14395,8 +14406,8 @@
    ]
   },
   "zebralogic_grid_lgp-test-6x3-14": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]

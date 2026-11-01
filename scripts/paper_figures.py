@@ -7,7 +7,8 @@ written by scripts/paper_ontology_stats.py:
   solver-like ratio, B1-B3, program accuracy);
 - figures/prose_vs_program.pdf: C, outcomes of traces with a complete prose answer (prose answer
   correct? program correct? same answer?);
-- tables/ontology_cells.tex: every number behind both figures.
+- tables/ontology_cells.tex: every cell of every run (model, task, formal language, prompt); the figures use
+  the DeepSeek-FL runs only.
 
 Palettes were checked with the dataviz validator (categorical slots, adjacent pairs pass).
 
@@ -28,6 +29,8 @@ REPO = Path(__file__).resolve().parent.parent
 MODELS = [("deepseek", "DeepSeek"), ("gpt", "GPT-OSS"), ("qwen", "Qwen")]
 TASKS = [("calendar", "Calendar"), ("meeting", "Meeting"), ("zebralogic", "ZebraLogic"), ("blocksworld", "BlocksWorld")]
 CONDS = [("baseline", "0"), ("caution_a", "A"), ("caution_b", "B")]
+FLS = {"calendar": ["python", "z3"], "meeting": ["python", "z3"], "zebralogic": ["python", "z3"], "blocksworld": ["python", "pddl"]}
+FL_NAMES = {"python": "Python", "z3": "Z3", "pddl": "PDDL"}
 INK, MUTED, GRID = "#0b0b0b", "#52514e", "#dddcd7"
 A_COMPLETE, A_PARTIAL = "#6250d6", "#c4bdf2"
 B_COLORS = {"hardcoded": "#2a78d6", "partly_fixed": "#eb6834", "steered": "#1baf7a"}
@@ -44,10 +47,10 @@ plt.rcParams.update({"font.family": "serif", "font.serif": ["STIXGeneral", "Deja
                      "pdf.fonttype": 42})
 
 
-def cells(rows):
+def cells(rows, key=lambda r: (r["model"], r["task"], r["cond"])):
     by = collections.defaultdict(list)
     for r in rows:
-        by[(r["model"], r["task"], r["cond"])].append(r)
+        by[key(r)].append(r)
     out = {}
     for k, g in by.items():
         n = len(g)
@@ -156,21 +159,26 @@ def fig_c(rows, dest):
 
 
 def table(st, dest):
-    lines = [r"\begin{tabular}{lll|r|rrrrr|rrrrr|rr}", r"\toprule",
-             r"Model & Task & Cond. & Acc. & SLB & Cmpl. & Part. & Ratio & SLB tok. & B1 & B2 & B3 & B4 & n/a & C1 no & C2 no \\",
+    # st is keyed by (model, task, fl, cond); every formal language a model was run in gets its own rows.
+    lines = [r"\begin{tabular}{llll|r|rrrrr|rrrrr|rr}", r"\toprule",
+             r"Model & Task & FL & Cond. & Acc. & SLB & Cmpl. & Part. & Ratio & SLB tok. & B1 & B2 & B3 & B4 & n/a & C1 no & C2 no \\",
              r"\midrule"]
     for mi, (m, mname) in enumerate(MODELS):
         for ti, (t, tname) in enumerate(TASKS):
-            for c, cname in CONDS:
-                x = st[(m, t, c)]
+            fls = [fl for fl in FLS[t] if (m, t, fl, "baseline") in st]
+            for fi, fl in enumerate(fls):
+              for c, cname in CONDS:
+                x = st[(m, t, fl, c)]
                 pct = lambda v: f"{round(100 * v)}"
-                lines.append(" & ".join([mname if (ti, c) == (0, "baseline") else "", tname if c == "baseline" else "", cname,
+                first = (fi, c) == (0, "baseline")
+                lines.append(" & ".join([mname if first and ti == 0 else "", tname if first else "",
+                                         FL_NAMES[fl] if c == "baseline" else "", cname,
                                          f"{x['acc']:.2f}", str(x["values"]), pct(x["complete"]), pct(x["partial"]),
                                          f"{x['ratio']:.2f}", f"{x['slb_tokens']:,.0f}".replace(",", "{,}"),
                                          *[pct(x[b]) for b in ("hardcoded", "partly_fixed", "steered", "independent", "na")],
                                          f"{x['c1_no']}/{x['c1_checked']}", f"{x['c2_no']}/{x['c2_checked']}"]) + r" \\")
             if ti < 3:
-                lines.append(r"\cmidrule(lr){2-16}")
+                lines.append(r"\cmidrule(lr){2-17}")
         if mi < 2:
             lines.append(r"\midrule")
     lines += [r"\bottomrule", r"\end{tabular}"]
@@ -184,11 +192,15 @@ def main():
     args = ap.parse_args()
     rows = json.load(open(REPO / f"output/paper/ontology_traces_{args.tag}.json"))
     st = cells(rows)
+    # Table: both formal languages; DeepSeek's second-FL runs are excluded (API drift; docs/CROSS_FL_DESIGN.md).
+    cross = [r for r in json.load(open(REPO / f"output/paper/ontology_traces_{args.tag}_output_crossfl.json"))
+             if r["model"] != "deepseek"]
+    st_fl = cells(rows + cross, key=lambda r: (r["model"], r["task"], r["fl"], r["cond"]))
     paper = Path(args.paper)
     (paper / "tables").mkdir(exist_ok=True)
     fig_cells(st, paper / "figures/ontology_cells.pdf")
     fig_c(rows, paper / "figures/prose_vs_program.pdf")
-    table(st, paper / "tables/ontology_cells.tex")
+    table(st_fl, paper / "tables/ontology_cells.tex")
     for t, _ in TASKS:
         g = [c for c in map(c_category, (r for r in rows if r["task"] == t)) if c]
         print(t, len(g), {k: g.count(k) for k, _, _ in C_CATS})

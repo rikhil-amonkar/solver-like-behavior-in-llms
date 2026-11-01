@@ -582,6 +582,11 @@
    "reason": null,
    "non_stdlib": []
   },
+  "blocksworld_p40_action_constraint24": {
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": []
+  },
   "blocksworld_p15_baseline_constraint15": {
    "compliant": true,
    "reason": null,
@@ -1380,8 +1385,8 @@
    "non_stdlib": []
   },
   "blocksworld_p95_baseline_constraint95": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "blocksworld_p08_baseline_constraint8": {
@@ -1556,8 +1561,8 @@
    ]
   },
   "calendar_scheduling_example_476": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -2439,6 +2444,13 @@
     "z3"
    ]
   },
+  "calendar_scheduling_example_429": {
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
+  },
   "calendar_scheduling_example_776": {
    "compliant": true,
    "reason": null,
@@ -3205,8 +3217,8 @@
    ]
   },
   "calendar_scheduling_example_975": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -3816,8 +3828,8 @@
    ]
   },
   "meeting_planning_example_835": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -4658,9 +4670,11 @@
    ]
   },
   "meeting_planning_example_908": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "meeting_planning_example_335": {
    "compliant": true,
@@ -5197,9 +5211,11 @@
    ]
   },
   "meeting_planning_example_502": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "meeting_planning_example_225": {
    "compliant": true,
@@ -5447,8 +5463,8 @@
    ]
   },
   "meeting_planning_example_870": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -14520,8 +14536,8 @@
    "non_stdlib": []
   },
   "blocksworld_p09_baseline_constraint9": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "blocksworld_p34_action_constraint18": {
@@ -14600,8 +14616,8 @@
    "non_stdlib": []
   },
   "blocksworld_p45_baseline_constraint45": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "blocksworld_p51_action_constraint35": {
@@ -15539,8 +15555,8 @@
    "non_stdlib": []
   },
   "blocksworld_p18_baseline_constraint18": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "blocksworld_p34_baseline_constraint34": {
@@ -16122,9 +16138,11 @@
    ]
   },
   "calendar_scheduling_example_975": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "calendar_scheduling_example_723": {
    "compliant": true,
@@ -16365,8 +16383,8 @@
    ]
   },
   "calendar_scheduling_example_98": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -17468,9 +17486,11 @@
    ]
   },
   "calendar_scheduling_example_246": {
-   "compliant": null,
-   "reason": "not valid Python",
-   "non_stdlib": []
+   "compliant": true,
+   "reason": null,
+   "non_stdlib": [
+    "z3"
+   ]
   },
   "calendar_scheduling_example_91": {
    "compliant": true,
@@ -17480,8 +17500,8 @@
    ]
   },
   "calendar_scheduling_example_325": {
-   "compliant": false,
-   "reason": "z3 imported but no check()",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": [
     "z3"
    ]
@@ -20837,8 +20857,8 @@
    "non_stdlib": []
   },
   "zebralogic_grid_lgp-test-3x4-10": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   },
   "zebralogic_grid_lgp-test-2x6-14": {
@@ -21444,8 +21464,8 @@
    "non_stdlib": []
   },
   "zebralogic_grid_lgp-test-6x5-3": {
-   "compliant": null,
-   "reason": "not valid Python",
+   "compliant": true,
+   "reason": null,
    "non_stdlib": []
   }
  }
