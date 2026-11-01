@@ -1,6 +1,6 @@
 # Solver-like behavior (SLB) ontology
 
-**Status (2026-10-30): final.** The nodes below are frozen; the judges and their measured reliability are in the last two sections. Still open: the full runs with the chosen judges (see Judges).
+**Status (2026-11-01): final.** The nodes below are frozen; the judges and their measured reliability are in the last two sections. The full runs with the chosen judges are done (see Judges).
 
 Adopted 2026-10-22; made more compact the same day after the sweep of 107 traces (`docs/results/2026-10-22_ONTOLOGY_SWEEP.md`). A3 (purpose: answer / check problem / check program / disambiguate) was dropped on 2026-10-29: the purposes were too niche to label reliably, and the judge over-assigned them. Each node gets its own judge (an LLM or a script). This replaces the single sound/solver-like judge.
 
@@ -83,7 +83,7 @@ Gemma 4 31B-it (FP8, vLLM, temperature 0, thinking mode) where reading is needed
 | B cross-check, GPT-OSS Meeting | script (`src/hardcoded/static_checker.py`) | 30/30 against human labels |
 | Consistency | script | flags B ≠ independent without A1 values, and A2 complete without a Values paragraph |
 
-**Full runs.** The first full A run (2026-10-30, launched as `gemma_v11t`) read the prompt file after it had been overwritten by v12, so it is stored as `gemma_v12t` (with `gemma_v12c`, and assembled files `*_ontology_v12run_a12_c12.json`); it must be redone with v11 before results are final. The full B run with `gemma_b5t` is in progress (`scripts/run_full_b5t.sh`).
+**Full runs.** The first full A run (2026-10-30, launched as `gemma_v11t`) read the prompt file after it had been overwritten by v12, so it is stored as `gemma_v12t` (with `gemma_v12c`, and assembled files `*_ontology_v12run_a12_c12.json`); it was redone with v11 (`scripts/run_full_v11.sh`). The full B run used `gemma_b5t` (`scripts/run_full_b5t.sh`). Final labels (2026-10-31): `*_ontology_gemma_v11_b5t.json` in `output/` and `output_crossfl/`, summarized in `docs/results/2026-10-31_ONTOLOGY_LABELS_V11_B5T.md`. The `v12run` files are kept only as an exploratory run.
 
 ## Reliability
 
