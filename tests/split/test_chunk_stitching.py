@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 # Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from chunking.chunk_parser import (
     parse_judge_response,
@@ -70,20 +70,18 @@ def test_stitch_multiple_segments():
 
     print(f"  Total chunks: {len(enriched_chunks)}")
     print(f"  Has solver-like: {has_solver_like}")
-    print(f"  Segments: {token_stats.get('num_segments', 0)}")
-    print(f"  Was split: {token_stats.get('was_split', False)}")
 
     # Should have 2 + 1 + 3 = 6 total chunks
     assert len(enriched_chunks) == 6, "Should have 6 total chunks"
     assert has_solver_like, "Should detect solver-like chunks"
-    assert token_stats["num_segments"] == 3, "Should record 3 segments"
-    assert token_stats["was_split"], "Should mark as split"
+    # Stitched output is seamless: no segment metadata in token_stats
+    assert "num_segments" not in token_stats and "was_split" not in token_stats
 
     print("  ✓ Segment stitching works\n")
 
 
 def test_stitch_single_segment():
-    """Test that single segment doesn't get 'split' flag."""
+    """Test that a single segment parses into its chunks."""
     print("Testing single segment (no split)...")
 
     segment_responses = [
@@ -99,10 +97,9 @@ def test_stitch_single_segment():
     )
 
     print(f"  Total chunks: {len(enriched_chunks)}")
-    print(f"  Was split: {token_stats.get('was_split', False)}")
 
     assert len(enriched_chunks) == 1, "Should have 1 chunk"
-    assert not token_stats["was_split"], "Should not mark as split"
+    assert not has_solver_like, "Should not detect solver-like chunks"
 
     print("  ✓ Single segment handled correctly\n")
 
@@ -130,11 +127,10 @@ def test_stitch_with_failures():
     )
 
     print(f"  Total chunks: {len(enriched_chunks)}")
-    print(f"  Parse failures: {token_stats.get('parse_failures', 0)}")
 
-    # Should still get 2 chunks from the valid segments
+    # Should still get 2 chunks from the valid segments (failures are skipped)
     assert len(enriched_chunks) == 2, "Should have 2 chunks from valid segments"
-    assert token_stats.get("parse_failures") == 1, "Should record 1 parse failure"
+    assert has_solver_like, "Should detect the solver-like chunk"
 
     print("  ✓ Partial failures handled gracefully\n")
 

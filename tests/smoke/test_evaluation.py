@@ -14,8 +14,8 @@ sys.path.insert(0, str(repo_root / "src"))
 
 from general.io_utils import load_json_file, load_constraints_json, load_problems_with_solutions, get_timestamp, IncrementalJSONWriter, make_path_relative
 from general.cli import ProgressTracker
-from evaluation.calendar_eval import evaluate_calendar_solution
-from evaluation.meeting_eval import evaluate_meeting_solution
+from evaluation.calendar_eval_python import evaluate_calendar_solution
+from evaluation.meeting_eval_python import evaluate_meeting_solution
 
 
 def run_smoke_test_evaluation():
@@ -25,7 +25,9 @@ def run_smoke_test_evaluation():
     print(f"{'='*60}\n")
 
     # Find smoke test inference outputs
-    test_output_dir = Path(__file__).parent / "output"
+    # Default: tests/smoke/output (written by test_inference.py); or pass a
+    # directory such as tests/smoke/deepseek_output.
+    test_output_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "output"
 
     if not test_output_dir.exists():
         print("Error: No smoke test outputs found!")
@@ -112,7 +114,7 @@ def run_smoke_test_evaluation():
                                 )
                             else:  # meeting
                                 is_correct, error_detail = evaluate_meeting_solution(
-                                    example_constraints, parsed_output
+                                    example_constraints, parsed_output, golden_solution
                                 )
 
                             classification = "correct" if is_correct else "constraint_violation"

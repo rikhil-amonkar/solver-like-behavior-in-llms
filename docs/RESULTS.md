@@ -1,5 +1,7 @@
 # Comprehensive Results Summary
 
+> **Legacy.** This document describes the earlier pipeline with the Gemini sound / solver-like chunking judge. The current pipeline (SLB ontology judges, cross-FL and deterrence runs) is described in the [README](../README.md).
+
 This document provides a complete overview of model performance across all tasks, prompt conditions, and evaluation metrics.
 
 **Dataset**: 100 examples per task

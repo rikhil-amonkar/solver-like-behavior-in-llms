@@ -1,0 +1,402 @@
+{
+  "run_metadata": {
+    "task": "calendar",
+    "model": "gpt",
+    "condition": "placeholder",
+    "execution_json": "output_deter_pilot/gpt/calendar/placeholder_execution.json",
+    "constraints_json": "data/constraints/calendar_constraints.json",
+    "timestamp": "2026-10-31T23:14:43Z",
+    "num_examples": 20
+  },
+  "summary": {
+    "constraint_based_accuracy": 0.65,
+    "constraint_correct": 13,
+    "constraint_incorrect": 7,
+    "golden_solution_accuracy": 0.5,
+    "golden_matches": 10,
+    "golden_available": 20,
+    "error_breakdown": {
+      "no_code_extracted": 0,
+      "execution_error": 2,
+      "no_output": 1,
+      "no_solution": 0,
+      "parse_error": 0,
+      "constraint_violation": 4,
+      "suboptimal": 0,
+      "pddl_error": 0,
+      "planning_failure": 0,
+      "solver_timeout": 0,
+      "invalid_plan": 0,
+      "incorrect_plan_exists": 0,
+      "evaluation_error": 0
+    }
+  },
+  "examples": [
+    {
+      "example_id": "calendar_scheduling_example_543",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "no_output",
+      "solution": null,
+      "expected_solution": [
+        "Monday",
+        "13:30",
+        "14:30"
+      ],
+      "validation": {
+        "error": "empty stdout"
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_544",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "10:00",
+        "10:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "10:00",
+        "10:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_398",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "13:00",
+        "13:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "13:00",
+        "13:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_625",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Tuesday",
+        "14:30",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Tuesday",
+        "15:30",
+        "16:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Tuesday",
+          "start": 14.5,
+          "end": 15.5
+        }
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_502",
+      "correct": true,
+      "matches_expected": false,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "09:00",
+        "09:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "12:00",
+        "12:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_798",
+      "correct": true,
+      "matches_expected": false,
+      "classification": "correct",
+      "solution": [
+        "Wednesday",
+        "09:30",
+        "10:00"
+      ],
+      "expected_solution": [
+        "Wednesday",
+        "9:30",
+        "10:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_710",
+      "correct": true,
+      "matches_expected": false,
+      "classification": "correct",
+      "solution": [
+        "Tuesday",
+        "09:00",
+        "09:30"
+      ],
+      "expected_solution": [
+        "Tuesday",
+        "9:00",
+        "9:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_25",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "13:30",
+        "14:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "13:30",
+        "14:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_493",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "12:00",
+        "12:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "12:00",
+        "12:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_548",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Monday",
+        "00:00",
+        "00:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "16:30",
+        "17:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Monday",
+          "start": 0,
+          "end": 9
+        }
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_446",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Monday",
+        "09:00",
+        "09:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "16:30",
+        "17:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Monday",
+          "start": 9,
+          "end": 9.5
+        }
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_786",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "constraint_violation",
+      "solution": [
+        "Monday",
+        "10:30",
+        "11:00"
+      ],
+      "expected_solution": [
+        "Wednesday",
+        "16:30",
+        "17:00"
+      ],
+      "validation": {
+        "error": "overlaps disallowed range",
+        "range": {
+          "day": "Monday",
+          "start": 9,
+          "end": 16
+        }
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_185",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "15:00",
+        "15:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "15:00",
+        "15:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_724",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "execution_error",
+      "solution": null,
+      "expected_solution": [
+        "Monday",
+        "16:00",
+        "16:30"
+      ],
+      "validation": {
+        "error": "execution failed",
+        "exit_code": 1,
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/code_exec_spjju615/solution.py\", line 90, in <module>\n    start_min = time_to_minutes(VALUES[start_ph])\n                                ~~~~~~^^^^^^^^^^"
+      }
+    },
+    {
+      "example_id": "calendar_scheduling_example_819",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Thursday",
+        "14:30",
+        "15:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_111",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "12:00",
+        "12:30"
+      ],
+      "expected_solution": [
+        "Monday",
+        "12:00",
+        "12:30"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_42",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "14:00",
+        "15:00"
+      ],
+      "expected_solution": [
+        "Monday",
+        "14:00",
+        "15:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_476",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "13:30",
+        "14:00"
+      ],
+      "expected_solution": [
+        "Monday",
+        "13:30",
+        "14:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_458",
+      "correct": true,
+      "matches_expected": true,
+      "classification": "correct",
+      "solution": [
+        "Monday",
+        "16:30",
+        "17:00"
+      ],
+      "expected_solution": [
+        "Monday",
+        "16:30",
+        "17:00"
+      ],
+      "validation": {}
+    },
+    {
+      "example_id": "calendar_scheduling_example_964",
+      "correct": false,
+      "matches_expected": false,
+      "classification": "execution_error",
+      "solution": null,
+      "expected_solution": [
+        "Tuesday",
+        "11:00",
+        "12:00"
+      ],
+      "validation": {
+        "error": "execution failed",
+        "exit_code": 1,
+        "stderr": "  File \"/tmp/code_exec_w3sag9b9/solution.py\", line 7\n    TEXT = \"\"\"\n           ^\nSyntaxError: unterminated triple-quoted string literal (detected at line 8)\n"
+      }
+    }
+  ]
+}

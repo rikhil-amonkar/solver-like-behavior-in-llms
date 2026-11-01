@@ -1,5 +1,7 @@
 # Batch Chunking Guide
 
+> **Legacy.** This document describes the earlier pipeline with the Gemini sound / solver-like chunking judge. The current pipeline (SLB ontology judges, cross-FL and deterrence runs) is described in the [README](../../README.md).
+
 ## Overview
 
 The chunking pipeline (`src/run_chunking.py`) supports two modes:

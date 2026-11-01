@@ -63,11 +63,12 @@ Python, both methods, Qwen (GPU 3) and GPT-OSS (GPU 4); `ROOT=output_deter_pilot
 extraction (missing `# Problem i` blocks), truncation, VALUES use, accuracy and solver-like prose,
 against the baseline traces of the same 20 problems.
 
-## Still to do after the pilot
-- Judges: A1 for batching must also say which problem a paragraph is about (per-problem ratio);
-  judges get the placeholder problem text and must count symbolic decisions as values. Check the
-  new attribution on ~30 paragraphs.
-- Full runs: both methods × both FLs × Qwen, GPT-OSS; K sweep {2, 10} on one model and dataset.
+## Status (2026-11-01): done
+Full runs (both methods × both FLs × Qwen, GPT-OSS; K sweep {2, 10} for GPT-OSS on Calendar and
+Meeting in Python) and their A judging are finished; results in
+`docs/results/2026-11-01_DETERRENCE_FULL.md`. Per-problem attribution inside a batch was not
+built: every member of a batch group carries the group's ratio and 1/K of its tokens
+(`scripts/deter_traces.py`).
 
 ## Paper (Section 6)
 - Figure 7 becomes figures/deter.pdf (scripts/deter_traces.py, then scripts/paper_figure_deter.py): each

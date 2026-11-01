@@ -71,10 +71,17 @@ output_test/
 output/judge_cache_*.jsonl
 output/judge_segments_*.json
 
+# Raw ontology judge outputs and judge inputs (large; the assembled labels are tracked)
+output*/ontology/
+
 # Re-run scratch outputs and backups of replaced outputs (kept in git history)
 output_rerun/
 output_rerun_parts/
 output_backup/
+output_deter_old/
 
 # Dashboard snapshots
 output/dashboard/
+
+# Worker claim files (run_crossfl_claim.sh / run_inference.py queue locks)
+*.claim

@@ -1,1 +1,11 @@
-[]
+[
+ {
+  "priority": 3,
+  "area": "Project",
+  "item": "Nothing open: project wrapped up",
+  "detail": "Experiments, judging, the paper rehaul and the pull request are all done; see Done so far.",
+  "status": "done",
+  "after": "",
+  "decider": ""
+ }
+]

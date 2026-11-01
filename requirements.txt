@@ -2,35 +2,33 @@
 
 # LLM APIs
 openai>=3.2.0              # DeepSeek API + OpenAI client
-google-genai>=2.18.1       # Gemini judge for chunking (Vertex AI)
+google-genai>=2.18.1       # Legacy Gemini judge (run_chunking.py, run_hardcoded.py; Vertex AI)
 python-dotenv>=1.2.3       # Environment variable loading
 
 # Deep Learning (PyTorch + Hugging Face)
 torch>=2.13.0              # Local model inference (Qwen, GPT-OSS)
 transformers>=5.15.0       # HuggingFace model loading
 accelerate>=1.2.1          # Multi-GPU support for local models
-vllm>=0.8.0                # Optimized inference for Qwen, GPT-OSS (2-10x faster)
+vllm>=0.8.0                # Local inference (Qwen, GPT-OSS) and the Gemma ontology judges
 tiktoken>=0.14.0           # Token counting for chunk enrichment
 huggingface-hub>=0.34.0    # Model downloading
 kernels>=0.16.0,<0.17.0    # MXFP4 quantization for GPT-OSS
 
 # Optional Dependencies
 
-# Data Processing (for analysis/notebooks, not core pipeline)
+# Analysis and paper figures (scripts/paper_*.py, hypothesis_tests.py, slb_vs_size.py)
 numpy>=2.5.2
 pandas>=3.0.5
+scipy>=1.15.0
+matplotlib>=3.11.0
 
 # Constraint Solving & Planning
-z3-solver>=4.13.0          # Z3 SMT solver for ZebraLogic tasks
-# PDDL planners for BlocksWorld tasks (choose one):
-# - Install Fast Downward separately: https://www.fast-downward.org/
-# - Or use pyperplan: pip install pyperplan
-# pyperplan>=2.1              # Pure Python PDDL planner (optional, slower)
+z3-solver>=4.13.0          # Z3 (ZebraLogic natively; Calendar/Meeting in the cross-FL runs)
+# BlocksWorld: Fast Downward and VAL are built into repos/ by scripts/setup_planners.sh
 
-# Vertex AI (optional: for batch judge mode)
+# Vertex AI (legacy Gemini batch judge only)
 google-cloud-storage>=3.13.1
 
 # Utilities (nice-to-have)
 tqdm>=4.70.0               # Progress bars
-pyyaml>=6.0.0              # YAML config files (future)
 requests>=2.34.2           # HTTP requests
